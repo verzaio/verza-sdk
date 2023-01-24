@@ -14,7 +14,7 @@ yarn-error.log*
 
 # locks
 package-lock.json
-yarn.json
+yarn.lock
 
 # local env files
 .env.local
