@@ -1,11 +1,10 @@
+import EngineManager from 'engine/managers/engine.manager';
 import React, {
   createContext,
   PropsWithChildren,
   useContext,
   useEffect,
-  useState,
 } from 'react';
-import {EngineManager} from '..';
 import useControllerProp from './hooks/misc/useControllerProp';
 
 export const EngineContext = createContext<EngineManager>(null!);

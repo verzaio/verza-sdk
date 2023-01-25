@@ -1,5 +1,6 @@
-import {useEngine} from 'engine/react/EngineProvider';
 import {useEffect} from 'react';
+
+import {useEngine} from 'engine/frameworks/react/EngineProvider';
 
 const useKey = (key: string, callback: (event: KeyboardEvent) => void) => {
   const engine = useEngine();

@@ -1,18 +1,23 @@
-import {useEngine} from '@verza/sdk';
+import {useEngine, SizeProps} from '@verza/sdk';
 
-import {useCallback} from 'react';
+import {useCallback, useEffect} from 'react';
 
 const Testing = () => {
   const engine = useEngine();
-  engine;
 
-  const onPress = useCallback(() => {
-    alert('clicked!');
-  }, []);
+  useEffect(() => {
+    engine.ui.setSize({
+      height: '150px',
+      width: '150px',
+      left: '10vw',
+      top: '10vh',
+    });
+    engine.ui.show();
+  }, [engine]);
 
   return (
-    <div style={{display: 'flex'}}>
-      <button onClick={onPress}>Click me!</button>
+    <div onClick={() => engine.ui.hide()} style={{display: 'flex'}}>
+      <button>Hello moto</button>
     </div>
   );
 };

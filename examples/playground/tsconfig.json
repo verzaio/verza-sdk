@@ -14,10 +14,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@app/*": ["./src/*"],
-      "@verza/sdk": ["../../src"]
+      "@verza/sdk": ["../../src"],
+      "engine/*": ["../../src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

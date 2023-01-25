@@ -7,7 +7,7 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended"
   ],
-  "plugins": ["testing-library", "eslint-plugin-import-helpers", "import"],
+  "plugins": ["eslint-plugin-import-helpers", "import"],
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
     "no-return-await": "warn",
@@ -20,14 +20,11 @@
         "newlinesBetween": "always",
         "groups": [
           ["/scss$/"],
-          ["/^react$/"],
-          ["module"],
-          ["/^types/"],
 
-          ["/^utils/"],
-          ["/^constants/"],
-          ["/^hooks/"],
-          ["/^components/"],
+          ["/^engine/utils/"],
+          ["/^engine/definitions/"],
+          ["/^engine/frameworks/"],
+
           ["parent", "sibling", "index"]
         ],
 
@@ -37,15 +34,5 @@
         }
       }
     ]
-  },
-  "overrides": [
-    // only uses Testing Library lint rules in test files
-    {
-      "files": [
-        "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[jt]s?(x)"
-      ],
-      "extends": ["plugin:testing-library/react"]
-    }
-  ]
+  }
 }

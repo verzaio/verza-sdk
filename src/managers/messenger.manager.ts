@@ -8,7 +8,7 @@ type MessengerManagerMap = {
   onConnected: () => void;
 };
 
-type MessengerManagerEventsMap<T extends EventListenersMap> = {
+export type MessengerManagerEventsMap<T extends EventListenersMap> = {
   [key in keyof T]: (message: MessageEvent<Parameters<T[key]>>) => void;
 };
 
@@ -184,24 +184,26 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       return;
     }
 
-    // any other message
-    console.log('_onMessage:after', message.data);
+    //console.debug(`[messenger:${message.data}] _onMessage`, message.data);
 
     (this.events.emit as any)(message.data.pop(), message);
   };
 
   emit<A extends keyof Events>(
     eventName: A,
-    args: Parameters<Events[A]>,
+    args?: Parameters<Events[A]>,
     transfer?: Array<Transferable | OffscreenCanvas>,
   ) {
     //
     if (transfer) {
-      this.port.postMessage([...args, eventName], transfer);
+      this.port.postMessage(
+        args ? [...args, eventName] : [eventName],
+        transfer,
+      );
       return;
     }
 
-    this.port.postMessage([...args, eventName]);
+    this.port.postMessage(args ? [...args, eventName] : [eventName]);
   }
 
   destroy() {

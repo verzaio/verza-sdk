@@ -16,9 +16,7 @@
     "baseUrl": "./",
     "outDir": "lib",
     "paths": {
-      "engine/*": ["./src/*"],
-      "declarations/*": ["./src/declarations/*"],
-      "managers/*": ["./src/managers/*"]
+      "engine/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

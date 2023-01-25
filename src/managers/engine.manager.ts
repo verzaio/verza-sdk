@@ -1,14 +1,12 @@
+import {ScriptEventMap} from 'engine/definitions/types/events.types';
 import ControllerManager from './controller.manager';
 import MessengerManager from './messenger.manager';
-
-type EngineEventMap = {
-  onTest: (abc: string) => void;
-};
+import UIManager from './ui.manager';
 
 class EngineManager {
-  initiated = false;
+  ui: UIManager;
 
-  messenger = new MessengerManager<EngineEventMap>('sender');
+  messenger = new MessengerManager<ScriptEventMap>('sender');
 
   controller = new ControllerManager({
     connected: false,
@@ -17,6 +15,10 @@ class EngineManager {
   /* accessors */
   get connected() {
     return this.controller.data.connected;
+  }
+
+  constructor() {
+    this.ui = new UIManager(this);
   }
 
   private _onConnected = () => {
