@@ -24,16 +24,10 @@
           ["module"],
           ["/^types/"],
 
-          ["/^game/engine/"],
-          ["/^game/gamemode/"],
-
           ["/^utils/"],
           ["/^constants/"],
-          ["/^api/"],
-          ["/^pages/"],
           ["/^hooks/"],
           ["/^components/"],
-          ["/^public/"],
           ["parent", "sibling", "index"]
         ],
 
@@ -45,7 +39,7 @@
     ]
   },
   "overrides": [
-    // Only uses Testing Library lint rules in test files
+    // only uses Testing Library lint rules in test files
     {
       "files": [
         "**/__tests__/**/*.[jt]s?(x)",

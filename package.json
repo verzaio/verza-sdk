@@ -4,10 +4,6 @@
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "workspaces": [
-    "packages/*",
-    "example"
-  ],
   "scripts": {
     "build": "tsc",
     "lint": "eslint",
@@ -21,14 +17,33 @@
     "type": "git",
     "url": "git+https://github.com/verzaio/verza-sdk.git"
   },
-  "keywords": [],
-  "author": "zo0r <j@verza.io>",
+  "keywords": [
+    "react",
+    "three",
+    "verza",
+    "threejs"
+  ],
+  "author": "zo0r (https://github.com/zo0r)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/verzaio/verza-sdk/issues"
   },
   "homepage": "https://github.com/verzaio/verza-sdk#readme",
+  "peerDependencies": {
+    "react": ">=18.0",
+    "react-dom": ">=18.0",
+    "three": ">=0.148"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@types/events": "^3.0.0",
+    "@types/react": ">=18.0",
+    "@types/react-dom": ">=18.0",
+    "@types/three": "^0.148",
     "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
@@ -38,5 +53,8 @@
     "husky": "^8.0.3",
     "prettier": "^2.8.3",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "events": "^3.3.0"
   }
 }

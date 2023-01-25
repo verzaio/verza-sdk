@@ -1,9 +1,20 @@
-import {SayHi} from '@verza/sdk';
+import {useEngine} from '@verza/sdk';
+
+import {useCallback} from 'react';
 
 const Testing = () => {
-  console.log(SayHi('zo0r'));
+  const engine = useEngine();
+  engine;
 
-  return <div>Hello world</div>;
+  const onPress = useCallback(() => {
+    alert('clicked!');
+  }, []);
+
+  return (
+    <div style={{display: 'flex'}}>
+      <button onClick={onPress}>Click me!</button>
+    </div>
+  );
 };
 
 export default Testing;
