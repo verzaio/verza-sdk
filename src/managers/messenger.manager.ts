@@ -12,6 +12,12 @@ export type MessengerManagerEventsMap<T extends EventListenersMap> = {
   [key in keyof T]: (message: MessageEvent<Parameters<T[key]>>) => void;
 };
 
+export type MessengerValidators<T extends EventListenersMap> = Partial<{
+  [key in keyof T]: {
+    parse: (params: unknown) => any;
+  };
+}>;
+
 const TYPE_HANDSHAKE_CONNECTION = 'HANDSHAKE_CONNECTION';
 
 const ACTION_CONNECT = 'REQUEST';
@@ -26,6 +32,8 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
   channel: MessageChannel = null!;
 
   port: MessagePort = null!;
+
+  validators: MessengerValidators<Events> = null!;
 
   events = new EventsManager<
     Merge<MessengerManagerMap, MessengerManagerEventsMap<Events>>
@@ -42,6 +50,10 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
     // bind handshake listener
     this._bindHandshakeListener();
+  }
+
+  setValidators(validators: MessengerValidators<Events>) {
+    this.validators = validators;
   }
 
   connect(windowToConnect: Window) {
@@ -96,6 +108,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     if (!this.port) return;
 
     this.port.onmessage = null!;
+    this.port.close();
     this.port = null!;
   }
 
@@ -186,7 +199,23 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
     //console.debug(`[messenger:${message.data}] _onMessage`, message.data);
 
-    (this.events.emit as any)(message.data.pop(), message);
+    // get event name
+    const event = message.data.pop();
+
+    // validate
+    if (this.validators[event]) {
+      try {
+        Object.assign(
+          message.data,
+          this.validators[event]?.parse(message.data),
+        );
+      } catch (e) {
+        console.error(e);
+        return;
+      }
+    }
+
+    (this.events.emit as any)(event, message);
   };
 
   emit<A extends keyof Events>(
@@ -194,7 +223,8 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     args?: Parameters<Events[A]>,
     transfer?: Array<Transferable | OffscreenCanvas>,
   ) {
-    //
+    if (!this.port) return;
+
     if (transfer) {
       this.port.postMessage(
         args ? [...args, eventName] : [eventName],

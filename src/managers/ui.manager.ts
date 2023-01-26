@@ -3,9 +3,9 @@ import {SizeProps} from 'engine/definitions/types/events.types';
 import EngineManager from './engine.manager';
 
 class UIManager {
-  private _engine: EngineManager;
-
   visible = false;
+
+  private _engine: EngineManager;
 
   private get _messenger() {
     return this._engine.messenger;
