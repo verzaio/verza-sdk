@@ -9,8 +9,8 @@ const Testing = () => {
     engine.ui.setSize({
       height: '150px',
       width: '150px',
-      left: '10vw',
-      top: '10vh',
+      top: '10vw',
+      right: '10vh',
     });
     engine.ui.show();
   }, [engine]);
