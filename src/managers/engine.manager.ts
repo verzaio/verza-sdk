@@ -1,12 +1,18 @@
 import {ScriptEventMap} from 'engine/definitions/types/events.types';
+import CommandsManager from './commands.manager';
 import ControllerManager from './controller.manager';
+import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import UIManager from './ui.manager';
 
 class EngineManager {
   ui: UIManager;
 
+  commands: CommandsManager;
+
   messenger = new MessengerManager<ScriptEventMap>('sender');
+
+  events = new EventsManager<ScriptEventMap>();
 
   controller = new ControllerManager({
     connected: false,
@@ -19,6 +25,24 @@ class EngineManager {
 
   constructor() {
     this.ui = new UIManager(this);
+
+    this.commands = new CommandsManager(this);
+  }
+
+  private _bind() {
+    const events: (keyof ScriptEventMap)[] = [
+      'onChat',
+      'onHide',
+      'onSetSize',
+      'onShow',
+    ];
+
+    // forward events
+    events.forEach(eventName => {
+      this.messenger.events.on(eventName, (event: any) => {
+        this.events.emit(eventName, ...event.data);
+      });
+    });
   }
 
   private _onConnected = () => {
@@ -28,6 +52,8 @@ class EngineManager {
   connect() {
     // ignore if not present
     if (typeof window === 'undefined') return;
+
+    this._bind();
 
     this.messenger.events.off('onConnected', this._onConnected);
     this.messenger.events.on('onConnected', this._onConnected);
@@ -47,7 +73,7 @@ class EngineManager {
   destroy() {
     this.messenger.events.off('onConnected', this._onConnected);
 
-    // destroy messenger
+    // destroy
     this.messenger.destroy();
 
     // remove all events

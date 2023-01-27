@@ -1,11 +1,6 @@
 import EngineManager from 'engine/managers/engine.manager';
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-} from 'react';
-import useControllerProp from './hooks/misc/useControllerProp';
+import React, {createContext, PropsWithChildren, useEffect} from 'react';
+import useControllerProp from './hooks/useControllerProp';
 
 export const EngineContext = createContext<EngineManager>(null!);
 
@@ -35,10 +30,6 @@ const EngineProvider = ({
       {children}
     </EngineContext.Provider>
   );
-};
-
-export const useEngine = () => {
-  return useContext(EngineContext);
 };
 
 export default EngineProvider;

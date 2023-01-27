@@ -203,7 +203,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     const event = message.data.pop();
 
     // validate
-    if (this.validators[event]) {
+    if (this.validators?.[event]) {
       try {
         Object.assign(
           message.data,

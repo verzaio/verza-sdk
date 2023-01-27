@@ -11,6 +11,12 @@ export type SizeProps = {
 };
 
 export type ScriptEventMap = {
+  /* chat */
+  onChat: (text: string) => void;
+
+  /* chat */
+  onCommand: (text: string) => void;
+
   /* ui */
   onSetSize: (props: SizeProps) => void;
 
