@@ -28,7 +28,7 @@ class Command<Params extends CommandParam[] = CommandParam[]>
 
   constructor(commandOrParams: string | CommandInfo, params?: Params) {
     if (typeof commandOrParams === 'string') {
-      this.command = commandOrParams.substring(0, MAX_COMMAND_NAME);
+      this.command = commandOrParams;
 
       // restore params
       if (params) {
@@ -43,21 +43,26 @@ class Command<Params extends CommandParam[] = CommandParam[]>
       // restore props
       Object.assign(this, rest);
 
-      // limit name
-      if (this.command.length > MAX_COMMAND_NAME) {
-        this.command = this.command.substring(0, MAX_COMMAND_NAME);
-      }
-
-      if (this.desc?.length > MAX_COMMAND_DESC) {
-        this.desc = this.desc.substring(0, MAX_COMMAND_DESC);
-      }
-
       // restore params
       if (params) {
         this.params = params.map(
           param => new CommandParam(param, param.type),
         ) as unknown as unknown as Params;
       }
+    }
+
+    // validate lengths
+    this._validateLengths();
+  }
+
+  private _validateLengths() {
+    // limit name
+    if (this.command.length > MAX_COMMAND_NAME) {
+      this.command = this.command.substring(0, MAX_COMMAND_NAME);
+    }
+
+    if (this.desc?.length > MAX_COMMAND_DESC) {
+      this.desc = this.desc.substring(0, MAX_COMMAND_DESC);
     }
   }
 
@@ -188,17 +193,25 @@ export class CommandParam<
 
   constructor(nameOrParams: Name | CommandParamBase, type: Type) {
     if (typeof nameOrParams === 'string') {
-      this.name = nameOrParams.substring(0, MAX_COMMAND_NAME) as Name;
+      this.name = nameOrParams;
 
       if (type) {
         this.type = type;
       }
     } else {
       Object.assign(this, nameOrParams);
+    }
 
-      if (this.name.length > MAX_COMMAND_NAME) {
-        this.name = this.name.substring(0, MAX_COMMAND_NAME) as Name;
-      }
+    this._validateLengths();
+  }
+
+  private _validateLengths() {
+    if (this.name.length > MAX_COMMAND_NAME) {
+      this.name = this.name.substring(0, MAX_COMMAND_NAME) as Name;
+    }
+
+    if (this.display?.length > MAX_COMMAND_NAME) {
+      this.display = this.display.substring(0, MAX_COMMAND_NAME);
     }
   }
 
@@ -229,24 +242,6 @@ export class CommandParam<
     return value as any;
   }
 
-  user() {
-    this.type = 'user';
-
-    return this;
-  }
-
-  number() {
-    this.type = 'number';
-
-    return this;
-  }
-
-  string() {
-    this.type = 'string';
-
-    return this;
-  }
-
   required() {
     this.isRequired = true;
 
@@ -254,7 +249,7 @@ export class CommandParam<
   }
 
   withDisplay(display: string) {
-    this.display = display;
+    this.display = display.substring(0, MAX_COMMAND_NAME);
 
     return this;
   }
@@ -262,6 +257,8 @@ export class CommandParam<
   toObject(): CommandParamBase {
     return {
       name: this.name,
+
+      display: this.display,
 
       type: this.type,
 

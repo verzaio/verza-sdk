@@ -14,6 +14,8 @@ export type CommandInfo = {
 export type CommandParam = {
   name: string;
 
+  display: string;
+
   type: keyof typeof CommandType;
 
   isRequired: boolean;
