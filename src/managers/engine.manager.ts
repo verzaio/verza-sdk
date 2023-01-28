@@ -39,6 +39,8 @@ class EngineManager {
     connected: false,
   });
 
+  private _binded = false;
+
   /* accessors */
   get connected() {
     return this.controller.data.connected;
@@ -58,8 +60,12 @@ class EngineManager {
     // destroy
     this.destroy();
 
+    // mark as binded
+    this._binded = true;
+
     // binds
     this._bind();
+    this.commands.bind();
     this.ui.bind();
 
     // events
@@ -83,17 +89,18 @@ class EngineManager {
   }
 
   destroy() {
-    if (!this.connected) return;
+    if (!this._binded) return;
 
-    this.messenger.events.off('onConnected', this._onConnected);
+    this.controller.set('connected', false);
 
     // destroy
     this.messenger.destroy();
 
     // remove all events
+    this.events.removeAllListeners();
     this.controller.events.removeAllListeners();
 
-    this.controller.set('connected', false);
+    this._binded = false;
   }
 }
 

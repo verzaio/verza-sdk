@@ -9,11 +9,9 @@ class CommandsManager {
 
   constructor(engine: EngineManager) {
     this._engine = engine;
-
-    this._bind();
   }
 
-  private _bind() {
+  bind() {
     this._engine.events.on('onChat', text => {
       // check if is a command
       if (text.startsWith('/') === false) return;
