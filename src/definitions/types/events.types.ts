@@ -98,6 +98,8 @@ export type ScriptEventMap = {
   /* engine */
   onSetPlayerId: (playerId: number) => void;
 
+  onFrame: (delta: number) => void;
+
   /* chat */
   onChat: (text: string) => void;
 

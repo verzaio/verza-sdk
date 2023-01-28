@@ -357,7 +357,7 @@ class MessengerEvents<
   emitRegisteredEvents() {
     if (!this.registerEvents) return;
 
-    //console.log(this.registeredEvents);
+    console.log(this.registeredEvents);
 
     this.registeredEvents.forEach(eventName => {
       this._messenger.emit('onRegister', [eventName]);
