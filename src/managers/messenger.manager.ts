@@ -6,6 +6,10 @@ type Merge<A, B> = A extends void ? B : A & B;
 
 type MessengerManagerMap = {
   onConnected: () => void;
+
+  onRegister: (event: string) => void;
+
+  onUnregister: (event: string) => void;
 };
 
 export type MessengerManagerEventsMap<T extends EventListenersMap> = {
@@ -38,12 +42,16 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
   validators: MessengerValidators<Events> = null!;
 
-  events = new EventsManager<
+  events: MessengerEvents<
     Merge<MessengerManagerMap, MessengerManagerEventsMap<Events>>
-  >();
+  >;
+
+  connected = false;
 
   constructor(type: MessengerType, id?: string) {
     this.type = type;
+
+    this.events = new MessengerEvents(this as any);
 
     // abort if window not present
     if (typeof window === 'undefined') return;
@@ -126,6 +134,8 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     if (this.channel) {
       this.channel = null!;
     }
+
+    this.connected = false;
   }
 
   private _bindHandshakeListener() {
@@ -173,6 +183,8 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
       // emit connected
       (this.events.emit as any)('onConnected');
+
+      this._onConnected();
       return;
     }
 
@@ -182,11 +194,19 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
       // emit connected
       (this.events.emit as any)('onConnected');
+
+      this._onConnected();
       return;
     }
 
     console.debug(`[messenger:${this.type}] unhandled request`);
   };
+
+  private _onConnected() {
+    this.connected = true;
+
+    this.events.emitRegisteredEvents();
+  }
 
   private _onMessage = (message: MessageEvent) => {
     // handle handshake
@@ -222,15 +242,33 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       }
     }
 
+    // handle registration
+    if (event === 'onRegister') {
+      this.events.registeredEvents.add(message.data[0]);
+      return;
+    } else if (event === 'onUnregister') {
+      this.events.registeredEvents.delete(message.data[0]);
+      return;
+    }
+
     (this.events.emit as any)(event, message);
   };
 
-  emit<A extends keyof Events>(
+  canEmit<A extends keyof Events>(eventName: A) {
+    return this.events.registeredEvents.has(eventName);
+  }
+
+  async emit<A extends keyof Events>(
     eventName: A,
     args?: Parameters<Events[A]>,
     transfer?: Array<Transferable | OffscreenCanvas>,
   ) {
     if (!this.port) return;
+
+    if (this.type !== 'sender' && !this.canEmit(eventName)) {
+      //console.log('not emitting, not registered!', eventName, this.type);
+      return;
+    }
 
     if (transfer) {
       this.port.postMessage(
@@ -247,6 +285,83 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     this.disconnect();
 
     this.events.removeAllListeners();
+  }
+}
+
+class MessengerEvents<
+  T extends EventListenersMap = EventListenersMap,
+> extends EventsManager<T> {
+  registerEvents = false;
+
+  registeredEvents = new Set<keyof T>();
+
+  private _messenger: MessengerManager;
+
+  constructor(messenger: MessengerManager) {
+    super();
+
+    this._messenger = messenger;
+  }
+
+  on<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
+    // try to register
+    this._register(eventName);
+
+    return super.on(eventName, listener);
+  }
+
+  off<A extends keyof T>(eventName: A, listener: T[A]) {
+    super.off(eventName, listener);
+
+    // try to unregister
+    this._unregister(eventName);
+  }
+
+  once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
+    console.debug('[MessengerEvents] events.once not available');
+    return listener;
+  }
+
+  removeAllListeners(): void {
+    super.removeAllListeners();
+
+    // unregister all events
+    this.registeredEvents.forEach(event => this._unregister(event));
+  }
+
+  private _register<A extends keyof T>(eventName: A) {
+    if (this.registerEvents && !this.registeredEvents.has(eventName)) {
+      this.registeredEvents.add(eventName);
+
+      // emit
+      if (this._messenger.connected) {
+        this._messenger.emit('onRegister', [eventName]);
+      }
+    }
+  }
+
+  private _unregister<A extends keyof T>(eventName: A) {
+    if (
+      this.registerEvents &&
+      this.getEmitter().listenerCount(eventName as string) === 0
+    ) {
+      this.registeredEvents.delete(eventName);
+
+      // emit
+      if (this._messenger.connected) {
+        this._messenger.emit('onUnregister', [eventName]);
+      }
+    }
+  }
+
+  emitRegisteredEvents() {
+    if (!this.registerEvents) return;
+
+    //console.log(this.registeredEvents);
+
+    this.registeredEvents.forEach(eventName => {
+      this._messenger.emit('onRegister', [eventName]);
+    });
   }
 }
 

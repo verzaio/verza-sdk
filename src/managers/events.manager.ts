@@ -13,14 +13,17 @@ class EventsManager<T extends EventListenersMap = EventListenersMap> {
     this._eventEmitter.setMaxListeners(Infinity);
   }
 
+  getEmitter() {
+    return this._eventEmitter;
+  }
+
   on<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
     this._eventEmitter.on(eventName as string, listener as EventListener);
     return listener;
   }
 
-  off<A extends keyof T>(eventName: A, listener: T[A]): this {
+  off<A extends keyof T>(eventName: A, listener: T[A]) {
     this._eventEmitter.off(eventName as string, listener as EventListener);
-    return this;
   }
 
   once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {

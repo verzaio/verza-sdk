@@ -1,28 +1,11 @@
-import {ENGINE_EVENTS} from 'engine/definitions/local/constants/engine.constants';
 import {ScriptEventMap} from 'engine/definitions/types/events.types';
+import {isValidEnv} from 'engine/utils/misc';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
 import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import UIManager from './ui.manager';
-
-const isValidEnv = (): boolean => {
-  // ignore if not present
-  if (typeof window === 'undefined') {
-    return false;
-  }
-
-  // local not allowed
-  if (window.self === window.top || !window.top) {
-    console.debug(
-      'Script cannot initiate from the same page, make sure the script is included on the server.',
-    );
-    return false;
-  }
-
-  return true;
-};
 
 class EngineManager {
   ui: UIManager;
@@ -33,7 +16,7 @@ class EngineManager {
 
   messenger = new MessengerManager<ScriptEventMap>('sender');
 
-  events = new EventsManager<ScriptEventMap>();
+  events = new EngineEvents(this);
 
   controller = new ControllerManager({
     connected: false,
@@ -47,6 +30,9 @@ class EngineManager {
   }
 
   constructor() {
+    // register all events
+    this.messenger.events.registerEvents = true;
+
     this.ui = new UIManager(this);
 
     this.chat = new ChatManager(this);
@@ -64,8 +50,6 @@ class EngineManager {
     this._binded = true;
 
     // binds
-    this._bind();
-    this.commands.bind();
     this.ui.bind();
 
     // events
@@ -79,15 +63,6 @@ class EngineManager {
     this.controller.set('connected', true);
   };
 
-  private _bind() {
-    // forward events
-    ENGINE_EVENTS.forEach(eventName => {
-      this.messenger.events.on(eventName, (event: MessageEvent) => {
-        this.events.emit(eventName, ...event.data);
-      });
-    });
-  }
-
   destroy() {
     if (!this._binded) return;
 
@@ -95,12 +70,79 @@ class EngineManager {
 
     // destroy
     this.messenger.destroy();
+    this.commands.destroy();
 
     // remove all events
     this.events.removeAllListeners();
     this.controller.events.removeAllListeners();
 
     this._binded = false;
+  }
+}
+
+class EngineEvents<
+  T extends ScriptEventMap = ScriptEventMap,
+> extends EventsManager<T> {
+  private _engine: EngineManager;
+
+  private _bindedEvents = new Map<keyof T, (...args: any[]) => void>();
+
+  constructor(engine: EngineManager) {
+    super();
+
+    this._engine = engine;
+  }
+
+  on<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
+    this._bind(eventName);
+
+    return super.on(eventName, listener);
+  }
+
+  off<A extends keyof T>(eventName: A, listener: T[A]): void {
+    super.off(eventName, listener);
+
+    this._unbind(eventName);
+  }
+
+  once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
+    console.debug('[EngineEvents] events.once not available');
+    return listener;
+  }
+
+  removeAllListeners() {
+    super.removeAllListeners();
+
+    // remove all binds
+    [...this._bindedEvents.keys()].forEach(event => this._unbind(event));
+  }
+
+  private _bind<A extends keyof T>(eventName: A) {
+    if (this._bindedEvents.has(eventName)) return;
+
+    this._bindedEvents.set(
+      eventName,
+      this._engine.messenger.events.on(
+        eventName as any,
+        (event: MessageEvent) => {
+          this.emit(eventName, ...event.data);
+        },
+      ),
+    );
+  }
+
+  private _unbind<A extends keyof T>(eventName: A): void {
+    if (
+      this._bindedEvents.has(eventName) &&
+      this.getEmitter().listenerCount(eventName as any) === 0
+    ) {
+      this._engine.messenger.events.off(
+        eventName as any,
+        this._bindedEvents.get(eventName) as any,
+      );
+
+      this._bindedEvents.delete(eventName);
+    }
   }
 }
 

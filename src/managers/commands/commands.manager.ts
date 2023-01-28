@@ -7,11 +7,17 @@ class CommandsManager {
 
   private _commands = new Map<string, Command>();
 
+  private _binded = false;
+
   constructor(engine: EngineManager) {
     this._engine = engine;
   }
 
   bind() {
+    if (this._binded) return;
+
+    this._binded = true;
+
     this._engine.events.on('onChat', text => {
       // check if is a command
       if (text.startsWith('/') === false) return;
@@ -58,12 +64,19 @@ class CommandsManager {
     this._commands.set(command.command.toLowerCase(), command);
 
     this._engine.messenger.emit('onAddCommand', [command.toObject()]);
+
+    // try to bind
+    this.bind();
   }
 
   remove(command: Command<any>) {
     this._commands.delete(command.command.toLowerCase());
 
     this._engine.messenger.emit('onRemoveCommand', [command.command]);
+  }
+
+  destroy() {
+    this._binded = false;
   }
 }
 

@@ -90,6 +90,11 @@ export type SizeProps = {
 };
 
 export type ScriptEventMap = {
+  /* messenger */
+  onRegister: (event: string) => void;
+
+  onUnregister: (event: string) => void;
+
   /* engine */
   onSetPlayerId: (playerId: number) => void;
 
