@@ -14,6 +14,7 @@ import {MessengerManagerEventsMap} from 'engine/managers/messenger.manager';
 
 import useEngine from 'engine/frameworks/react/hooks/useEngine';
 import useKey from 'engine/frameworks/react/hooks/useKey';
+import useGameKey from 'engine/frameworks/react/hooks/useGameKey';
 import useControllerProp from 'engine/frameworks/react/hooks/useControllerProp';
 import useCommand from 'engine/frameworks/react/hooks/useCommand';
 import useEvent from 'engine/frameworks/react/hooks/useEvent';
@@ -41,6 +42,7 @@ export {
   useEngine,
   useEvent,
   useKey,
+  useGameKey,
   useControllerProp,
   useCommand,
 };

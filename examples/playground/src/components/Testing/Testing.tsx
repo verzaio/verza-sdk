@@ -1,6 +1,7 @@
 import {Command, CommandParam, useCommand, useEngine} from '@verza/sdk';
 
 import {useEffect} from 'react';
+import InterfaceTest from './InterfaceTest';
 
 const Testing = () => {
   const engine = useEngine();
@@ -12,7 +13,7 @@ const Testing = () => {
       top: '10vw',
       right: '10vh',
     });
-    //engine.ui.show();
+    engine.ui.show();
   }, [engine]);
 
   // test cmd
@@ -31,11 +32,7 @@ const Testing = () => {
       console.log('Executing abc!!');
     });
 
-  return (
-    <div onClick={() => engine.ui.hide()} style={{display: 'flex'}}>
-      <button>Hello moto</button>
-    </div>
-  );
+  return <InterfaceTest />;
 };
 
 export default Testing;

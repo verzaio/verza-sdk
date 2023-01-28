@@ -1,8 +1,7 @@
 import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
 import {KeyInfo} from 'engine/definitions/types/ui.types';
-import {useCallback, useEffect} from 'react';
+import {useEffect} from 'react';
 import useEngine from './useEngine';
-import useGameKey from './useGameKey';
 
 type UseKeyOptions = {
   event?: 'keydown' | 'keyup';
@@ -13,20 +12,20 @@ type UseKeyOptions = {
   ignoreOptionsMenu?: boolean;
 };
 
-const useKey = (
+const useGameKey = (
   key: string | string[],
   callback: (event: KeyInfo) => void,
   options?: UseKeyOptions,
 ) => {
   const engine = useEngine();
 
-  useGameKey(key, callback, options);
-
   useEffect(() => {
     const event = options?.event ?? 'keydown';
     const keys = Array.isArray(key) ? key : [key];
 
-    const onKeyDown = (event: KeyboardEvent) => {
+    const onKey = engine.events.on('onKey', keyInfo => {
+      if (keyInfo.type !== event) return;
+
       // disabled when options menu is enabled
       if (
         !options?.ignoreOptionsMenu &&
@@ -44,35 +43,18 @@ const useKey = (
         if (!options?.ignoreActiveInput && engine.ui.isActiveInput) {
           return;
         }
-        return;
       }
 
       // check matches
-      if (keys.includes(event.code)) {
-        callback({
-          type: event.type as KeyInfo['type'],
-
-          code: event.code,
-
-          key: event.key,
-
-          altKey: event.altKey,
-
-          ctrlKey: event.ctrlKey,
-
-          metaKey: event.metaKey,
-
-          shiftKey: event.shiftKey,
-        });
+      if (keys.includes(keyInfo.code)) {
+        callback(keyInfo);
       }
-    };
-
-    document.addEventListener(event, onKeyDown);
+    });
 
     return () => {
-      document.removeEventListener(event, onKeyDown);
+      engine.events.off('onKey', onKey);
     };
   }, [engine, callback, key, options]);
 };
 
-export default useKey;
+export default useGameKey;

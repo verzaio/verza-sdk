@@ -7,6 +7,23 @@ import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import UIManager from './ui.manager';
 
+const isValidEnv = (): boolean => {
+  // ignore if not present
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  // local not allowed
+  if (window.self === window.top || !window.top) {
+    console.debug(
+      'Script cannot initiate from the same page, make sure the script is included on the server.',
+    );
+    return false;
+  }
+
+  return true;
+};
+
 class EngineManager {
   ui: UIManager;
 
@@ -35,6 +52,27 @@ class EngineManager {
     this.commands = new CommandsManager(this);
   }
 
+  connect() {
+    if (!isValidEnv()) return;
+
+    // destroy
+    this.destroy();
+
+    // binds
+    this._bind();
+    this.ui.bind();
+
+    // events
+    this.messenger.events.on('onConnected', this._onConnected);
+
+    // connect it
+    this.messenger.connect(window.top!);
+  }
+
+  private _onConnected = () => {
+    this.controller.set('connected', true);
+  };
+
   private _bind() {
     // forward events
     ENGINE_EVENTS.forEach(eventName => {
@@ -44,32 +82,9 @@ class EngineManager {
     });
   }
 
-  private _onConnected = () => {
-    this.controller.set('connected', true);
-  };
-
-  connect() {
-    // ignore if not present
-    if (typeof window === 'undefined') return;
-
-    this._bind();
-
-    this.messenger.events.off('onConnected', this._onConnected);
-    this.messenger.events.on('onConnected', this._onConnected);
-
-    // local not allowed
-    if (window.self === window.top || !window.top) {
-      console.debug(
-        'Engine cannot initiate from the same page, make the script is included on the server.',
-      );
-      return;
-    }
-
-    // connect it
-    this.messenger.connect(window.top);
-  }
-
   destroy() {
+    if (!this.connected) return;
+
     this.messenger.events.off('onConnected', this._onConnected);
 
     // destroy
