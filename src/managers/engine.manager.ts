@@ -1,5 +1,7 @@
+import {ENGINE_EVENTS} from 'engine/definitions/constants/engine.constants';
 import {ScriptEventMap} from 'engine/definitions/types/events.types';
-import CommandsManager from './commands.manager';
+import ChatManager from './chat.manager';
+import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
 import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
@@ -7,6 +9,8 @@ import UIManager from './ui.manager';
 
 class EngineManager {
   ui: UIManager;
+
+  chat: ChatManager;
 
   commands: CommandsManager;
 
@@ -26,20 +30,15 @@ class EngineManager {
   constructor() {
     this.ui = new UIManager(this);
 
+    this.chat = new ChatManager(this);
+
     this.commands = new CommandsManager(this);
   }
 
   private _bind() {
-    const events: (keyof ScriptEventMap)[] = [
-      'onChat',
-      'onHide',
-      'onSetSize',
-      'onShow',
-    ];
-
     // forward events
-    events.forEach(eventName => {
-      this.messenger.events.on(eventName, (event: any) => {
+    ENGINE_EVENTS.forEach(eventName => {
+      this.messenger.events.on(eventName, (event: MessageEvent) => {
         this.events.emit(eventName, ...event.data);
       });
     });

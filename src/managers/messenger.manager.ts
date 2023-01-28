@@ -14,7 +14,10 @@ export type MessengerManagerEventsMap<T extends EventListenersMap> = {
 
 export type MessengerValidators<T extends EventListenersMap> = Partial<{
   [key in keyof T]: {
-    parse: (params: unknown) => any;
+    callback?: (message: MessageEvent<Parameters<T[key]>>) => void;
+    parser?: {
+      parse: (params: unknown) => any;
+    };
   };
 }>;
 
@@ -205,10 +208,14 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     // validate
     if (this.validators?.[event]) {
       try {
-        Object.assign(
-          message.data,
-          this.validators[event]?.parse(message.data),
-        );
+        const {parser, callback} = this.validators[event] ?? {};
+
+        if (parser) {
+          Object.assign(message.data, parser.parse(message.data));
+        }
+
+        // call callback if exists
+        callback?.(message);
       } catch (e) {
         console.error(e);
         return;

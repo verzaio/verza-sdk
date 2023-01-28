@@ -1,5 +1,6 @@
 import EngineManager from 'engine/managers/engine.manager';
 import EventsManager, {EventListenersMap} from 'engine/managers/events.manager';
+import Command, {CommandParam} from 'engine/managers/commands/command.manager';
 
 import EngineProvider from 'engine/frameworks/react/EngineProvider';
 
@@ -15,6 +16,7 @@ import useEngine from 'engine/frameworks/react/hooks/useEngine';
 import useKey from 'engine/frameworks/react/hooks/useKey';
 import useControllerProp from 'engine/frameworks/react/hooks/useControllerProp';
 import useCommand from 'engine/frameworks/react/hooks/useCommand';
+import useEvent from 'engine/frameworks/react/hooks/useEvent';
 
 export {
   /* engine */
@@ -23,6 +25,10 @@ export {
   /* events */
   EventsManager,
   EventListenersMap,
+
+  /* commands */
+  Command,
+  CommandParam,
 
   /* scripts */
   SizePropValue,
@@ -33,6 +39,7 @@ export {
   /* react */
   EngineProvider,
   useEngine,
+  useEvent,
   useKey,
   useControllerProp,
   useCommand,

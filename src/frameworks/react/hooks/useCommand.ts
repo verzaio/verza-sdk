@@ -1,17 +1,26 @@
-import {CommandCallback} from 'engine/definitions/types/commands.types';
-import {useEffect} from 'react';
+import Command, {CommandParam} from 'engine/managers/commands/command.manager';
+import {useEffect, useState} from 'react';
 import useEngine from './useEngine';
 
-const useCommand = (command: string, callback: CommandCallback) => {
+const useCommand = <Params extends CommandParam[] = CommandParam[]>(
+  command: string,
+  params?: Params,
+) => {
   const engine = useEngine();
+  const [cmd] = useState(() => {
+    const cmd = new Command(command, params);
+    return cmd;
+  });
 
   useEffect(() => {
-    engine.commands.add(command, callback);
+    engine.commands.add(cmd as unknown as Command);
 
     return () => {
-      engine.commands.remove(command);
+      engine.commands.remove(cmd as unknown as Command);
     };
-  });
+  }, [cmd]);
+
+  return cmd;
 };
 
 export default useCommand;

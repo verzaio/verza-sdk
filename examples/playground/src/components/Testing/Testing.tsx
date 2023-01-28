@@ -1,4 +1,4 @@
-import {useCommand, useEngine} from '@verza/sdk';
+import {Command, CommandParam, useCommand, useEngine} from '@verza/sdk';
 
 import {useEffect} from 'react';
 
@@ -16,9 +16,20 @@ const Testing = () => {
   }, [engine]);
 
   // test cmd
-  useCommand('test', () => {
-    console.log('Command executed!');
-  });
+  useCommand('test', [
+    new CommandParam('abc', 'number').withDisplay('My age'),
+    new CommandParam('abc2', 'string').withDisplay('The message'),
+  ])
+    .withDesc('Test command')
+    .onExecution(({abc, abc2}) => {
+      console.log('Executing test!!', abc, abc2);
+    });
+
+  useCommand('abc')
+    .withDesc('Abc command')
+    .onExecution(() => {
+      console.log('Executing abc!!');
+    });
 
   return (
     <div onClick={() => engine.ui.hide()} style={{display: 'flex'}}>
