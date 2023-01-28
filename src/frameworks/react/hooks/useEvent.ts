@@ -1,4 +1,3 @@
-import {CommandCallback} from 'engine/definitions/types/commands.types';
 import {ScriptEventMap} from 'engine/definitions/types/events.types';
 import {useEffect} from 'react';
 import useEngine from './useEngine';

@@ -13,3 +13,12 @@ export type KeyInfo = {
 
   shiftKey: boolean;
 };
+
+export type IndicatorId = string | number;
+
+export type IndicatorTitle = string | null;
+
+export type Indicator = {
+  id: IndicatorId;
+  title: IndicatorTitle;
+};

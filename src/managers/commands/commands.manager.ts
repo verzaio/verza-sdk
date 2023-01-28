@@ -1,4 +1,4 @@
-import {CommandCallback} from 'engine/definitions/types/commands.types';
+import {} from 'engine/definitions/types/commands.types';
 import Command from './command.manager';
 import EngineManager from '../engine.manager';
 

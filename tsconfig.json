@@ -16,6 +16,7 @@
     "baseUrl": "./",
     "outDir": "lib",
     "paths": {
+      "types/Dto": ["./src/generated/dtos.types.ts"],
       "engine/*": ["./src/*"]
     }
   },

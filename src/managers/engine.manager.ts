@@ -1,4 +1,4 @@
-import {ENGINE_EVENTS} from 'engine/definitions/constants/engine.constants';
+import {ENGINE_EVENTS} from 'engine/definitions/local/constants/engine.constants';
 import {ScriptEventMap} from 'engine/definitions/types/events.types';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
