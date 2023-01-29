@@ -1,14 +1,8 @@
-import {usePlayerId, useStreamedPlayer, useUI} from '@verza/sdk';
-import {useEffect} from 'react';
+import {usePlayerId, useStreamedPlayer} from '@verza/sdk';
 import {Vector3} from 'three';
 
 const PlayersTest = () => {
-  const ui = useUI();
   const player = useStreamedPlayer(usePlayerId());
-
-  useEffect(() => {
-    //
-  }, [player]);
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
@@ -43,6 +37,13 @@ const PlayersTest = () => {
           player.setCameraBehind();
         }}>
         player.setCameraBehind
+      </button>
+
+      <button
+        onClick={() => {
+          player.setName(`Hey ${Math.random()}`);
+        }}>
+        player.setName
       </button>
 
       <br />
