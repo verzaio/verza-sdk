@@ -1,4 +1,4 @@
-import {Command, CommandParam, useCommand, useEngine} from '@verza/sdk';
+import {CommandParam, useCommand, useEngine} from '@verza/sdk';
 
 import {useEffect} from 'react';
 import CameraTest from './CameraTest';

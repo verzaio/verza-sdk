@@ -1,8 +1,5 @@
-import {useCamera, useEngine, usePlayerId, useStreamedPlayer} from '@verza/sdk';
-import {EngineContext} from 'engine/frameworks/react/EngineProvider';
+import {useCamera, useEngine} from '@verza/sdk';
 import {useEffect} from 'react';
-import {Vector3} from 'three';
-import {transpileModule} from 'typescript';
 
 const END_TRANSITION_ID = 'end-transition';
 
