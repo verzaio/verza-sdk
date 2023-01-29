@@ -1,3 +1,7 @@
+import PlayerManager from 'engine/managers/entities/players/player/player.manager';
+
+import {PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
+
 import type {EntityType} from '../enums/entities.enums';
 import {CameraMode} from './camera.types';
 import {ChunkIndex} from './chunks.types';
@@ -92,6 +96,10 @@ export type SizeProps = {
 };
 
 export type ScriptEventMap = {
+  /* messenger */
+  onRegister: (eventName: string) => void;
+  onUnregister: (eventName: string) => void;
+
   /* engine */
   onSetPlayerId: (playerId: number) => void;
 
@@ -128,15 +136,22 @@ export type ScriptEventMap = {
   onHide: () => void;
 
   /* players */
+  onPlayerUpdate: (
+    entityId: number,
+    update: PlayerPacketDto | PlayerPacketUpdateDto,
+  ) => void;
+
   onPlayerSetName: (playerId: number, name: string) => void;
 
-  onPlayerSetState: (playerId: number, state: PlayerState) => void;
-
-  onPlayerCreate: (playerId: number, name: string, streamed?: boolean) => void;
+  onPlayerCreate: (
+    playerId: number,
+    data?: PlayerManager['data'],
+    streamed?: boolean,
+  ) => void;
 
   onPlayerDestroy: (playerId: number) => void;
 
-  onPlayerStreamIn: (playerId: number) => void;
+  onPlayerStreamIn: (playerId: number, data?: PlayerManager['data']) => void;
 
   onPlayerStreamOut: (playerId: number) => void;
 };

@@ -44,6 +44,8 @@ class EngineManager {
 
   syncPlayers = true;
 
+  syncPlayerUpdates = true;
+
   private _binded = false;
 
   /* accessors */

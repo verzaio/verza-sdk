@@ -39,7 +39,7 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
     return this.entitiesMap.get(id)!;
   }
 
-  create(id: string | number, data: T['data']) {
+  create(id: string | number, data?: T['data']) {
     let entity: T = null!;
 
     entity = this.get(id);
@@ -94,9 +94,13 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
     this.events.emit('onDestroy', entity);
   }
 
-  streamIn(entity: T) {
+  streamIn(entity: T, data?: T['data']) {
     if (entity?.handle) {
       return;
+    }
+
+    if (data) {
+      Object.assign(entity.data, data);
     }
 
     // create handle
