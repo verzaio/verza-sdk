@@ -1,8 +1,8 @@
 import {PlayerPacketUpdateDto} from 'types/Dto';
 
 import {
-  CameraConfig,
-  CameraDistance,
+  PlayerCameraConfig,
+  PlayerCameraDistance,
   PlayerState,
 } from '../types/players.types';
 
@@ -49,7 +49,10 @@ export const PLAYER_STATE_PACKET_KEYS: (keyof PlayerPacketUpdateDto)[] = [
   'v',
 ];
 
-export const CAMERA_CONFIGS: Record<CameraDistance, CameraConfig> = {
+export const PLAYER_CAMERA_CONFIGS: Record<
+  PlayerCameraDistance,
+  PlayerCameraConfig
+> = {
   short: {
     distance: 1, // 2.1
     height: 1.6,

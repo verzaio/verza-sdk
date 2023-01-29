@@ -21,9 +21,11 @@
         "groups": [
           ["/scss$/"],
 
-          ["/^engine/utils/"],
           ["/^engine/definitions/"],
           ["/^engine/frameworks/"],
+          ["/^engine/managers/"],
+          ["/^engine/utils/"],
+          ["/^engine/generated/"],
 
           ["parent", "sibling", "index"]
         ],

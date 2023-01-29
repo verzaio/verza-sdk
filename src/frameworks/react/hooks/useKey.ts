@@ -44,7 +44,6 @@ const useKey = (
         if (!options?.ignoreActiveInput && engine.ui.isActiveInput) {
           return;
         }
-        return;
       }
 
       // check matches

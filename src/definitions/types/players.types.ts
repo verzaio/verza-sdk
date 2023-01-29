@@ -1,7 +1,7 @@
+import type {CharacterDto} from 'types/Dto';
+
 import type {ANIMATIONS} from 'engine/definitions/constants/animations.constants';
 import type {VectorArray} from 'engine/definitions/types/world.types';
-
-import type {CharacterDto} from 'types/Dto';
 
 import type {PlayerStateEnum} from '../enums/players.enums';
 
@@ -42,9 +42,9 @@ export type PlayerDataProps = {
   character?: CharacterDto;
 };
 
-export type CameraDistance = 'short' | 'normal' | 'long';
+export type PlayerCameraDistance = 'short' | 'normal' | 'long';
 
-export type CameraConfig = {
+export type PlayerCameraConfig = {
   distance: number;
   height: number;
   headPitch: number;

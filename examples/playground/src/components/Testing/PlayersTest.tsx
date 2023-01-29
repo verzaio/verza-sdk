@@ -6,8 +6,6 @@ const PlayersTest = () => {
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
-      <br />
-
       <button
         onClick={() => {
           player.setPosition(player.location.translateZ(1).position, true);
@@ -45,8 +43,6 @@ const PlayersTest = () => {
         }}>
         player.setName
       </button>
-
-      <br />
     </div>
   );
 };

@@ -1,9 +1,9 @@
-import PlayerManager from 'engine/managers/entities/players/player/player.manager';
-
 import {PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
 
+import PlayerManager from 'engine/managers/entities/players/player/player.manager';
+
 import type {EntityType} from '../enums/entities.enums';
-import {CameraMode} from './camera.types';
+import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {ChunkIndex} from './chunks.types';
 import {CommandInfo} from './commands.types';
 import type {
@@ -29,8 +29,12 @@ export type EngineEventMap = {
   onDestroy: () => void;
 };
 
-export type GameCameraEventMap = {
-  onCameraModeChange: (mode: CameraMode) => void;
+export type CameraEventMap = {
+  onCameraModeChange: (mode: CameraModeType, instant?: boolean) => void;
+
+  onCameraTransitionStart: (id?: number | string) => void;
+
+  onCameraTransitionEnd: (id?: number | string) => void;
 };
 
 export type ChunkEventMap = {
@@ -175,4 +179,17 @@ export type ScriptEventMap = {
   ) => void;
 
   setPlayerCameraBehind: (playerId: number) => void;
+
+  /* camera */
+  onCameraModeChange: (mode: CameraModeType, instant?: boolean) => void;
+
+  setCameraTransitions: (transitions: CameraTransition[]) => void;
+
+  setCameraTransition: (transition: CameraTransition) => void;
+
+  setCameraPosition: (position: CameraPosition) => void;
+
+  onCameraTransitionStart: (id?: number | string) => void;
+
+  onCameraTransitionEnd: (id?: number | string) => void;
 };

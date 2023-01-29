@@ -2,6 +2,7 @@ import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants'
 import {LocalEngineEvents} from 'engine/definitions/local/constants/engine.constants';
 import {EventKey, ScriptEventMap} from 'engine/definitions/types/events.types';
 import {isValidEnv} from 'engine/utils/misc';
+import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
@@ -17,6 +18,8 @@ class EngineManager {
   chat: ChatManager;
 
   commands: CommandsManager;
+
+  camera: CameraManager;
 
   messenger = new MessengerManager<ScriptEventMap>('sender');
 
@@ -70,6 +73,8 @@ class EngineManager {
     this.chat = new ChatManager(this);
 
     this.commands = new CommandsManager(this);
+
+    this.camera = new CameraManager(this);
 
     // set renders
     Object.entries(ENTITIES_RENDERS).forEach(([key, value]) => {

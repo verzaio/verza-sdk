@@ -1,6 +1,7 @@
 import {Command, CommandParam, useCommand, useEngine} from '@verza/sdk';
 
 import {useEffect} from 'react';
+import CameraTest from './CameraTest';
 import InterfaceTest from './InterfaceTest';
 import PlayersTest from './PlayersTest';
 
@@ -9,9 +10,9 @@ const Testing = () => {
 
   useEffect(() => {
     engine.ui.setSize({
-      height: '400px',
+      height: '700px',
       width: '150px',
-      top: '10vw',
+      top: '5vw',
       right: '10vh',
     });
     engine.ui.show();
@@ -36,6 +37,8 @@ const Testing = () => {
   return (
     <>
       <PlayersTest />
+
+      <CameraTest />
 
       <InterfaceTest />
     </>

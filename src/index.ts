@@ -19,9 +19,10 @@ import useOnTicks from 'engine/frameworks/react/hooks/useOnTicks';
 import useKey from 'engine/frameworks/react/hooks/useKey';
 import useGameKey from 'engine/frameworks/react/hooks/useGameKey';
 import useControllerProp from 'engine/frameworks/react/hooks/useControllerProp';
-import useCommand from 'engine/frameworks/react/hooks/useCommand';
 
+import useCamera from 'engine/frameworks/react/hooks/useCamera';
 import useChat from 'engine/frameworks/react/hooks/useChat';
+import useCommand from 'engine/frameworks/react/hooks/useCommand';
 import useUI, {
   useCursorLock,
   useInterfaces,
@@ -67,6 +68,7 @@ export {
   useCommand,
   useChat,
   useUI,
+  useCamera,
   useCursorLock,
   useInterfaces,
   usePlayerId,

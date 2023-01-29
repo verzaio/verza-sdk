@@ -1,5 +1,7 @@
 import type {ComponentType} from 'react';
 
+import type {BasicObjectDto, ObjectMetadataDto} from 'types/Dto';
+
 import type {PlayerDataProps} from 'engine/definitions/types/players.types';
 import type {
   VectorArray,
@@ -16,8 +18,6 @@ import ObjectsManager from 'engine/managers/entities/objects/objects.manager';
 import PlayerHandleManager from 'engine/managers/entities/players/player/player-handle.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 import PlayersManager from 'engine/managers/entities/players/players.manager';
-
-import type {BasicObjectDto, ObjectMetadataDto} from 'types/Dto';
 
 import type {EntityType} from '../enums/entities.enums';
 
