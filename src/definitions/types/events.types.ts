@@ -1,5 +1,5 @@
 import type {EntityType} from '../enums/entities.enums';
-import {ControlType} from './camera.types';
+import {CameraMode} from './camera.types';
 import {ChunkIndex} from './chunks.types';
 import {CommandInfo} from './commands.types';
 import type {
@@ -22,8 +22,10 @@ export type EngineEventMap = {
   onReady: () => void;
 
   onDestroy: () => void;
+};
 
-  onControlChange: (type: ControlType) => void;
+export type GameCameraEventMap = {
+  onCameraModeChange: (mode: CameraMode) => void;
 };
 
 export type ChunkEventMap = {
@@ -90,15 +92,12 @@ export type SizeProps = {
 };
 
 export type ScriptEventMap = {
-  /* messenger */
-  onRegister: (event: string) => void;
-
-  onUnregister: (event: string) => void;
-
   /* engine */
   onSetPlayerId: (playerId: number) => void;
 
   onFrame: (delta: number) => void;
+
+  onSynced: () => void;
 
   /* chat */
   onChat: (text: string) => void;
@@ -127,4 +126,17 @@ export type ScriptEventMap = {
   onShow: () => void;
 
   onHide: () => void;
+
+  /* players */
+  onPlayerSetName: (playerId: number, name: string) => void;
+
+  onPlayerSetState: (playerId: number, state: PlayerState) => void;
+
+  onPlayerCreate: (playerId: number, name: string, streamed?: boolean) => void;
+
+  onPlayerDestroy: (playerId: number) => void;
+
+  onPlayerStreamIn: (playerId: number) => void;
+
+  onPlayerStreamOut: (playerId: number) => void;
 };

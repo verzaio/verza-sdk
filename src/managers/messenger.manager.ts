@@ -7,6 +7,8 @@ type Merge<A, B> = A extends void ? B : A & B;
 type MessengerManagerMap = {
   onConnected: () => void;
 
+  onLoad: () => void;
+
   onRegister: (event: string) => void;
 
   onUnregister: (event: string) => void;
@@ -111,8 +113,6 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       type: TYPE_HANDSHAKE_CONNECTION,
       action: ACTION_ACCEPT,
     });
-    //
-    //
   }
 
   private _disconnectPort() {
@@ -206,6 +206,8 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     this.connected = true;
 
     this.events.emitRegisteredEvents();
+
+    this.emit('onLoad');
   }
 
   private _onMessage = (message: MessageEvent) => {
@@ -357,7 +359,7 @@ class MessengerEvents<
   emitRegisteredEvents() {
     if (!this.registerEvents) return;
 
-    console.log(this.registeredEvents);
+    //console.log(this.registeredEvents);
 
     this.registeredEvents.forEach(eventName => {
       this._messenger.emit('onRegister', [eventName]);

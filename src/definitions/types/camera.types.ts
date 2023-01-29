@@ -1,1 +1,1 @@
-export type ControlType = 'player' | 'world';
+export type CameraMode = 'player' | 'world';

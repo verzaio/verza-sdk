@@ -21,6 +21,22 @@ import useGameKey from 'engine/frameworks/react/hooks/useGameKey';
 import useControllerProp from 'engine/frameworks/react/hooks/useControllerProp';
 import useCommand from 'engine/frameworks/react/hooks/useCommand';
 
+import useChat from 'engine/frameworks/react/hooks/useChat';
+import useUI, {
+  useCursorLock,
+  useInterfaces,
+} from 'engine/frameworks/react/hooks/useUI';
+
+import usePlayerId from 'engine/frameworks/react/hooks/usePlayerId';
+
+import useObjects from 'engine/frameworks/react/hooks/useObjects';
+import usePlayers from 'engine/frameworks/react/hooks/usePlayers';
+
+import useObject from 'engine/frameworks/react/hooks/useObject';
+import usePlayer from 'engine/frameworks/react/hooks/usePlayer';
+import useStreamedPlayer from 'engine/frameworks/react/hooks/useStreamedPlayer';
+import useStreamedObject from 'engine/frameworks/react/hooks/useStreamedObject';
+
 export {
   /* engine */
   EngineManager,
@@ -49,4 +65,15 @@ export {
   useGameKey,
   useControllerProp,
   useCommand,
+  useChat,
+  useUI,
+  useCursorLock,
+  useInterfaces,
+  usePlayerId,
+  useObjects,
+  usePlayers,
+  useObject,
+  usePlayer,
+  useStreamedPlayer,
+  useStreamedObject,
 };

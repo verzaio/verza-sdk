@@ -2,6 +2,7 @@ import {Command, CommandParam, useCommand, useEngine} from '@verza/sdk';
 
 import {useEffect} from 'react';
 import InterfaceTest from './InterfaceTest';
+import PlayersTest from './PlayersTest';
 
 const Testing = () => {
   const engine = useEngine();
@@ -32,7 +33,13 @@ const Testing = () => {
       console.log('Executing abc!!');
     });
 
-  return <InterfaceTest />;
+  return (
+    <>
+      <PlayersTest />
+
+      <InterfaceTest />
+    </>
+  );
 };
 
 export default Testing;

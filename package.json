@@ -31,13 +31,16 @@
   "homepage": "https://github.com/verzaio/verza-sdk#readme",
   "peerDependencies": {
     "react": ">=18.0",
-    "react-dom": ">=18.0",
-    "three": ">=0.148"
+    "react-dom": ">=18.0"
   },
   "dependencies": {
-    "events": "^3.3.0"
+    "events": "^3.3.0",
+    "three": "^0.149.0"
   },
   "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
     "react-dom": {
       "optional": true
     }

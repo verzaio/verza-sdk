@@ -12,7 +12,7 @@ const EngineProvider = ({
   engine,
   children,
 }: PropsWithChildren<EngineProviderProps>) => {
-  const connected = useControllerProp(engine.controller, 'connected');
+  const synced = useControllerProp(engine.controller, 'synced');
 
   // handle engine creation
   useEffect(() => {
@@ -23,7 +23,7 @@ const EngineProvider = ({
     };
   }, [engine]);
 
-  if (!connected) return null;
+  if (!synced) return null;
 
   return (
     <EngineContext.Provider key={Math.random()} value={engine}>

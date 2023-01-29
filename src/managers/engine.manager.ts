@@ -1,8 +1,12 @@
-import {ScriptEventMap} from 'engine/definitions/types/events.types';
+import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
+import {LocalEngineEvents} from 'engine/definitions/local/constants/engine.constants';
+import {EventKey, ScriptEventMap} from 'engine/definitions/types/events.types';
 import {isValidEnv} from 'engine/utils/misc';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
+import ObjectsManager from './entities/objects/objects.manager';
+import PlayersManager from './entities/players/players.manager';
 import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import UIManager from './ui.manager';
@@ -16,17 +20,43 @@ class EngineManager {
 
   messenger = new MessengerManager<ScriptEventMap>('sender');
 
+  eventsManager: Map<EventKey, EventsManager> = new Map();
+
   events = new EngineEvents(this);
 
   controller = new ControllerManager({
     connected: false,
+
+    synced: false,
+
+    playerId: null! as number,
   });
+
+  entities: {
+    [key in keyof typeof ENTITIES_RENDERS]: InstanceType<
+      (typeof ENTITIES_RENDERS)[key]['EntitiesManager']
+    >;
+  } = {
+    player: new PlayersManager(this),
+
+    object: new ObjectsManager(this),
+  };
+
+  syncPlayers = true;
 
   private _binded = false;
 
   /* accessors */
   get connected() {
     return this.controller.data.connected;
+  }
+
+  get playerId() {
+    return this.controller.data.playerId;
+  }
+
+  get player() {
+    return this.entities.player.get(this.playerId);
   }
 
   constructor() {
@@ -38,6 +68,14 @@ class EngineManager {
     this.chat = new ChatManager(this);
 
     this.commands = new CommandsManager(this);
+
+    // set renders
+    Object.entries(ENTITIES_RENDERS).forEach(([key, value]) => {
+      this.entities[key as keyof typeof ENTITIES_RENDERS].Handler =
+        value.EntityHandle;
+      this.entities[key as keyof typeof ENTITIES_RENDERS].Manager =
+        value.EntityManager;
+    });
   }
 
   connect() {
@@ -50,27 +88,42 @@ class EngineManager {
     this._binded = true;
 
     // binds
+    if (this.syncPlayers) {
+      this.entities.player.bind();
+    }
+
     this.ui.bind();
 
     // events
-    this.messenger.events.on('onConnected', this._onConnected);
+    this.messenger.events.on('onConnected', () => {
+      this.controller.set('connected', true);
+    });
+
+    // events
+    this.messenger.events.on('onSynced', () => {
+      this.controller.set('synced', true);
+    });
+
+    // sync player id
+    this.messenger.events.on('onSetPlayerId', ({data: [playerId]}) => {
+      this.controller.data.playerId = playerId;
+    });
 
     // connect it
     this.messenger.connect(window.top!);
   }
-
-  private _onConnected = () => {
-    this.controller.set('connected', true);
-  };
 
   destroy() {
     if (!this._binded) return;
 
     this.controller.set('connected', false);
 
+    this.controller.set('synced', false);
+
     // destroy
     this.messenger.destroy();
     this.commands.destroy();
+    this.entities.player.unload();
 
     // remove all events
     this.events.removeAllListeners();
@@ -94,7 +147,10 @@ class EngineEvents<
   }
 
   on<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
-    this._bind(eventName);
+    // ignore local events
+    if (!LocalEngineEvents.includes(eventName as keyof ScriptEventMap)) {
+      this._bind(eventName);
+    }
 
     return super.on(eventName, listener);
   }
