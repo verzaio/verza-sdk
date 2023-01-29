@@ -9,7 +9,7 @@ const Testing = () => {
 
   useEffect(() => {
     engine.ui.setSize({
-      height: '150px',
+      height: '400px',
       width: '150px',
       top: '10vw',
       right: '10vh',

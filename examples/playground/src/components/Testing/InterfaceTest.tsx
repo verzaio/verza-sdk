@@ -16,7 +16,7 @@ const InterfaceTest = () => {
 
   return (
     <div onClick={onPressed} style={{display: 'flex'}}>
-      <button>Hello moto</button>
+      <button>Toggle Key Y</button>
     </div>
   );
 };

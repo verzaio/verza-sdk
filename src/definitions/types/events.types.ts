@@ -12,6 +12,7 @@ import type {
   CharacterGender,
 } from './players.types';
 import {KeyInfo} from './ui.types';
+import {QuaternionArray, VectorArray} from './world.types';
 
 export type EventKey =
   | 'ENGINE'
@@ -141,8 +142,6 @@ export type ScriptEventMap = {
     update: PlayerPacketDto | PlayerPacketUpdateDto,
   ) => void;
 
-  onPlayerSetName: (playerId: number, name: string) => void;
-
   onPlayerCreate: (
     playerId: number,
     data?: PlayerManager['data'],
@@ -154,4 +153,26 @@ export type ScriptEventMap = {
   onPlayerStreamIn: (playerId: number, data?: PlayerManager['data']) => void;
 
   onPlayerStreamOut: (playerId: number) => void;
+
+  onPlayerSetName: (playerId: number, name: string) => void;
+
+  setPlayerPosition: (
+    playerId: number,
+    position: VectorArray,
+    instant?: boolean,
+  ) => void;
+
+  setPlayerRotation: (
+    playerId: number,
+    rotation: QuaternionArray | VectorArray,
+    instant: boolean,
+  ) => void;
+
+  setPlayerFacingAngle: (
+    playerId: number,
+    degrees: number,
+    instant: boolean,
+  ) => void;
+
+  setPlayerCameraBehind: (playerId: number) => void;
 };
