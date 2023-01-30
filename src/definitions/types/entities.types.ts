@@ -23,7 +23,7 @@ import type {EntityType} from '../enums/entities.enums';
 
 export type EntityDrawDistance = Required<ObjectMetadataDto>['d'];
 
-export type EntityPhysics = Required<ObjectMetadataDto>['p'];
+export type EntityCollision = Required<ObjectMetadataDto>['p'];
 
 export type CreateEntityProps = {
   remote?: boolean;

@@ -10,7 +10,7 @@ import Player from 'engine/world/entities/Player/Player';
 import {
   EntitiesRenders,
   EntityDrawDistance,
-  EntityPhysics,
+  EntityCollision,
 } from '../types/entities.types';
 
 export const ENTITIES_RENDERS: EntitiesRenders = {
@@ -29,8 +29,8 @@ export const ENTITIES_RENDERS: EntitiesRenders = {
   },
 };
 
-export const ENTITY_PHYSICS: EntityPhysics[] = [
-  'fixed',
+export const ENTITY_COLLISIONS: EntityCollision[] = [
+  'static',
   'kinematic',
   'dynamic',
 ];

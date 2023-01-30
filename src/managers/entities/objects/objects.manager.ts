@@ -66,7 +66,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     // load
     this._load();
 
-    const {position, rotation, data, drawDistance, physics, scale, shadows} =
+    const {position, rotation, data, drawDistance, collision, scale, shadows} =
       props;
 
     const object = this.create(props.id!, {
@@ -85,7 +85,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       m: {
         d: drawDistance ?? 'high',
 
-        p: physics,
+        p: collision,
 
         s: scale,
 

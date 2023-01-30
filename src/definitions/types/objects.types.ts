@@ -2,7 +2,7 @@ import {Euler, Quaternion, Vector3} from 'three';
 
 import type {BasicObjectDto, ObjectMetadataDto} from 'types/Dto';
 
-import {EntityDrawDistance, EntityPhysics} from './entities.types';
+import {EntityDrawDistance, EntityCollision} from './entities.types';
 import {QuaternionArray, Vector3Array} from './world.types';
 
 export type ObjectType = BasicObjectDto['t'];
@@ -16,7 +16,7 @@ export type CreateObjectProps<T extends ObjectType> = {
 
   drawDistance?: EntityDrawDistance;
 
-  physics?: EntityPhysics;
+  collision?: EntityCollision;
 
   scale?: number;
 

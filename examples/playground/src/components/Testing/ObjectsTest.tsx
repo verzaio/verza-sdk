@@ -25,7 +25,7 @@ const ObjectsTest = () => {
       },
       {
         position: [1, 2, 10],
-        physics: 'fixed',
+        collision: 'static',
       },
     );
   };
@@ -51,7 +51,7 @@ const ObjectsTest = () => {
       'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf',
       {
         position: [1, 2, 10],
-        physics: 'fixed',
+        collision: 'static',
       },
     );
   };
@@ -107,10 +107,18 @@ const ObjectsTest = () => {
       <button onClick={() => destroy()}>objects.destroy</button>
 
       <Box
+        box={{w: 1, h: 1, d: 1}}
+        props={{
+          position: [-2, 0.5, 2],
+          collision: 'static',
+        }}
+      />
+
+      <Box
         box={{w: 2, h: 2, d: 2}}
         props={{
           position: [-8, 1, 20],
-          physics: 'fixed',
+          collision: 'static',
         }}
       />
 
@@ -122,7 +130,7 @@ const ObjectsTest = () => {
         color="blue"
         props={{
           position: [-8, 1, 20],
-          physics: 'fixed',
+          collision: 'static',
         }}
       />
 
