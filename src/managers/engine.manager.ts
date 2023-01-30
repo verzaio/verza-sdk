@@ -96,7 +96,7 @@ class EngineManager {
 
     // binds
     if (this.syncPlayers) {
-      this.entities.player.bind();
+      this.entities.player.load();
     }
 
     this.ui.bind();
@@ -131,6 +131,7 @@ class EngineManager {
     this.messenger.destroy();
     this.commands.destroy();
     this.entities.player.unload();
+    this.entities.object.unload();
 
     // remove all events
     this.events.removeAllListeners();

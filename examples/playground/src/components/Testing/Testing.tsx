@@ -3,6 +3,7 @@ import {CommandParam, useCommand, useEngine} from '@verza/sdk';
 import {useEffect} from 'react';
 import CameraTest from './CameraTest';
 import InterfaceTest from './InterfaceTest';
+import ObjectsTest from './ObjectsTest';
 import PlayersTest from './PlayersTest';
 
 const Testing = () => {
@@ -39,6 +40,8 @@ const Testing = () => {
       <PlayersTest />
 
       <CameraTest />
+
+      <ObjectsTest />
 
       <InterfaceTest />
     </>

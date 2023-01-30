@@ -23,7 +23,7 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     super(EntityType.player, engine);
   }
 
-  bind() {
+  load() {
     if (this._binded) return;
 
     this._binded = true;
@@ -38,7 +38,7 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
       );
     }
 
-    this._messenger.events.on('onPlayerSetName', ({data: [playerId, name]}) => {
+    this._messenger.events.on('setPlayerName', ({data: [playerId, name]}) => {
       this.engine.entities.player.get(playerId).data.name = name;
     });
 

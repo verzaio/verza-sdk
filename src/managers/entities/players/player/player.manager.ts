@@ -42,7 +42,7 @@ class PlayerManager extends EntityManager<
   }
 
   setName(name: string) {
-    this._messenger.emit('onPlayerSetName', [this.id, name]);
+    this._messenger.emit('setPlayerName', [this.id, name]);
   }
 
   setPosition(position: Vector3, instant = true) {

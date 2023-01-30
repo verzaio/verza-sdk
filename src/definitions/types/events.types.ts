@@ -1,4 +1,4 @@
-import {PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
+import {ObjectBoxDto, PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
 
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
@@ -6,6 +6,7 @@ import type {EntityType} from '../enums/entities.enums';
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {ChunkIndex} from './chunks.types';
 import {CommandInfo} from './commands.types';
+import {CreateObjectProps} from './objects.types';
 import type {
   PlayerControls,
   PlayerState,
@@ -158,7 +159,7 @@ export type ScriptEventMap = {
 
   onPlayerStreamOut: (playerId: number) => void;
 
-  onPlayerSetName: (playerId: number, name: string) => void;
+  setPlayerName: (playerId: number, name: string) => void;
 
   setPlayerPosition: (
     playerId: number,
@@ -192,4 +193,24 @@ export type ScriptEventMap = {
   onCameraTransitionStart: (id?: number | string) => void;
 
   onCameraTransitionEnd: (id?: number | string) => void;
+
+  /* objects */
+  createBox: (box: ObjectBoxDto, props?: CreateObjectProps<'box'>) => void;
+
+  createLine: (
+    points: VectorArray[],
+    color?: string,
+    props?: CreateObjectProps<'line'>,
+  ) => void;
+
+  onCreateGltf: (url: string, props?: CreateObjectProps<'gltf'>) => void;
+
+  setObjectPosition: (objectId: string, position: VectorArray) => void;
+
+  setObjectRotation: (
+    objectId: string,
+    rotation: QuaternionArray | VectorArray,
+  ) => void;
+
+  destroyObject: (objectId: string) => void;
 };

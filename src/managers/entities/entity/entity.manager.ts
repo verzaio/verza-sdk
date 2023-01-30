@@ -43,7 +43,7 @@ class EntityManager<
   }
 
   get data(): T['data'] {
-    return this.entity.data ?? {};
+    return this.entity.data;
   }
 
   get location() {

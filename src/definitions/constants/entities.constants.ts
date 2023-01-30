@@ -7,7 +7,11 @@ import PlayersManager from 'engine/managers/entities/players/players.manager';
 import Object from 'engine/world/entities/Object/Object';
 import Player from 'engine/world/entities/Player/Player';
 
-import {EntitiesRenders} from '../types/entities.types';
+import {
+  EntitiesRenders,
+  EntityDrawDistance,
+  EntityPhysics,
+} from '../types/entities.types';
 
 export const ENTITIES_RENDERS: EntitiesRenders = {
   player: {
@@ -24,3 +28,11 @@ export const ENTITIES_RENDERS: EntitiesRenders = {
     EntityHandle: ObjectHandleManager,
   },
 };
+
+export const ENTITY_PHYSICS: EntityPhysics[] = ['fixed', 'dynamic'];
+
+export const ENTITY_DRAW_DISTANCES: EntityDrawDistance[] = [
+  'low',
+  'mid',
+  'high',
+];

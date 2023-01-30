@@ -16,7 +16,7 @@ const CameraTest = () => {
   }, [engine, camera]);
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+    <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
       <br />
 
       <button

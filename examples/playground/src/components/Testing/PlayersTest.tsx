@@ -5,7 +5,7 @@ const PlayersTest = () => {
   const player = useStreamedPlayer(usePlayerId());
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+    <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
       <button
         onClick={() => {
           player.setPosition(player.location.translateZ(1).position, true);

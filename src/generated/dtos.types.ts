@@ -476,7 +476,7 @@ export interface ObjectLineDto {
 
 export interface ObjectMetadataDto {
   /** physics */
-  p?: 'auto' | 'none';
+  p?: 'fixed' | 'dynamic';
   /** draw distance */
   d?: 'low' | 'mid' | 'high';
   /**
@@ -522,7 +522,7 @@ export interface ChunkPacketDto {
 }
 
 export interface ChunksDummyFiltersDto {
-  physics?: 'auto' | 'none';
+  physics?: 'fixed' | 'dynamic';
   draw_distance?: 'low' | 'mid' | 'high';
   shadows?: boolean;
 }

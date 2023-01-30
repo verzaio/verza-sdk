@@ -15,9 +15,12 @@ const InterfaceTest = () => {
   useKey('KeyY', onPressed);
 
   return (
-    <div onClick={onPressed} style={{display: 'flex'}}>
-      <button>Toggle Key Y</button>
-    </div>
+    <>
+      <br />
+      <div onClick={onPressed} style={{display: 'flex'}}>
+        <button>Toggle Key Y</button>
+      </div>
+    </>
   );
 };
 
