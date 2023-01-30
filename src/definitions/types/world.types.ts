@@ -1,4 +1,4 @@
-export type VectorArray = [x: number, y: number, z: number];
+export type Vector3Array = [x: number, y: number, z: number];
 
 export type QuaternionArray = [x: number, y: number, z: number, w: number];
 

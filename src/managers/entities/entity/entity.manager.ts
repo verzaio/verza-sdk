@@ -112,7 +112,13 @@ class EntityManager<
 
       // rotation
       if (this.data.rotation) {
-        this.location.quaternion.set(...this.data.rotation);
+        // QuaternionArray
+        if (this.data.rotation.length === 4) {
+          this.location.quaternion.set(...this.data.rotation);
+        } else {
+          // Vector3Array
+          this.location.rotation.set(...this.data.rotation);
+        }
       }
     });
   }

@@ -4,7 +4,7 @@ import type {BasicObjectDto, ObjectMetadataDto} from 'types/Dto';
 
 import type {PlayerDataProps} from 'engine/definitions/types/players.types';
 import type {
-  VectorArray,
+  Vector3Array,
   QuaternionArray,
   WorldPositionRotation,
 } from 'engine/definitions/types/world.types';
@@ -28,9 +28,9 @@ export type EntityPhysics = Required<ObjectMetadataDto>['p'];
 export type CreateEntityProps = {
   remote?: boolean;
 
-  position?: VectorArray;
+  position?: Vector3Array;
 
-  rotation?: QuaternionArray;
+  rotation?: QuaternionArray | Vector3Array;
 
   drawDistance?: EntityDrawDistance;
 

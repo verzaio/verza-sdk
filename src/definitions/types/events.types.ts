@@ -13,7 +13,7 @@ import type {
   CharacterGender,
 } from './players.types';
 import {KeyInfo} from './ui.types';
-import {QuaternionArray, VectorArray} from './world.types';
+import {QuaternionArray, Vector3Array} from './world.types';
 
 export type EventKey =
   | 'ENGINE'
@@ -163,13 +163,13 @@ export type ScriptEventMap = {
 
   setPlayerPosition: (
     playerId: number,
-    position: VectorArray,
+    position: Vector3Array,
     instant?: boolean,
   ) => void;
 
   setPlayerRotation: (
     playerId: number,
-    rotation: QuaternionArray | VectorArray,
+    rotation: QuaternionArray | Vector3Array,
     instant: boolean,
   ) => void;
 
@@ -198,18 +198,18 @@ export type ScriptEventMap = {
   createBox: (box: ObjectBoxDto, props?: CreateObjectProps<'box'>) => void;
 
   createLine: (
-    points: VectorArray[],
+    points: Vector3Array[],
     color?: string,
     props?: CreateObjectProps<'line'>,
   ) => void;
 
   onCreateGltf: (url: string, props?: CreateObjectProps<'gltf'>) => void;
 
-  setObjectPosition: (objectId: string, position: VectorArray) => void;
+  setObjectPosition: (objectId: string, position: Vector3Array) => void;
 
   setObjectRotation: (
     objectId: string,
-    rotation: QuaternionArray | VectorArray,
+    rotation: QuaternionArray | Vector3Array,
   ) => void;
 
   destroyObject: (objectId: string) => void;

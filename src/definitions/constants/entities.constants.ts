@@ -29,7 +29,11 @@ export const ENTITIES_RENDERS: EntitiesRenders = {
   },
 };
 
-export const ENTITY_PHYSICS: EntityPhysics[] = ['fixed', 'dynamic'];
+export const ENTITY_PHYSICS: EntityPhysics[] = [
+  'fixed',
+  'kinematic',
+  'dynamic',
+];
 
 export const ENTITY_DRAW_DISTANCES: EntityDrawDistance[] = [
   'low',

@@ -57,6 +57,11 @@ const CameraTest = () => {
               duration: 1500,
             },
             {
+              to: [15, 8, 30],
+              lookAt: [0, 0, 0],
+              duration: 3000,
+            },
+            {
               id: END_TRANSITION_ID,
               to: [0, 2, 5],
               lookAt: [0, 1, 0],

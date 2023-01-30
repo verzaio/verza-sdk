@@ -1,7 +1,7 @@
 import {ObjectEntity} from 'engine/definitions/types/entities.types';
 import {
   QuaternionArray,
-  VectorArray,
+  Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
 import {Euler, Quaternion, Vector3} from 'three';
@@ -34,52 +34,45 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.restorePosition();
   }
 
-  setPosition(position: Vector3 | VectorArray) {
-    // VectorArray
+  setPosition(position: Vector3 | Vector3Array) {
+    // Vector3Array
     if (Array.isArray(position)) {
       this.location.position.set(...position);
-      this._messenger.emit('setObjectPosition', [this.id, position]);
-      return;
+    } else {
+      // Vector3
+      this.location.position.copy(position);
     }
 
-    // Vector3
-    this.location.position.copy(position);
+    // emit
     this._messenger.emit('setObjectPosition', [
       this.id,
       this.location.position.toArray(),
     ]);
   }
 
-  setRotation(rotation: Quaternion | Euler | QuaternionArray | VectorArray) {
+  setRotation(rotation: Quaternion | Euler | QuaternionArray | Vector3Array) {
     if (Array.isArray(rotation)) {
-      // VectorArray
+      // Vector3Array
       if (rotation.length === 3) {
         this.location.rotation.set(...rotation);
-        this._messenger.emit('setObjectRotation', [this.id, rotation]);
-        return;
+      } else {
+        // QuaternionArray
+        this.location.quaternion.set(...rotation);
       }
-
-      // QuaternionArray
-      this.location.quaternion.set(...rotation);
-      this._messenger.emit('setObjectRotation', [this.id, rotation]);
-      return;
+    } else {
+      // Euler
+      if (rotation instanceof Euler) {
+        this.location.rotation.copy(rotation);
+      } else {
+        // Quaternion
+        this.location.quaternion.copy(rotation);
+      }
     }
 
-    // Euler
-    if (rotation instanceof Euler) {
-      this.location.rotation.copy(rotation);
-      this._messenger.emit('setObjectRotation', [
-        this.id,
-        [rotation.x, rotation.y, rotation.z],
-      ]);
-      return;
-    }
-
-    // Quaternion
-    this.location.quaternion.copy(rotation);
+    // emit
     this._messenger.emit('setObjectRotation', [
       this.id,
-      [rotation.x, rotation.y, rotation.z, rotation.w],
+      this.location.quaternion.toArray() as QuaternionArray,
     ]);
   }
 }

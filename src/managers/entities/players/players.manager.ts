@@ -4,7 +4,7 @@ import {EntityPacketAction} from 'engine/definitions/enums/networks.enums';
 import {PlayerState} from 'engine/definitions/types/players.types';
 import {
   QuaternionArray,
-  VectorArray,
+  Vector3Array,
 } from 'engine/definitions/types/world.types';
 import {PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
 
@@ -107,7 +107,7 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
 
     // position
     if (packet.p) {
-      player.location.position.set(...(packet.p as VectorArray));
+      player.location.position.set(...(packet.p as Vector3Array));
     }
 
     // rotation
@@ -117,12 +117,12 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
 
     // velocity
     if (packet.v) {
-      player.velocity.set(...(packet.v as VectorArray));
+      player.velocity.set(...(packet.v as Vector3Array));
     }
 
     // head position
     if (packet.h) {
-      player.events.emit('onHeadMove', packet.h as VectorArray);
+      player.events.emit('onHeadMove', packet.h as Vector3Array);
     }
   }
 

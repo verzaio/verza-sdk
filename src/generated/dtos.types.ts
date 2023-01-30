@@ -371,13 +371,13 @@ export interface PlayerPacketDto {
   c?: CharacterDto;
   /** player state */
   s?: number;
-  /** position | VectorArray */
+  /** position | Vector3Array */
   p?: number[];
   /** rotation | QuaternionArray */
   r?: number[];
-  /** head | VectorArray */
+  /** head | Vector3Array */
   h?: number[];
-  /** velocity | VectorArray */
+  /** velocity | Vector3Array */
   v?: number[];
 }
 
@@ -394,13 +394,13 @@ export interface PlayerPacketUpdateDto {
    * @max 5
    */
   s?: number;
-  /** position | VectorArray */
+  /** position | Vector3Array */
   p?: number[];
   /** rotation | QuaternionArray */
   r?: number[];
-  /** head | VectorArray */
+  /** head | Vector3Array */
   h?: number[];
-  /** velocity | VectorArray */
+  /** velocity | Vector3Array */
   v?: number[];
 }
 
@@ -463,7 +463,7 @@ export interface ObjectGltfDto {
 }
 
 export interface ObjectLinePointDto {
-  /** point | VectorArray */
+  /** point | Vector3Array */
   p: number[];
 }
 
@@ -476,7 +476,7 @@ export interface ObjectLineDto {
 
 export interface ObjectMetadataDto {
   /** physics */
-  p?: 'fixed' | 'dynamic';
+  p?: 'fixed' | 'kinematic' | 'dynamic';
   /** draw distance */
   d?: 'low' | 'mid' | 'high';
   /**
@@ -522,7 +522,7 @@ export interface ChunkPacketDto {
 }
 
 export interface ChunksDummyFiltersDto {
-  physics?: 'fixed' | 'dynamic';
+  physics?: 'fixed' | 'kinematic' | 'dynamic';
   draw_distance?: 'low' | 'mid' | 'high';
   shadows?: boolean;
 }
@@ -681,7 +681,7 @@ export interface ObjectDto {
 }
 
 export interface CreatePositionDto {
-  /** position | VectorArray */
+  /** position | Vector3Array */
   position: number[];
   /** position | QuaternionArray */
   rotation?: number[];
@@ -696,7 +696,7 @@ export interface CreateObjectDto {
 }
 
 export interface UpdatePositionDto {
-  /** position | VectorArray */
+  /** position | Vector3Array */
   position: number[];
   /** position | QuaternionArray */
   rotation?: number[];

@@ -1,11 +1,12 @@
-import {useObjects} from '@verza/sdk';
+import {Box, Gltf, Line, useFrame, useObjects} from '@verza/sdk';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {useEffect, useRef} from 'react';
-import {object} from 'zod';
 
 const ObjectsTest = () => {
   const objects = useObjects();
   const objectRef = useRef<ObjectManager>(null!);
+
+  const anotherOneRef = useRef<ObjectManager>(null!);
 
   const destroy = () => {
     if (objectRef.current) {
@@ -61,6 +62,16 @@ const ObjectsTest = () => {
     };
   }, [objects]);
 
+  useFrame(delta => {
+    if (!anotherOneRef.current) return;
+
+    anotherOneRef.current.location.rotateY(delta / 10);
+    anotherOneRef.current.setRotation(anotherOneRef.current.rotation);
+
+    anotherOneRef.current.location.translateX(delta / 5);
+    anotherOneRef.current.setPosition(anotherOneRef.current.position);
+  });
+
   return (
     <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
       <button
@@ -94,6 +105,32 @@ const ObjectsTest = () => {
       </button>
 
       <button onClick={() => destroy()}>objects.destroy</button>
+
+      <Box
+        box={{w: 2, h: 2, d: 2}}
+        props={{
+          position: [-8, 1, 20],
+          physics: 'fixed',
+        }}
+      />
+
+      <Line
+        points={[
+          [-10, 10, 10],
+          [20, 10, 20],
+        ]}
+        color="blue"
+        props={{
+          position: [-8, 1, 20],
+          physics: 'fixed',
+        }}
+      />
+
+      <Gltf
+        ref={anotherOneRef}
+        props={{position: [0, 1, 20]}}
+        url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf"
+      />
     </div>
   );
 };

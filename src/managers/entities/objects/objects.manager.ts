@@ -7,7 +7,7 @@ import {
 } from 'engine/definitions/types/objects.types';
 import {
   QuaternionArray,
-  VectorArray,
+  Vector3Array,
 } from 'engine/definitions/types/world.types';
 import {ObjectBoxDto} from 'types/Dto';
 
@@ -74,7 +74,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       t: type,
 
-      position: (position as VectorArray) ?? [0, 0, 0],
+      position: (position as Vector3Array) ?? [0, 0, 0],
 
       rotation: (rotation as QuaternionArray) ?? [0, 0, 0, 1],
 
@@ -114,7 +114,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   createLine(
-    points: VectorArray[],
+    points: Vector3Array[],
     color?: string,
     props: CreateObjectProps<'line'> = {},
   ) {

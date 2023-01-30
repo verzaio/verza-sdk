@@ -38,6 +38,10 @@ import usePlayer from 'engine/frameworks/react/hooks/usePlayer';
 import useStreamedPlayer from 'engine/frameworks/react/hooks/useStreamedPlayer';
 import useStreamedObject from 'engine/frameworks/react/hooks/useStreamedObject';
 
+import Box from 'engine/frameworks/react/components/objects/Box';
+import Gltf from 'engine/frameworks/react/components/objects/Gltf';
+import Line from 'engine/frameworks/react/components/objects/Line';
+
 export {
   /* engine */
   EngineManager,
@@ -78,4 +82,9 @@ export {
   usePlayer,
   useStreamedPlayer,
   useStreamedObject,
+
+  /* components */
+  Box,
+  Line,
+  Gltf,
 };
