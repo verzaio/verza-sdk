@@ -2,6 +2,8 @@ import {Box, Gltf, Line, useFrame, useObjects} from '@verza/sdk';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {useEffect, useRef} from 'react';
 
+// https://github.com/KhronosGroup/glTF-Sample-Models
+
 const ObjectsTest = () => {
   const objects = useObjects();
   const objectRef = useRef<ObjectManager>(null!);
@@ -65,11 +67,11 @@ const ObjectsTest = () => {
   useFrame(delta => {
     if (!anotherOneRef.current) return;
 
-    anotherOneRef.current.location.rotateY(delta / 10);
-    anotherOneRef.current.setRotation(anotherOneRef.current.rotation);
+    //anotherOneRef.current.location.rotateY(delta / 10);
+    //anotherOneRef.current.setRotation(anotherOneRef.current.rotation);
 
-    anotherOneRef.current.location.translateX(delta / 5);
-    anotherOneRef.current.setPosition(anotherOneRef.current.position);
+    //anotherOneRef.current.location.translateX(delta / 5);
+    //anotherOneRef.current.setPosition(anotherOneRef.current.position);
   });
 
   return (
@@ -106,18 +108,18 @@ const ObjectsTest = () => {
 
       <button onClick={() => destroy()}>objects.destroy</button>
 
+      {/* <Box
+        box={{w: 2, h: 2, d: 2, c: 'green'}}
+        props={{
+          position: [-8, 1, 20],
+          collision: 'static',
+        }}
+      /> */}
+
       <Box
         box={{w: 1, h: 1, d: 1}}
         props={{
           position: [-2, 0.5, 2],
-          collision: 'static',
-        }}
-      />
-
-      <Box
-        box={{w: 2, h: 2, d: 2}}
-        props={{
-          position: [-8, 1, 20],
           collision: 'static',
         }}
       />
@@ -136,9 +138,23 @@ const ObjectsTest = () => {
 
       <Gltf
         ref={anotherOneRef}
-        props={{position: [0, 1, 20]}}
+        props={{
+          position: [0, 1, 20],
+          collision: 'fixed',
+        }}
         url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf"
       />
+
+      {/*  <Gltf
+        props={{position: [0, 1, 10], collision: 'static'}}
+        url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Buggy/glTF-Binary/Buggy.glb"
+      /> */}
+      {/*  */}
+
+      {/* <Gltf
+        props={{position: [0, 1, 10], collision: 'static'}}
+        url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb"
+      /> */}
     </div>
   );
 };
