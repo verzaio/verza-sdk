@@ -1,13 +1,13 @@
 import {Euler, Quaternion, Vector3} from 'three';
 
-import type {BasicObjectDto, ObjectMetadataDto} from 'types/Dto';
+import type {ObjectDto, ObjectMetadataDto} from 'types/Dto';
 
 import {EntityDrawDistance, EntityCollision} from './entities.types';
 import {QuaternionArray, Vector3Array} from './world.types';
 
-export type ObjectType = BasicObjectDto['t'];
+export type ObjectType = ObjectDto['t'];
 
-export type CreateObjectProps<T extends ObjectType> = {
+export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   id?: string;
 
   position?: Vector3 | Vector3Array;
@@ -24,3 +24,13 @@ export type CreateObjectProps<T extends ObjectType> = {
 
   data?: ObjectMetadataDto[T];
 };
+
+export type CreateObjectPropsWithObjects<T extends ObjectType = ObjectType> =
+  CreateObjectProps<T> & {
+    // objects
+    group?: ObjectMetadataDto['group'];
+    model?: ObjectMetadataDto['model'];
+    box?: ObjectMetadataDto['box'];
+    line?: ObjectMetadataDto['line'];
+    gltf?: ObjectMetadataDto['gltf'];
+  };

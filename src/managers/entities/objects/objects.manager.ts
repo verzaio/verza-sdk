@@ -3,13 +3,14 @@ import {v4} from 'uuid';
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {
   CreateObjectProps,
+  CreateObjectPropsWithObjects,
   ObjectType,
 } from 'engine/definitions/types/objects.types';
 import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-import {ObjectBoxDto} from 'types/Dto';
+import {ObjectBoxDto, ObjectChildrenDto} from 'types/Dto';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
@@ -30,7 +31,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     if (this._binded) return;
 
     this._messenger.events.on('destroyObject', ({data: [objectId]}) => {
-      console.log('destroyObject', objectId);
       this.destroy(this.get(objectId));
     });
 
@@ -41,8 +41,12 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     this._binded = false;
   }
 
-  private _prepareProps(props?: CreateObjectProps<any>) {
-    if (!props) return;
+  private _createObject<T extends ObjectType = ObjectType>(
+    type: T,
+    props: CreateObjectPropsWithObjects<T>,
+  ) {
+    // load
+    this._load();
 
     if (!props.id) {
       props.id = v4();
@@ -57,17 +61,12 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       : Array.isArray(props.rotation)
       ? props.rotation
       : (props.rotation.toArray() as QuaternionArray);
-  }
 
-  private _createObject<T extends ObjectType = ObjectType>(
-    type: T,
-    props: CreateObjectProps<T>,
-  ) {
-    // load
-    this._load();
+    if (props.data) {
+      props[type] = props.data;
+    }
 
-    const {position, rotation, data, drawDistance, collision, scale, shadows} =
-      props;
+    const {position, rotation, drawDistance, collision, scale, shadows} = props;
 
     const object = this.create(props.id!, {
       id: props.id!,
@@ -91,26 +90,42 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
         ss: shadows,
 
-        [type]: data,
+        [type]: props[type],
       },
     });
+
+    // emit
+    this._messenger.emit('createObject', [type, props]);
 
     return object;
   }
 
-  createBox(box: ObjectBoxDto, props: CreateObjectProps<'box'> = {}) {
-    // prepare
-    this._prepareProps(props);
-
-    const object = this._createObject('box', {
-      data: box,
+  createGroup(
+    children: ObjectChildrenDto[],
+    props: CreateObjectProps<'group'> = {},
+  ) {
+    return this._createObject('group', {
+      group: {
+        c: children,
+      },
       ...props,
     });
+  }
 
-    // emit
-    this._messenger.emit('createBox', [box, props]);
+  createModel(model: string, props: CreateObjectProps<'model'> = {}) {
+    return this._createObject('model', {
+      model: {
+        m: model,
+      },
+      ...props,
+    });
+  }
 
-    return object;
+  createBox(box: ObjectBoxDto, props: CreateObjectProps<'box'> = {}) {
+    return this._createObject('box', {
+      box,
+      ...props,
+    });
   }
 
   createLine(
@@ -118,45 +133,31 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     color?: string,
     props: CreateObjectProps<'line'> = {},
   ) {
-    // prepare
-    this._prepareProps(props);
-
-    const object = this._createObject('line', {
-      data: {
+    return this._createObject('line', {
+      line: {
         p: points.map(p => ({p})),
         c: color,
       },
       ...props,
     });
-
-    // emit
-    this._messenger.emit('createLine', [points, color, props]);
-
-    return object;
   }
 
   createGltf(url: string, props: CreateObjectProps<'gltf'> = {}) {
-    // prepare
-    this._prepareProps(props);
-
-    const object = this._createObject('gltf', {
-      data: {
+    return this._createObject('gltf', {
+      gltf: {
         u: url,
       },
       ...props,
     });
-
-    // emit
-    this._messenger.emit('onCreateGltf', [url, props]);
-
-    return object;
   }
 
   destroy(entity: ObjectManager): void {
     super.destroy(entity);
 
     // emit
-    this._messenger.emit('destroyObject', [entity.id]);
+    if (entity) {
+      this._messenger.emit('destroyObject', [entity.id]);
+    }
   }
 }
 

@@ -139,7 +139,7 @@ const ObjectsTest = () => {
       <Gltf
         ref={anotherOneRef}
         props={{
-          position: [0, 1, 20],
+          position: [0, 1.01, 5],
           collision: 'static',
         }}
         url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf"

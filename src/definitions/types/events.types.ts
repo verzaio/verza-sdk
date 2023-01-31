@@ -1,4 +1,4 @@
-import {ObjectBoxDto, PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
+import {PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
 
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
@@ -6,7 +6,7 @@ import type {EntityType} from '../enums/entities.enums';
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {ChunkIndex} from './chunks.types';
 import {CommandInfo} from './commands.types';
-import {CreateObjectProps} from './objects.types';
+import {CreateObjectProps, ObjectType} from './objects.types';
 import type {
   PlayerControls,
   PlayerState,
@@ -195,15 +195,7 @@ export type ScriptEventMap = {
   onCameraTransitionEnd: (id?: number | string) => void;
 
   /* objects */
-  createBox: (box: ObjectBoxDto, props?: CreateObjectProps<'box'>) => void;
-
-  createLine: (
-    points: Vector3Array[],
-    color?: string,
-    props?: CreateObjectProps<'line'>,
-  ) => void;
-
-  onCreateGltf: (url: string, props?: CreateObjectProps<'gltf'>) => void;
+  createObject: (type: ObjectType, props: CreateObjectProps) => void;
 
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
 

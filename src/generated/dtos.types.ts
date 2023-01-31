@@ -416,6 +416,33 @@ export interface BasicPositionDto {
   m?: PositionMetadataDto;
 }
 
+export interface ObjectChildrenDto {
+  /** object id */
+  id: string;
+  /** type */
+  t: 'group' | 'model' | 'gltf' | 'box' | 'line';
+  /** position */
+  p: BasicPositionDto;
+  /** source */
+  s?: 'hosted' | 'external';
+  /** metadata */
+  m?: ObjectMetadataDto;
+}
+
+export interface ObjectGroupDto {
+  c?: ObjectChildrenDto[];
+}
+
+export interface ObjectModelDto {
+  /**
+   * model id
+   * @maxLength 64
+   */
+  m: string;
+  /** data */
+  d?: object;
+}
+
 export interface ObjectBoxDto {
   /**
    * width
@@ -487,6 +514,10 @@ export interface ObjectMetadataDto {
   s?: number;
   /** shadows */
   ss?: boolean;
+  /** group */
+  group?: ObjectGroupDto;
+  /** model */
+  model?: ObjectModelDto;
   /** box */
   box?: ObjectBoxDto;
   /** gltf */
@@ -495,11 +526,11 @@ export interface ObjectMetadataDto {
   line?: ObjectLineDto;
 }
 
-export interface BasicObjectDto {
-  /** id */
+export interface ObjectDto {
+  /** object id | only used by scripts */
   id: string;
   /** type */
-  t: 'gltf' | 'box' | 'line';
+  t: 'group' | 'model' | 'gltf' | 'box' | 'line';
   /** position */
   p: BasicPositionDto;
   /** source */
@@ -511,7 +542,7 @@ export interface BasicObjectDto {
 export interface ChunkDto {
   index: string;
   chunk_size: number;
-  objects: BasicObjectDto[];
+  objects: ObjectDto[];
 }
 
 export interface ChunkPacketDto {
@@ -669,9 +700,9 @@ export interface PositionDto {
   metadata?: PositionMetadataDto;
 }
 
-export interface ObjectDto {
+export interface BaseObjectDto {
   id: string;
-  type: 'gltf' | 'box' | 'line';
+  type: 'group' | 'model' | 'gltf' | 'box' | 'line';
   position: PositionDto;
   source: 'hosted' | 'external' | null;
   metadata: ObjectMetadataDto;
@@ -689,7 +720,7 @@ export interface CreatePositionDto {
 }
 
 export interface CreateObjectDto {
-  type: 'gltf' | 'box' | 'line';
+  type: 'group' | 'model' | 'gltf' | 'box' | 'line';
   source?: 'hosted' | 'external';
   position: CreatePositionDto;
   metadata?: ObjectMetadataDto;

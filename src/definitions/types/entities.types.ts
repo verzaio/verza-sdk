@@ -1,6 +1,6 @@
 import type {ComponentType} from 'react';
 
-import type {BasicObjectDto, ObjectMetadataDto} from 'types/Dto';
+import type {ObjectDto, ObjectMetadataDto} from 'types/Dto';
 
 import type {PlayerDataProps} from 'engine/definitions/types/players.types';
 import type {
@@ -78,4 +78,4 @@ export type MergeEntityEvents<A, B> = A extends void ? B : A & B;
 /* entities */
 export type PlayerEntity = EntityItem<PlayerDataProps, number>;
 
-export type ObjectEntity = EntityItem<BasicObjectDto, string>;
+export type ObjectEntity = EntityItem<ObjectDto, string>;
