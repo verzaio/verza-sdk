@@ -44,6 +44,8 @@ class UIManager {
   }
 
   bind() {
+    document.addEventListener('keyup', this._onEscapeKey);
+
     this._messenger.events.on('onAddInterface', ({data: [tag]}) => {
       this.interfaces.add(tag);
       this.controller.set('interfaces', new Set(this.interfaces));
@@ -58,6 +60,12 @@ class UIManager {
       this.controller.set('cursorLock', status);
     });
   }
+
+  private _onEscapeKey = (event: KeyboardEvent) => {
+    if (event.code !== 'Escape') return;
+
+    this._messenger.emit('onEscapeKey');
+  };
 
   /* interfaces */
   addInterface(tag: string) {
@@ -90,6 +98,10 @@ class UIManager {
     this.visible = false;
 
     this._messenger.emit('onHide');
+  }
+
+  destroy() {
+    document.removeEventListener('keyup', this._onEscapeKey);
   }
 }
 

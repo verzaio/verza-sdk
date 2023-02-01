@@ -130,6 +130,7 @@ class EngineManager {
     // destroy
     this.messenger.destroy();
     this.commands.destroy();
+    this.ui.destroy();
     this.entities.player.unload();
     this.entities.object.unload();
 

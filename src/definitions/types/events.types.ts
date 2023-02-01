@@ -134,6 +134,8 @@ export type ScriptEventMap = {
   onRemoveCommand: (command: string) => void;
 
   /* ui */
+  onEscapeKey: () => void;
+
   onKey: (keyInfo: KeyInfo) => void;
 
   onAddInterface: (tag: string) => void;

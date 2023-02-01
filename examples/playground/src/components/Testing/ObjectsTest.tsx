@@ -108,21 +108,13 @@ const ObjectsTest = () => {
 
       <button onClick={() => destroy()}>objects.destroy</button>
 
-      {/* <Box
+      <Box
         box={{w: 2, h: 2, d: 2, c: 'green'}}
         props={{
           position: [-8, 1, 20],
           collision: 'static',
         }}
-      /> */}
-
-      {/* <Box
-        box={{w: 1, h: 1, d: 1}}
-        props={{
-          position: [-2, 0.5, 2],
-          collision: 'static',
-        }}
-      /> */}
+      />
 
       <Line
         points={[
@@ -166,8 +158,6 @@ const ObjectsTest = () => {
           url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf"
         />
       </Group>
-
-      {/*  */}
 
       {/*  <Gltf
         props={{position: [0, 1, 10], collision: 'static'}}
