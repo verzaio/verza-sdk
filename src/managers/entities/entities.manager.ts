@@ -80,6 +80,8 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
       return;
     }
 
+    entity.destroyed = true;
+
     // cleanup events
     if (this.events) {
       // remove all listeners

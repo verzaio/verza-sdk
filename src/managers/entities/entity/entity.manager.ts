@@ -19,6 +19,8 @@ class EntityManager<
   H extends EntityHandleManager<any> | void = void,
   Events extends EventListenersMap | void = void,
 > {
+  destroyed = false;
+
   entity: T;
 
   engine: EngineManager;

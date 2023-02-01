@@ -15,14 +15,14 @@ import {
 
 export const ENTITIES_RENDERS: EntitiesRenders = {
   player: {
-    Render: Player!,
+    EntityRender: Player!,
     EntitiesManager: PlayersManager,
     EntityManager: PlayerManager,
     EntityHandle: PlayerHandleManager,
   },
 
   object: {
-    Render: Object!,
+    EntityRender: Object!,
     EntitiesManager: ObjectsManager,
     EntityManager: ObjectManager,
     EntityHandle: ObjectHandleManager,

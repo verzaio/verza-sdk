@@ -1,24 +1,23 @@
 import {CreateObjectProps} from 'engine/definitions/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {forwardRef, useEffect} from 'react';
-import {ObjectBoxDto} from 'types/Dto';
 import useObjects from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 import {useParent} from './Group';
 
-type BoxProps = {
-  box: ObjectBoxDto;
-  props?: CreateObjectProps<'box'>;
+type ModelProps = {
+  type: string;
+  props?: CreateObjectProps<'model'>;
 };
 
-const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
+const Model = forwardRef<ObjectManager, ModelProps>((props, ref) => {
   const objects = useObjects();
   const parent = useParent();
 
   useEffect(() => {
     if (parent?.destroyed === true) return;
 
-    const object = objects.createBox(props.box, {
+    const object = objects.createModel(props.type, {
       parentId: parent?.id,
       ...props.props,
     });
@@ -33,6 +32,6 @@ const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
   return null;
 });
 
-Box.displayName = 'Box';
+Model.displayName = 'Model';
 
-export default Box;
+export default Model;

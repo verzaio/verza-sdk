@@ -1,5 +1,6 @@
 import {PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
 
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
 import type {EntityType} from '../enums/entities.enums';
@@ -83,6 +84,12 @@ export type PlayerEventMap = {
   onStateAnimationChange: (anim: number) => void;
 
   onHeadMove: (euler: [number, number, number]) => void;
+};
+
+export type ObjectEventMap = {
+  onChildAdded: (children: ObjectManager) => void;
+
+  onChildRemoved: (children: ObjectManager) => void;
 };
 
 export type ChatEventMap = {

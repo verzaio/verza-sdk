@@ -57,9 +57,9 @@ export type EntityDefinition<
   H extends EntityHandleManager<any>,
   M extends EntitiesManager,
 > = {
-  Render: ComponentType<{id: T['id']}>;
-
   EntitiesManager: {new (engine: EngineManager): M};
+
+  EntityRender: ComponentType<{id: T['id']}>;
 
   EntityManager: {new (manager: T['entity'], engine: EngineManager): T};
 
@@ -78,4 +78,4 @@ export type MergeEntityEvents<A, B> = A extends void ? B : A & B;
 /* entities */
 export type PlayerEntity = EntityItem<PlayerDataProps, number>;
 
-export type ObjectEntity = EntityItem<ObjectDto, string>;
+export type ObjectEntity = EntityItem<ObjectDto & {parent_id?: string}, string>;

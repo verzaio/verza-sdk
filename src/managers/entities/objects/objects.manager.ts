@@ -10,7 +10,7 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-import {ObjectBoxDto, ObjectChildrenDto} from 'types/Dto';
+import {ObjectBoxDto, ObjectDto} from 'types/Dto';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
@@ -31,7 +31,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     if (this._binded) return;
 
     this._messenger.events.on('destroyObject', ({data: [objectId]}) => {
-      this.destroy(this.get(objectId));
+      this.destroy(this.get(objectId), false);
     });
 
     this._binded = true;
@@ -44,55 +44,67 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   private _createObject<T extends ObjectType = ObjectType>(
     type: T,
     props: CreateObjectPropsWithObjects<T>,
+    get = false,
   ) {
     // load
     this._load();
 
+    // validate id
     if (!props.id) {
       props.id = v4();
     }
 
-    props.position = Array.isArray(props.position)
-      ? props.position
-      : props.position?.toArray() ?? [0, 0, 0];
-
-    props.rotation = !props.rotation
-      ? [0, 0, 0, 1]
-      : Array.isArray(props.rotation)
-      ? props.rotation
-      : (props.rotation.toArray() as QuaternionArray);
-
-    if (props.data) {
-      props[type] = props.data;
+    // validate pos
+    if (props.position) {
+      props.position = Array.isArray(props.position)
+        ? props.position
+        : props.position.toArray();
     }
 
-    const {position, rotation, drawDistance, collision, scale, shadows} = props;
+    // validate rot
+    if (props.rotation) {
+      props.rotation = Array.isArray(props.rotation)
+        ? props.rotation
+        : (props.rotation.toArray() as QuaternionArray);
+    }
 
-    const object = this.create(props.id!, {
-      id: props.id!,
+    const {
+      id,
+      parentId,
+      position,
+      rotation,
+      drawDistance,
+      collision,
+      scale,
+      shadows,
+    } = props;
+
+    const objectData: ObjectManager['data'] = {
+      id,
+
+      parent_id: parentId,
 
       t: type,
 
-      position: (position as Vector3Array) ?? [0, 0, 0],
+      drawDistance: drawDistance ?? 'high',
 
-      rotation: (rotation as QuaternionArray) ?? [0, 0, 0, 1],
+      position,
 
-      p: null!,
-
-      s: null!,
+      rotation,
 
       m: {
-        d: drawDistance ?? 'high',
-
         p: collision,
 
         s: scale,
 
         ss: shadows,
 
-        [type]: props[type],
+        [type]: props.data,
       },
-    });
+    };
+
+    // create
+    const object = this.create(props.id!, objectData);
 
     // emit
     this._messenger.emit('createObject', [type, props]);
@@ -100,13 +112,10 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  createGroup(
-    children: ObjectChildrenDto[],
-    props: CreateObjectProps<'group'> = {},
-  ) {
+  createGroup(children?: ObjectDto[], props: CreateObjectProps<'group'> = {}) {
     return this._createObject('group', {
       group: {
-        c: children,
+        c: children ?? [],
       },
       ...props,
     });
@@ -151,11 +160,24 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     });
   }
 
-  destroy(entity: ObjectManager): void {
+  destroy(entity: ObjectManager, report = true): void {
+    if (!this.is(entity?.id)) {
+      return;
+    }
+
+    // detach
+    entity.detachFromParent();
+
+    // destroy children
+    entity.children.forEach(entity => {
+      this.destroy(entity);
+    });
+
+    // destroy
     super.destroy(entity);
 
     // emit
-    if (entity) {
+    if (report) {
       this._messenger.emit('destroyObject', [entity.id]);
     }
   }

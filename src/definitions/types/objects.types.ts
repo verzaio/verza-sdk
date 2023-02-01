@@ -10,6 +10,8 @@ export type ObjectType = ObjectDto['t'];
 export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   id?: string;
 
+  parentId?: string;
+
   position?: Vector3 | Vector3Array;
 
   rotation?: Quaternion | Euler | QuaternionArray | Vector3Array;

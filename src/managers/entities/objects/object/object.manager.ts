@@ -10,7 +10,15 @@ import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
 
 class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
+  parent: ObjectManager | null = null;
+
+  children: Set<ObjectManager> = new Set();
+
   /* getter & setters */
+  get objectType() {
+    return this.data.t;
+  }
+
   get location() {
     return super.location;
   }
@@ -27,11 +35,28 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     return this.engine.messenger;
   }
 
+  private get _parentId() {
+    return this.data.parent_id;
+  }
+
   constructor(entity: ObjectEntity, engine: EngineManager) {
     super(entity, engine);
 
     // restore position
     this.restorePosition();
+
+    // check for children
+    this._checkForChildren();
+
+    // check for parent via data.parent_id
+    if (this._parentId) {
+      this._attachToParent(this.engine.entities.object.get(this._parentId));
+
+      // check if added
+      if (this.parent) {
+        return;
+      }
+    }
   }
 
   setPosition(position: Vector3 | Vector3Array) {
@@ -74,6 +99,50 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       this.id,
       this.location.quaternion.toArray() as QuaternionArray,
     ]);
+  }
+
+  detachFromParent() {
+    if (!this.parent) return;
+
+    this.parent.children.delete(this);
+    this.parent = null!;
+  }
+
+  private _attachToParent(parent: ObjectManager) {
+    if (!parent) {
+      console.debug(
+        `[objects:script] no parent found (parent id: ${this._parentId} | object id: ${this.id}:${this.objectType})`,
+      );
+      return;
+    }
+
+    if (parent.objectType !== 'group') {
+      console.debug(
+        `[objects:script] only groups can have children (parent id: ${this._parentId}:${parent?.objectType} | object id ${this.id}:${this.objectType})`,
+      );
+      return;
+    }
+
+    this.parent = parent;
+    parent.children.add(this);
+  }
+
+  private _checkForChildren() {
+    if (this.objectType !== 'group') return;
+
+    this.data.m?.group?.c?.forEach(item => {
+      const data = item.m?.[item.t];
+
+      if (data) {
+        // set parent id
+        (item as ObjectEntity['data']).parent_id = this.id;
+
+        this.engine.entities.object.create(
+          item.t,
+          item as ObjectEntity['data'],
+        );
+      }
+    });
   }
 }
 

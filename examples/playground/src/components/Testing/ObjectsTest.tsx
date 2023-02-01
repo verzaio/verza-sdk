@@ -1,4 +1,4 @@
-import {Box, Gltf, Line, useFrame, useObjects} from '@verza/sdk';
+import {Box, Gltf, Group, Line, useFrame, useObjects} from '@verza/sdk';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {useEffect, useRef} from 'react';
 
@@ -67,11 +67,11 @@ const ObjectsTest = () => {
   useFrame(delta => {
     if (!anotherOneRef.current) return;
 
-    //anotherOneRef.current.location.rotateY(delta / 10);
-    //anotherOneRef.current.setRotation(anotherOneRef.current.rotation);
+    anotherOneRef.current.location.rotateY(delta / 10);
+    anotherOneRef.current.setRotation(anotherOneRef.current.rotation);
 
-    //anotherOneRef.current.location.translateX(delta / 5);
-    //anotherOneRef.current.setPosition(anotherOneRef.current.position);
+    anotherOneRef.current.location.translateX(delta / 5);
+    anotherOneRef.current.setPosition(anotherOneRef.current.position);
   });
 
   return (
@@ -116,13 +116,13 @@ const ObjectsTest = () => {
         }}
       /> */}
 
-      <Box
+      {/* <Box
         box={{w: 1, h: 1, d: 1}}
         props={{
           position: [-2, 0.5, 2],
           collision: 'static',
         }}
-      />
+      /> */}
 
       <Line
         points={[
@@ -136,20 +136,43 @@ const ObjectsTest = () => {
         }}
       />
 
-      <Gltf
-        ref={anotherOneRef}
+      <Group
+        ref={objectRef}
         props={{
-          position: [0, 1.01, 5],
-          collision: 'static',
-        }}
-        url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf"
-      />
+          position: [0, 3, 10],
+        }}>
+        <Box
+          box={{w: 1, h: 1, d: 1, c: 'blue'}}
+          props={{
+            position: [1, 0.5, 4],
+            collision: 'static',
+          }}
+        />
+
+        <Box
+          box={{w: 1, h: 1, d: 1, c: 'blue'}}
+          props={{
+            position: [1, 0.5, 2],
+            collision: 'static',
+          }}
+        />
+
+        <Gltf
+          ref={anotherOneRef}
+          props={{
+            position: [0, 1.01, 7],
+            collision: 'static',
+          }}
+          url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf"
+        />
+      </Group>
+
+      {/*  */}
 
       {/*  <Gltf
         props={{position: [0, 1, 10], collision: 'static'}}
         url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Buggy/glTF-Binary/Buggy.glb"
       /> */}
-      {/*  */}
 
       {/* <Gltf
         props={{position: [0, 1, 10], collision: 'static'}}

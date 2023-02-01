@@ -416,21 +416,8 @@ export interface BasicPositionDto {
   m?: PositionMetadataDto;
 }
 
-export interface ObjectChildrenDto {
-  /** object id */
-  id: string;
-  /** type */
-  t: 'group' | 'model' | 'gltf' | 'box' | 'line';
-  /** position */
-  p: BasicPositionDto;
-  /** source */
-  s?: 'hosted' | 'external';
-  /** metadata */
-  m?: ObjectMetadataDto;
-}
-
 export interface ObjectGroupDto {
-  c?: ObjectChildrenDto[];
+  c?: ObjectDto[];
 }
 
 export interface ObjectModelDto {
@@ -527,14 +514,14 @@ export interface ObjectMetadataDto {
 }
 
 export interface ObjectDto {
-  /** object id | only used by scripts */
+  /** object id */
   id: string;
   /** type */
   t: 'group' | 'model' | 'gltf' | 'box' | 'line';
   /** position */
-  p: BasicPositionDto;
+  p?: BasicPositionDto;
   /** source */
-  s: 'hosted' | 'external' | null;
+  s?: 'hosted' | 'external';
   /** metadata */
   m?: ObjectMetadataDto;
 }
