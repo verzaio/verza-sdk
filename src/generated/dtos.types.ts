@@ -612,6 +612,17 @@ export interface BasicWorldDto {
   chunk_size: number;
 }
 
+export interface ScriptDto {
+  name?: string;
+  url: string;
+  settings?: object;
+}
+
+export interface ServerPermissionsDto {
+  can_manage: boolean;
+  can_delete: boolean;
+}
+
 export interface ServerDto {
   id: string;
   name: string | null;
@@ -619,6 +630,8 @@ export interface ServerDto {
   players_count: number;
   region: 'global';
   world: BasicWorldDto | null;
+  scripts: ScriptDto[] | null;
+  permissions: ServerPermissionsDto;
   /** @format date-time */
   created_at: string;
 }
@@ -630,7 +643,16 @@ export interface CreateServerDto {
    * @maxLength 128
    */
   name: string;
-  world_id?: string;
+}
+
+export interface UpdateScriptDto {
+  /**
+   * @minLength 1
+   * @maxLength 128
+   */
+  name?: string;
+  url: string;
+  settings?: object;
 }
 
 export interface UpdateServerDto {
@@ -639,7 +661,7 @@ export interface UpdateServerDto {
    * @maxLength 128
    */
   name?: string;
-  world_id?: string;
+  scripts?: UpdateScriptDto[];
 }
 
 export interface WorldDto {
@@ -655,25 +677,12 @@ export interface WorldDto {
   updated_at: string;
 }
 
-export interface CreateWorldDto {
-  /**
-   * @minLength 2
-   * @maxLength 128
-   */
-  name: string;
-  /**
-   * @min 256
-   * @max 102400
-   */
-  map_size: number;
-}
-
 export interface UpdateWorldDto {
   /**
    * @minLength 4
    * @maxLength 128
    */
-  name: string;
+  name?: string;
 }
 
 export interface PositionDto {

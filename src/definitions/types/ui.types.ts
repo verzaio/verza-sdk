@@ -1,3 +1,12 @@
+export type OptionsMenuTabType =
+  | 'general'
+  | 'controls'
+  | 'graphics'
+  | 'audio'
+  | 'chat';
+
+export type ServerMenuTabType = 'general' | 'scripts' | 'banlist';
+
 export type KeyInfo = {
   type: 'keydown' | 'keyup';
 

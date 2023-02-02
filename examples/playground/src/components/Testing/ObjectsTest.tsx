@@ -67,11 +67,11 @@ const ObjectsTest = () => {
   useFrame(delta => {
     if (!anotherOneRef.current) return;
 
-    anotherOneRef.current.location.rotateY(delta / 10);
+    /* anotherOneRef.current.location.rotateY(delta / 10);
     anotherOneRef.current.setRotation(anotherOneRef.current.rotation);
 
     anotherOneRef.current.location.translateX(delta / 5);
-    anotherOneRef.current.setPosition(anotherOneRef.current.position);
+    anotherOneRef.current.setPosition(anotherOneRef.current.position); */
   });
 
   return (
