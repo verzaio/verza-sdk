@@ -153,9 +153,11 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     //console.log(`_onHandshake:${this.type}`, message.data);
 
     if (message.data?.id !== this.id) {
-      console.debug(
-        `[messenger:${this.type}] sender id mismatch "${this.id}" != "${message.data?.id}"`,
-      );
+      if (this.type !== 'receiver') {
+        console.debug(
+          `[messenger:${this.type}] sender id mismatch "${this.id}" != "${message.data?.id}"`,
+        );
+      }
       return;
     }
 

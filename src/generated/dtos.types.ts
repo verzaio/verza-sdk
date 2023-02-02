@@ -613,8 +613,9 @@ export interface BasicWorldDto {
 }
 
 export interface ScriptDto {
-  name?: string;
   url: string;
+  name?: string;
+  disabled?: boolean;
   settings?: object;
 }
 
@@ -630,14 +631,14 @@ export interface ServerDto {
   players_count: number;
   region: 'global';
   world: BasicWorldDto | null;
-  scripts: ScriptDto[] | null;
+  scripts: ScriptDto[];
   permissions: ServerPermissionsDto;
   /** @format date-time */
   created_at: string;
 }
 
 export interface CreateServerDto {
-  region: 'global';
+  region?: 'global';
   /**
    * @minLength 4
    * @maxLength 128
@@ -652,6 +653,7 @@ export interface UpdateScriptDto {
    */
   name?: string;
   url: string;
+  disabled?: boolean;
   settings?: object;
 }
 
