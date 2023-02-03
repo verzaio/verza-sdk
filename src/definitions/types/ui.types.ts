@@ -5,7 +5,7 @@ export type OptionsMenuTabType =
   | 'audio'
   | 'chat';
 
-export type ServerMenuTabType = 'general' | 'scripts' | 'banlist';
+export type ServerMenuTabType = 'scripts' | 'banlist' | 'keys' | 'settings';
 
 export type KeyInfo = {
   type: 'keydown' | 'keyup';

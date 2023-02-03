@@ -10,9 +10,12 @@ import ObjectsManager from './entities/objects/objects.manager';
 import PlayersManager from './entities/players/players.manager';
 import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
+import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
 
 class EngineManager {
+  network: NetworkManager;
+
   ui: UIManager;
 
   chat: ChatManager;
@@ -67,6 +70,8 @@ class EngineManager {
   constructor() {
     // register all events
     this.messenger.events.registerEvents = true;
+
+    this.network = new NetworkManager(this);
 
     this.ui = new UIManager(this);
 

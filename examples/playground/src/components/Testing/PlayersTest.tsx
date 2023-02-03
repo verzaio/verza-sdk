@@ -1,8 +1,25 @@
-import {usePlayerId, useStreamedPlayer} from '@verza/sdk';
+import {useKey, useNetwork, usePlayerId, useStreamedPlayer} from '@verza/sdk';
+import {useEffect} from 'react';
 import {Vector3} from 'three';
 
 const PlayersTest = () => {
   const player = useStreamedPlayer(usePlayerId());
+  const network = useNetwork();
+
+  useEffect(() => {
+    const onTesting = network.onPlayersEvent('onTesting', (player, data) => {
+      console.log('player', player.name, data);
+    });
+
+    return () => {
+      network.offPlayersEvent('onTesting', onTesting);
+    };
+  }, [network]);
+
+  useKey('KeyU', () => {
+    console.log('sending it');
+    network.emitToPlayers('onTesting', {hello: 'Hey, whatsapp2'});
+  });
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>

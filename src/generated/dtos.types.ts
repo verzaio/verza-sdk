@@ -597,14 +597,6 @@ export interface VoicePacketSendDto {
   r?: boolean;
 }
 
-export interface PlayerIdDto {
-  player_id: number;
-}
-
-export interface ServerFiltersDto {
-  region?: 'global';
-}
-
 export interface BasicWorldDto {
   id: string;
   name: string;
@@ -637,6 +629,51 @@ export interface ServerDto {
   created_at: string;
 }
 
+export interface SyncPacketDto {
+  /** packet id */
+  t: number;
+  /** server */
+  server?: ServerDto;
+}
+
+export interface CustomPacketDto {
+  /** packet id */
+  t: number;
+  /** player id (available only when source === PacketSource.Client) */
+  p: number;
+  /** packet source | PacketSource */
+  s: number;
+  /** event name */
+  e: string;
+  /** data */
+  d?: object;
+}
+
+export interface CustomPacketSendDto {
+  /**
+   * destination | PacketDestination
+   * @min 0
+   * @max 1
+   */
+  p: number;
+  /**
+   * event name
+   * @minLength 1
+   * @maxLength 256
+   */
+  e: string;
+  /** data */
+  d?: object;
+}
+
+export interface PlayerIdDto {
+  player_id: number;
+}
+
+export interface ServerFiltersDto {
+  region?: 'global';
+}
+
 export interface CreateServerDto {
   region?: 'global';
   /**
@@ -664,6 +701,10 @@ export interface UpdateServerDto {
    */
   name?: string;
   scripts?: UpdateScriptDto[];
+}
+
+export interface KeyDto {
+  token: string;
 }
 
 export interface WorldDto {

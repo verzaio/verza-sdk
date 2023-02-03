@@ -108,9 +108,14 @@ export type SizeProps = {
   bottom?: SizePropValue;
 };
 
+export type CustomEventData = {
+  [name: string]: any;
+};
+
 export type ScriptEventMap = {
   /* messenger */
   onRegister: (eventName: string) => void;
+
   onUnregister: (eventName: string) => void;
 
   /* engine */
@@ -214,4 +219,16 @@ export type ScriptEventMap = {
   ) => void;
 
   destroyObject: (objectId: string) => void;
+
+  /* custom events */
+  emitToServer: (event: string, data?: CustomEventData) => void;
+
+  emitToPlayers: (event: string, data?: CustomEventData) => void;
+} & {
+  [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
+} & {
+  [key in `onPlayerCustomEvent_${string}`]: (
+    playerId: number,
+    data?: CustomEventData,
+  ) => void;
 };

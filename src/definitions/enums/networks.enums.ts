@@ -10,6 +10,8 @@ export enum PacketEvent {
   Voice = 'v', // voice
 
   Chat = 'h', // chat
+
+  Custom = 'n', // custom
 }
 
 export enum EntityPacketAction {
@@ -36,6 +38,22 @@ export enum PacketId {
   v = 4, // voice
 
   h = 5, // chat
+
+  q = 6, // sync
+
+  n = 7, // custom
+}
+
+export enum PacketSource {
+  Server = 0, // server
+
+  Client = 1, // client
+}
+
+export enum PacketDestination {
+  Server = 0, // server
+
+  Client = 1, // client
 }
 
 export enum StateCodeId {
