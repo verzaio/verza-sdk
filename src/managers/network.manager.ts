@@ -1,3 +1,4 @@
+import {MAX_CLIENT_OBJECT_SIZE} from 'engine/definitions/constants/networks.constants';
 import {CustomEventData} from 'engine/definitions/types/events.types';
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
@@ -54,11 +55,28 @@ class NetworkManager {
   }
 
   emitToServer(event: string, data?: EventData) {
+    // check packet size limit
+    if (!this._checkPacketSize(data?.d)) return;
+
     this._messenger.emit('emitToServer', [event, data]);
   }
 
   emitToPlayers(event: string, data?: EventData) {
+    // check packet size limit
+    if (!this._checkPacketSize(data?.d)) return;
+
     this._messenger.emit('emitToPlayers', [event, data]);
+  }
+
+  private _checkPacketSize(data: unknown) {
+    if (data && JSON.stringify(data).length >= MAX_CLIENT_OBJECT_SIZE) {
+      console.debug(
+        `[network] event data exceed the limit (max: ${MAX_CLIENT_OBJECT_SIZE})`,
+      );
+      return false;
+    }
+
+    return true;
   }
 }
 
