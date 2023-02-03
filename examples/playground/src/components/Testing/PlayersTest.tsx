@@ -17,8 +17,7 @@ const PlayersTest = () => {
   }, [network]);
 
   useKey('KeyU', () => {
-    console.log('sending it');
-    network.emitToPlayers('onTesting', {hello: 'Hey, whatsapp2'});
+    network.emitToPlayers('onTesting', {hello: 'Hey!'});
   });
 
   return (
