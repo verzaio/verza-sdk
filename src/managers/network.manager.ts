@@ -68,6 +68,13 @@ class NetworkManager {
     this._messenger.emit('emitToPlayers', [event, data]);
   }
 
+  emitToPlayer(player: PlayerManager, event: string, data?: EventData) {
+    // check packet size limit
+    if (!this._checkPacketSize(data?.d)) return;
+
+    this._messenger.emit('emitToPlayer', [player.id, event, data]);
+  }
+
   private _checkPacketSize(data: unknown) {
     if (data && JSON.stringify(data).length >= MAX_CLIENT_OBJECT_SIZE) {
       console.debug(

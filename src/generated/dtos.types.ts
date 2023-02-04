@@ -347,6 +347,10 @@ export interface JoinPacketDto {
   s: string;
 }
 
+export interface EncryptedPacketsDto {
+  auth: string;
+}
+
 export interface StatePacketDto {
   /** packet id */
   t: number;
@@ -354,6 +358,8 @@ export interface StatePacketDto {
   c?: number;
   /** error */
   e?: string;
+  /** encrypted packets */
+  p?: EncryptedPacketsDto;
 }
 
 export interface PlayerPacketDto {
@@ -634,6 +640,8 @@ export interface SyncPacketDto {
   t: number;
   /** server */
   server?: ServerDto;
+  /** encrypted packets */
+  packets?: EncryptedPacketsDto;
 }
 
 export interface CustomPacketDto {
@@ -664,6 +672,8 @@ export interface CustomPacketSendDto {
   e: string;
   /** data */
   d?: object;
+  /** to player id */
+  i?: number;
 }
 
 export interface PlayerIdDto {

@@ -224,6 +224,12 @@ export type ScriptEventMap = {
   emitToServer: (event: string, data?: CustomEventData) => void;
 
   emitToPlayers: (event: string, data?: CustomEventData) => void;
+
+  emitToPlayer: (
+    playerId: number,
+    event: string,
+    data?: CustomEventData,
+  ) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {
