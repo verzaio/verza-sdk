@@ -11,6 +11,8 @@ export enum PacketEvent {
 
   Chat = 'h', // chat
 
+  Sync = 'y', // sync
+
   Custom = 'n', // custom
 }
 
@@ -39,7 +41,7 @@ export enum PacketId {
 
   h = 5, // chat
 
-  q = 6, // sync
+  y = 6, // sync
 
   n = 7, // custom
 }

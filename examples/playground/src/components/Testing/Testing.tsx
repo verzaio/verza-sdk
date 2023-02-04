@@ -5,6 +5,7 @@ import CameraTest from './CameraTest';
 import InterfaceTest from './InterfaceTest';
 import ObjectsTest from './ObjectsTest';
 import PlayersTest from './PlayersTest';
+import ServerTest from './ServerTest';
 
 const Testing = () => {
   const engine = useEngine();
@@ -29,14 +30,16 @@ const Testing = () => {
       console.log('Executing test!!', abc, abc2);
     });
 
-  useCommand('abc')
-    .withDesc('Abc command')
+  useCommand('qwerty')
+    .withDesc('Qwerty command')
     .onExecution(() => {
       console.log('Executing abc!!');
     });
 
   return (
     <>
+      <ServerTest />
+
       <PlayersTest />
 
       <CameraTest />

@@ -36,9 +36,12 @@ class CommandsManager {
         this._commands
           .get(key)
           ?.process(this._engine, command.substring(key.length).trim());
+      } else {
+        // emit command to script server if not found in local
+        this._engine.api.emitChat(text, undefined, 'script');
       }
 
-      // emit
+      // emit local commands
       this._engine.events.emit('onCommand', command);
     });
   }

@@ -1,7 +1,11 @@
+import {z} from 'zod';
+
 import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
 import {LocalEngineEvents} from 'engine/definitions/local/constants/engine.constants';
+import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EventKey, ScriptEventMap} from 'engine/definitions/types/events.types';
 import {isValidEnv} from 'engine/utils/misc';
+import ApiManager from './api.manager';
 import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
@@ -14,21 +18,27 @@ import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
 
 class EngineManager {
+  z = z;
+
   network: NetworkManager;
 
-  ui: UIManager;
+  api: ApiManager;
+
+  ui: UIManager = null!;
 
   chat: ChatManager;
 
   commands: CommandsManager;
 
-  camera: CameraManager;
+  camera: CameraManager = null!;
 
   messenger = new MessengerManager<ScriptEventMap>('sender');
 
   eventsManager: Map<EventKey, EventsManager> = new Map();
 
   events = new EngineEvents(this);
+
+  params: EngineParams = {};
 
   controller = new ControllerManager({
     connected: false,
@@ -63,23 +73,52 @@ class EngineManager {
     return this.controller.data.playerId;
   }
 
+  set playerId(playerId: number) {
+    this.controller.set('playerId', playerId);
+  }
+
   get player() {
     return this.entities.player.get(this.playerId);
   }
 
-  constructor() {
+  get players() {
+    return this.entities.player;
+  }
+
+  get objects() {
+    return this.entities.object;
+  }
+
+  get isServer() {
+    return this.api.isServer;
+  }
+
+  get isClient() {
+    return this.api.isClient;
+  }
+
+  constructor(params?: EngineParams) {
+    this.params = params ?? {};
+
+    this.api = new ApiManager(this);
+
     // register all events
     this.messenger.events.registerEvents = true;
 
     this.network = new NetworkManager(this);
 
-    this.ui = new UIManager(this);
+    // only for client
+    if (this.isClient) {
+      this.ui = new UIManager(this);
+    }
 
     this.chat = new ChatManager(this);
 
     this.commands = new CommandsManager(this);
 
-    this.camera = new CameraManager(this);
+    if (this.isClient) {
+      this.camera = new CameraManager(this);
+    }
 
     // set renders
     Object.entries(ENTITIES_RENDERS).forEach(([key, value]) => {
@@ -91,6 +130,7 @@ class EngineManager {
   }
 
   connect() {
+    // validate env
     if (!isValidEnv()) return;
 
     // destroy
@@ -104,7 +144,8 @@ class EngineManager {
       this.entities.player.load();
     }
 
-    this.ui.bind();
+    this.network?.bind();
+    this.ui?.bind();
 
     // events
     this.messenger.events.on('onConnected', () => {
@@ -118,7 +159,7 @@ class EngineManager {
 
     // sync player id
     this.messenger.events.on('onSetPlayerId', ({data: [playerId]}) => {
-      this.controller.data.playerId = playerId;
+      this.playerId = playerId;
     });
 
     // connect it
@@ -135,7 +176,7 @@ class EngineManager {
     // destroy
     this.messenger.destroy();
     this.commands.destroy();
-    this.ui.destroy();
+    this.ui?.destroy();
     this.entities.player.unload();
     this.entities.object.unload();
 

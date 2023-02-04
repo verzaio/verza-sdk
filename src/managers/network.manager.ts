@@ -1,7 +1,12 @@
 import {MAX_CLIENT_OBJECT_SIZE} from 'engine/definitions/constants/networks.constants';
 import {CustomEventData} from 'engine/definitions/types/events.types';
+import {CustomPacketSendDto, EncryptedPacketsDto, ServerDto} from 'types/Dto';
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
+import {
+  PacketDestination,
+  PacketEvent,
+} from 'engine/definitions/enums/networks.enums';
 
 type EventData = {
   [name: string]: unknown;
@@ -9,6 +14,10 @@ type EventData = {
 
 class NetworkManager {
   private _engine: EngineManager;
+
+  server: ServerDto = null!;
+
+  encryptedPackets: EncryptedPacketsDto = null!;
 
   private get _messenger() {
     return this._engine.messenger;
@@ -18,12 +27,31 @@ class NetworkManager {
     this._engine = engine;
   }
 
+  bind() {
+    // ignore if is server
+    if (this._engine.isServer) return;
+
+    this._messenger.events.on('syncServer', ({data: [server, endpoint]}) => {
+      this._engine.api.endpoint = endpoint;
+
+      this.server = server;
+    });
+
+    this._messenger.events.on(
+      'syncEncryptedPackets',
+      ({data: [encryptedPackets]}) => {
+        this.encryptedPackets = encryptedPackets;
+      },
+    );
+    //
+  }
+
   onPlayersEvent(
     event: string,
     listener: (player: PlayerManager, data: CustomEventData) => void,
   ) {
     const listenerWrapper = (playerId: number, data?: CustomEventData) => {
-      listener(this._engine.entities.player.get(playerId), data!);
+      listener(this._engine.players.get(playerId), data!);
     };
 
     return this._engine.events.on(
@@ -58,7 +86,20 @@ class NetworkManager {
     // check packet size limit
     if (!this._checkPacketSize(data?.d)) return;
 
+    // emit to verza
     this._messenger.emit('emitToServer', [event, data]);
+
+    // emit local
+    const customPacket: CustomPacketSendDto = {
+      p: PacketDestination.Server, // PacketDestination
+
+      e: event, // event name
+
+      d: data, // data
+    };
+
+    // emit to server endpoint
+    this._engine.api.emitPacket(PacketEvent.Custom, customPacket);
   }
 
   emitToPlayers(event: string, data?: EventData) {

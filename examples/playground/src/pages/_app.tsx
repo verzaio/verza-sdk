@@ -1,12 +1,13 @@
 import '@app/styles/globals.css';
 import type {AppProps} from 'next/app';
-import {EngineManager, EngineProvider} from '@verza/sdk';
-
-const engine = new EngineManager();
+import {EngineProvider} from '@verza/sdk';
 
 export default function App({Component, pageProps}: AppProps) {
   return (
-    <EngineProvider engine={engine}>
+    <EngineProvider
+      params={{
+        serverEndpoint: 'api/verza',
+      }}>
       <Component {...pageProps} />
     </EngineProvider>
   );

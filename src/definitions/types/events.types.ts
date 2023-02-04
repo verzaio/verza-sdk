@@ -1,4 +1,9 @@
-import {PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
+import {
+  EncryptedPacketsDto,
+  PlayerPacketDto,
+  PlayerPacketUpdateDto,
+  ServerDto,
+} from 'types/Dto';
 
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
@@ -219,6 +224,11 @@ export type ScriptEventMap = {
   ) => void;
 
   destroyObject: (objectId: string) => void;
+
+  /* api */
+  syncServer: (server: ServerDto, endpoint: string) => void;
+
+  syncEncryptedPackets: (packets: EncryptedPacketsDto) => void;
 
   /* custom events */
   emitToServer: (event: string, data?: CustomEventData) => void;

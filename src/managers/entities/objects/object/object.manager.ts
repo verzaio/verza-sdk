@@ -50,7 +50,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
     // check for parent via data.parent_id
     if (this._parentId) {
-      this._attachToParent(this.engine.entities.object.get(this._parentId));
+      this._attachToParent(this.engine.objects.get(this._parentId));
 
       // check if added
       if (this.parent) {
@@ -137,10 +137,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
         // set parent id
         (item as ObjectEntity['data']).parent_id = this.id;
 
-        this.engine.entities.object.create(
-          item.t,
-          item as ObjectEntity['data'],
-        );
+        this.engine.objects.create(item.t, item as ObjectEntity['data']);
       }
     });
   }

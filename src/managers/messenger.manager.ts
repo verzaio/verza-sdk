@@ -1,5 +1,7 @@
 import EventsManager, {EventListenersMap} from './events.manager';
 
+type Message<T = any> = MessageEvent<T>;
+
 type MessengerType = 'sender' | 'receiver';
 
 type Merge<A, B> = A extends void ? B : A & B;
@@ -15,12 +17,12 @@ type MessengerManagerMap = {
 };
 
 export type MessengerManagerEventsMap<T extends EventListenersMap> = {
-  [key in keyof T]: (message: MessageEvent<Parameters<T[key]>>) => void;
+  [key in keyof T]: (message: Message<Parameters<T[key]>>) => void;
 };
 
 export type MessengerValidators<T extends EventListenersMap> = Partial<{
   [key in keyof T]: {
-    callback?: (message: MessageEvent<Parameters<T[key]>>) => void;
+    callback?: (message: Message<Parameters<T[key]>>) => void;
     parser?: {
       parse: (params: unknown) => any;
     };
@@ -147,7 +149,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     window.removeEventListener('message', this._onHandshake);
   }
 
-  private _onHandshake = (message: MessageEvent) => {
+  private _onHandshake = (message: Message) => {
     if (message.data?.type !== TYPE_HANDSHAKE_CONNECTION) return;
 
     //console.log(`_onHandshake:${this.type}`, message.data);
@@ -212,7 +214,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     this.emit('onLoad');
   }
 
-  private _onMessage = (message: MessageEvent) => {
+  private _onMessage = (message: Message) => {
     // handle handshake
     if (message.data?.type === TYPE_HANDSHAKE_CONNECTION) {
       this._onHandshake(message);
@@ -260,6 +262,15 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
   canEmit<A extends keyof Events>(eventName: A) {
     return this.events.registeredEvents.has(eventName);
+  }
+
+  async emitLocal<A extends keyof Events>(
+    eventName: A,
+    args?: Parameters<Events[A]>,
+  ) {
+    this._onMessage({
+      data: args ? [...args, eventName] : [eventName],
+    } as Message);
   }
 
   async emit<A extends keyof Events>(

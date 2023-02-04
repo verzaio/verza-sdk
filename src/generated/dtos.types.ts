@@ -565,15 +565,19 @@ export interface ChunkPacketRequestDto {
 export interface ChatPacketDto {
   /** packet id */
   t: number;
+  /** message */
   m: string;
 }
 
 export interface ChatPacketSendDto {
   /**
+   * message
    * @minLength 1
-   * @maxLength 512
+   * @maxLength 1024
    */
   m: string;
+  /** player id (exclusive for servers) */
+  p?: number;
 }
 
 export interface VoicePacketDto {
@@ -642,6 +646,11 @@ export interface SyncPacketDto {
   server?: ServerDto;
   /** encrypted packets */
   packets?: EncryptedPacketsDto;
+}
+
+export interface SyncPacketSendDto {
+  /** packets */
+  packets: boolean;
 }
 
 export interface CustomPacketDto {

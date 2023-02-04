@@ -39,41 +39,34 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     }
 
     this._messenger.events.on('setPlayerName', ({data: [playerId, name]}) => {
-      this.engine.entities.player.get(playerId).data.name = name;
+      this.engine.players.get(playerId).data.name = name;
     });
 
     this._messenger.events.on(
       'onPlayerCreate',
       ({data: [playerId, data, streamed]}) => {
-        const player = this.engine.entities.player.create(playerId, data);
+        const player = this.engine.players.create(playerId, data);
 
         // stream
         if (streamed) {
-          this.engine.entities.player.streamIn(player);
+          this.engine.players.streamIn(player);
         }
       },
     );
 
     this._messenger.events.on('onPlayerDestroy', ({data: [playerId]}) => {
-      this.engine.entities.player.destroy(
-        this.engine.entities.player.get(playerId),
-      );
+      this.engine.players.destroy(this.engine.players.get(playerId));
     });
 
     this._messenger.events.on(
       'onPlayerStreamIn',
       ({data: [playerId, data]}) => {
-        this.engine.entities.player.streamIn(
-          this.engine.entities.player.get(playerId),
-          data,
-        );
+        this.engine.players.streamIn(this.engine.players.get(playerId), data);
       },
     );
 
     this._messenger.events.on('onPlayerStreamOut', ({data: [playerId]}) => {
-      this.engine.entities.player.streamOut(
-        this.engine.entities.player.get(playerId),
-      );
+      this.engine.players.streamOut(this.engine.players.get(playerId));
     });
   }
 
