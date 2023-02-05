@@ -129,10 +129,30 @@ class EngineManager {
     });
   }
 
-  connect() {
-    // validate env
-    if (!isValidEnv()) return;
+  connectServer() {
+    this._setup();
 
+    this.api.connectWs();
+  }
+
+  connectClient() {
+    // validate env (only client)
+    if (this.isClient && !isValidEnv()) {
+      return;
+    }
+
+    this._setup();
+
+    // sync player id
+    this.messenger.events.on('onSetPlayerId', ({data: [playerId]}) => {
+      this.playerId = playerId;
+    });
+
+    // connect it
+    this.messenger.connect(window.top!);
+  }
+
+  private _setup() {
     // destroy
     this.destroy();
 
@@ -144,7 +164,7 @@ class EngineManager {
       this.entities.player.load();
     }
 
-    this.network?.bind();
+    this.network.bind();
     this.ui?.bind();
 
     // events
@@ -156,14 +176,6 @@ class EngineManager {
     this.messenger.events.on('onSynced', () => {
       this.controller.set('synced', true);
     });
-
-    // sync player id
-    this.messenger.events.on('onSetPlayerId', ({data: [playerId]}) => {
-      this.playerId = playerId;
-    });
-
-    // connect it
-    this.messenger.connect(window.top!);
   }
 
   destroy() {
@@ -174,6 +186,7 @@ class EngineManager {
     this.controller.set('synced', false);
 
     // destroy
+    this.api.destroy();
     this.messenger.destroy();
     this.commands.destroy();
     this.ui?.destroy();

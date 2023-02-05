@@ -24,7 +24,7 @@ const EngineProvider = ({
   // handle engine creation
   useEffect(() => {
     const engine = new EngineManager(params);
-    engine.connect();
+    engine.connectClient();
 
     const onSynced = engine.controller.events.on('synced', status => {
       setSynced(status);

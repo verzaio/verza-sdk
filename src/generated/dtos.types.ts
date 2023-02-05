@@ -342,6 +342,36 @@ export interface UpdateCharacterDto {
     | null;
 }
 
+export interface ChatPacketSendDto {
+  /**
+   * message
+   * @minLength 1
+   * @maxLength 1024
+   */
+  m: string;
+  /** player id (exclusive for servers) */
+  p?: number;
+}
+
+export interface CustomPacketSendDto {
+  /**
+   * destination | PacketDestination
+   * @min 0
+   * @max 1
+   */
+  p: number;
+  /**
+   * event name
+   * @minLength 1
+   * @maxLength 256
+   */
+  e: string;
+  /** data */
+  d?: object;
+  /** to player id */
+  i?: number;
+}
+
 export interface JoinPacketDto {
   /** server id */
   s: string;
@@ -569,17 +599,6 @@ export interface ChatPacketDto {
   m: string;
 }
 
-export interface ChatPacketSendDto {
-  /**
-   * message
-   * @minLength 1
-   * @maxLength 1024
-   */
-  m: string;
-  /** player id (exclusive for servers) */
-  p?: number;
-}
-
 export interface VoicePacketDto {
   /** packet id */
   t: number;
@@ -664,25 +683,6 @@ export interface CustomPacketDto {
   e: string;
   /** data */
   d?: object;
-}
-
-export interface CustomPacketSendDto {
-  /**
-   * destination | PacketDestination
-   * @min 0
-   * @max 1
-   */
-  p: number;
-  /**
-   * event name
-   * @minLength 1
-   * @maxLength 256
-   */
-  e: string;
-  /** data */
-  d?: object;
-  /** to player id */
-  i?: number;
 }
 
 export interface PlayerIdDto {

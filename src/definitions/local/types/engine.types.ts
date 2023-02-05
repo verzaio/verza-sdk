@@ -1,5 +1,5 @@
 export type EngineParams = {
-  serverEndpoint?: string;
+  httpServer?: string;
 
   accessToken?: string;
 

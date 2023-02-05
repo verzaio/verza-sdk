@@ -1,4 +1,7 @@
 export enum PacketEvent {
+  /* scripts */
+  ScriptJoin = 's',
+
   /* player connection */
   Join = 'j', // join
   Quit = 'q', // quit

@@ -1,6 +1,11 @@
 import {MAX_CLIENT_OBJECT_SIZE} from 'engine/definitions/constants/networks.constants';
 import {CustomEventData} from 'engine/definitions/types/events.types';
-import {CustomPacketSendDto, EncryptedPacketsDto, ServerDto} from 'types/Dto';
+import {
+  CustomPacketDto,
+  CustomPacketSendDto,
+  EncryptedPacketsDto,
+  ServerDto,
+} from 'types/Dto';
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
 import {
@@ -106,20 +111,60 @@ class NetworkManager {
     // check packet size limit
     if (!this._checkPacketSize(data?.d)) return;
 
+    // emit to server
+    if (this._engine.api.isServer) {
+      const custompacket: CustomPacketSendDto = {
+        e: event,
+
+        p: PacketDestination.Client,
+
+        d: data,
+      };
+
+      this._engine.api.emitPacket(PacketEvent.Custom, custompacket);
+      return;
+    }
+
+    // emit to clients
     this._messenger.emit('emitToPlayers', [event, data]);
   }
 
-  emitToPlayer(player: PlayerManager, event: string, data?: EventData) {
+  emitToPlayer(
+    player: PlayerManager | number,
+    event: string,
+    data?: EventData,
+  ) {
     // check packet size limit
     if (!this._checkPacketSize(data?.d)) return;
 
-    this._messenger.emit('emitToPlayer', [player.id, event, data]);
+    // emit to server
+    if (this._engine.api.isServer) {
+      const custompacket: CustomPacketSendDto = {
+        e: event,
+
+        p: PacketDestination.Client,
+
+        i: typeof player === 'number' ? player : player.id,
+
+        d: data,
+      };
+
+      this._engine.api.emitPacket(PacketEvent.Custom, custompacket);
+      return;
+    }
+
+    // emit to client
+    this._messenger.emit('emitToPlayer', [
+      typeof player === 'number' ? player : player.id,
+      event,
+      data,
+    ]);
   }
 
   private _checkPacketSize(data: unknown) {
     if (data && JSON.stringify(data).length >= MAX_CLIENT_OBJECT_SIZE) {
       console.debug(
-        `[network] event data exceed the limit (max: ${MAX_CLIENT_OBJECT_SIZE})`,
+        `[network] event data exceed the size limit (max: ${MAX_CLIENT_OBJECT_SIZE})`,
       );
       return false;
     }

@@ -1,5 +1,9 @@
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
+import {
+  QuaternionArray,
+  Vector3Array,
+} from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
 import {Euler, Quaternion, Vector3} from 'three';
 import {degToRad, radToDeg} from 'three/src/math/MathUtils';
@@ -45,32 +49,49 @@ class PlayerManager extends EntityManager<
     this._messenger.emit('setPlayerName', [this.id, name]);
   }
 
-  setPosition(position: Vector3, instant = true) {
-    // update
-    this.location.position.copy(position);
+  setPosition(position: Vector3 | Vector3Array, instant = true) {
+    // Vector3Array
+    if (Array.isArray(position)) {
+      this.location.position.set(...position);
+    } else {
+      // Vector3
+      this.location.position.copy(position);
+    }
 
     // emit
     this._messenger.emit('setPlayerPosition', [
       this.id,
-      position.toArray(),
+      this.location.position.toArray(),
       instant,
     ]);
   }
 
-  setRotation(rotation: Quaternion | Euler, instant = true) {
-    // update
-    if (rotation instanceof Euler) {
-      this.location.rotation.copy(rotation);
+  setRotation(
+    rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
+    instant = true,
+  ) {
+    if (Array.isArray(rotation)) {
+      // Vector3Array
+      if (rotation.length === 3) {
+        this.location.rotation.set(...rotation);
+      } else {
+        // QuaternionArray
+        this.location.quaternion.set(...rotation);
+      }
     } else {
-      this.location.quaternion.copy(rotation);
+      // Euler
+      if (rotation instanceof Euler) {
+        this.location.rotation.copy(rotation);
+      } else {
+        // Quaternion
+        this.location.quaternion.copy(rotation);
+      }
     }
 
     // emit
     this._messenger.emit('setPlayerRotation', [
       this.id,
-      rotation instanceof Euler
-        ? [rotation.x, rotation.y, rotation.z]
-        : [rotation.x, rotation.y, rotation.z, rotation.w],
+      this.location.quaternion.toArray() as QuaternionArray,
       instant,
     ]);
   }

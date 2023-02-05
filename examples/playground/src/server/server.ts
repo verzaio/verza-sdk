@@ -30,6 +30,10 @@ export const initServer = (engine: EngineManager) => {
 
     console.log('HELLOOOO!', name);
 
-    engine.chat.sendMessage(`Hey ${name}!`);
+    engine.network.emitToPlayers('onTestingReceived', {
+      hey: 'emitToPlayers received?',
+    });
+
+    engine.chat.sendMessage(`Hey ${name}! Name: {red,name=1} {white}Test`);
   });
 };

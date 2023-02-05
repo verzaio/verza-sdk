@@ -1,3 +1,4 @@
+import {CHAT_INPUT_DELIMITER_REGEX} from 'engine/definitions/constants/chat.constants';
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
 
@@ -10,6 +11,10 @@ class ChatManager {
 
   constructor(engine: EngineManager) {
     this._engine = engine;
+  }
+
+  escapeText(text?: string) {
+    return (text ?? '')?.replaceAll(CHAT_INPUT_DELIMITER_REGEX, '');
   }
 
   // client & server
