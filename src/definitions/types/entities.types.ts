@@ -28,6 +28,8 @@ export type EntityCollision = Required<ObjectMetadataDto>['p'];
 export type CreateEntityProps = {
   remote?: boolean;
 
+  dimension?: number;
+
   position?: Vector3Array;
 
   rotation?: QuaternionArray | Vector3Array;

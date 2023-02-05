@@ -1,3 +1,44 @@
+import {PlayerPacketDto} from 'types/Dto';
+
+import {EntityType} from './entities.enums';
+
+export enum NetworkSyncEvent {
+  SyncRequest = 'u.r',
+
+  Ready = 'r',
+
+  // player
+  PlayerSet = 'p.se',
+  PlayerUnset = 'p.un',
+
+  PlayerUpdate = 'p.u',
+  PlayerVoicechat = 'p.v',
+
+  EntityStreamer = 'e.s',
+}
+
+export type NetworkSyncEventMap = {
+  [NetworkSyncEvent.Ready]: [];
+
+  // player
+  [NetworkSyncEvent.PlayerSet]: [playerId: number, serverId: string];
+  [NetworkSyncEvent.PlayerUnset]: [playerId: number];
+
+  [NetworkSyncEvent.PlayerUpdate]: [packet: PlayerPacketDto];
+  [NetworkSyncEvent.PlayerVoicechat]: [
+    playerId1: number,
+    playerId2: number,
+    status: boolean,
+  ];
+
+  [NetworkSyncEvent.EntityStreamer]: [
+    playerId: number,
+    entityId: string | number,
+    entityType: keyof typeof EntityType,
+    action: boolean,
+  ];
+};
+
 export enum PacketEvent {
   /* scripts */
   ScriptJoin = 's',
@@ -47,6 +88,8 @@ export enum PacketId {
   y = 6, // sync
 
   n = 7, // custom
+
+  j = 8, // script sync
 }
 
 export enum PacketSource {

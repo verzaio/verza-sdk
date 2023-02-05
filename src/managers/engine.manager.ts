@@ -4,8 +4,8 @@ import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants'
 import {LocalEngineEvents} from 'engine/definitions/local/constants/engine.constants';
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EventKey, ScriptEventMap} from 'engine/definitions/types/events.types';
-import {isValidEnv} from 'engine/utils/misc';
-import ApiManager from './api.manager';
+import {isValidEnv} from 'engine/utils/misc.utils';
+import ApiManager from './api/api.manager';
 import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';

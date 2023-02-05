@@ -43,7 +43,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     super(entity, engine);
 
     // restore position
-    this.restorePosition();
+    this.restoreData();
 
     // check for children
     this._checkForChildren();

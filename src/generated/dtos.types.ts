@@ -342,6 +342,38 @@ export interface UpdateCharacterDto {
     | null;
 }
 
+export interface BasicWorldDto {
+  id: string;
+  name: string;
+  map_size: number;
+  chunk_size: number;
+}
+
+export interface ScriptDto {
+  url: string;
+  name?: string;
+  disabled?: boolean;
+  settings?: object;
+}
+
+export interface ServerPermissionsDto {
+  can_manage: boolean;
+  can_delete: boolean;
+}
+
+export interface ServerDto {
+  id: string;
+  name: string | null;
+  status: 'active' | 'inactive';
+  players_count: number;
+  region: 'global';
+  world: BasicWorldDto | null;
+  scripts: ScriptDto[];
+  permissions: ServerPermissionsDto;
+  /** @format date-time */
+  created_at: string;
+}
+
 export interface ChatPacketSendDto {
   /**
    * message
@@ -415,6 +447,8 @@ export interface PlayerPacketDto {
   h?: number[];
   /** velocity | Vector3Array */
   v?: number[];
+  /** dimension */
+  d?: number;
 }
 
 export interface PlayerPacketUpdateDto {
@@ -438,6 +472,31 @@ export interface PlayerPacketUpdateDto {
   h?: number[];
   /** velocity | Vector3Array */
   v?: number[];
+}
+
+export interface PlayerPacketLocalUpdateDto {
+  /**
+   * state animation
+   * @min 0
+   * @max 100000
+   */
+  n?: number;
+  /**
+   * player state
+   * @min 0
+   * @max 5
+   */
+  s?: number;
+  /** position | Vector3Array */
+  p?: number[];
+  /** rotation | QuaternionArray */
+  r?: number[];
+  /** head | Vector3Array */
+  h?: number[];
+  /** velocity | Vector3Array */
+  v?: number[];
+  /** dimension */
+  d?: number;
 }
 
 export interface PositionMetadataDto {
@@ -626,38 +685,6 @@ export interface VoicePacketSendDto {
   r?: boolean;
 }
 
-export interface BasicWorldDto {
-  id: string;
-  name: string;
-  map_size: number;
-  chunk_size: number;
-}
-
-export interface ScriptDto {
-  url: string;
-  name?: string;
-  disabled?: boolean;
-  settings?: object;
-}
-
-export interface ServerPermissionsDto {
-  can_manage: boolean;
-  can_delete: boolean;
-}
-
-export interface ServerDto {
-  id: string;
-  name: string | null;
-  status: 'active' | 'inactive';
-  players_count: number;
-  region: 'global';
-  world: BasicWorldDto | null;
-  scripts: ScriptDto[];
-  permissions: ServerPermissionsDto;
-  /** @format date-time */
-  created_at: string;
-}
-
 export interface SyncPacketDto {
   /** packet id */
   t: number;
@@ -683,6 +710,13 @@ export interface CustomPacketDto {
   e: string;
   /** data */
   d?: object;
+}
+
+export interface ScriptSyncPacketDto {
+  /** packet id */
+  t: number;
+  /** sync data */
+  d: object[];
 }
 
 export interface PlayerIdDto {

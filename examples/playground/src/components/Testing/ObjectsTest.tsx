@@ -134,29 +134,61 @@ const ObjectsTest = () => {
           position: [0, 3, 10],
         }}>
         <Box
-          box={{w: 1, h: 1, d: 1, c: 'blue'}}
+          box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
           props={{
-            position: [1, 0.5, 4],
+            position: [0, 0.5, 2],
             collision: 'static',
           }}
         />
 
         <Box
-          box={{w: 1, h: 1, d: 1, c: 'blue'}}
+          box={{w: 1, h: 0.5, d: 1, c: 'green'}}
+          props={{
+            position: [0, 0.5, 3],
+            collision: 'static',
+          }}
+        />
+
+        <Box
+          box={{w: 1, h: 0.5, d: 1, c: 'yellow'}}
+          props={{
+            position: [0, 0.5, 4],
+            collision: 'static',
+          }}
+        />
+
+        <Box
+          box={{w: 1, h: 0.5, d: 1, c: 'red'}}
           props={{
             position: [1, 0.5, 2],
             collision: 'static',
           }}
         />
 
-        <Gltf
+        <Box
+          box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+          props={{
+            position: [1, 0.5, 3],
+            collision: 'static',
+          }}
+        />
+
+        <Box
+          box={{w: 1, h: 0.5, d: 1, c: 'green'}}
+          props={{
+            position: [1, 0.5, 4],
+            collision: 'static',
+          }}
+        />
+
+        {/* <Gltf
           ref={anotherOneRef}
           props={{
             position: [0, 1.01, 7],
             collision: 'static',
           }}
           url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf"
-        />
+        /> */}
       </Group>
 
       {/*  <Gltf

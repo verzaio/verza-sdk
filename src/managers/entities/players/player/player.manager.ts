@@ -10,6 +10,7 @@ import {degToRad, radToDeg} from 'three/src/math/MathUtils';
 
 import EntityManager from '../../entity/entity.manager';
 import type PlayerHandleManager from './player-handle.manager';
+import PlayerVoicechatManager from './player-voicechat.manager';
 
 class PlayerManager extends EntityManager<
   PlayerEntity,
@@ -20,6 +21,8 @@ class PlayerManager extends EntityManager<
   private get _messenger() {
     return this.engine.messenger;
   }
+
+  voicechat: PlayerVoicechatManager;
 
   get name() {
     return this.data.name ?? `Player ${this.id}`;
@@ -43,6 +46,8 @@ class PlayerManager extends EntityManager<
 
   constructor(entity: PlayerEntity, engine: EngineManager) {
     super(entity, engine);
+
+    this.voicechat = new PlayerVoicechatManager(this);
   }
 
   setName(name: string) {

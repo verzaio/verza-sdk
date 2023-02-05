@@ -1,6 +1,3 @@
-import {startTransition} from 'react';
-
-import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
   EntityDrawDistance,
   EntityItem,
@@ -13,6 +10,7 @@ import EngineManager from '../../engine.manager';
 import EventsManager, {EventListenersMap} from '../../events.manager';
 import EntityHandleManager from './entity-handle.manager';
 import {DEFAULT_ENTITY_DRAW_DISTANCE} from 'engine/definitions/constants/streamer.constants';
+import EntityStreamManager from './entity-stream.manager';
 
 class EntityManager<
   T extends EntityItem = EntityItem,
@@ -34,6 +32,8 @@ class EntityManager<
     null!;
 
   private _location = new Object3D();
+
+  stream: EntityStreamManager = null!;
 
   /* accessors */
   get id(): T['id'] {
@@ -60,10 +60,7 @@ class EntityManager<
     return this._location.quaternion;
   }
 
-  // TODO: Implement
-  get dimension() {
-    return 0;
-  }
+  dimension = 0;
 
   drawDistance: EntityDrawDistance = DEFAULT_ENTITY_DRAW_DISTANCE;
 
@@ -72,57 +69,60 @@ class EntityManager<
     this.engine = engine;
   }
 
-  restorePosition() {
-    startTransition(() => {
-      // set draw distance
-      if (this.data?.m?.d) {
-        this.drawDistance = this.data.m.d;
-      }
+  restoreData() {
+    // dimension
+    if (this.data.dimension !== undefined) {
+      this.dimension = this.data.dimension;
+    }
 
-      // world position | WorldPosition
-      if (this.data.p?.p) {
-        this.location.position.set(
-          this.data.p.p[0], // x
-          this.data.p.p[1], // y
-          this.data.p.p[2], // z
+    // set draw distance
+    if (this.data?.m?.d) {
+      this.drawDistance = this.data.m.d;
+    }
+
+    // world position | WorldPosition
+    if (this.data.p?.p) {
+      this.location.position.set(
+        this.data.p.p[0], // x
+        this.data.p.p[1], // y
+        this.data.p.p[2], // z
+      );
+
+      // rotation as quaternion
+      if (this.data.p.p[7] !== undefined) {
+        this.location.quaternion.set(
+          this.data.p.p[4], // rx
+          this.data.p.p[5], // ry
+          this.data.p.p[6], // rz
+          this.data.p.p[7], // rw
         );
-
-        // rotation as quaternion
-        if (this.data.p.p[7] !== undefined) {
-          this.location.quaternion.set(
+      } else {
+        // rotation as euler
+        if (this.data.p.p[4] !== undefined) {
+          this.location.rotation.set(
             this.data.p.p[4], // rx
             this.data.p.p[5], // ry
             this.data.p.p[6], // rz
-            this.data.p.p[7], // rw
           );
-        } else {
-          // rotation as euler
-          if (this.data.p.p[4] !== undefined) {
-            this.location.rotation.set(
-              this.data.p.p[4], // rx
-              this.data.p.p[5], // ry
-              this.data.p.p[6], // rz
-            );
-          }
         }
       }
+    }
 
-      // position
-      if (this.data.position) {
-        this.location.position.set(...this.data.position);
-      }
+    // position
+    if (this.data.position) {
+      this.location.position.set(...this.data.position);
+    }
 
-      // rotation
-      if (this.data.rotation) {
-        // QuaternionArray
-        if (this.data.rotation.length === 4) {
-          this.location.quaternion.set(...this.data.rotation);
-        } else {
-          // Vector3Array
-          this.location.rotation.set(...this.data.rotation);
-        }
+    // rotation
+    if (this.data.rotation) {
+      // QuaternionArray
+      if (this.data.rotation.length === 4) {
+        this.location.quaternion.set(...this.data.rotation);
+      } else {
+        // Vector3Array
+        this.location.rotation.set(...this.data.rotation);
       }
-    });
+    }
   }
 }
 

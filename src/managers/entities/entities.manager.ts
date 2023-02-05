@@ -2,6 +2,7 @@ import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants'
 import type {EntityType} from '../../definitions/enums/entities.enums';
 import EngineManager from '../engine.manager';
 import EventsManager from '../events.manager';
+import EntityStreamManager from './entity/entity-stream.manager';
 import EntityManager from './entity/entity.manager';
 
 class EntitiesManager<T extends EntityManager = EntityManager> {
@@ -18,6 +19,8 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
   Handler: any = null!;
 
   Manager: any = null!;
+
+  useStreamer = false;
 
   constructor(type: keyof typeof EntityType, engine: EngineManager) {
     this.type = type;
@@ -66,6 +69,11 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
 
     // set events
     this.engine.eventsManager.set(`${entity.type}.${entity.id}`, entity.events);
+
+    // init players streamer
+    if (this.useStreamer) {
+      entity.stream = new EntityStreamManager(entity);
+    }
 
     // set maps
     this.entitiesMap.set(id, entity as T);

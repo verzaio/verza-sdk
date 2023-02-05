@@ -28,8 +28,8 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
 
     this._binded = true;
 
-    // player updates
-    if (this.engine.syncPlayerUpdates) {
+    // player updates only on client
+    if (!this.engine.isServer && this.engine.syncPlayerUpdates) {
       this._messenger.events.on(
         'onPlayerUpdate',
         ({data: [playerId, packet]}) => {
@@ -96,6 +96,11 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     // character
     if ('c' in packet) {
       player.data.character = packet.c;
+    }
+
+    // dimension
+    if ('d' in packet) {
+      player.dimension = packet.d ?? 0;
     }
 
     // position

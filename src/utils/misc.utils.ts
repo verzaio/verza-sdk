@@ -7,7 +7,7 @@ export const isValidEnv = (): boolean => {
   // local not allowed
   if (window.self === window.top || !window.top) {
     console.debug(
-      'Script cannot initiate from the same page, make sure the script is included on the server.',
+      "Client Script cannot initiate from the same page, make sure the script is added/connected to the Server's settings",
     );
     return false;
   }
