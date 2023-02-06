@@ -1,16 +1,9 @@
 import {MAX_CLIENT_OBJECT_SIZE} from 'engine/definitions/constants/networks.constants';
 import {CustomEventData} from 'engine/definitions/types/scripts.types';
-import {
-  CustomPacketSendDto,
-  EncryptedPacketsDto,
-  ServerDto,
-} from 'engine/generated/dtos.types';
+import {EncryptedPacketsDto, ServerDto} from 'engine/generated/dtos.types';
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
-import {
-  PacketDestination,
-  PacketEvent,
-} from 'engine/definitions/enums/networks.enums';
+import {PacketDestination} from 'engine/definitions/enums/networks.enums';
 
 type EventData = {
   [name: string]: unknown;
@@ -61,7 +54,7 @@ class NetworkManager {
     );
   }
 
-  onPlayersEvent(
+  onPlayerEvent(
     event: string,
     listener: (player: PlayerManager, data: CustomEventData) => void,
   ) {
@@ -76,6 +69,12 @@ class NetworkManager {
   }
 
   onServerEvent(event: string, listener: (data: CustomEventData) => void) {
+    if (this._isServer) {
+      throw new Error(
+        "You can't use network.onServerEvent server-side. If you're receving an event form the client use network.onPlayerEvent instead",
+      );
+    }
+
     const listenerWrapper = (data?: CustomEventData) => {
       listener(data!);
     };
@@ -90,7 +89,7 @@ class NetworkManager {
     return this._engine.events.off(`onServerCustomEvent_${event}`, listener);
   }
 
-  offPlayersEvent(
+  offPlayerEvent(
     event: string,
     listener: (player: number, data?: CustomEventData) => void,
   ) {

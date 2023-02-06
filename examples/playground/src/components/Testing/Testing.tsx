@@ -5,7 +5,7 @@ import CameraTest from './CameraTest';
 import InterfaceTest from './InterfaceTest';
 import ObjectsTest from './ObjectsTest';
 import PlayersTest from './PlayersTest';
-import ServerTest from './ServerTest';
+import WebServerTest from './WebServerTest';
 import WebsocketsServer from './WebsocketsServer';
 
 const Testing = () => {
@@ -41,7 +41,7 @@ const Testing = () => {
     <>
       <WebsocketsServer />
 
-      <ServerTest />
+      <WebServerTest />
 
       <PlayersTest />
 

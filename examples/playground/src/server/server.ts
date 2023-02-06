@@ -23,7 +23,7 @@ export const initServer = (engine: EngineManager) => {
   );
 
   // event listener
-  engine.network.onServerEvent('onTestingEmit', data => {
+  engine.network.onPlayerEvent('onClientToWebServer', data => {
     const {name} = engine.z
       .object({
         name: engine.z.string(),
@@ -32,8 +32,8 @@ export const initServer = (engine: EngineManager) => {
 
     console.log('HELLOOOO!', name);
 
-    engine.network.emitToPlayers('onTestingReceived', {
-      hey: 'emitToPlayers received?',
+    engine.network.emitToPlayers('onWebServerReceived', {
+      hey: 'emitToPlayers received? (onWebServerReceived)',
     });
 
     engine.player.sendMessage(`Hey ${name}! Name: {red,name=1} {white}Test`);

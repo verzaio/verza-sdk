@@ -264,7 +264,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     } as MessengerMessage);
   }
 
-  async emit<A extends keyof Events>(
+  emit<A extends keyof Events>(
     eventName: A,
     args?: Parameters<Events[A]>,
     transfer?: Array<Transferable | OffscreenCanvas>,

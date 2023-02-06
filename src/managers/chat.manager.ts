@@ -19,14 +19,14 @@ class ChatManager {
 
   // server only
   sendMessageToAll(text: string) {
-    if (!this._engine.isServer) return;
+    if (!this._engine.isServer) {
+      throw new Error('sendMessageToAll is only available on server-side');
+    }
 
     this._engine.api.emitAction('sendMessage', [text]);
   }
 
   sendMessageTo(player: PlayerManager | number, text: string) {
-    if (!this._engine.isServer) return;
-
     const playerId = typeof player === 'number' ? player : player.id;
 
     this._engine.api.emitAction('sendMessage', [text, playerId]);

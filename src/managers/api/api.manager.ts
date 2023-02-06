@@ -26,11 +26,13 @@ class ApiManager {
 
   webServer: WebServerManager = null!;
 
-  webServerEndpoint: string = null!;
-
   accessToken: string = null!;
 
   private _accessTokenBase64: string = null!;
+
+  get webServerEndpoint() {
+    return this.webServer.webServerEndpoint;
+  }
 
   get isWebServerAvailable() {
     return this.isClient && !!this.webServerEndpoint;
@@ -169,6 +171,13 @@ class ApiManager {
     } else {
       this.websocketServer.emitAction(eventName, args);
     }
+  }
+
+  async emitLocalAction<A extends keyof ScriptEventMap>(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+  ) {
+    this._engine.messenger.emitLocal(eventName, args);
   }
 
   connectWs() {

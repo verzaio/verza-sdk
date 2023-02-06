@@ -160,13 +160,6 @@ class WebsocketServerManager {
     } satisfies ScriptActionPacketSendDto);
   }
 
-  async emitLocalAction<A extends keyof ScriptEventMap>(
-    eventName: A,
-    args?: Parameters<ScriptEventMap[A]>,
-  ) {
-    this._engine.messenger.emitLocal(eventName, args);
-  }
-
   private _handlePacket = (packet: PacketDto) => {
     // console.log('packet', packet);
 
@@ -182,7 +175,7 @@ class WebsocketServerManager {
       // script action
       case PacketId.a: {
         const dto = packet as ScriptActionPacketDto;
-        this.emitLocalAction(
+        this._engine.api.emitLocalAction(
           dto.e as keyof ScriptEventMap,
           dto.d ? (dto.d as any) : [],
         );

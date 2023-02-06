@@ -77,8 +77,6 @@ class CommandsManager {
           .get(key)
           ?.process(player, command.substring(key.length).trim());
       } else {
-        console.log('emitting??', this._engine.api.isWebServerAvailable);
-
         // emit command to web server if available
         if (this._engine.api.isWebServerAvailable) {
           this._engine.api.webServer.emitChatPacket(text);

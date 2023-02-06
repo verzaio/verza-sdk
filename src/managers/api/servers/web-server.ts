@@ -159,13 +159,15 @@ class WebServerManager {
           })
           .parse(packet);
 
-        this._engine.messenger.emitLocal(`onServerCustomEvent_${parsed.e}`, [
+        this._engine.messenger.emitLocal(`onPlayerCustomEvent_${parsed.e}`, [
+          this._engine.player.id,
+
           parsed.d,
         ]);
         break;
       }
       default: {
-        console.debug(`[api] unhandled packet for api endpoint: ${event}`);
+        console.debug(`[webserver] unhandled packet: ${event}`);
       }
     }
   }

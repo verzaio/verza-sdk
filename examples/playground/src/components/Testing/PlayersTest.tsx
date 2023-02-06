@@ -7,12 +7,12 @@ const PlayersTest = () => {
   const network = useNetwork();
 
   useEffect(() => {
-    const onTesting = network.onPlayersEvent('onTesting', (player, data) => {
+    const onTesting = network.onPlayerEvent('onTesting', (player, data) => {
       console.log('player', player.name, data);
     });
 
     return () => {
-      network.offPlayersEvent('onTesting', onTesting);
+      network.offPlayerEvent('onTesting', onTesting);
     };
   }, [network]);
 
