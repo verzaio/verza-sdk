@@ -374,34 +374,15 @@ export interface ServerDto {
   created_at: string;
 }
 
-export interface ChatPacketSendDto {
+export interface ScriptActionPacketDto {
   /**
-   * message
+   * event
    * @minLength 1
-   * @maxLength 1024
-   */
-  m: string;
-  /** player id (exclusive for servers) */
-  p?: number;
-}
-
-export interface CustomPacketSendDto {
-  /**
-   * destination | PacketDestination
-   * @min 0
-   * @max 1
-   */
-  p: number;
-  /**
-   * event name
-   * @minLength 1
-   * @maxLength 256
+   * @maxLength 128
    */
   e: string;
-  /** data */
-  d?: object;
-  /** to player id */
-  i?: number;
+  /** sync data */
+  d: object[];
 }
 
 export interface JoinPacketDto {
@@ -658,6 +639,15 @@ export interface ChatPacketDto {
   m: string;
 }
 
+export interface ChatPacketSendDto {
+  /**
+   * message
+   * @minLength 1
+   * @maxLength 1024
+   */
+  m: string;
+}
+
 export interface VoicePacketDto {
   /** packet id */
   t: number;
@@ -699,6 +689,13 @@ export interface SyncPacketSendDto {
   packets: boolean;
 }
 
+export interface ScriptSyncPacketDto {
+  /** packet id */
+  t: number;
+  /** sync data */
+  d: object[];
+}
+
 export interface CustomPacketDto {
   /** packet id */
   t: number;
@@ -712,11 +709,23 @@ export interface CustomPacketDto {
   d?: object;
 }
 
-export interface ScriptSyncPacketDto {
-  /** packet id */
-  t: number;
-  /** sync data */
-  d: object[];
+export interface CustomPacketSendDto {
+  /**
+   * destination | PacketDestination
+   * @min 0
+   * @max 1
+   */
+  p: number;
+  /**
+   * event name
+   * @minLength 1
+   * @maxLength 256
+   */
+  e: string;
+  /** data */
+  d?: object;
+  /** to player id */
+  i?: number;
 }
 
 export interface PlayerIdDto {

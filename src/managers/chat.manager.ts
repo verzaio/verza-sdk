@@ -17,33 +17,19 @@ class ChatManager {
     return (text ?? '')?.replaceAll(CHAT_INPUT_DELIMITER_REGEX, '');
   }
 
-  // client & server
-  sendMessage(text: string) {
-    if (this._engine.isServer) {
-      if (!this._engine.player) return;
-
-      this._engine.api.emitChat(text, this._engine.player.id);
-      return;
-    }
-
-    this._messenger.emit('onSendMessage', [text]);
-  }
-
-  // server only
-  sendMessageToPlayer(player: PlayerManager | number, text: string) {
-    if (!this._engine.isServer) return;
-
-    this._engine.api.emitChat(
-      text,
-      typeof player === 'number' ? player : player.id,
-    );
-  }
-
   // server only
   sendMessageToAll(text: string) {
     if (!this._engine.isServer) return;
 
-    this._engine.api.emitChat(text);
+    this._engine.api.emitAction('sendMessage', [text]);
+  }
+
+  sendMessageTo(player: PlayerManager | number, text: string) {
+    if (!this._engine.isServer) return;
+
+    const playerId = typeof player === 'number' ? player : player.id;
+
+    this._engine.api.emitAction('sendMessage', [text, playerId]);
   }
 }
 

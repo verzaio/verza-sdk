@@ -6,7 +6,6 @@ import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EventKey} from 'engine/definitions/types/events.types';
 import {isValidEnv} from 'engine/utils/misc.utils';
 import ApiManager from './api/api.manager';
-import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
@@ -30,8 +29,6 @@ class EngineManager {
   chat: ChatManager;
 
   commands: CommandsManager;
-
-  camera: CameraManager = null!;
 
   messenger = new MessengerManager<ScriptEventMap>('sender');
 
@@ -117,10 +114,6 @@ class EngineManager {
 
     this.commands = new CommandsManager(this);
 
-    if (this.isClient) {
-      this.camera = new CameraManager(this);
-    }
-
     // set renders
     Object.entries(ENTITIES_RENDERS).forEach(([key, value]) => {
       this.entities[key as keyof typeof ENTITIES_RENDERS].Handler =
@@ -145,7 +138,7 @@ class EngineManager {
     this._setup();
 
     // sync player id
-    this.messenger.events.on('onSetPlayerId', ({data: [playerId]}) => {
+    this.messenger.events.on('setPlayerId', ({data: [playerId]}) => {
       this.playerId = playerId;
     });
 

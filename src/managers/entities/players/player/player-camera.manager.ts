@@ -1,30 +1,20 @@
-import {Vector3} from 'three';
-
 import {
   CameraModeType,
   CameraPosition,
   CameraTransition,
 } from 'engine/definitions/types/camera.types';
+import {Vector3} from 'three';
+import PlayerManager from './player.manager';
 
-import EngineManager from './engine.manager';
-
-class CameraManager {
-  private _engine: EngineManager;
-
-  mode: CameraModeType = 'world';
+class PlayerCameraManager {
+  private _player: PlayerManager;
 
   private get _messenger() {
-    return this._engine.messenger;
+    return this._player.messenger;
   }
 
-  constructor(engine: EngineManager) {
-    this._engine = engine;
-  }
-
-  setMode(mode: CameraModeType, instant = true) {
-    this.mode = mode;
-
-    this._messenger.emit('onCameraModeChange', [mode, instant]);
+  constructor(player: PlayerManager) {
+    this._player = player;
   }
 
   private _normalizePosition(transition: CameraTransition) {
@@ -41,25 +31,36 @@ class CameraManager {
     }
   }
 
+  setMode(mode: CameraModeType, instant = true) {
+    this._messenger.emit('onCameraModeChange', [
+      this._player.id,
+      mode,
+      instant,
+    ]);
+  }
+
   setTransitions(transitions: CameraTransition[]) {
     transitions.forEach(transition => {
       this._normalizePosition(transition);
     });
 
-    this._messenger.emit('setCameraTransitions', [transitions]);
+    this._messenger.emit('setCameraTransitions', [
+      this._player.id,
+      transitions,
+    ]);
   }
 
   setTransition(transition: CameraTransition) {
     this._normalizePosition(transition);
 
-    this._messenger.emit('setCameraTransition', [transition]);
+    this._messenger.emit('setCameraTransition', [this._player.id, transition]);
   }
 
   setPosition(transition: CameraPosition) {
     this._normalizePosition(transition);
 
-    this._messenger.emit('setCameraPosition', [transition]);
+    this._messenger.emit('setCameraPosition', [this._player.id, transition]);
   }
 }
 
-export default CameraManager;
+export default PlayerCameraManager;

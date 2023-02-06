@@ -10,7 +10,7 @@ import {
   ScriptEventMap,
 } from 'engine/definitions/types/scripts.types';
 
-import {MessengerManagerEventsMap} from 'engine/managers/messenger.manager';
+import {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
 
 import useEngine from 'engine/frameworks/react/hooks/useEngine';
 import useEvent from 'engine/frameworks/react/hooks/useEvent';

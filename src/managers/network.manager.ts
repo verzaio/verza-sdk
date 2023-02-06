@@ -23,6 +23,18 @@ class NetworkManager {
 
   encryptedPackets: EncryptedPacketsDto = null!;
 
+  private get _api() {
+    return this._engine.api;
+  }
+
+  private get _isClient() {
+    return this._engine.api.isClient;
+  }
+
+  private get _isServer() {
+    return this._engine.api.isServer;
+  }
+
   private get _messenger() {
     return this._engine.messenger;
   }
@@ -33,10 +45,10 @@ class NetworkManager {
 
   bind() {
     // ignore if is server
-    if (this._engine.isServer) return;
+    if (this._isServer) return;
 
     this._messenger.events.on('syncServer', ({data: [server, endpoint]}) => {
-      this._engine.api.endpoint = endpoint;
+      this._api.endpoint = endpoint;
 
       this.server = server;
     });
@@ -85,46 +97,43 @@ class NetworkManager {
     return this._engine.events.off(`onPlayerCustomEvent_${event}`, listener);
   }
 
+  // client & server
   emitToServer(event: string, data?: EventData) {
     // check packet size limit
     if (!this._checkPacketSize(data?.d)) return;
 
-    // emit to verza
-    this._messenger.emit('emitToServer', [event, data]);
+    // emit to http server
+    if (this._api.isHttpServerAvailable) {
+      this._api.httpServer.emitCustomPacket({
+        p: PacketDestination.Server, // PacketDestination
 
-    // emit local
-    const customPacket: CustomPacketSendDto = {
-      p: PacketDestination.Server, // PacketDestination
+        e: event, // event name
 
-      e: event, // event name
+        d: data, // data
+      });
+    }
 
-      d: data, // data
-    };
-
-    // emit to server endpoint
-    this._engine.api.emitPacket(PacketEvent.Custom, customPacket);
+    // emit from server
+    this._api.emitAction('emitToServer', [event, data]);
   }
 
   emitToPlayers(event: string, data?: EventData) {
     // check packet size limit
     if (!this._checkPacketSize(data?.d)) return;
 
-    // emit to server
-    if (this._engine.api.isServer) {
-      const custompacket: CustomPacketSendDto = {
-        e: event,
+    // emit to http server
+    if (this._api.isHttpServerAvailable) {
+      this._api.httpServer.emitCustomPacket({
+        p: PacketDestination.Client, // PacketDestination
 
-        p: PacketDestination.Client,
+        e: event, // event name
 
-        d: data,
-      };
-
-      this._engine.api.emitPacket(PacketEvent.Custom, custompacket);
-      return;
+        d: data, // data
+      });
     }
 
-    // emit to clients
-    this._messenger.emit('emitToPlayers', [event, data]);
+    // emit from server
+    this._api.emitAction('emitToPlayers', [event, data]);
   }
 
   emitToPlayer(
@@ -135,28 +144,23 @@ class NetworkManager {
     // check packet size limit
     if (!this._checkPacketSize(data?.d)) return;
 
-    // emit to server
-    if (this._engine.api.isServer) {
-      const custompacket: CustomPacketSendDto = {
-        e: event,
+    const playerId = typeof player === 'number' ? player : player.id;
 
-        p: PacketDestination.Client,
+    // emit to http server
+    if (this._api.isHttpServerAvailable) {
+      this._api.httpServer.emitCustomPacket({
+        p: PacketDestination.Client, // PacketDestination
 
-        i: typeof player === 'number' ? player : player.id,
+        e: event, // event name
 
-        d: data,
-      };
+        d: data, // data
 
-      this._engine.api.emitPacket(PacketEvent.Custom, custompacket);
-      return;
+        i: playerId, // player id
+      });
     }
 
-    // emit to client
-    this._messenger.emit('emitToPlayer', [
-      typeof player === 'number' ? player : player.id,
-      event,
-      data,
-    ]);
+    // send to server
+    this._api.emitAction('emitToPlayer', [playerId, event, data]);
   }
 
   private _checkPacketSize(data: unknown) {

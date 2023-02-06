@@ -1,10 +1,15 @@
 import {io, Socket} from 'socket.io-client';
 import msgpackParser from 'socket.io-msgpack-parser';
 
-import {ServerDto, ScriptSyncPacketDto} from 'engine/generated/dtos.types';
+import {
+  ServerDto,
+  ScriptSyncPacketDto,
+  ScriptActionPacketDto,
+} from 'engine/generated/dtos.types';
 import {PacketEvent, PacketId} from 'engine/definitions/enums/networks.enums';
 import EngineManager from 'engine/managers/engine.manager';
 import SyncManager from './sync.manager';
+import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 const WS_NAMESPACE = 'n';
 
@@ -143,6 +148,16 @@ class WebsocketServerManager {
 
     this.socket.disconnect();
     this.socket = null!;
+  }
+
+  async emitAction<A extends keyof ScriptEventMap>(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+  ) {
+    this.socket.emit(PacketEvent.ScriptAction, {
+      e: eventName,
+      d: args as any,
+    } satisfies ScriptActionPacketDto);
   }
 
   private _handlePacket = (packet: PacketDto) => {

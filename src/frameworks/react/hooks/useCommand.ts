@@ -13,10 +13,10 @@ const useCommand = <Params extends CommandParam[] = CommandParam[]>(
   });
 
   useEffect(() => {
-    engine.commands.add(cmd as unknown as Command);
+    engine.commands.register(cmd as unknown as Command);
 
     return () => {
-      engine.commands.remove(cmd as unknown as Command);
+      engine.commands.unregister(cmd as unknown as Command);
     };
   }, [cmd]);
 

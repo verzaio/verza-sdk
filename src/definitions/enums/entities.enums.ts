@@ -3,3 +3,9 @@ export enum EntityType {
 
   object = 'object',
 }
+
+export enum EntityDrawDistance {
+  low = 'low',
+  mid = 'mid',
+  high = 'high',
+}

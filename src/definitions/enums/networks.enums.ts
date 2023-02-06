@@ -42,6 +42,7 @@ export type NetworkSyncEventMap = {
 export enum PacketEvent {
   /* scripts */
   ScriptJoin = 's',
+  ScriptAction = 'a',
 
   /* player connection */
   Join = 'j', // join

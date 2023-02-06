@@ -18,7 +18,17 @@ class CommandsManager {
 
     this._binded = true;
 
-    this._engine.events.on('onChat', text => {
+    this._engine.events.on('onChat', (text, playerId) => {
+      // resolve player
+      const player =
+        playerId !== undefined
+          ? this._engine.players.get(playerId)
+          : this._engine.player;
+
+      if (!player) {
+        console.debug(`[chat] playerId: ${playerId} not found`);
+        return;
+      }
       // check if is a command
       if (text.startsWith('/') === false) return;
 
@@ -35,10 +45,12 @@ class CommandsManager {
       if (key) {
         this._commands
           .get(key)
-          ?.process(this._engine, command.substring(key.length).trim());
+          ?.process(player, command.substring(key.length).trim());
       } else {
-        // emit command to script server if not found in local
-        this._engine.api.emitChat(text, undefined, 'script');
+        // emit command to http server if not found in local
+        if (this._engine.api.isHttpServerAvailable) {
+          this._engine.api.httpServer.emitChatPacket(text);
+        }
       }
 
       // emit local commands
@@ -63,19 +75,19 @@ class CommandsManager {
     });
   }
 
-  add(command: Command<any>) {
+  register(command: Command<any>) {
     this._commands.set(command.command.toLowerCase(), command);
 
-    this._engine.messenger.emit('onAddCommand', [command.toObject()]);
+    this._engine.messenger.emit('registerCommand', [command.toObject()]);
 
     // try to bind
     this.bind();
   }
 
-  remove(command: Command<any>) {
+  unregister(command: Command<any>) {
     this._commands.delete(command.command.toLowerCase());
 
-    this._engine.messenger.emit('onRemoveCommand', [command.command]);
+    this._engine.messenger.emit('unregisterCommand', [command.command]);
   }
 
   destroy() {

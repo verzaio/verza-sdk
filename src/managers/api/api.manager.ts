@@ -4,11 +4,10 @@ import {
   encryptMessage,
   hexToBase64Key,
 } from 'engine/utils/encryption.utils';
-import {ChatPacketSendDto, ServerDto} from 'engine/generated/dtos.types';
-import {PacketEvent} from 'engine/definitions/enums/networks.enums';
-import {ServerScope} from 'engine/definitions/local/types/api.types';
+import {ServerDto} from 'engine/generated/dtos.types';
 import WebsocketServerManager from './servers/websocket-server';
 import HttpServerManager from './servers/http-server';
+import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 const DEFAULT_ENV_ACCESS_TOKEN_NAME = 'VERZA_ACCESS_TOKEN';
 
@@ -32,6 +31,18 @@ class ApiManager {
   accessToken: string = null!;
 
   private _accessTokenBase64: string = null!;
+
+  get isHttpServerAvailable() {
+    return this.isClient && !!this.httpServerEndpoint;
+  }
+
+  get isHttpServer() {
+    return this.isServer && !this.websocketServer;
+  }
+
+  get isWebsocketServer() {
+    return this.isServer && !!this.websocketServer;
+  }
 
   get isServer() {
     return this.isApi;
@@ -134,26 +145,29 @@ class ApiManager {
     return this.httpServer.handle(rawData);
   }
 
-  emitChat(text: string, playerId?: number, scope?: ServerScope) {
-    const chatPacket: ChatPacketSendDto = {
-      m: text,
+  async emitAction<A extends keyof ScriptEventMap>(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+  ) {
+    // client
+    if (this.isClient) {
+      this._engine.messenger.emit(eventName, args);
+      return;
+    }
 
-      p: playerId,
-    };
-
-    // emit
-    this.emitPacket(PacketEvent.Chat, chatPacket, scope);
+    // server
+    this.emitActionToServer(eventName, args);
   }
 
-  emitPacket(event: PacketEvent, data?: unknown, scope?: ServerScope) {
-    if (this.isServer) {
-      if (!scope || scope === 'remote') {
-        this.httpServer.emitToServerAction(event, data);
-      }
+  async emitActionToServer<A extends keyof ScriptEventMap>(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+  ) {
+    // server
+    if (this.websocketServer) {
+      this.websocketServer.emitAction(eventName, args);
     } else {
-      if (!scope || scope === 'script') {
-        this.httpServer.emit(event, data);
-      }
+      this.httpServer.emitAction(eventName, args);
     }
   }
 

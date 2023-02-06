@@ -46,12 +46,12 @@ class UIManager {
   bind() {
     document.addEventListener('keyup', this._onEscapeKey);
 
-    this._messenger.events.on('onAddInterface', ({data: [tag]}) => {
+    this._messenger.events.on('addInterface', ({data: [tag]}) => {
       this.interfaces.add(tag);
       this.controller.set('interfaces', new Set(this.interfaces));
     });
 
-    this._messenger.events.on('onRemoveInterface', ({data: [tag]}) => {
+    this._messenger.events.on('removeInterface', ({data: [tag]}) => {
       this.interfaces.delete(tag);
       this.controller.set('interfaces', new Set(this.interfaces));
     });
@@ -69,11 +69,11 @@ class UIManager {
 
   /* interfaces */
   addInterface(tag: string) {
-    this._messenger.emit('onAddInterface', [tag]);
+    this._messenger.emit('addInterface', [tag]);
   }
 
   removeInterface(tag: string) {
-    this._messenger.emit('onRemoveInterface', [tag]);
+    this._messenger.emit('removeInterface', [tag]);
   }
 
   hasInterface(tag: string) {

@@ -41,33 +41,33 @@ export type ScriptEventMap = {
   unregister: (eventName: string) => void;
 
   /* engine */
-  onSetPlayerId: (playerId: number) => void;
+  setPlayerId: (playerId: number) => void;
 
   onFrame: (delta: number) => void;
 
   onSynced: () => void;
 
   /* chat */
-  onChat: (text: string) => void;
+  onChat: (text: string, playerId?: number) => void;
 
-  onSendMessage: (text: string) => void;
+  sendMessage: (text: string, playerId?: number) => void;
 
-  onCommand: (command: string) => void;
+  onCommand: (command: string, player?: PlayerManager) => void;
 
   onCommandNotFound: (command: string) => void;
 
-  onAddCommand: (command: CommandInfo) => void;
+  registerCommand: (command: CommandInfo) => void;
 
-  onRemoveCommand: (command: string) => void;
+  unregisterCommand: (command: string) => void;
 
   /* ui */
   onEscapeKey: () => void;
 
   onKey: (keyInfo: KeyInfo) => void;
 
-  onAddInterface: (tag: string) => void;
+  addInterface: (tag: string) => void;
 
-  onRemoveInterface: (tag: string) => void;
+  removeInterface: (tag: string) => void;
 
   onCursorLock: (status: boolean) => void;
 
@@ -118,13 +118,20 @@ export type ScriptEventMap = {
   setPlayerCameraBehind: (playerId: number) => void;
 
   /* camera */
-  onCameraModeChange: (mode: CameraModeType, instant?: boolean) => void;
+  onCameraModeChange: (
+    playerId: number,
+    mode: CameraModeType,
+    instant?: boolean,
+  ) => void;
 
-  setCameraTransitions: (transitions: CameraTransition[]) => void;
+  setCameraTransitions: (
+    playerId: number,
+    transitions: CameraTransition[],
+  ) => void;
 
-  setCameraTransition: (transition: CameraTransition) => void;
+  setCameraTransition: (playerId: number, transition: CameraTransition) => void;
 
-  setCameraPosition: (position: CameraPosition) => void;
+  setCameraPosition: (playerId: number, position: CameraPosition) => void;
 
   onCameraTransitionStart: (id?: number | string) => void;
 

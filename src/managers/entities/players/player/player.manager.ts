@@ -9,7 +9,9 @@ import {Euler, Quaternion, Vector3} from 'three';
 import {degToRad, radToDeg} from 'three/src/math/MathUtils';
 
 import EntityManager from '../../entity/entity.manager';
+import PlayerCameraManager from './player-camera.manager';
 import type PlayerHandleManager from './player-handle.manager';
+import PlayerMessengerManager from './player-messenger.manager';
 import PlayerVoicechatManager from './player-voicechat.manager';
 
 class PlayerManager extends EntityManager<
@@ -18,11 +20,15 @@ class PlayerManager extends EntityManager<
   PlayerEventMap
 > {
   /* accessors */
-  private get _messenger() {
-    return this.engine.messenger;
+  private _messenger: PlayerMessengerManager = null!;
+
+  get messenger() {
+    return this._messenger ?? this.engine.messenger;
   }
 
   voicechat: PlayerVoicechatManager;
+
+  camera: PlayerCameraManager = null!;
 
   get name() {
     return this.data.name ?? `Player ${this.id}`;
@@ -48,6 +54,14 @@ class PlayerManager extends EntityManager<
     super(entity, engine);
 
     this.voicechat = new PlayerVoicechatManager(this);
+
+    if (engine.isServer) {
+      this._messenger = new PlayerMessengerManager(this);
+    }
+
+    if (engine.isServer || this.isControlling) {
+      this.camera = new PlayerCameraManager(this);
+    }
   }
 
   setName(name: string) {
@@ -115,6 +129,10 @@ class PlayerManager extends EntityManager<
 
   setCameraBehind() {
     this._messenger.emit('setPlayerCameraBehind', [this.id]);
+  }
+
+  sendMessage(message: string) {
+    this.engine.chat.sendMessageTo(this.id, message);
   }
 }
 

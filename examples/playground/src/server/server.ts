@@ -2,19 +2,19 @@ import {Command, CommandParam, EngineManager} from '@verza/sdk';
 
 export const initServer = (engine: EngineManager) => {
   // command
-  engine.commands.add(
+  engine.commands.register(
     new Command('abc', [
       new CommandParam('name', 'string'),
       new CommandParam('age', 'number'),
     ]).onExecution(({name, age}) => {
       console.log('executed!!', name, age);
 
-      engine.chat.sendMessage(`Hey ${name} - ${age}! - sendMessage`);
+      engine.player.sendMessage(`Hey ${name} - ${age}! - sendMessage`);
 
       engine.chat.sendMessageToAll(`Hey ${name} - ${age}! - sendMessageToAll`);
 
-      engine.chat.sendMessageToPlayer(
-        engine.player.id,
+      engine.chat.sendMessageTo(
+        engine.player,
         `Hey ${name} - ${age}! - sendMessageToPlayer`,
       );
     }),
@@ -34,6 +34,6 @@ export const initServer = (engine: EngineManager) => {
       hey: 'emitToPlayers received?',
     });
 
-    engine.chat.sendMessage(`Hey ${name}! Name: {red,name=1} {white}Test`);
+    engine.player.sendMessage(`Hey ${name}! Name: {red,name=1} {white}Test`);
   });
 };

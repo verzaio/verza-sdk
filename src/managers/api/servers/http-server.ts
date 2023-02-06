@@ -3,12 +3,17 @@ import {z} from 'zod';
 import {
   ChatPacketSendDto,
   CustomPacketSendDto,
+  ScriptActionPacketDto,
 } from 'engine/generated/dtos.types';
-import {PacketEvent} from 'engine/definitions/enums/networks.enums';
+import {
+  PacketDestination,
+  PacketEvent,
+} from 'engine/definitions/enums/networks.enums';
 import {CHAT_MAX_MESSAGE_SIZE} from 'engine/definitions/constants/chat.constants';
 import {ServerEndpointPacket} from 'engine/definitions/local/types/api.types';
 import {ServerScope} from 'engine/definitions/local/types/api.types';
 import EngineManager from 'engine/managers/engine.manager';
+import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 const EXPIRE_TIME_MS = 45000; // 45 seconds
 
@@ -179,30 +184,7 @@ class HttpServerManager {
     return null!;
   }
 
-  emitChat(text: string, playerId?: number, scope?: ServerScope) {
-    const chatPacket: ChatPacketSendDto = {
-      m: text,
-
-      p: playerId,
-    };
-
-    // emit
-    this.emitPacket(PacketEvent.Chat, chatPacket, scope);
-  }
-
-  emitPacket(event: PacketEvent, data?: unknown, scope?: ServerScope) {
-    if (this.isServer) {
-      if (!scope || scope === 'remote') {
-        this.emitToServerAction(event, data);
-      }
-    } else {
-      if (!scope || scope === 'script') {
-        this.emit(event, data);
-      }
-    }
-  }
-
-  emit(event: PacketEvent, data?: unknown) {
+  emitToHttpServer(event: PacketEvent, data?: unknown) {
     // ignore if no endpoint or is not client
     if (!this.httpServerEndpoint || !this.isClient) return;
 
@@ -235,11 +217,14 @@ class HttpServerManager {
     });
   }
 
-  async emitToServerAction(event: PacketEvent, data: unknown) {
+  async emitAction<A extends keyof ScriptEventMap>(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+  ) {
     if (!this.isServer) return;
 
     // format path
-    const path = `${this.endpoint}/network/action/${event}`;
+    const path = `${this.endpoint}/network/action/run`;
 
     // emit to verza servers
     const response = await fetch(path, {
@@ -253,7 +238,10 @@ class HttpServerManager {
 
       credentials: 'omit',
 
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        e: eventName,
+        d: args as any,
+      } satisfies ScriptActionPacketDto),
 
       headers: {
         'Content-Type': 'application/json',
@@ -275,6 +263,21 @@ class HttpServerManager {
         console.error(e);
       }
     }
+  }
+
+  /* packets */
+  emitChatPacket(text: string, playerId?: number) {
+    const chatPacket: ChatPacketSendDto = {
+      m: text,
+    };
+
+    // emit
+    this.emitToHttpServer(PacketEvent.Chat, chatPacket);
+  }
+
+  emitCustomPacket(dto: CustomPacketSendDto) {
+    // emit
+    this.emitToHttpServer(PacketEvent.Custom, dto);
   }
 }
 

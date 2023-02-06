@@ -7,7 +7,7 @@ import {
   CommandInfo,
   CommandParam as CommandParamBase,
 } from 'engine/definitions/types/commands.types';
-import EngineManager from '../engine.manager';
+import PlayerManager from '../entities/players/player/player.manager';
 
 type ParamsList<Params extends CommandParam[] = CommandParam[]> = {
   [K in Params[number]['name']]: ReturnType<
@@ -82,13 +82,13 @@ class Command<Params extends CommandParam[] = CommandParam[]>
     return this;
   }
 
-  process(engine: EngineManager, command: string) {
+  process(player: PlayerManager, command: string) {
     // check for usage
     if (
       (!this.params.length && command.length) ||
       (this.params.length && !command.length)
     ) {
-      this._sendUsage(engine);
+      this._sendUsage(player);
       return;
     }
 
@@ -98,7 +98,7 @@ class Command<Params extends CommandParam[] = CommandParam[]>
 
       // check minimum required params
       if (parts.length < this.params.length) {
-        this._sendUsage(engine);
+        this._sendUsage(player);
         return;
       }
 
@@ -107,7 +107,7 @@ class Command<Params extends CommandParam[] = CommandParam[]>
 
       // check if too many params
       if (!isLastString && parts.length > this.params.length) {
-        this._sendUsage(engine);
+        this._sendUsage(player);
         return;
       }
 
@@ -122,7 +122,7 @@ class Command<Params extends CommandParam[] = CommandParam[]>
 
       // check again
       if (parts.length !== this.params.length) {
-        this._sendUsage(engine);
+        this._sendUsage(player);
         return;
       }
 
@@ -140,7 +140,7 @@ class Command<Params extends CommandParam[] = CommandParam[]>
       });
 
       if (paramError) {
-        this._sendUsage(engine);
+        this._sendUsage(player);
         return;
       }
 
@@ -151,14 +151,14 @@ class Command<Params extends CommandParam[] = CommandParam[]>
     this.callback?.({} as any);
   }
 
-  _sendUsage(engine: EngineManager) {
+  _sendUsage(player: PlayerManager) {
     if (this.params.length) {
       const params = this.params.map(e => `[${e.display ?? e.name}]`).join(' ');
-      engine.chat.sendMessage(`{c5c5c5}Usage: /${this.command} ${params}`);
+      player.sendMessage(`{c5c5c5}Usage: /${this.command} ${params}`);
       return;
     }
 
-    engine.chat.sendMessage(`{c5c5c5}Usage: /${this.command}`);
+    player.sendMessage(`{c5c5c5}Usage: /${this.command}`);
   }
 
   toObject(): CommandInfo {

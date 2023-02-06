@@ -1,7 +1,7 @@
 import useEngine from './useEngine';
 
 const useCamera = () => {
-  return useEngine().camera;
+  return useEngine().player?.camera;
 };
 
 export default useCamera;
