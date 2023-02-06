@@ -1,24 +1,8 @@
-import {EngineManager, useEngine} from '@verza/sdk';
+import {useEngine} from '@verza/sdk';
 import {useEffect} from 'react';
 
 const ServerTest = () => {
   const engine = useEngine();
-
-  // servdr
-  useEffect(() => {
-    const serverEngine = new EngineManager({
-      accessToken: process.env['NEXT_PUBLIC_VERZA_ACCESS_TOKEN'],
-      apiEndpoint: 'http://localhost',
-    });
-
-    console.log('creating');
-    serverEngine.connectServer();
-
-    return () => {
-      console.log('destroying');
-      serverEngine.destroy();
-    };
-  }, []);
 
   // client
   useEffect(() => {

@@ -91,6 +91,8 @@ export enum PacketId {
   n = 7, // custom
 
   j = 8, // script sync
+
+  a = 9, // script action
 }
 
 export enum PacketSource {

@@ -17,7 +17,7 @@ class PlayerMessengerManager {
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
   ) {
-    //
+    this._player.engine.api.emitAction(eventName, args);
   }
 }
 

@@ -1,6 +1,7 @@
 import {} from 'engine/definitions/types/commands.types';
 import Command from './command.manager';
 import EngineManager from '../engine.manager';
+import PlayerManager from '../entities/players/player/player.manager';
 
 class CommandsManager {
   private _engine: EngineManager;
@@ -13,10 +14,39 @@ class CommandsManager {
     this._engine = engine;
   }
 
-  bind() {
+  private _bind() {
     if (this._binded) return;
 
     this._binded = true;
+
+    // client & websocket server
+    if (this._engine.api.isClient || this._engine.api.isWebsocketServer) {
+      // if already synced
+      if (this._engine.synced) {
+        this._commands.forEach(command => {
+          this.registerForPlayers(command);
+        });
+      } else {
+        // if not, then listen for it
+        this._engine.events.on('onSynced', () => {
+          this._commands.forEach(command => {
+            this.registerForPlayers(command);
+          });
+        });
+      }
+    }
+
+    // only websocket server
+    if (this._engine.api.isWebsocketServer) {
+      // register commands for player
+      this._engine.players.events.on('onCreate', player => {
+        if (!this._engine.synced) return; // ignore if not synced
+
+        this._commands.forEach(command => {
+          this.registerForPlayer(player, command);
+        });
+      });
+    }
 
     this._engine.events.on('onChat', (text, playerId) => {
       // resolve player
@@ -75,19 +105,116 @@ class CommandsManager {
     });
   }
 
+  registerForPlayers(command: Command) {
+    if (this._engine.destroyed) return;
+
+    // client
+    if (this._engine.isClient) {
+      this._engine.messenger.emit('registerCommand', [
+        this._engine.player.id,
+        command.toObject(),
+      ]);
+      return;
+    }
+
+    // websocket server
+    if (this._engine.api.isWebsocketServer) {
+      const commandJson = command.toObject();
+
+      this._engine.players.entitiesMap.forEach(player => {
+        this._engine.api.emitActionToServer('registerCommand', [
+          player.id,
+          commandJson,
+        ]);
+      });
+    }
+  }
+
+  registerForPlayer(player: PlayerManager, command: Command) {
+    if (this._engine.destroyed) return;
+
+    // client
+    if (this._engine.isClient) {
+      this._engine.messenger.emit('registerCommand', [
+        player.id,
+        command.toObject(),
+      ]);
+      return;
+    }
+
+    // websocket server
+    if (this._engine.api.isWebsocketServer) {
+      // emit to players
+      this._engine.api.emitActionToServer('registerCommand', [
+        player.id,
+        command.toObject(),
+      ]);
+    }
+  }
+
+  unregisterForPlayers(command: Command) {
+    if (this._engine.destroyed) return;
+
+    // if client
+    if (this._engine.isClient) {
+      this._engine.messenger.emit('unregisterCommand', [
+        this._engine.player.id,
+        command.command,
+      ]);
+      return;
+    }
+
+    // websocket server
+    if (this._engine.api.isWebsocketServer) {
+      this._engine.players.entitiesMap.forEach(player => {
+        this._engine.api.emitActionToServer('unregisterCommand', [
+          player.id,
+          command.command,
+        ]);
+      });
+    }
+  }
+
+  unregisterForPlayer(player: PlayerManager, command: Command) {
+    if (this._engine.destroyed) return;
+
+    // client
+    if (this._engine.isClient) {
+      this._engine.messenger.emit('unregisterCommand', [
+        player.id,
+        command.command,
+      ]);
+      return;
+    }
+
+    // websocket server
+    if (this._engine.api.isWebsocketServer) {
+      this._engine.api.emitActionToServer('unregisterCommand', [
+        player.id,
+        command.command,
+      ]);
+    }
+  }
+
   register(command: Command<any>) {
+    // try to bind
+    this._bind();
+
     this._commands.set(command.command.toLowerCase(), command);
 
-    this._engine.messenger.emit('registerCommand', [command.toObject()]);
-
-    // try to bind
-    this.bind();
+    // emit only if synced
+    if (this._engine.synced) {
+      this.registerForPlayers(command);
+    }
   }
 
   unregister(command: Command<any>) {
     this._commands.delete(command.command.toLowerCase());
 
-    this._engine.messenger.emit('unregisterCommand', [command.command]);
+    // emit only if synced
+    if (this._engine.synced) {
+      this.unregisterForPlayers(command);
+    }
   }
 
   destroy() {

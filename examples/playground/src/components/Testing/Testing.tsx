@@ -6,6 +6,7 @@ import InterfaceTest from './InterfaceTest';
 import ObjectsTest from './ObjectsTest';
 import PlayersTest from './PlayersTest';
 import ServerTest from './ServerTest';
+import WebsocketsServer from './WebsocketsServer';
 
 const Testing = () => {
   const engine = useEngine();
@@ -26,7 +27,7 @@ const Testing = () => {
     new CommandParam('abc2', 'string').withDisplay('The message'),
   ])
     .withDesc('Test command')
-    .onExecution(({abc, abc2}) => {
+    .onExecution((_, {abc, abc2}) => {
       console.log('Executing test!!', abc, abc2);
     });
 
@@ -38,6 +39,8 @@ const Testing = () => {
 
   return (
     <>
+      <WebsocketsServer />
+
       <ServerTest />
 
       <PlayersTest />

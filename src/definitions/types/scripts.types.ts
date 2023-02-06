@@ -56,9 +56,9 @@ export type ScriptEventMap = {
 
   onCommandNotFound: (command: string) => void;
 
-  registerCommand: (command: CommandInfo) => void;
+  registerCommand: (playerId: number, commandInfo: CommandInfo) => void;
 
-  unregisterCommand: (command: string) => void;
+  unregisterCommand: (playerId: number, command: string) => void;
 
   /* ui */
   onEscapeKey: () => void;

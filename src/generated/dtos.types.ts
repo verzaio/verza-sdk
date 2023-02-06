@@ -374,7 +374,7 @@ export interface ServerDto {
   created_at: string;
 }
 
-export interface ScriptActionPacketDto {
+export interface ScriptActionPacketSendDto {
   /**
    * event
    * @minLength 1
@@ -382,7 +382,7 @@ export interface ScriptActionPacketDto {
    */
   e: string;
   /** sync data */
-  d: object[];
+  d: object;
 }
 
 export interface JoinPacketDto {
@@ -694,6 +694,19 @@ export interface ScriptSyncPacketDto {
   t: number;
   /** sync data */
   d: object[];
+}
+
+export interface ScriptActionPacketDto {
+  /** packet id */
+  t: number;
+  /**
+   * event
+   * @minLength 1
+   * @maxLength 128
+   */
+  e: string;
+  /** sync data */
+  d: object;
 }
 
 export interface CustomPacketDto {

@@ -24,7 +24,7 @@ class Command<Params extends CommandParam[] = CommandParam[]>
 
   params: Params = [] as unknown as Params;
 
-  callback: (params: ParamsList<Params>) => void = null!;
+  callback: (player: PlayerManager, params: ParamsList<Params>) => void = null!;
 
   constructor(commandOrParams: string | CommandInfo, params?: Params) {
     if (typeof commandOrParams === 'string') {
@@ -144,11 +144,11 @@ class Command<Params extends CommandParam[] = CommandParam[]>
         return;
       }
 
-      this.callback?.(params as any);
+      this.callback?.(player, params as any);
       return;
     }
 
-    this.callback?.({} as any);
+    this.callback?.(player, {} as any);
   }
 
   _sendUsage(player: PlayerManager) {

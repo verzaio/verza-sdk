@@ -140,6 +140,14 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     // sync state
     player.data.state = newState;
   }
+
+  sendMessageToAll(text: string) {
+    this.engine.chat.sendMessageToAll(text);
+  }
+
+  sendMessageTo(player: PlayerManager | number, text: string) {
+    this.engine.chat.sendMessageTo(player, text);
+  }
 }
 
 export default PlayersManager;

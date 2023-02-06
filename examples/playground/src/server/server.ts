@@ -6,15 +6,17 @@ export const initServer = (engine: EngineManager) => {
     new Command('abc', [
       new CommandParam('name', 'string'),
       new CommandParam('age', 'number'),
-    ]).onExecution(({name, age}) => {
+    ]).onExecution((player, {name, age}) => {
       console.log('executed!!', name, age);
 
-      engine.player.sendMessage(`Hey ${name} - ${age}! - sendMessage`);
+      player.sendMessage(`Hey ${name} - ${age}! - sendMessage`);
 
-      engine.chat.sendMessageToAll(`Hey ${name} - ${age}! - sendMessageToAll`);
+      engine.players.sendMessageToAll(
+        `Hey ${name} - ${age}! - sendMessageToAll`,
+      );
 
-      engine.chat.sendMessageTo(
-        engine.player,
+      engine.players.sendMessageTo(
+        player,
         `Hey ${name} - ${age}! - sendMessageToPlayer`,
       );
     }),

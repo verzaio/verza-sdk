@@ -60,9 +60,15 @@ class EngineManager {
 
   syncPlayerUpdates = true;
 
+  destroyed = false;
+
   private _binded = false;
 
   /* accessors */
+  get synced() {
+    return this.controller.data.synced;
+  }
+
   get connected() {
     return this.controller.data.connected;
   }
@@ -150,6 +156,9 @@ class EngineManager {
     // destroy
     this.destroy();
 
+    // mark as not destroyed
+    this.destroyed = false;
+
     // mark as binded
     this._binded = true;
 
@@ -157,9 +166,6 @@ class EngineManager {
     if (this.syncPlayers) {
       this.entities.player.load();
     }
-
-    this.network.bind();
-    this.ui?.bind();
 
     // events
     this.messenger.events.on('onConnected', () => {
@@ -170,10 +176,16 @@ class EngineManager {
     this.messenger.events.on('onSynced', () => {
       this.controller.set('synced', true);
     });
+
+    // binds
+    this.network.bind();
+    this.ui?.bind();
   }
 
   destroy() {
     if (!this._binded) return;
+
+    this.destroyed = true;
 
     this.controller.set('connected', false);
 

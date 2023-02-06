@@ -212,12 +212,10 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       return;
     }
 
-    if (Array.isArray(message.data) === false || !message.data.length) {
-      console.debug(`[messenger:${message.data}] must be an array`);
+    if (!Array.isArray(message.data) || !message.data.length) {
+      console.debug(`[messenger:] message.data must be an array`);
       return;
     }
-
-    //console.debug(`[messenger:${message.data}] _onMessage`, message.data);
 
     // get event name
     const event = message.data.pop();
@@ -225,14 +223,16 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     // validate
     if (this.validators?.[event]) {
       try {
-        const {parser, callback} = this.validators[event] ?? {};
+        const validator = this.validators[event] ?? {};
 
-        if (parser) {
-          Object.assign(message.data, parser.parse(message.data));
-        }
+        // validate data (optional)
+        Object.assign(
+          message.data,
+          validator?.parser?.parse(message.data) ?? {},
+        );
 
-        // call callback if exists
-        callback?.(message);
+        // call callback (optional)
+        validator?.callback?.(message);
       } catch (e) {
         console.error(e);
         return;

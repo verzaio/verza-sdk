@@ -5,6 +5,7 @@ import {
   ServerDto,
   ScriptSyncPacketDto,
   ScriptActionPacketDto,
+  ScriptActionPacketSendDto,
 } from 'engine/generated/dtos.types';
 import {PacketEvent, PacketId} from 'engine/definitions/enums/networks.enums';
 import EngineManager from 'engine/managers/engine.manager';
@@ -13,8 +14,7 @@ import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 const WS_NAMESPACE = 'n';
 
-// NetworkSyncEventMap
-export type PacketDto = ScriptSyncPacketDto;
+export type PacketDto = ScriptSyncPacketDto | ScriptActionPacketDto;
 
 class WebsocketServerManager {
   private _engine: EngineManager;
@@ -157,7 +157,14 @@ class WebsocketServerManager {
     this.socket.emit(PacketEvent.ScriptAction, {
       e: eventName,
       d: args as any,
-    } satisfies ScriptActionPacketDto);
+    } satisfies ScriptActionPacketSendDto);
+  }
+
+  async emitLocalAction<A extends keyof ScriptEventMap>(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+  ) {
+    this._engine.messenger.emitLocal(eventName, args);
   }
 
   private _handlePacket = (packet: PacketDto) => {
@@ -166,9 +173,18 @@ class WebsocketServerManager {
     switch (packet.t) {
       // script sync
       case PacketId.j: {
-        this.sync.events.emit(
-          packet.d[0] as any,
-          ...(packet.d[1] ? packet.d : []),
+        (this.sync.events.emit as any)(
+          ...(Array.isArray(packet.d) ? packet.d : []),
+        );
+        break;
+      }
+
+      // script action
+      case PacketId.a: {
+        const dto = packet as ScriptActionPacketDto;
+        this.emitLocalAction(
+          dto.e as keyof ScriptEventMap,
+          dto.d ? (dto.d as any) : [],
         );
         break;
       }

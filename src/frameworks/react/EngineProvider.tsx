@@ -26,15 +26,15 @@ const EngineProvider = ({
     const engine = new EngineManager(params);
     engine.connectClient();
 
-    const onSynced = engine.controller.events.on('synced', status => {
-      setSynced(status);
+    const onSynced = engine.events.on('onSynced', () => {
+      setSynced(true);
     });
 
     // set engine
     setEngine(engine);
 
     return () => {
-      engine.controller.events.on('synced', onSynced);
+      engine.events.on('onSynced', onSynced);
       engine.destroy();
       setEngine(null!);
       setSynced(false);

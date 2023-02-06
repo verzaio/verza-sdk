@@ -3,15 +3,11 @@ import {z} from 'zod';
 import {
   ChatPacketSendDto,
   CustomPacketSendDto,
-  ScriptActionPacketDto,
+  ScriptActionPacketSendDto,
 } from 'engine/generated/dtos.types';
-import {
-  PacketDestination,
-  PacketEvent,
-} from 'engine/definitions/enums/networks.enums';
+import {PacketEvent} from 'engine/definitions/enums/networks.enums';
 import {CHAT_MAX_MESSAGE_SIZE} from 'engine/definitions/constants/chat.constants';
 import {ServerEndpointPacket} from 'engine/definitions/local/types/api.types';
-import {ServerScope} from 'engine/definitions/local/types/api.types';
 import EngineManager from 'engine/managers/engine.manager';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
@@ -241,7 +237,7 @@ class HttpServerManager {
       body: JSON.stringify({
         e: eventName,
         d: args as any,
-      } satisfies ScriptActionPacketDto),
+      } satisfies ScriptActionPacketSendDto),
 
       headers: {
         'Content-Type': 'application/json',

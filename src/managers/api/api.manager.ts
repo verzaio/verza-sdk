@@ -163,7 +163,7 @@ class ApiManager {
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
   ) {
-    // server
+    // check if websocket or http server
     if (this.websocketServer) {
       this.websocketServer.emitAction(eventName, args);
     } else {
