@@ -1,4 +1,4 @@
-import {ScriptEventMap} from 'engine/definitions/types/events.types';
+import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import {useEffect} from 'react';
 import useEngine from './useEngine';
 

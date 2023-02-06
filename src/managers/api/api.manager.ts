@@ -4,7 +4,7 @@ import {
   encryptMessage,
   hexToBase64Key,
 } from 'engine/utils/encryption.utils';
-import {ChatPacketSendDto, ServerDto} from 'types/Dto';
+import {ChatPacketSendDto, ServerDto} from 'engine/generated/dtos.types';
 import {PacketEvent} from 'engine/definitions/enums/networks.enums';
 import {ServerScope} from 'engine/definitions/local/types/api.types';
 import WebsocketServerManager from './servers/websocket-server';

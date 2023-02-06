@@ -1,11 +1,10 @@
 import {MAX_CLIENT_OBJECT_SIZE} from 'engine/definitions/constants/networks.constants';
-import {CustomEventData} from 'engine/definitions/types/events.types';
+import {CustomEventData} from 'engine/definitions/types/scripts.types';
 import {
-  CustomPacketDto,
   CustomPacketSendDto,
   EncryptedPacketsDto,
   ServerDto,
-} from 'types/Dto';
+} from 'engine/generated/dtos.types';
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
 import {
@@ -48,7 +47,6 @@ class NetworkManager {
         this.encryptedPackets = encryptedPackets;
       },
     );
-    //
   }
 
   onPlayersEvent(

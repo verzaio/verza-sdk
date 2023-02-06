@@ -8,7 +8,7 @@ import {
   SizePropValue,
   SizeProps,
   ScriptEventMap,
-} from 'engine/definitions/types/events.types';
+} from 'engine/definitions/types/scripts.types';
 
 import {MessengerManagerEventsMap} from 'engine/managers/messenger.manager';
 

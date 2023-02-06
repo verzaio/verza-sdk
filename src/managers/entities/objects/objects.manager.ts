@@ -10,7 +10,7 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-import {ObjectBoxDto, ObjectDto} from 'types/Dto';
+import {ObjectBoxDto, ObjectDto} from 'engine/generated/dtos.types';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';

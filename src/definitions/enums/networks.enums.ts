@@ -1,4 +1,4 @@
-import {PlayerPacketDto} from 'types/Dto';
+import {PlayerPacketDto} from 'engine/generated/dtos.types';
 
 import {EntityType} from './entities.enums';
 

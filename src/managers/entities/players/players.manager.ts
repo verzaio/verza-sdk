@@ -6,7 +6,10 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-import {PlayerPacketDto, PlayerPacketUpdateDto} from 'types/Dto';
+import {
+  PlayerPacketDto,
+  PlayerPacketUpdateDto,
+} from 'engine/generated/dtos.types';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';

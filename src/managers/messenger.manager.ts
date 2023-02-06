@@ -11,9 +11,9 @@ type MessengerManagerMap = {
 
   onLoad: () => void;
 
-  onRegister: (event: string) => void;
+  register: (event: string) => void;
 
-  onUnregister: (event: string) => void;
+  unregister: (event: string) => void;
 };
 
 export type MessengerManagerEventsMap<T extends EventListenersMap> = {
@@ -249,10 +249,10 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     }
 
     // handle registration
-    if (event === 'onRegister') {
+    if (event === 'register') {
       this.events.registeredEvents.add(message.data[0]);
       return;
-    } else if (event === 'onUnregister') {
+    } else if (event === 'unregister') {
       this.events.registeredEvents.delete(message.data[0]);
       return;
     }
@@ -350,7 +350,7 @@ class MessengerEvents<
 
       // emit
       if (this._messenger.connected) {
-        this._messenger.emit('onRegister', [eventName]);
+        this._messenger.emit('register', [eventName]);
       }
     }
   }
@@ -364,7 +364,7 @@ class MessengerEvents<
 
       // emit
       if (this._messenger.connected) {
-        this._messenger.emit('onUnregister', [eventName]);
+        this._messenger.emit('unregister', [eventName]);
       }
     }
   }
@@ -375,7 +375,7 @@ class MessengerEvents<
     //console.log(this.registeredEvents);
 
     this.registeredEvents.forEach(eventName => {
-      this._messenger.emit('onRegister', [eventName]);
+      this._messenger.emit('register', [eventName]);
     });
   }
 }

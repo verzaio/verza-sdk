@@ -1,6 +1,9 @@
 import {z} from 'zod';
 
-import {ChatPacketSendDto, CustomPacketSendDto} from 'types/Dto';
+import {
+  ChatPacketSendDto,
+  CustomPacketSendDto,
+} from 'engine/generated/dtos.types';
 import {PacketEvent} from 'engine/definitions/enums/networks.enums';
 import {CHAT_MAX_MESSAGE_SIZE} from 'engine/definitions/constants/chat.constants';
 import {ServerEndpointPacket} from 'engine/definitions/local/types/api.types';

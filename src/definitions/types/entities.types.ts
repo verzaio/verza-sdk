@@ -1,13 +1,12 @@
 import type {ComponentType} from 'react';
 
-import type {ObjectDto, ObjectMetadataDto} from 'types/Dto';
-
 import type {PlayerDataProps} from 'engine/definitions/types/players.types';
 import type {
   Vector3Array,
   QuaternionArray,
   WorldPositionRotation,
 } from 'engine/definitions/types/world.types';
+import type {ObjectDto, ObjectMetadataDto} from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import EntitiesManager from 'engine/managers/entities/entities.manager';
 import EntityHandleManager from 'engine/managers/entities/entity/entity-handle.manager';

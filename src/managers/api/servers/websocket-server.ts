@@ -1,7 +1,7 @@
 import {io, Socket} from 'socket.io-client';
 import msgpackParser from 'socket.io-msgpack-parser';
 
-import {ServerDto, ScriptSyncPacketDto} from 'types/Dto';
+import {ServerDto, ScriptSyncPacketDto} from 'engine/generated/dtos.types';
 import {PacketEvent, PacketId} from 'engine/definitions/enums/networks.enums';
 import EngineManager from 'engine/managers/engine.manager';
 import SyncManager from './sync.manager';

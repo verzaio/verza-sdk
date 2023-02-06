@@ -1,4 +1,4 @@
-import {PlayerPacketUpdateDto} from 'types/Dto';
+import {PlayerPacketUpdateDto} from 'engine/generated/dtos.types';
 
 import {
   PlayerCameraConfig,

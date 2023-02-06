@@ -3,7 +3,7 @@ import {z} from 'zod';
 import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
 import {LocalEngineEvents} from 'engine/definitions/local/constants/engine.constants';
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
-import {EventKey, ScriptEventMap} from 'engine/definitions/types/events.types';
+import {EventKey} from 'engine/definitions/types/events.types';
 import {isValidEnv} from 'engine/utils/misc.utils';
 import ApiManager from './api/api.manager';
 import CameraManager from './camera.manager';
@@ -16,6 +16,7 @@ import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
+import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 class EngineManager {
   z = z;
