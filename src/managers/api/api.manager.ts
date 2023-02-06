@@ -6,7 +6,7 @@ import {
 } from 'engine/utils/encryption.utils';
 import {ServerDto} from 'engine/generated/dtos.types';
 import WebsocketServerManager from './servers/websocket-server';
-import HttpServerManager from './servers/http-server';
+import WebServerManager from './servers/web-server';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 const DEFAULT_ENV_ACCESS_TOKEN_NAME = 'VERZA_ACCESS_TOKEN';
@@ -24,19 +24,19 @@ class ApiManager {
 
   websocketServer: WebsocketServerManager = null!;
 
-  httpServer: HttpServerManager = null!;
+  webServer: WebServerManager = null!;
 
-  httpServerEndpoint: string = null!;
+  webServerEndpoint: string = null!;
 
   accessToken: string = null!;
 
   private _accessTokenBase64: string = null!;
 
-  get isHttpServerAvailable() {
-    return this.isClient && !!this.httpServerEndpoint;
+  get isWebServerAvailable() {
+    return this.isClient && !!this.webServerEndpoint;
   }
 
-  get isHttpServer() {
+  get isWebServer() {
     return this.isServer && !this.websocketServer;
   }
 
@@ -71,7 +71,7 @@ class ApiManager {
 
     this._setAccessToken();
 
-    this.httpServer = new HttpServerManager(engine);
+    this.webServer = new WebServerManager(engine);
   }
 
   private _setEndpoint() {
@@ -142,7 +142,7 @@ class ApiManager {
   }
 
   async handle(rawData: unknown): Promise<unknown> {
-    return this.httpServer.handle(rawData);
+    return this.webServer.handle(rawData);
   }
 
   async emitAction<A extends keyof ScriptEventMap>(
@@ -163,11 +163,11 @@ class ApiManager {
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
   ) {
-    // check if websocket or http server
-    if (this.websocketServer) {
-      this.websocketServer.emitAction(eventName, args);
+    // check if web or websocket server
+    if (this.webServer) {
+      this.webServer.emitAction(eventName, args);
     } else {
-      this.httpServer.emitAction(eventName, args);
+      this.websocketServer.emitAction(eventName, args);
     }
   }
 

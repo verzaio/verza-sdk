@@ -13,7 +13,7 @@ import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 const EXPIRE_TIME_MS = 45000; // 45 seconds
 
-class HttpServerManager {
+class WebServerManager {
   private _engine: EngineManager;
 
   private get endpoint() {
@@ -24,7 +24,7 @@ class HttpServerManager {
     return this._engine.api.accessToken;
   }
 
-  httpServerEndpoint: string = null!;
+  webServerEndpoint: string = null!;
 
   get encryptedPackets() {
     return this._engine.network.encryptedPackets;
@@ -42,8 +42,8 @@ class HttpServerManager {
     this._engine = engine;
 
     // set server endpoint
-    if (this._engine.params.httpServer) {
-      this.httpServerEndpoint = this._engine.params.httpServer;
+    if (this._engine.params.webServer) {
+      this.webServerEndpoint = this._engine.params.webServer;
     }
   }
 
@@ -180,9 +180,9 @@ class HttpServerManager {
     return null!;
   }
 
-  emitToHttpServer(event: PacketEvent, data?: unknown) {
+  emitToWebServer(event: PacketEvent, data?: unknown) {
     // ignore if no endpoint or is not client
-    if (!this.httpServerEndpoint || !this.isClient) return;
+    if (!this.webServerEndpoint || !this.isClient) return;
 
     // prepare packet
     const packet: ServerEndpointPacket = [
@@ -192,7 +192,7 @@ class HttpServerManager {
     ];
 
     // emit script server
-    fetch(this.httpServerEndpoint, {
+    fetch(this.webServerEndpoint, {
       method: 'POST',
 
       cache: 'no-cache',
@@ -268,12 +268,12 @@ class HttpServerManager {
     };
 
     // emit
-    this.emitToHttpServer(PacketEvent.Chat, chatPacket);
+    this.emitToWebServer(PacketEvent.Chat, chatPacket);
   }
 
   emitCustomPacket(dto: CustomPacketSendDto) {
     // emit
-    this.emitToHttpServer(PacketEvent.Custom, dto);
+    this.emitToWebServer(PacketEvent.Custom, dto);
   }
 }
 
@@ -286,4 +286,4 @@ const isObject = (value: unknown) => {
   );
 };
 
-export default HttpServerManager;
+export default WebServerManager;

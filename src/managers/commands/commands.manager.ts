@@ -77,9 +77,11 @@ class CommandsManager {
           .get(key)
           ?.process(player, command.substring(key.length).trim());
       } else {
-        // emit command to http server if not found in local
-        if (this._engine.api.isHttpServerAvailable) {
-          this._engine.api.httpServer.emitChatPacket(text);
+        console.log('emitting??', this._engine.api.isWebServerAvailable);
+
+        // emit command to web server if available
+        if (this._engine.api.isWebServerAvailable) {
+          this._engine.api.webServer.emitChatPacket(text);
         }
       }
 

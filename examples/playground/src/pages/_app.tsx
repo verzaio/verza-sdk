@@ -6,7 +6,7 @@ export default function App({Component, pageProps}: AppProps) {
   return (
     <EngineProvider
       params={{
-        httpServer: 'api/verza',
+        webServer: 'api/verza',
       }}>
       <Component {...pageProps} />
     </EngineProvider>

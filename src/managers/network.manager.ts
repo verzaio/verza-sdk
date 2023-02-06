@@ -102,9 +102,9 @@ class NetworkManager {
     // check packet size limit
     if (!this._checkPacketSize(data?.d)) return;
 
-    // emit to http server
-    if (this._api.isHttpServerAvailable) {
-      this._api.httpServer.emitCustomPacket({
+    // emit to web server
+    if (this._api.isWebServerAvailable) {
+      this._api.webServer.emitCustomPacket({
         p: PacketDestination.Server, // PacketDestination
 
         e: event, // event name
@@ -121,9 +121,9 @@ class NetworkManager {
     // check packet size limit
     if (!this._checkPacketSize(data?.d)) return;
 
-    // emit to http server
-    if (this._api.isHttpServerAvailable) {
-      this._api.httpServer.emitCustomPacket({
+    // emit to web server
+    if (this._api.isWebServerAvailable) {
+      this._api.webServer.emitCustomPacket({
         p: PacketDestination.Client, // PacketDestination
 
         e: event, // event name
@@ -146,9 +146,9 @@ class NetworkManager {
 
     const playerId = typeof player === 'number' ? player : player.id;
 
-    // emit to http server
-    if (this._api.isHttpServerAvailable) {
-      this._api.httpServer.emitCustomPacket({
+    // emit to web server
+    if (this._api.isWebServerAvailable) {
+      this._api.webServer.emitCustomPacket({
         p: PacketDestination.Client, // PacketDestination
 
         e: event, // event name
