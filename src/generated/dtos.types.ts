@@ -87,7 +87,7 @@ export interface UserFiltersDto {
   role?: 'user' | 'staff' | 'admin';
   /** @maxLength 64 */
   search?: string;
-  sort_by?: 'first_name' | 'username' | 'email' | 'created_at' | 'verified' | 'referrals_count';
+  sort_by?: 'first_name' | 'username' | 'email' | 'created_at';
   order?: 'ASC' | 'DESC';
 }
 
@@ -399,8 +399,10 @@ export interface StatePacketDto {
   t: number;
   /** code */
   c?: number;
-  /** error */
+  /** error or message */
   e?: string;
+  /** message */
+  m?: string;
   /** encrypted packets */
   p?: EncryptedPacketsDto;
 }
@@ -478,6 +480,8 @@ export interface PlayerPacketLocalUpdateDto {
   v?: number[];
   /** dimension */
   d?: number;
+  /** name */
+  e?: string;
 }
 
 export interface PositionMetadataDto {
