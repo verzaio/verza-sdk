@@ -1,4 +1,3 @@
-import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
 import type {EntityType} from '../../definitions/enums/entities.enums';
 import EngineManager from '../engine.manager';
 import EventsManager from '../events.manager';
