@@ -3,7 +3,7 @@ import {PlayerPacketDto} from 'engine/generated/dtos.types';
 import {EntityType} from './entities.enums';
 
 export enum NetworkSyncEvent {
-  SyncRequest = 'u.r',
+  SyncRequest = 's.r',
 
   Ready = 'r',
 

@@ -31,9 +31,11 @@ const WebsocketsServerTest = () => {
 
       //player.setName(`${Math.random()}`);
       //player.setDimension(player.dimension === 0 ? 1 : 0);
+
+      //engine.restartServer();
     };
 
-    const intervalId = setInterval(callback, 3000);
+    const intervalId = setInterval(callback, 5000);
 
     return () => {
       clearInterval(intervalId);

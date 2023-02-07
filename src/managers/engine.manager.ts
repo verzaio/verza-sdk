@@ -209,6 +209,10 @@ class EngineManager {
 
     this._binded = false;
   }
+
+  restartServer(message?: string) {
+    this.api.emitAction('restartServer', message ? [message] : undefined);
+  }
 }
 
 class EngineEvents<
