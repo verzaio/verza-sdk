@@ -74,6 +74,15 @@ class WebsocketServerManager {
     return (await response.json()).data as ServerDto;
   }
 
+  async _cleanup() {
+    // mark as not synced
+    this._engine.controller.data.synced = false;
+
+    // clear entities
+    this._engine.objects.entitiesMap.clear();
+    this._engine.players.entitiesMap.clear();
+  }
+
   async connect() {
     if (!this._accessToken) {
       console.debug('[api] accessToken is missing');
@@ -98,11 +107,17 @@ class WebsocketServerManager {
     });
 
     const onConnect = async () => {
-      console.info(`%c[VerzaServer] Connected!`, 'color: #5b75ff');
+      console.info(
+        `%c[VerzaServer] Connected to (${this.server.id} | region: ${this.server.region})`,
+        'color: #5b75ff',
+      );
 
       if (!this.socket.active) {
         return;
       }
+
+      // emit connect
+      this._engine.messenger.emitLocal('onConnect');
 
       this.socket.emit(PacketEvent.ScriptJoin);
     };
@@ -121,6 +136,12 @@ class WebsocketServerManager {
 
     const onDisconnect = () => {
       console.info(`%c[VerzaServer] Disconnected!`, 'color: #fe547e');
+
+      // cleanup
+      this._cleanup();
+
+      // emit connect
+      this._engine.messenger.emitLocal('onDisconnect');
     };
 
     // load server

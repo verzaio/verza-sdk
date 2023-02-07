@@ -1,8 +1,8 @@
-import {initServer} from '@app/server/server';
+import {initWebServer} from '@app/server/web-server';
 import {Command, CommandParam, EngineManager} from '@verza/sdk';
 import {useEffect} from 'react';
 
-const WebsocketsServer = () => {
+const WebsocketsServerTest = () => {
   // websockets server
   useEffect(() => {
     const engine = new EngineManager({
@@ -25,12 +25,15 @@ const WebsocketsServer = () => {
       ),
     );
 
-    const intervalId = setInterval(() => {
+    const callback = () => {
       const player = engine.players.get(1);
       if (!player) return;
 
-      //player.setCameraBehind();
-    }, 3000);
+      //player.setName(`${Math.random()}`);
+      //player.setDimension(player.dimension === 0 ? 1 : 0);
+    };
+
+    const intervalId = setInterval(callback, 3000);
 
     return () => {
       clearInterval(intervalId);
@@ -44,4 +47,4 @@ const WebsocketsServer = () => {
   return null;
 };
 
-export default WebsocketsServer;
+export default WebsocketsServerTest;

@@ -6,7 +6,7 @@ import InterfaceTest from './InterfaceTest';
 import ObjectsTest from './ObjectsTest';
 import PlayersTest from './PlayersTest';
 import WebServerTest from './WebServerTest';
-import WebsocketsServer from './WebsocketsServer';
+import WebsocketsServerTest from './WebsocketsServerTest';
 
 const Testing = () => {
   const engine = useEngine();
@@ -39,7 +39,7 @@ const Testing = () => {
 
   return (
     <>
-      <WebsocketsServer />
+      <WebsocketsServerTest />
 
       <WebServerTest />
 

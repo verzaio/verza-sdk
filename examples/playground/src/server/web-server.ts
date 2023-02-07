@@ -1,6 +1,6 @@
 import {Command, CommandParam, EngineManager} from '@verza/sdk';
 
-export const initServer = (engine: EngineManager) => {
+export const initWebServer = (engine: EngineManager) => {
   // command
   engine.commands.register(
     new Command('abc', [

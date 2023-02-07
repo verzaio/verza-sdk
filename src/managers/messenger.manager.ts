@@ -11,7 +11,9 @@ type MessengerType = 'sender' | 'receiver';
 type Merge<A, B> = A extends void ? B : A & B;
 
 type MessengerManagerMap = {
-  onConnected: () => void;
+  onConnect: () => void;
+
+  onDisconnect: () => void;
 
   onLoad: () => void;
 
@@ -177,7 +179,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       this.accept(message.ports[0]);
 
       // emit connected
-      (this.events.emit as any)('onConnected');
+      (this.events.emit as any)('onConnect');
 
       this._onConnected();
       return;
@@ -188,7 +190,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       console.debug(`ACTION_ACCEPT:${this.id.split('-')[0]}`);
 
       // emit connected
-      (this.events.emit as any)('onConnected');
+      (this.events.emit as any)('onConnect');
 
       this._onConnected();
       return;

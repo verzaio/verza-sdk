@@ -168,8 +168,12 @@ class EngineManager {
     }
 
     // events
-    this.messenger.events.on('onConnected', () => {
+    this.messenger.events.on('onConnect', () => {
       this.controller.set('connected', true);
+    });
+
+    this.messenger.events.on('onDisconnect', () => {
+      this.controller.set('connected', false);
     });
 
     // events

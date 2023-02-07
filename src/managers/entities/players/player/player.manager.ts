@@ -68,6 +68,16 @@ class PlayerManager extends EntityManager<
     this._messenger.emit('setPlayerName', [this.id, name]);
   }
 
+  setDimension(dimension: number) {
+    if (!this.engine.api.isServer) {
+      throw new Error('player.setDimension is only available server-side');
+    }
+
+    this.dimension = dimension;
+
+    this._messenger.emit('setPlayerDimension', [this.id, dimension]);
+  }
+
   setPosition(position: Vector3 | Vector3Array, instant = true) {
     // Vector3Array
     if (Array.isArray(position)) {

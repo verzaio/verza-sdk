@@ -3,7 +3,7 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 
 import {EngineManager} from '@verza/sdk';
 
-import {initServer} from '@app/server/server';
+import {initWebServer} from '@app/server/web-server';
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,7 +20,7 @@ export default async function handler(
     accessToken: process.env['VERZA_ACCESS_TOKEN'],
   });
 
-  initServer(engine);
+  initWebServer(engine);
 
   const response = await engine.api.handle(req.body);
 

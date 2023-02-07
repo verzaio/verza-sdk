@@ -200,6 +200,10 @@ class CommandsManager {
     // try to bind
     this._bind();
 
+    // unregister in case that already added
+    this.unregister(command);
+
+    // add it
     this._commands.set(command.command.toLowerCase(), command);
 
     // emit only if synced
@@ -209,6 +213,8 @@ class CommandsManager {
   }
 
   unregister(command: Command<any>) {
+    if (!this._commands.has(command.command.toLowerCase())) return;
+
     this._commands.delete(command.command.toLowerCase());
 
     // emit only if synced

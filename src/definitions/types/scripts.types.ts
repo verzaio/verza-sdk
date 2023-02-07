@@ -40,12 +40,16 @@ export type ScriptEventMap = {
 
   unregister: (eventName: string) => void;
 
+  onConnect: () => void;
+
+  onDisconnect: () => void;
+
   /* engine */
+  onSynced: () => void;
+
   setPlayerId: (playerId: number) => void;
 
   onFrame: (delta: number) => void;
-
-  onSynced: () => void;
 
   /* chat */
   onChat: (text: string, playerId?: number) => void;
@@ -96,6 +100,8 @@ export type ScriptEventMap = {
   onPlayerStreamOut: (playerId: number) => void;
 
   setPlayerName: (playerId: number, name: string) => void;
+
+  setPlayerDimension: (playerId: number, dimension: number) => void;
 
   setPlayerPosition: (
     playerId: number,
