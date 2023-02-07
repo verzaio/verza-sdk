@@ -172,7 +172,7 @@ export type ScriptEventMap = {
   ) => void;
 
   /* server */
-  restartServer: (message?: string) => void;
+  restartServer: (reason?: string) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {
