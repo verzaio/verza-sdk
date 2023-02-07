@@ -22,7 +22,7 @@ class EntityStreamManager {
 
       // if player entity
       if (this.entity.type === 'player') {
-        player.stream.streamedPlayers.add(this.entity as PlayerManager);
+        player.streamer.streamedPlayers.add(this.entity as PlayerManager);
       }
       return;
     }
@@ -35,7 +35,7 @@ class EntityStreamManager {
 
     // if player entity
     if (this.entity.type === 'player') {
-      player.stream.streamedPlayers.delete(this.entity as PlayerManager);
+      player.streamer.streamedPlayers.delete(this.entity as PlayerManager);
     }
   }
 }

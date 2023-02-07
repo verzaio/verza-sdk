@@ -52,7 +52,7 @@ class SyncManager {
 
         const entity = this._engine.entities[entityType].get(entityId);
 
-        entity?.stream?.sync(player, action);
+        entity?.streamer?.sync(player, action);
       },
     );
 

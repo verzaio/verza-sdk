@@ -8,6 +8,8 @@ import EntityManager from './entity/entity.manager';
 class EntitiesManager<T extends EntityManager = EntityManager> {
   public type: keyof typeof EntityType;
 
+  public entities: T[] = [];
+
   public entitiesMap: Map<string | number, T> = new Map();
 
   public streamed: Map<string | number, T> = new Map();
@@ -72,13 +74,14 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
 
     // init players streamer
     if (this.useStreamer) {
-      entity.stream = new EntityStreamManager(entity);
+      entity.streamer = new EntityStreamManager(entity);
     }
 
     // set maps
     this.entitiesMap.set(id, entity as T);
+    this.entities.push(entity as T);
 
-    this.events.emit('onCreate', entity);
+    this.events.emit('onConnect', entity);
 
     return entity;
   }
@@ -100,8 +103,9 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
     }
 
     this.entitiesMap.delete(entity.id);
+    this.entities.splice(this.entities.indexOf(entity), 1);
 
-    this.events.emit('onDestroy', entity);
+    this.events.emit('onDisconnect', entity);
   }
 
   streamIn(entity: T, data?: T['data']) {
@@ -136,6 +140,27 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
     // emit events
     this.events.emit('onStreamOut', entity);
     entity.events.emit('onStreamOut', entity);
+  }
+
+  /* manipulation methods */
+  get map() {
+    return this.entities.map;
+  }
+
+  get some() {
+    return this.entities.some;
+  }
+
+  get filter() {
+    return this.entities.filter;
+  }
+
+  get find() {
+    return this.entities.find;
+  }
+
+  get forEach() {
+    return this.entitiesMap.forEach;
   }
 }
 

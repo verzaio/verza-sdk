@@ -39,7 +39,7 @@ class CommandsManager {
     // only websocket server
     if (this._engine.api.isWebsocketServer) {
       // register commands for player
-      this._engine.players.events.on('onCreate', player => {
+      this._engine.players.events.on('onConnect', player => {
         if (!this._engine.synced) return; // ignore if not synced
 
         this._commands.forEach(command => {

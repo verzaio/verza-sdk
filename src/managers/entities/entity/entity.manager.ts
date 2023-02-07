@@ -33,7 +33,7 @@ class EntityManager<
 
   private _location = new Object3D();
 
-  stream: EntityStreamManager = null!;
+  streamer: EntityStreamManager = null!;
 
   /* accessors */
   get id(): T['id'] {
