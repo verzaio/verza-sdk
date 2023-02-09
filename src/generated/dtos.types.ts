@@ -219,6 +219,7 @@ export interface CharacterDto {
   eyeshadow_color: string | null;
   eyeliner_color: string | null;
   status: 'active' | 'deleted';
+  selected: boolean;
   /** @format date-time */
   created_at: string;
 }
@@ -228,6 +229,7 @@ export interface CreateCharacterDto {
 }
 
 export interface UpdateCharacterDto {
+  selected?: boolean;
   gender?: 'male' | 'female';
   shapekeys?: CharacterShapekeyValueDto[];
   eyes_color?:
@@ -247,7 +249,8 @@ export interface UpdateCharacterDto {
     | '#ff9b2d'
     | '#ffbb2e'
     | '#e0afaf'
-    | '#aca4a4';
+    | '#aca4a4'
+    | null;
   skin_color?:
     | '#fee0e0'
     | '#ffd9d9'
@@ -257,7 +260,8 @@ export interface UpdateCharacterDto {
     | '#ad9090'
     | '#9a8080'
     | '#866f6f'
-    | '#826a6a';
+    | '#826a6a'
+    | null;
   lipstick_color?:
     | '#ffaeae'
     | '#ff9c9c'

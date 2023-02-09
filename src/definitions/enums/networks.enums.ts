@@ -21,7 +21,7 @@ export type NetworkSyncEventMap = {
   [NetworkSyncEvent.Ready]: [];
 
   // player
-  [NetworkSyncEvent.PlayerSet]: [playerId: number, serverId: string];
+  [NetworkSyncEvent.PlayerSet]: [packet: PlayerPacketDto];
   [NetworkSyncEvent.PlayerUnset]: [playerId: number];
 
   [NetworkSyncEvent.PlayerUpdate]: [packet: PlayerPacketDto];

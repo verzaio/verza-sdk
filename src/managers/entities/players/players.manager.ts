@@ -36,7 +36,7 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
       this._messenger.events.on(
         'onPlayerUpdate',
         ({data: [playerId, packet]}) => {
-          this.handlePacket(playerId, packet);
+          this.handlePacket(playerId, packet as PlayerPacketDto);
         },
       );
     }
@@ -77,14 +77,16 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     this._binded = false;
   }
 
-  handlePacket(
-    playerId: number,
-    packet: PlayerPacketDto | PlayerPacketUpdateDto,
-  ) {
+  handlePacket(playerId: number, packet: PlayerPacketDto) {
     //console.log('packet', packet);
 
     const player = this.get(playerId);
     if (!player?.handle) return;
+
+    // name
+    if (packet.e !== undefined) {
+      player.updateName(packet.e);
+    }
 
     // state
     if (packet.s !== undefined) {
@@ -97,12 +99,12 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     }
 
     // character
-    if ('c' in packet) {
+    if (packet.c !== undefined) {
       player.data.character = packet.c;
     }
 
     // dimension
-    if ('d' in packet) {
+    if (packet.d !== undefined) {
       player.dimension = packet.d ?? 0;
     }
 

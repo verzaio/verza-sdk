@@ -64,6 +64,10 @@ class PlayerManager extends EntityManager<
     }
   }
 
+  updateName(name: string) {
+    this.data.name = name;
+  }
+
   setName(name: string) {
     this._messenger.emit('setPlayerName', [this.id, name]);
   }

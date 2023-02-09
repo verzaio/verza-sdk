@@ -1,3 +1,4 @@
+import {PLAYER_STATE_PACKET_INDEX} from 'engine/definitions/constants/players.constants';
 import {
   NetworkSyncEvent,
   NetworkSyncEventMap,
@@ -28,8 +29,14 @@ class SyncManager {
 
   private _bind() {
     // player set
-    this.events.on(NetworkSyncEvent.PlayerSet, playerId => {
-      this.players.create(playerId);
+    this.events.on(NetworkSyncEvent.PlayerSet, packet => {
+      this.players.create(packet.i!, {
+        name: packet.e,
+        state: PLAYER_STATE_PACKET_INDEX[packet.s!],
+        stateAnimIndex: packet.n,
+        character: packet.c,
+      });
+      this.players.handlePacket(packet.i!, packet);
     });
 
     // player unset
