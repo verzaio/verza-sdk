@@ -79,7 +79,10 @@ class WebServerManager {
     const authPacket: [number, number] = this._engine.api.decryptPacket(packet);
 
     if (!Array.isArray(authPacket)) {
-      console.debug('[api] cannot decrypt packet', packet);
+      console.debug(
+        '[api] cannot decrypt packet, do we have the correct Access Token?',
+        packet,
+      );
       return false;
     }
 
