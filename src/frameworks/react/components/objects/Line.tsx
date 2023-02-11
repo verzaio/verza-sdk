@@ -2,7 +2,7 @@ import {CreateObjectProps} from 'engine/definitions/types/objects.types';
 import {Vector3Array} from 'engine/definitions/types/world.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {forwardRef, useEffect} from 'react';
-import useObjects from '../../hooks/useObjects';
+import {useObjects} from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 import {useParent} from './Group';
 
@@ -12,7 +12,7 @@ type LineProps = {
   props?: CreateObjectProps<'line'>;
 };
 
-const Line = forwardRef<ObjectManager, LineProps>((props, ref) => {
+export const Line = forwardRef<ObjectManager, LineProps>((props, ref) => {
   const objects = useObjects();
   const parent = useParent();
 

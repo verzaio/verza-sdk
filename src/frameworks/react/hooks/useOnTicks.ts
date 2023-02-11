@@ -1,7 +1,10 @@
 import {useEffect} from 'react';
 
 // handle player updates
-const useOnTicks = (handler: () => Promise<void> | void, ticks: number) => {
+export const useOnTicks = (
+  handler: () => Promise<void> | void,
+  ticks: number,
+) => {
   useEffect(() => {
     let intervalId: ReturnType<typeof setTimeout> = null!;
 
@@ -20,5 +23,3 @@ const useOnTicks = (handler: () => Promise<void> | void, ticks: number) => {
     };
   }, [handler, ticks]);
 };
-
-export default useOnTicks;

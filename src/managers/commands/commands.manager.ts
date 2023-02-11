@@ -1,5 +1,4 @@
-import {} from 'engine/definitions/types/commands.types';
-import Command from './command.manager';
+import {Command} from './command.manager';
 import EngineManager from '../engine.manager';
 import PlayerManager from '../entities/players/player/player.manager';
 

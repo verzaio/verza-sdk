@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 
 import ControllerManager from 'engine/managers/controller.manager';
 
-const useControllerProp = <
+export const useControllerProp = <
   T extends ControllerManager,
   V extends keyof T['data'],
 >(
@@ -28,5 +28,3 @@ const useControllerProp = <
 
   return prop;
 };
-
-export default useControllerProp;

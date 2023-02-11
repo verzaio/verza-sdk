@@ -1,12 +1,13 @@
-import {EngineParams} from 'engine/definitions/local/types/engine.types';
-import EngineManager from 'engine/managers/engine.manager';
 import React, {
   createContext,
   PropsWithChildren,
   useEffect,
   useState,
 } from 'react';
-import useControllerProp from './hooks/useControllerProp';
+
+import {EngineParams} from 'engine/definitions/local/types/engine.types';
+import EngineManager from 'engine/managers/engine.manager';
+import {useControllerProp} from './hooks/useControllerProp';
 
 export const EngineContext = createContext<EngineManager>(null!);
 
@@ -14,7 +15,7 @@ type EngineProviderProps = {
   params?: EngineParams;
 };
 
-const EngineProvider = ({
+export const EngineProvider = ({
   children,
   params,
 }: PropsWithChildren<EngineProviderProps>) => {
@@ -47,5 +48,3 @@ const EngineProvider = ({
     <EngineContext.Provider value={engine}>{children}</EngineContext.Provider>
   );
 };
-
-export default EngineProvider;

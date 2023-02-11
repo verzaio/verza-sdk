@@ -1,8 +1,8 @@
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import {useEffect} from 'react';
-import useEngine from './useEngine';
+import {useEngine} from './useEngine';
 
-const useEvent = <
+export const useEvent = <
   T extends keyof ScriptEventMap = keyof ScriptEventMap,
   P extends ScriptEventMap[T] = ScriptEventMap[T],
 >(
@@ -19,5 +19,3 @@ const useEvent = <
     };
   });
 };
-
-export default useEvent;

@@ -1,7 +1,7 @@
-import useControllerProp from './useControllerProp';
-import useEngine from './useEngine';
+import {useControllerProp} from './useControllerProp';
+import {useEngine} from './useEngine';
 
-const useUI = () => {
+export const useUI = () => {
   return useEngine().ui;
 };
 
@@ -12,5 +12,3 @@ export const useCursorLock = () => {
 export const useInterfaces = () => {
   return useControllerProp(useUI().controller, 'interfaces');
 };
-
-export default useUI;

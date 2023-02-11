@@ -2,7 +2,7 @@ import {CreateObjectProps} from 'engine/definitions/types/objects.types';
 import {ObjectBoxDto} from 'engine/generated/dtos.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {forwardRef, useEffect} from 'react';
-import useObjects from '../../hooks/useObjects';
+import {useObjects} from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 import {useParent} from './Group';
 
@@ -11,7 +11,7 @@ type BoxProps = {
   props?: CreateObjectProps<'box'>;
 };
 
-const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
+export const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
   const objects = useObjects();
   const parent = useParent();
 
@@ -34,5 +34,3 @@ const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
 });
 
 Box.displayName = 'Box';
-
-export default Box;

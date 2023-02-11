@@ -1,7 +1,5 @@
-import useEngine from './useEngine';
+import {useEngine} from './useEngine';
 
-const useCamera = () => {
+export const useCamera = () => {
   return useEngine().player?.camera;
 };
-
-export default useCamera;

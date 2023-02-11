@@ -3,9 +3,9 @@ import {useEffect, useState} from 'react';
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {PickEntity} from 'engine/definitions/types/entities.types';
 import EntityManager from 'engine/managers/entities/entity/entity.manager';
-import useEntity from './useEntity';
+import {useEntity} from './useEntity';
 
-const useStreamedEntity = <
+export const useStreamedEntity = <
   T extends keyof typeof EntityType,
   H extends InstanceType<PickEntity<T>['EntityManager']> = InstanceType<
     PickEntity<T>['EntityManager']
@@ -45,5 +45,3 @@ const useStreamedEntity = <
 
   return entity;
 };
-
-export default useStreamedEntity;

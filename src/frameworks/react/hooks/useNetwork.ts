@@ -1,7 +1,5 @@
-import useEngine from './useEngine';
+import {useEngine} from './useEngine';
 
-const useNetwork = () => {
+export const useNetwork = () => {
   return useEngine().network;
 };
-
-export default useNetwork;

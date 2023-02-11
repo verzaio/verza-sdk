@@ -1,7 +1,5 @@
-import useEngine from './useEngine';
+import {useEngine} from './useEngine';
 
-const useChat = () => {
+export const useChat = () => {
   return useEngine().chat;
 };
-
-export default useChat;

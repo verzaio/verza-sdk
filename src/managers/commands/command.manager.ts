@@ -15,7 +15,7 @@ type ParamsList<Params extends CommandParam[] = CommandParam[]> = {
   >;
 };
 
-class Command<Params extends CommandParam[] = CommandParam[]>
+export class Command<Params extends CommandParam[] = CommandParam[]>
   implements CommandInfo
 {
   command: Readonly<string> = null!;
@@ -266,5 +266,3 @@ export class CommandParam<
     };
   }
 }
-
-export default Command;

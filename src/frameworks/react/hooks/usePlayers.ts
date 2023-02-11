@@ -1,7 +1,5 @@
-import useEngine from './useEngine';
+import {useEngine} from './useEngine';
 
-const usePlayers = () => {
+export const usePlayers = () => {
   return useEngine().entities.player;
 };
-
-export default usePlayers;

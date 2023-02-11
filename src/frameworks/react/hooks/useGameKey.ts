@@ -1,7 +1,7 @@
 import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
 import {KeyInfo} from 'engine/definitions/types/ui.types';
 import {useEffect} from 'react';
-import useEngine from './useEngine';
+import {useEngine} from './useEngine';
 
 type UseKeyOptions = {
   event?: 'keydown' | 'keyup';
@@ -12,7 +12,7 @@ type UseKeyOptions = {
   ignoreOptionsMenu?: boolean;
 };
 
-const useGameKey = (
+export const useGameKey = (
   key: string | string[],
   callback: (event: KeyInfo) => void,
   options?: UseKeyOptions,
@@ -56,5 +56,3 @@ const useGameKey = (
     };
   }, [engine, callback, key, options]);
 };
-
-export default useGameKey;

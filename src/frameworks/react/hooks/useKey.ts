@@ -1,8 +1,8 @@
 import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
 import {KeyInfo} from 'engine/definitions/types/ui.types';
-import {useCallback, useEffect} from 'react';
-import useEngine from './useEngine';
-import useGameKey from './useGameKey';
+import {useEffect} from 'react';
+import {useEngine} from './useEngine';
+import {useGameKey} from './useGameKey';
 
 type UseKeyOptions = {
   event?: 'keydown' | 'keyup';
@@ -13,7 +13,7 @@ type UseKeyOptions = {
   ignoreOptionsMenu?: boolean;
 };
 
-const useKey = (
+export const useKey = (
   key: string | string[],
   callback: (event: KeyInfo) => void,
   options?: UseKeyOptions,
@@ -73,5 +73,3 @@ const useKey = (
     };
   }, [engine, callback, key, options]);
 };
-
-export default useKey;

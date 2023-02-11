@@ -1,7 +1,5 @@
-import useEngine from './useEngine';
+import {useEngine} from './useEngine';
 
-const useObjects = () => {
+export const useObjects = () => {
   return useEngine().entities.object;
 };
-
-export default useObjects;

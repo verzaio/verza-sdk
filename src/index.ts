@@ -1,96 +1,50 @@
-import EngineManager from 'engine/managers/engine.manager';
+export {EngineManager} from 'engine/managers/engine.manager';
+
 import EventsManager, {EventListenersMap} from 'engine/managers/events.manager';
-import Command, {CommandParam} from 'engine/managers/commands/command.manager';
+export {EventsManager, EventListenersMap};
 
-import EngineProvider from 'engine/frameworks/react/EngineProvider';
+export {Command, CommandParam} from 'engine/managers/commands/command.manager';
 
-import {
+export {EngineProvider} from 'engine/frameworks/react/EngineProvider';
+
+export {
   SizePropValue,
   SizeProps,
   ScriptEventMap,
 } from 'engine/definitions/types/scripts.types';
 
-import {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
+export {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
 
-import useEngine from 'engine/frameworks/react/hooks/useEngine';
-import useEvent from 'engine/frameworks/react/hooks/useEvent';
-import useFrame from 'engine/frameworks/react/hooks/useFrame';
-import useOnTicks from 'engine/frameworks/react/hooks/useOnTicks';
-import useKey from 'engine/frameworks/react/hooks/useKey';
-import useGameKey from 'engine/frameworks/react/hooks/useGameKey';
-import useControllerProp from 'engine/frameworks/react/hooks/useControllerProp';
+export {useEngine} from 'engine/frameworks/react/hooks/useEngine';
+export {useEvent} from 'engine/frameworks/react/hooks/useEvent';
+export {useFrame} from 'engine/frameworks/react/hooks/useFrame';
+export {useOnTicks} from 'engine/frameworks/react/hooks/useOnTicks';
+export {useKey} from 'engine/frameworks/react/hooks/useKey';
+export {useGameKey} from 'engine/frameworks/react/hooks/useGameKey';
+export {useControllerProp} from 'engine/frameworks/react/hooks/useControllerProp';
 
-import useNetwork from 'engine/frameworks/react/hooks/useNetwork';
-import useCamera from 'engine/frameworks/react/hooks/useCamera';
-import useChat from 'engine/frameworks/react/hooks/useChat';
-import useCommand from 'engine/frameworks/react/hooks/useCommand';
-import useUI, {
+export {useNetwork} from 'engine/frameworks/react/hooks/useNetwork';
+export {useCamera} from 'engine/frameworks/react/hooks/useCamera';
+export {useChat} from 'engine/frameworks/react/hooks/useChat';
+export {useCommand} from 'engine/frameworks/react/hooks/useCommand';
+export {
+  useUI,
   useCursorLock,
   useInterfaces,
 } from 'engine/frameworks/react/hooks/useUI';
 
-import usePlayerId from 'engine/frameworks/react/hooks/usePlayerId';
+export {usePlayerId} from 'engine/frameworks/react/hooks/usePlayerId';
 
-import useObjects from 'engine/frameworks/react/hooks/useObjects';
-import usePlayers from 'engine/frameworks/react/hooks/usePlayers';
+export {useObjects} from 'engine/frameworks/react/hooks/useObjects';
+export {usePlayers} from 'engine/frameworks/react/hooks/usePlayers';
 
-import useObject from 'engine/frameworks/react/hooks/useObject';
-import usePlayer from 'engine/frameworks/react/hooks/usePlayer';
-import useStreamedPlayer from 'engine/frameworks/react/hooks/useStreamedPlayer';
-import useStreamedObject from 'engine/frameworks/react/hooks/useStreamedObject';
+export {useObject} from 'engine/frameworks/react/hooks/useObject';
+export {usePlayer} from 'engine/frameworks/react/hooks/usePlayer';
+export {useStreamedPlayer} from 'engine/frameworks/react/hooks/useStreamedPlayer';
+export {useStreamedObject} from 'engine/frameworks/react/hooks/useStreamedObject';
 
-import Group from 'engine/frameworks/react/components/objects/Group';
-import Model from 'engine/frameworks/react/components/objects/Model';
-import Box from 'engine/frameworks/react/components/objects/Box';
-import Gltf from 'engine/frameworks/react/components/objects/Gltf';
-import Line from 'engine/frameworks/react/components/objects/Line';
-
-export {
-  /* engine */
-  EngineManager,
-
-  /* events */
-  EventsManager,
-  EventListenersMap,
-
-  /* commands */
-  Command,
-  CommandParam,
-
-  /* scripts */
-  SizePropValue,
-  SizeProps,
-  ScriptEventMap,
-  MessengerManagerEventsMap,
-
-  /* react */
-  EngineProvider,
-  useEngine,
-  useEvent,
-  useFrame,
-  useOnTicks,
-  useKey,
-  useGameKey,
-  useControllerProp,
-  useCommand,
-  useChat,
-  useUI,
-  useNetwork,
-  useCamera,
-  useCursorLock,
-  useInterfaces,
-  usePlayerId,
-  useObjects,
-  usePlayers,
-  useObject,
-  usePlayer,
-  useStreamedPlayer,
-  useStreamedObject,
-
-  /* components */
-  Group,
-  Model,
-  Box,
-  Line,
-  Gltf,
-};
+export {Group} from 'engine/frameworks/react/components/objects/Group';
+export {Model} from 'engine/frameworks/react/components/objects/Model';
+export {Box} from 'engine/frameworks/react/components/objects/Box';
+export {Gltf} from 'engine/frameworks/react/components/objects/Gltf';
+export {Line} from 'engine/frameworks/react/components/objects/Line';

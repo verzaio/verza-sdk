@@ -9,7 +9,7 @@ import React, {
 
 import {CreateObjectProps} from 'engine/definitions/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
-import useObjects from '../../hooks/useObjects';
+import {useObjects} from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 
 const ParentContext = createContext<ObjectManager>(null!);
@@ -19,7 +19,7 @@ type GroupProps = {
   props?: CreateObjectProps<'group'>;
 };
 
-const Group = forwardRef<ObjectManager, GroupProps>((props, ref) => {
+export const Group = forwardRef<ObjectManager, GroupProps>((props, ref) => {
   const objects = useObjects();
   const [object, setObject] = useState<ObjectManager>(null!);
   const parent = useParent();
@@ -58,5 +58,3 @@ Group.displayName = 'Group';
 export const useParent = () => {
   return useContext(ParentContext);
 };
-
-export default Group;

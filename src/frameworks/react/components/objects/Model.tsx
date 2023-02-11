@@ -1,7 +1,7 @@
 import {CreateObjectProps} from 'engine/definitions/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {forwardRef, useEffect} from 'react';
-import useObjects from '../../hooks/useObjects';
+import {useObjects} from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 import {useParent} from './Group';
 
@@ -10,7 +10,7 @@ type ModelProps = {
   props?: CreateObjectProps<'model'>;
 };
 
-const Model = forwardRef<ObjectManager, ModelProps>((props, ref) => {
+export const Model = forwardRef<ObjectManager, ModelProps>((props, ref) => {
   const objects = useObjects();
   const parent = useParent();
 
@@ -33,5 +33,3 @@ const Model = forwardRef<ObjectManager, ModelProps>((props, ref) => {
 });
 
 Model.displayName = 'Model';
-
-export default Model;

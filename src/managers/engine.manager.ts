@@ -17,7 +17,7 @@ import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
-class EngineManager {
+export class EngineManager {
   z = z;
 
   network: NetworkManager;

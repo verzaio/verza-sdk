@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
-import useEvent from './useEvent';
+import {useEvent} from './useEvent';
 
-const useFrame = (callback: (delta: number) => void) => {
+export const useFrame = (callback: (delta: number) => void) => {
   // TODO: Use remote?
   //useEvent('onFrame', callback);
 
@@ -32,5 +32,3 @@ const useFrame = (callback: (delta: number) => void) => {
     };
   }, [callback]);
 };
-
-export default useFrame;
