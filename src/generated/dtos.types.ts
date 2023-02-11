@@ -368,12 +368,14 @@ export interface ServerPermissionsDto {
 export interface ServerDto {
   id: string;
   name: string | null;
-  status: 'active' | 'inactive';
+  logo_url: string;
   players_count: number;
   region: 'global';
   world: BasicWorldDto | null;
   scripts: ScriptDto[];
   permissions: ServerPermissionsDto;
+  status: 'active' | 'inactive';
+  favorited: boolean;
   /** @format date-time */
   created_at: string;
 }
@@ -486,6 +488,8 @@ export interface PlayerPacketLocalUpdateDto {
   d?: number;
   /** name */
   e?: string;
+  /** character */
+  c?: CharacterDto;
 }
 
 export interface PositionMetadataDto {
@@ -778,6 +782,8 @@ export interface UpdateScriptDto {
 }
 
 export interface UpdateServerDto {
+  /** @format binary */
+  logo?: File;
   /**
    * @minLength 4
    * @maxLength 128
@@ -789,6 +795,8 @@ export interface UpdateServerDto {
 export interface KeyDto {
   token: string;
 }
+
+export type FavoriteFiltersDto = object;
 
 export interface WorldDto {
   id: string;
