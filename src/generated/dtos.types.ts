@@ -758,7 +758,10 @@ export interface PlayerIdDto {
 }
 
 export interface ServerFiltersDto {
+  /** @maxLength 128 */
+  name?: string;
   region?: 'global';
+  favorites?: boolean;
 }
 
 export interface CreateServerDto {
@@ -795,8 +798,6 @@ export interface UpdateServerDto {
 export interface KeyDto {
   token: string;
 }
-
-export type FavoriteFiltersDto = object;
 
 export interface WorldDto {
   id: string;
