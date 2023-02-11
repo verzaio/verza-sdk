@@ -1,6 +1,6 @@
-import {useEffect, useState} from 'react';
-
 import ControllerManager from 'engine/managers/controller.manager';
+
+import {useEffect, useState} from 'react';
 
 export const useControllerProp = <
   T extends ControllerManager,

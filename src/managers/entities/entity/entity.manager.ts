@@ -1,16 +1,17 @@
+import {DEFAULT_ENTITY_DRAW_DISTANCE} from 'engine/definitions/constants/streamer.constants';
 import {
   EntityDrawDistance,
   EntityItem,
   MergeEntityEvents,
 } from 'engine/definitions/types/entities.types';
 import {EntityEventMap} from 'engine/definitions/types/events.types';
-import {Object3D} from 'three';
 
 import EngineManager from '../../engine.manager';
 import EventsManager, {EventListenersMap} from '../../events.manager';
 import EntityHandleManager from './entity-handle.manager';
-import {DEFAULT_ENTITY_DRAW_DISTANCE} from 'engine/definitions/constants/streamer.constants';
 import EntityStreamManager from './entity-stream.manager';
+
+import {Object3D} from 'three';
 
 class EntityManager<
   T extends EntityItem = EntityItem,

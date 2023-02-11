@@ -1,7 +1,7 @@
 import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
 import {SizeProps} from 'engine/definitions/types/scripts.types';
-import ControllerManager from './controller.manager';
 
+import ControllerManager from './controller.manager';
 import EngineManager from './engine.manager';
 
 class UIManager {

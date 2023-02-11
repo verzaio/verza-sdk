@@ -7,6 +7,7 @@ import {
   CommandInfo,
   CommandParam as CommandParamBase,
 } from 'engine/definitions/types/commands.types';
+
 import PlayerManager from '../entities/players/player/player.manager';
 
 type ParamsList<Params extends CommandParam[] = CommandParam[]> = {

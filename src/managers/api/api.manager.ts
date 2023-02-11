@@ -1,13 +1,16 @@
-import EngineManager from '../engine.manager';
+import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+
 import {
   decryptMessage,
   encryptMessage,
   hexToBase64Key,
 } from 'engine/utils/encryption.utils';
+
 import {ServerDto} from 'engine/generated/dtos.types';
-import WebsocketServerManager from './servers/websocket-server';
-import WebServerManager from './servers/web-server';
-import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+
+import EngineManager from '../engine.manager';
+import WebServerManager from './servers/web-server.manager';
+import WebsocketServerManager from './servers/websocket-server.manager';
 
 const DEFAULT_ENV_ACCESS_TOKEN_NAME = 'VERZA_ACCESS_TOKEN';
 

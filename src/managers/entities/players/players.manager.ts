@@ -1,15 +1,12 @@
 import {PLAYER_STATE_PACKET_INDEX} from 'engine/definitions/constants/players.constants';
 import {EntityType} from 'engine/definitions/enums/entities.enums';
-import {EntityPacketAction} from 'engine/definitions/enums/networks.enums';
 import {PlayerState} from 'engine/definitions/types/players.types';
 import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-import {
-  PlayerPacketDto,
-  PlayerPacketUpdateDto,
-} from 'engine/generated/dtos.types';
+
+import {PlayerPacketDto} from 'engine/generated/dtos.types';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';

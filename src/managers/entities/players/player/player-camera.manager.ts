@@ -3,8 +3,10 @@ import {
   CameraPosition,
   CameraTransition,
 } from 'engine/definitions/types/camera.types';
-import {Vector3} from 'three';
+
 import PlayerManager from './player.manager';
+
+import {Vector3} from 'three';
 
 class PlayerCameraManager {
   private _player: PlayerManager;

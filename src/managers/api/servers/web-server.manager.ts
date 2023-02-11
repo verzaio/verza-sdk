@@ -1,15 +1,17 @@
-import {z} from 'zod';
+import {CHAT_MAX_MESSAGE_SIZE} from 'engine/definitions/constants/chat.constants';
+import {PacketEvent} from 'engine/definitions/enums/networks.enums';
+import {ServerEndpointPacket} from 'engine/definitions/local/types/api.types';
+import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+
+import EngineManager from 'engine/managers/engine.manager';
 
 import {
   ChatPacketSendDto,
   CustomPacketSendDto,
   ScriptActionPacketSendDto,
 } from 'engine/generated/dtos.types';
-import {PacketEvent} from 'engine/definitions/enums/networks.enums';
-import {CHAT_MAX_MESSAGE_SIZE} from 'engine/definitions/constants/chat.constants';
-import {ServerEndpointPacket} from 'engine/definitions/local/types/api.types';
-import EngineManager from 'engine/managers/engine.manager';
-import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+
+import {z} from 'zod';
 
 const EXPIRE_TIME_MS = 45000; // 45 seconds
 
@@ -267,7 +269,7 @@ class WebServerManager {
   }
 
   /* packets */
-  emitChatPacket(text: string, playerId?: number) {
+  emitChatPacket(text: string) {
     const chatPacket: ChatPacketSendDto = {
       m: text,
     };

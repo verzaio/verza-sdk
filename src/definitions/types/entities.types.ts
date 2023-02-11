@@ -1,12 +1,10 @@
-import type {ComponentType} from 'react';
-
 import type {PlayerDataProps} from 'engine/definitions/types/players.types';
 import type {
   Vector3Array,
   QuaternionArray,
   WorldPositionRotation,
 } from 'engine/definitions/types/world.types';
-import type {ObjectDto, ObjectMetadataDto} from 'engine/generated/dtos.types';
+
 import EngineManager from 'engine/managers/engine.manager';
 import EntitiesManager from 'engine/managers/entities/entities.manager';
 import EntityHandleManager from 'engine/managers/entities/entity/entity-handle.manager';
@@ -18,7 +16,11 @@ import PlayerHandleManager from 'engine/managers/entities/players/player/player-
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 import PlayersManager from 'engine/managers/entities/players/players.manager';
 
+import type {ObjectDto, ObjectMetadataDto} from 'engine/generated/dtos.types';
+
 import type {EntityType} from '../enums/entities.enums';
+
+import type {ComponentType} from 'react';
 
 export type EntityDrawDistance = Required<ObjectMetadataDto>['d'];
 

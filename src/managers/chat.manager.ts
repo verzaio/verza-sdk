@@ -1,4 +1,5 @@
 import {CHAT_INPUT_DELIMITER_REGEX} from 'engine/definitions/constants/chat.constants';
+
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
 

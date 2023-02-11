@@ -1,5 +1,3 @@
-import {v4} from 'uuid';
-
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {
   CreateObjectProps,
@@ -10,11 +8,14 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
+
 import {ObjectBoxDto, ObjectDto} from 'engine/generated/dtos.types';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
 import ObjectManager from './object/object.manager';
+
+import {v4} from 'uuid';
 
 class ObjectsManager extends EntitiesManager<ObjectManager> {
   private _binded = false;
@@ -44,7 +45,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   private _createObject<T extends ObjectType = ObjectType>(
     type: T,
     props: CreateObjectPropsWithObjects<T>,
-    get = false,
   ) {
     // load
     this._load();

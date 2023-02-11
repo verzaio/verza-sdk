@@ -1,9 +1,9 @@
-import {Euler, Quaternion, Vector3} from 'three';
-
 import type {ObjectDto, ObjectMetadataDto} from 'engine/generated/dtos.types';
 
 import {EntityDrawDistance, EntityCollision} from './entities.types';
 import {QuaternionArray, Vector3Array} from './world.types';
+
+import {Euler, Quaternion, Vector3} from 'three';
 
 export type ObjectType = ObjectDto['t'];
 

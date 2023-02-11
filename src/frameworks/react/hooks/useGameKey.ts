@@ -1,7 +1,9 @@
 import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
 import {KeyInfo} from 'engine/definitions/types/ui.types';
-import {useEffect} from 'react';
+
 import {useEngine} from './useEngine';
+
+import {useEffect} from 'react';
 
 type UseKeyOptions = {
   event?: 'keydown' | 'keyup';

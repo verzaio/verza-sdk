@@ -1,10 +1,11 @@
+import PlayerManager from 'engine/managers/entities/players/player/player.manager';
+
 import {
   EncryptedPacketsDto,
   PlayerPacketDto,
   PlayerPacketUpdateDto,
   ServerDto,
 } from 'engine/generated/dtos.types';
-import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {CommandInfo} from './commands.types';

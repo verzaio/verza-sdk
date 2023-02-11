@@ -1,4 +1,4 @@
-import { randomBytes, secretbox } from 'tweetnacl';
+import {randomBytes, secretbox} from 'tweetnacl';
 import {
   decodeBase64,
   decodeUTF8,

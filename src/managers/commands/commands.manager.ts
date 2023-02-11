@@ -1,6 +1,6 @@
-import {Command} from './command.manager';
 import EngineManager from '../engine.manager';
 import PlayerManager from '../entities/players/player/player.manager';
+import {Command} from './command.manager';
 
 class CommandsManager {
   private _engine: EngineManager;

@@ -1,9 +1,5 @@
-import {
-  CameraModeType,
-  CameraPosition,
-  CameraTransition,
-} from 'engine/definitions/types/camera.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+
 import PlayerManager from './player.manager';
 
 class PlayerMessengerManager {
