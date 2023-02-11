@@ -88,7 +88,7 @@ class ApiManager {
     }
 
     // set from env
-    if (process.env['VERZA_API_ENDPOINT']) {
+    if (typeof process !== 'undefined' && process.env?.['VERZA_API_ENDPOINT']) {
       this.endpoint = process.env['VERZA_API_ENDPOINT'];
       return;
     }
@@ -113,7 +113,7 @@ class ApiManager {
     if (!accessToken) {
       if (
         typeof process !== 'undefined' &&
-        process.env[DEFAULT_ENV_ACCESS_TOKEN_NAME]
+        process.env?.[DEFAULT_ENV_ACCESS_TOKEN_NAME]
       ) {
         accessToken = process.env[DEFAULT_ENV_ACCESS_TOKEN_NAME];
       }

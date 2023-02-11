@@ -15,7 +15,7 @@ class ChatManager {
   }
 
   escapeText(text?: string) {
-    return (text ?? '')?.replaceAll(CHAT_INPUT_DELIMITER_REGEX, '');
+    return (text ?? '')?.replace(CHAT_INPUT_DELIMITER_REGEX, '');
   }
 
   // server only
