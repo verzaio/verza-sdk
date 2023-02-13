@@ -1,15 +1,12 @@
-import {EngineParams} from 'engine/definitions/local/types/engine.types';
-
-import EngineManager from 'engine/managers/engine.manager';
-
-import {useControllerProp} from './hooks/useControllerProp';
-
 import React, {
   createContext,
   PropsWithChildren,
   useEffect,
   useState,
 } from 'react';
+
+import {EngineParams} from 'engine/definitions/local/types/engine.types';
+import EngineManager from 'engine/managers/engine.manager';
 
 export const EngineContext = createContext<EngineManager>(null!);
 

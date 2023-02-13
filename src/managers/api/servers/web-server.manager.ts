@@ -3,6 +3,7 @@ import {z} from 'zod';
 import {CHAT_MAX_MESSAGE_SIZE} from 'engine/definitions/constants/chat.constants';
 import {PacketEvent} from 'engine/definitions/enums/networks.enums';
 import {ServerEndpointPacket} from 'engine/definitions/local/types/api.types';
+import {DiscoverPacketDto} from 'engine/definitions/local/types/discover.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import {
   ChatPacketSendDto,
@@ -47,6 +48,15 @@ class WebServerManager {
     }
   }
 
+  bind() {
+    const onSync = () => {
+      this.emitDiscoverPacket();
+      this._engine.events.off('syncEncryptedPackets', onSync);
+    };
+
+    this._engine.events.on('syncEncryptedPackets', onSync);
+  }
+
   async handle(rawData: unknown): Promise<unknown> {
     // ignore if not a string
     if (typeof rawData !== 'string') return null;
@@ -74,9 +84,7 @@ class WebServerManager {
       return null!;
     }
 
-    this._handlePacket(eventId, packetData);
-
-    return null;
+    return this._handlePacket(eventId, packetData) ?? null;
   }
 
   private _createPlayerFromAuthPacket(packet: string): boolean {
@@ -138,11 +146,32 @@ class WebServerManager {
     return true;
   }
 
+  private _discoverPacket() {
+    const discoverPacket: DiscoverPacketDto = {
+      commands: [],
+    };
+
+    // commands
+    this._engine.commands.commands.forEach(command => {
+      discoverPacket.commands.push({
+        ...command.toObject(),
+        tag: this._engine.name,
+      });
+    });
+
+    return discoverPacket;
+  }
+
   private _handlePacket(
     event: PacketEvent,
     packet: ChatPacketSendDto | CustomPacketSendDto | null,
   ) {
     switch (event) {
+      // chat
+      case PacketEvent.Discover: {
+        return this._discoverPacket();
+      }
+
       // chat
       case PacketEvent.Chat: {
         // validation
@@ -177,6 +206,8 @@ class WebServerManager {
         console.debug(`[webserver] unhandled packet: ${event}`);
       }
     }
+
+    return null;
   }
 
   private _parseEndpointData(data: string): ServerEndpointPacket {
@@ -197,11 +228,11 @@ class WebServerManager {
     const packet: ServerEndpointPacket = [
       event,
       data ?? null,
-      this.encryptedPackets.auth,
+      this.encryptedPackets?.auth,
     ];
 
     // emit script server
-    fetch(this.webServerEndpoint, {
+    return fetch(this.webServerEndpoint, {
       method: 'POST',
 
       cache: 'no-cache',
@@ -271,6 +302,19 @@ class WebServerManager {
   }
 
   /* packets */
+  async emitDiscoverPacket() {
+    // emit
+    const result: DiscoverPacketDto = await (
+      await this.emitToWebServer(PacketEvent.Discover)
+    )?.json();
+
+    if (!result) return;
+
+    result.commands.forEach(command => {
+      this._engine.commands.registerWebServerCommand(command);
+    });
+  }
+
   emitChatPacket(text: string) {
     const chatPacket: ChatPacketSendDto = {
       m: text,

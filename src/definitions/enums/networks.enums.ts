@@ -59,6 +59,8 @@ export enum PacketEvent {
   Sync = 'y', // sync
 
   Custom = 'n', // custom
+
+  Discover = 'd', // discover
 }
 
 export enum EntityPacketAction {

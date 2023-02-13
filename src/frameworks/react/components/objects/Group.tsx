@@ -9,6 +9,7 @@ import React, {
 
 import {CreateObjectProps} from 'engine/definitions/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
+
 import {useObjects} from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 

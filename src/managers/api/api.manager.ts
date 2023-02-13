@@ -77,6 +77,12 @@ class ApiManager {
     this.webServer = new WebServerManager(engine);
   }
 
+  bind() {
+    if (this.isWebServerAvailable) {
+      this.webServer.bind();
+    }
+  }
+
   private _setEndpoint() {
     const {environment, apiEndpoint} = this._engine.params;
 

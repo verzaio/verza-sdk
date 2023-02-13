@@ -135,8 +135,6 @@ export class EngineManager {
       this.entities[key as keyof typeof ENTITIES_RENDERS].Manager =
         value.EntityManager;
     });
-
-    console.log(this.name);
   }
 
   connectServer() {
@@ -193,6 +191,7 @@ export class EngineManager {
 
     // binds
     this.network.bind();
+    this.api.bind(); // always after network
     this.ui?.bind();
   }
 
@@ -273,7 +272,7 @@ class EngineEvents<
       this._engine.messenger.events.on(
         eventName as any,
         (event: MessageEvent) => {
-          this.emit(eventName, ...event.data);
+          this.emit(eventName, ...(event?.data ?? []));
         },
       ),
     );

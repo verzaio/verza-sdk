@@ -1,3 +1,5 @@
+import {CommandInfo} from 'engine/definitions/types/commands.types';
+
 import EngineManager from '../engine.manager';
 import PlayerManager from '../entities/players/player/player.manager';
 import {Command} from './command.manager';
@@ -5,7 +7,7 @@ import {Command} from './command.manager';
 class CommandsManager {
   private _engine: EngineManager;
 
-  private _commands = new Map<string, Command>();
+  commands = new Map<string, Command>();
 
   private _binded = false;
 
@@ -22,13 +24,13 @@ class CommandsManager {
     if (this._engine.api.isClient || this._engine.api.isWebsocketServer) {
       // if already synced
       if (this._engine.synced) {
-        this._commands.forEach(command => {
+        this.commands.forEach(command => {
           this.registerForPlayers(command);
         });
       } else {
         // if not, then listen for it
         this._engine.events.on('onSynced', () => {
-          this._commands.forEach(command => {
+          this.commands.forEach(command => {
             this.registerForPlayers(command);
           });
         });
@@ -41,7 +43,7 @@ class CommandsManager {
       this._engine.players.events.on('onConnect', player => {
         if (!this._engine.synced) return; // ignore if not synced
 
-        this._commands.forEach(command => {
+        this.commands.forEach(command => {
           this.registerForPlayer(player, command);
         });
       });
@@ -72,7 +74,7 @@ class CommandsManager {
 
       // call it if found
       if (key) {
-        this._commands
+        this.commands
           .get(key)
           ?.process(player, command.substring(key.length).trim());
       } else {
@@ -91,12 +93,12 @@ class CommandsManager {
     const cmd = command.toLowerCase();
 
     // exact match
-    if (this._commands.has(cmd.toLowerCase())) {
+    if (this.commands.has(cmd.toLowerCase())) {
       return cmd;
     }
 
     // match with parameters
-    return [...this._commands.keys()].find(key => {
+    return [...this.commands.keys()].find(key => {
       // match "/test "
       if (cmd.startsWith(`${key} `)) {
         return true;
@@ -207,7 +209,7 @@ class CommandsManager {
     this.unregister(command);
 
     // add it
-    this._commands.set(command.command.toLowerCase(), command);
+    this.commands.set(command.command.toLowerCase(), command);
 
     // emit only if synced
     if (this._engine.synced) {
@@ -216,14 +218,22 @@ class CommandsManager {
   }
 
   unregister(command: Command<any>) {
-    if (!this._commands.has(command.command.toLowerCase())) return;
+    if (!this.commands.has(command.command.toLowerCase())) return;
 
-    this._commands.delete(command.command.toLowerCase());
+    this.commands.delete(command.command.toLowerCase());
 
     // emit only if synced
     if (this._engine.synced) {
       this.unregisterForPlayers(command);
     }
+  }
+
+  registerWebServerCommand(command: CommandInfo) {
+    this._engine.messenger.emit('registerCommand', [
+      this._engine.player.id,
+      command,
+      command.tag ?? this._engine.name,
+    ]);
   }
 
   destroy() {
