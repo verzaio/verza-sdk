@@ -1,8 +1,8 @@
+import {useEffect, useState} from 'react';
+
 import {Command, CommandParam} from 'engine/managers/commands/command.manager';
 
 import {useEngine} from './useEngine';
-
-import {useEffect, useState} from 'react';
 
 export const useCommand = <Params extends CommandParam[] = CommandParam[]>(
   command: string,

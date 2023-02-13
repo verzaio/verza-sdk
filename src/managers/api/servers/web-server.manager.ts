@@ -1,17 +1,15 @@
+import {z} from 'zod';
+
 import {CHAT_MAX_MESSAGE_SIZE} from 'engine/definitions/constants/chat.constants';
 import {PacketEvent} from 'engine/definitions/enums/networks.enums';
 import {ServerEndpointPacket} from 'engine/definitions/local/types/api.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
-
-import EngineManager from 'engine/managers/engine.manager';
-
 import {
   ChatPacketSendDto,
   CustomPacketSendDto,
   ScriptActionPacketSendDto,
 } from 'engine/generated/dtos.types';
-
-import {z} from 'zod';
+import EngineManager from 'engine/managers/engine.manager';
 
 const EXPIRE_TIME_MS = 45000; // 45 seconds
 
@@ -59,6 +57,10 @@ class WebServerManager {
     // ignore if decoded data is incorrect encoded
     if (!this._isValidEndpointPacket(data)) {
       console.debug(`[api] invalid encoded data`, data);
+
+      if (!data?.[2]) {
+        console.debug(`[api] is Access Token correct?`);
+      }
 
       return {
         error: 'invalid encoded data',

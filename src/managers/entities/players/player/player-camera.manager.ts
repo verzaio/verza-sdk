@@ -1,3 +1,5 @@
+import {Vector3} from 'three';
+
 import {
   CameraModeType,
   CameraPosition,
@@ -5,8 +7,6 @@ import {
 } from 'engine/definitions/types/camera.types';
 
 import PlayerManager from './player.manager';
-
-import {Vector3} from 'three';
 
 class PlayerCameraManager {
   private _player: PlayerManager;

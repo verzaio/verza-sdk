@@ -3,7 +3,6 @@ import {
   NetworkSyncEvent,
   NetworkSyncEventMap,
 } from 'engine/definitions/enums/networks.enums';
-
 import EngineManager from 'engine/managers/engine.manager';
 import EventsManager from 'engine/managers/events.manager';
 

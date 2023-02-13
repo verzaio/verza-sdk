@@ -17,12 +17,10 @@ const WebServerTest = () => {
       },
     );
 
-    //
-
     return () => {
       engine.network.offServerEvent('onWebServerReceived', onWebServerReceived);
     };
-  }, []);
+  }, [engine.network]);
 
   return null;
 };

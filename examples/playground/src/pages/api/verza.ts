@@ -17,6 +17,7 @@ export default async function handler(
 
   // init verza engine
   const engine = new EngineManager({
+    name: 'Web Server',
     accessToken: process.env['VERZA_ACCESS_TOKEN'],
   });
 

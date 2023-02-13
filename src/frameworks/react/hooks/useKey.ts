@@ -1,10 +1,10 @@
+import {useEffect} from 'react';
+
 import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
 import {KeyInfo} from 'engine/definitions/types/ui.types';
 
 import {useEngine} from './useEngine';
 import {useGameKey} from './useGameKey';
-
-import {useEffect} from 'react';
 
 type UseKeyOptions = {
   event?: 'keydown' | 'keyup';

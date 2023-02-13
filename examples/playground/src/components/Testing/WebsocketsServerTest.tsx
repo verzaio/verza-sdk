@@ -5,6 +5,7 @@ const WebsocketsServerTest = () => {
   // websockets server
   useEffect(() => {
     const engine = new EngineManager({
+      name: 'Websocket Server',
       accessToken: process.env['NEXT_PUBLIC_VERZA_ACCESS_TOKEN'],
       apiEndpoint: 'http://localhost',
     });

@@ -1,10 +1,13 @@
+import {Euler, Quaternion, Vector3} from 'three';
+
+import {degToRad, radToDeg} from 'three/src/math/MathUtils';
+
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
 import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-
 import EngineManager from 'engine/managers/engine.manager';
 
 import EntityManager from '../../entity/entity.manager';
@@ -12,9 +15,6 @@ import PlayerCameraManager from './player-camera.manager';
 import type PlayerHandleManager from './player-handle.manager';
 import PlayerMessengerManager from './player-messenger.manager';
 import PlayerVoicechatManager from './player-voicechat.manager';
-
-import {Euler, Quaternion, Vector3} from 'three';
-import {degToRad, radToDeg} from 'three/src/math/MathUtils';
 
 class PlayerManager extends EntityManager<
   PlayerEntity,

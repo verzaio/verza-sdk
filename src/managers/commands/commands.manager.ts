@@ -112,6 +112,7 @@ class CommandsManager {
       this._engine.messenger.emit('registerCommand', [
         this._engine.player.id,
         command.toObject(),
+        this._engine.name,
       ]);
       return;
     }
@@ -124,6 +125,7 @@ class CommandsManager {
         this._engine.api.emitActionToServer('registerCommand', [
           player.id,
           commandJson,
+          this._engine.name,
         ]);
       });
     }
@@ -137,6 +139,7 @@ class CommandsManager {
       this._engine.messenger.emit('registerCommand', [
         player.id,
         command.toObject(),
+        this._engine.name,
       ]);
       return;
     }
@@ -147,6 +150,7 @@ class CommandsManager {
       this._engine.api.emitActionToServer('registerCommand', [
         player.id,
         command.toObject(),
+        this._engine.name,
       ]);
     }
   }

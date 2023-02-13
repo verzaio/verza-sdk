@@ -21,12 +21,12 @@
         "newlinesBetween": "always",
         "groups": [
           ["/scss$/"],
+          ["/^react$/"],
+          ["/^three$/"],
+          ["module"],
+          ["/^types/"],
 
-          ["/^engine/definitions/"],
-          ["/^engine/frameworks/"],
-          ["/^engine/managers/"],
-          ["/^engine/utils/"],
-          ["/^engine/generated/"],
+          ["/^engine/"],
 
           ["parent", "sibling", "index"]
         ],

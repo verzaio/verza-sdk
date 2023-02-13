@@ -1,19 +1,17 @@
+import {io, Socket} from 'socket.io-client';
+import msgpackParser from 'socket.io-msgpack-parser';
+
 import {PacketEvent, PacketId} from 'engine/definitions/enums/networks.enums';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
-
-import EngineManager from 'engine/managers/engine.manager';
-
 import {
   ServerDto,
   ScriptSyncPacketDto,
   ScriptActionPacketDto,
   ScriptActionPacketSendDto,
 } from 'engine/generated/dtos.types';
+import EngineManager from 'engine/managers/engine.manager';
 
 import SyncManager from './sync.manager';
-
-import {io, Socket} from 'socket.io-client';
-import msgpackParser from 'socket.io-msgpack-parser';
 
 const WS_NAMESPACE = 'n';
 

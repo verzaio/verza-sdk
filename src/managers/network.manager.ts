@@ -1,7 +1,6 @@
 import {MAX_CLIENT_OBJECT_SIZE} from 'engine/definitions/constants/networks.constants';
 import {PacketDestination} from 'engine/definitions/enums/networks.enums';
 import {CustomEventData} from 'engine/definitions/types/scripts.types';
-
 import {EncryptedPacketsDto, ServerDto} from 'engine/generated/dtos.types';
 
 import EngineManager from './engine.manager';

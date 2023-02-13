@@ -6,6 +6,8 @@ export type CommandInfo = {
   desc: string;
 
   params: CommandParam[];
+
+  tag?: string;
 };
 
 export type CommandParam = {

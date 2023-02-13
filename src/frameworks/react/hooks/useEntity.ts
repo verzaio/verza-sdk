@@ -1,9 +1,9 @@
+import {useMemo} from 'react';
+
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {PickEntity} from 'engine/definitions/types/entities.types';
 
 import {useEngine} from './useEngine';
-
-import {useMemo} from 'react';
 
 export const useEntity = <T extends keyof typeof EntityType>(
   id: string | number,

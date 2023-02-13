@@ -1,10 +1,10 @@
+import {Vector3} from 'three';
+
 import {PlayerState} from 'engine/definitions/types/players.types';
 
 import EntityHandleManager from '../../entity/entity-handle.manager';
 import PlayerAnimationsManager from './player-animations.manager';
 import type PlayerManager from './player.manager';
-
-import {Vector3} from 'three';
 
 class PlayerHandleManager extends EntityHandleManager<PlayerManager> {
   /* public props */
