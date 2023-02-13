@@ -1,4 +1,3 @@
-import {initWebServer} from '@app/server/web-server';
 import {Command, CommandParam, EngineManager} from '@verza/sdk';
 import {useEffect} from 'react';
 

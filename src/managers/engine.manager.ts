@@ -274,7 +274,7 @@ class EngineEvents<
   private _unbind<A extends keyof T>(eventName: A): void {
     if (
       this._bindedEvents.has(eventName) &&
-      this.getEmitter().listenerCount(eventName as any) === 0
+      this.getEmitter().listenerCount(eventName as string) === 0
     ) {
       this._engine.messenger.events.off(
         eventName as any,

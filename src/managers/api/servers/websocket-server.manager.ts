@@ -180,7 +180,7 @@ class WebsocketServerManager {
   ) {
     this.socket.emit(PacketEvent.ScriptAction, {
       e: eventName,
-      d: args as any,
+      d: args as object,
     } satisfies ScriptActionPacketSendDto);
   }
 
@@ -201,7 +201,7 @@ class WebsocketServerManager {
         const dto = packet as ScriptActionPacketDto;
         this._engine.api.emitLocalAction(
           dto.e as keyof ScriptEventMap,
-          dto.d ? (dto.d as any) : [],
+          (dto.d ?? []) as [],
         );
         break;
       }

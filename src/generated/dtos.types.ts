@@ -101,8 +101,6 @@ export interface LogFiltersDto {
 export interface UserProfileDto {
   id: string;
   username: string | null;
-  first_name: string | null;
-  last_name: string | null;
   avatar_url: string | null;
   player_id: number | null;
 }
@@ -360,6 +358,15 @@ export interface ScriptDto {
   settings?: object;
 }
 
+export interface RoleDto {
+  id: string;
+  name: string;
+  admin: boolean;
+  members_count: number;
+  /** @format date-time */
+  created_at: string;
+}
+
 export interface ServerPermissionsDto {
   can_manage: boolean;
   can_delete: boolean;
@@ -373,6 +380,7 @@ export interface ServerDto {
   region: 'global';
   world: BasicWorldDto | null;
   scripts: ScriptDto[];
+  roles: RoleDto[];
   permissions: ServerPermissionsDto;
   status: 'active' | 'inactive';
   favorited: boolean;
@@ -797,6 +805,43 @@ export interface UpdateServerDto {
 
 export interface KeyDto {
   token: string;
+}
+
+export interface MemberFiltersDto {
+  /** @maxLength 64 */
+  search?: string;
+}
+
+export interface MemberDto {
+  id: string;
+  user: UserProfileDto;
+  roles: RoleDto[];
+  /** @format date-time */
+  joined_at: string;
+  /** @format date-time */
+  last_seen_at: string;
+}
+
+export interface UserRoleFiltersDto {
+  /** @maxLength 64 */
+  search?: string;
+}
+
+export interface UserRoleDto {
+  id: string;
+  user: UserProfileDto;
+  role: RoleDto;
+}
+
+export interface RoleFiltersDto {
+  /** @maxLength 64 */
+  search?: string;
+}
+
+export interface CreateRoleDto {
+  /** @maxLength 64 */
+  name: string;
+  admin?: boolean;
 }
 
 export interface WorldDto {

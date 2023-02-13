@@ -5,7 +5,14 @@ export type OptionsMenuTabType =
   | 'audio'
   | 'chat';
 
-export type ServerMenuTabType = 'scripts' | 'banlist' | 'keys' | 'settings';
+export type ServerMenuTabType =
+  | 'general'
+  | 'members'
+  | 'roles'
+  | 'scripts'
+  | 'commands'
+  | 'keys'
+  | 'banlist';
 
 export type KeyInfo = {
   type: 'keydown' | 'keyup';

@@ -4,15 +4,14 @@ import ObjectsManager from 'engine/managers/entities/objects/objects.manager';
 import PlayerHandleManager from 'engine/managers/entities/players/player/player-handle.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 import PlayersManager from 'engine/managers/entities/players/players.manager';
+import Object from 'engine/world/entities/Object/Object';
+import Player from 'engine/world/entities/Player/Player';
 
 import {
   EntitiesRenders,
   EntityDrawDistance,
   EntityCollision,
 } from '../types/entities.types';
-
-import Object from 'engine/world/entities/Object/Object';
-import Player from 'engine/world/entities/Player/Player';
 
 export const ENTITIES_RENDERS: EntitiesRenders = {
   player: {

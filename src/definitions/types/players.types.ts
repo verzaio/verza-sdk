@@ -1,6 +1,5 @@
 import type {ANIMATIONS} from 'engine/definitions/constants/animations.constants';
 import type {Vector3Array} from 'engine/definitions/types/world.types';
-
 import type {CharacterDto} from 'engine/generated/dtos.types';
 
 import type {PlayerStateEnum} from '../enums/players.enums';

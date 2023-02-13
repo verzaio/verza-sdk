@@ -243,7 +243,7 @@ class WebServerManager {
 
       body: JSON.stringify({
         e: eventName,
-        d: args as any,
+        d: args as object,
       } satisfies ScriptActionPacketSendDto),
 
       headers: {
