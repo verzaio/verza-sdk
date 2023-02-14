@@ -1,8 +1,8 @@
+import {PerspectiveCamera, Vector3} from 'three';
+
 import EASINGS from '../constants/easings.constants';
 import {CameraMode} from '../enums/camera.enums';
 import {Vector3Array} from './world.types';
-
-import {PerspectiveCamera, Vector3} from 'three';
 
 export type CameraModeType = keyof typeof CameraMode;
 

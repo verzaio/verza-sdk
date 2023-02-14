@@ -1,11 +1,10 @@
-import PlayerManager from 'engine/managers/entities/players/player/player.manager';
-
 import {
   EncryptedPacketsDto,
   PlayerPacketDto,
   PlayerPacketUpdateDto,
   ServerDto,
 } from 'engine/generated/dtos.types';
+import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {CommandInfo} from './commands.types';
@@ -61,7 +60,11 @@ export type ScriptEventMap = {
 
   onCommandNotFound: (command: string) => void;
 
-  registerCommand: (playerId: number, commandInfo: CommandInfo) => void;
+  registerCommand: (
+    playerId: number,
+    commandInfo: CommandInfo,
+    tag: string,
+  ) => void;
 
   unregisterCommand: (playerId: number, command: string) => void;
 
@@ -103,6 +106,10 @@ export type ScriptEventMap = {
   setPlayerName: (playerId: number, name: string) => void;
 
   setPlayerDimension: (playerId: number, dimension: number) => void;
+
+  addPlayerRole: (playerId: number, role: string) => void;
+
+  removePlayerRole: (playerId: number, role: string) => void;
 
   setPlayerPosition: (
     playerId: number,
@@ -174,6 +181,8 @@ export type ScriptEventMap = {
 
   /* server */
   restartServer: (reason?: string) => void;
+
+  setForwardMessages: (status: boolean) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {

@@ -5,7 +5,6 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-
 import {PlayerPacketDto} from 'engine/generated/dtos.types';
 
 import EngineManager from '../../engine.manager';
@@ -45,6 +44,7 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     this._messenger.events.on(
       'onPlayerCreate',
       ({data: [playerId, data, streamed]}) => {
+        console.log('data', data);
         const player = this.engine.players.create(playerId, data);
 
         // stream
@@ -83,6 +83,11 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     // name
     if (packet.e !== undefined) {
       player.updateName(packet.e);
+    }
+
+    // roles
+    if (packet.l !== undefined) {
+      player.updateRoles(packet.l);
     }
 
     // state

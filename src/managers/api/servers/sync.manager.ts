@@ -3,7 +3,6 @@ import {
   NetworkSyncEvent,
   NetworkSyncEventMap,
 } from 'engine/definitions/enums/networks.enums';
-
 import EngineManager from 'engine/managers/engine.manager';
 import EventsManager from 'engine/managers/events.manager';
 
@@ -36,6 +35,7 @@ class SyncManager {
         state: PLAYER_STATE_PACKET_INDEX[packet.s!],
         stateAnimIndex: packet.n,
         character: packet.c,
+        roles: packet.l,
       });
       this.players.handlePacket(packet.i!, packet);
     });

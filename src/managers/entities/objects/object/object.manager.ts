@@ -1,15 +1,14 @@
+import {Euler, Quaternion, Vector3} from 'three';
+
 import {ObjectEntity} from 'engine/definitions/types/entities.types';
 import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-
 import EngineManager from 'engine/managers/engine.manager';
 
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
-
-import {Euler, Quaternion, Vector3} from 'three';
 
 class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
   parent: ObjectManager | null = null;

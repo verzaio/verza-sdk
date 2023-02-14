@@ -6,6 +6,9 @@ const WebServerTest = () => {
 
   // client
   useEffect(() => {
+    const player = engine.player;
+    console.log('permissions', player.hasAccess('+hello'));
+
     engine.network.emitToServer('onClientToWebServer', {
       name: 'Mike',
     });
@@ -17,12 +20,10 @@ const WebServerTest = () => {
       },
     );
 
-    //
-
     return () => {
       engine.network.offServerEvent('onWebServerReceived', onWebServerReceived);
     };
-  }, []);
+  }, [engine.player, engine.network]);
 
   return null;
 };

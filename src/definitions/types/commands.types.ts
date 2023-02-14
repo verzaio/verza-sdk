@@ -6,6 +6,8 @@ export type CommandInfo = {
   desc: string;
 
   params: CommandParam[];
+
+  tag?: string;
 };
 
 export type CommandParam = {
@@ -16,4 +18,8 @@ export type CommandParam = {
   type: keyof typeof CommandType;
 
   isRequired: boolean;
+};
+
+export type EncryptedCommands = {
+  [name: string]: [string, string[]];
 };

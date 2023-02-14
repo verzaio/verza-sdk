@@ -1,10 +1,13 @@
+import {Euler, Quaternion, Vector3} from 'three';
+
+import {degToRad, radToDeg} from 'three/src/math/MathUtils';
+
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
 import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-
 import EngineManager from 'engine/managers/engine.manager';
 
 import EntityManager from '../../entity/entity.manager';
@@ -12,9 +15,6 @@ import PlayerCameraManager from './player-camera.manager';
 import type PlayerHandleManager from './player-handle.manager';
 import PlayerMessengerManager from './player-messenger.manager';
 import PlayerVoicechatManager from './player-voicechat.manager';
-
-import {Euler, Quaternion, Vector3} from 'three';
-import {degToRad, radToDeg} from 'three/src/math/MathUtils';
 
 class PlayerManager extends EntityManager<
   PlayerEntity,
@@ -36,6 +36,14 @@ class PlayerManager extends EntityManager<
     return this.data.name ?? `Player ${this.id}`;
   }
 
+  get roles() {
+    return this.data.roles ?? [];
+  }
+
+  private set roles(roles: string[]) {
+    this.data.roles = roles;
+  }
+
   get onGround() {
     return this.handle?.onGround;
   }
@@ -52,6 +60,10 @@ class PlayerManager extends EntityManager<
     return this.handle.velocity;
   }
 
+  private get _serverCommands() {
+    return this.engine.network.serverCommands;
+  }
+
   constructor(entity: PlayerEntity, engine: EngineManager) {
     super(entity, engine);
 
@@ -66,12 +78,38 @@ class PlayerManager extends EntityManager<
     }
   }
 
+  hasAccess(command: string): boolean {
+    if (this.engine.api.isWebServer) {
+      throw new Error('player.hasAccess is not available on WebServer');
+    }
+
+    const roles = this._serverCommands.get(command)?.roles;
+
+    // if no roles are assigned,
+    // then everyone has access
+    if (!roles?.length) return true;
+
+    return this.roles.some(e => roles.includes(e));
+  }
+
   updateName(name: string) {
     this.data.name = name;
   }
 
+  updateRoles(roles: string[]) {
+    this.data.roles = roles;
+  }
+
   setName(name: string) {
     this._messenger.emit('setPlayerName', [this.id, name]);
+  }
+
+  addRole(roleId: string) {
+    this._messenger.emit('addPlayerRole', [this.id, roleId]);
+  }
+
+  removeRole(roleId: string) {
+    this._messenger.emit('removePlayerRole', [this.id, roleId]);
   }
 
   setDimension(dimension: number) {

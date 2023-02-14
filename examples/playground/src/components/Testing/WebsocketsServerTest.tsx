@@ -1,4 +1,3 @@
-import {initWebServer} from '@app/server/web-server';
 import {Command, CommandParam, EngineManager} from '@verza/sdk';
 import {useEffect} from 'react';
 
@@ -6,6 +5,7 @@ const WebsocketsServerTest = () => {
   // websockets server
   useEffect(() => {
     const engine = new EngineManager({
+      name: 'Websocket Server',
       accessToken: process.env['NEXT_PUBLIC_VERZA_ACCESS_TOKEN'],
       apiEndpoint: 'http://localhost',
     });
@@ -18,7 +18,7 @@ const WebsocketsServerTest = () => {
 
     // command
     engine.commands.register(
-      new Command('server', [new CommandParam('param', 'string')]).onExecution(
+      new Command('server', [new CommandParam('param', 'string')]).on(
         player => {
           player.sendMessage(`Hey from server`);
         },

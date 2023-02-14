@@ -1,11 +1,10 @@
+import {useEffect, useState} from 'react';
+
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {PickEntity} from 'engine/definitions/types/entities.types';
-
 import EntityManager from 'engine/managers/entities/entity/entity.manager';
 
 import {useEntity} from './useEntity';
-
-import {useEffect, useState} from 'react';
 
 export const useStreamedEntity = <
   T extends keyof typeof EntityType,

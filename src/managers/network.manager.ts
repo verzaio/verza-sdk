@@ -1,8 +1,11 @@
 import {MAX_CLIENT_OBJECT_SIZE} from 'engine/definitions/constants/networks.constants';
 import {PacketDestination} from 'engine/definitions/enums/networks.enums';
 import {CustomEventData} from 'engine/definitions/types/scripts.types';
-
-import {EncryptedPacketsDto, ServerDto} from 'engine/generated/dtos.types';
+import {
+  CommandConfigDto,
+  EncryptedPacketsDto,
+  ServerDto,
+} from 'engine/generated/dtos.types';
 
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
@@ -15,6 +18,8 @@ class NetworkManager {
   private _engine: EngineManager;
 
   server: ServerDto = null!;
+
+  serverCommands: Map<string, CommandConfigDto> = new Map();
 
   encryptedPackets: EncryptedPacketsDto = null!;
 
@@ -46,6 +51,7 @@ class NetworkManager {
       this._api.endpoint = endpoint;
 
       this.server = server;
+      this.serverCommands = new Map(server.commands.map(e => [e.command, e]));
     });
 
     this._messenger.events.on(

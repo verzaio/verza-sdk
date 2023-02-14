@@ -67,7 +67,7 @@ export class Command<Params extends CommandParam[] = CommandParam[]>
     }
   }
 
-  onExecution(callback: this['callback']) {
+  on(callback: this['callback']) {
     this.callback = callback;
 
     return this;
@@ -93,63 +93,63 @@ export class Command<Params extends CommandParam[] = CommandParam[]>
       return;
     }
 
-    // validate params
-    if (this.params.length) {
-      let parts = command.split(' ');
-
-      // check minimum required params
-      if (parts.length < this.params.length) {
-        this._sendUsage(player);
-        return;
-      }
-
-      const isLastString =
-        this.params[this.params.length - 1].type === 'string';
-
-      // check if too many params
-      if (!isLastString && parts.length > this.params.length) {
-        this._sendUsage(player);
-        return;
-      }
-
-      // check if last string param must be concatenated
-      if (isLastString && parts.length > this.params.length) {
-        if (this.params.length === 1) {
-          parts = [parts.join(' ')];
-        } else {
-          parts = [...parts.splice(0, this.params.length - 1), parts.join(' ')];
-        }
-      }
-
-      // check again
-      if (parts.length !== this.params.length) {
-        this._sendUsage(player);
-        return;
-      }
-
-      const params = {} as Parameters<this['callback']>;
-
-      const paramError = parts.find((value, index) => {
-        (params as any)[this.params[index].name] =
-          this.params[index].parse(value);
-
-        if ((params as any)[this.params[index].name] === undefined) {
-          return true;
-        }
-
-        return false;
-      });
-
-      if (paramError) {
-        this._sendUsage(player);
-        return;
-      }
-
-      this.callback?.(player, params as any);
+    // no params?
+    if (!this.params.length) {
+      this.callback?.(player, {} as ParamsList<Params>);
       return;
     }
 
-    this.callback?.(player, {} as any);
+    // validate params
+    let parts = command.split(' ');
+
+    // check minimum required params
+    if (parts.length < this.params.length) {
+      this._sendUsage(player);
+      return;
+    }
+
+    const isLastString = this.params[this.params.length - 1].type === 'string';
+
+    // check if too many params
+    if (!isLastString && parts.length > this.params.length) {
+      this._sendUsage(player);
+      return;
+    }
+
+    // check if last string param must be concatenated
+    if (isLastString && parts.length > this.params.length) {
+      if (this.params.length === 1) {
+        parts = [parts.join(' ')];
+      } else {
+        parts = [...parts.splice(0, this.params.length - 1), parts.join(' ')];
+      }
+    }
+
+    // check again
+    if (parts.length !== this.params.length) {
+      this._sendUsage(player);
+      return;
+    }
+
+    const params = {} as ParamsList<Params>;
+
+    const paramError = parts.find((value, index) => {
+      (params as any)[this.params[index].name] =
+        this.params[index].parse(value);
+
+      if ((params as any)[this.params[index].name] === undefined) {
+        return true;
+      }
+
+      return false;
+    });
+
+    if (paramError) {
+      this._sendUsage(player);
+      return;
+    }
+
+    this.callback?.(player, params);
   }
 
   _sendUsage(player: PlayerManager) {
@@ -219,8 +219,6 @@ export class CommandParam<
   parse(input: string): CommandTypeCast[Type] {
     let value: any = undefined;
 
-    input;
-
     switch (this.type) {
       case 'number': {
         value = parseInt(input);
@@ -240,7 +238,7 @@ export class CommandParam<
       }
     }
 
-    return value as any;
+    return value;
   }
 
   required() {

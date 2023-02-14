@@ -1,9 +1,10 @@
+import {z} from 'zod';
+
 import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
 import {LocalEngineEvents} from 'engine/definitions/local/constants/engine.constants';
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EventKey} from 'engine/definitions/types/events.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
-
 import {isValidEnv} from 'engine/utils/misc.utils';
 
 import ApiManager from './api/api.manager';
@@ -16,8 +17,6 @@ import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
-
-import {z} from 'zod';
 
 export class EngineManager {
   z = z;
@@ -67,6 +66,13 @@ export class EngineManager {
   private _binded = false;
 
   /* accessors */
+  get name() {
+    return (
+      this.params.name ??
+      this.messenger.id.substring(0, this.messenger.id.indexOf('-'))
+    );
+  }
+
   get synced() {
     return this.controller.data.synced;
   }
@@ -185,6 +191,7 @@ export class EngineManager {
 
     // binds
     this.network.bind();
+    this.api.bind(); // always after network
     this.ui?.bind();
   }
 
@@ -212,8 +219,13 @@ export class EngineManager {
     this._binded = false;
   }
 
+  /* server */
   restartServer(reason?: string) {
     this.api.emitAction('restartServer', reason ? [reason] : undefined);
+  }
+
+  setForwardMessages(status: boolean) {
+    this.api.emitAction('setForwardMessages', [status]);
   }
 }
 
@@ -265,7 +277,7 @@ class EngineEvents<
       this._engine.messenger.events.on(
         eventName as any,
         (event: MessageEvent) => {
-          this.emit(eventName, ...event.data);
+          this.emit(eventName, ...(event?.data ?? []));
         },
       ),
     );
@@ -274,7 +286,7 @@ class EngineEvents<
   private _unbind<A extends keyof T>(eventName: A): void {
     if (
       this._bindedEvents.has(eventName) &&
-      this.getEmitter().listenerCount(eventName as any) === 0
+      this.getEmitter().listenerCount(eventName as string) === 0
     ) {
       this._engine.messenger.events.off(
         eventName as any,

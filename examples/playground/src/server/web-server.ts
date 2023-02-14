@@ -6,7 +6,7 @@ export const initWebServer = (engine: EngineManager) => {
     new Command('abc', [
       new CommandParam('name', 'string'),
       new CommandParam('age', 'number'),
-    ]).onExecution((player, {name, age}) => {
+    ]).on((player, {name, age}) => {
       console.log('executed!!', name, age);
 
       player.sendMessage(`Hey ${name} - ${age}! - sendMessage`);
@@ -22,6 +22,14 @@ export const initWebServer = (engine: EngineManager) => {
     }),
   );
 
+  engine.commands.register(
+    new Command('abc2').on(player => {
+      player.sendMessage('allowed!');
+    }),
+  );
+
+  engine.commands.register(new Command('+hello'));
+
   // event listener
   engine.network.onPlayerEvent('onClientToWebServer', data => {
     const {name} = engine.z
@@ -29,8 +37,6 @@ export const initWebServer = (engine: EngineManager) => {
         name: engine.z.string(),
       })
       .parse(data);
-
-    console.log('HELLOOOO!', name);
 
     engine.network.emitToPlayers('onWebServerReceived', {
       hey: 'emitToPlayers received? (onWebServerReceived)',

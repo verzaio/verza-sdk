@@ -1,12 +1,10 @@
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
-
+import {ServerDto} from 'engine/generated/dtos.types';
 import {
   decryptMessage,
   encryptMessage,
   hexToBase64Key,
 } from 'engine/utils/encryption.utils';
-
-import {ServerDto} from 'engine/generated/dtos.types';
 
 import EngineManager from '../engine.manager';
 import WebServerManager from './servers/web-server.manager';
@@ -77,6 +75,12 @@ class ApiManager {
     this._setAccessToken();
 
     this.webServer = new WebServerManager(engine);
+  }
+
+  bind() {
+    if (this.isWebServerAvailable) {
+      this.webServer.bind();
+    }
   }
 
   private _setEndpoint() {
