@@ -30,6 +30,10 @@ export const initWebServer = (engine: EngineManager) => {
 
   engine.commands.register(new Command('+hello'));
 
+  engine.commands.register(new Command('+hello2'));
+
+  engine.commands.register(new Command('+hello3'));
+
   // event listener
   engine.network.onPlayerEvent('onClientToWebServer', data => {
     const {name} = engine.z

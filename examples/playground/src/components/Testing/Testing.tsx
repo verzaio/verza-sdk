@@ -37,6 +37,9 @@ const Testing = () => {
       console.log('Executing abc!!');
     });
 
+  useCommand('a1');
+  useCommand('a2');
+
   return (
     <>
       <WebsocketsServerTest />

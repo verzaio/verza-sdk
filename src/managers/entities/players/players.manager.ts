@@ -44,7 +44,6 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     this._messenger.events.on(
       'onPlayerCreate',
       ({data: [playerId, data, streamed]}) => {
-        console.log('data', data);
         const player = this.engine.players.create(playerId, data);
 
         // stream
