@@ -6,7 +6,7 @@ export const initWebServer = (engine: EngineManager) => {
     new Command('abc', [
       new CommandParam('name', 'string'),
       new CommandParam('age', 'number'),
-    ]).onExecution((player, {name, age}) => {
+    ]).on((player, {name, age}) => {
       console.log('executed!!', name, age);
 
       player.sendMessage(`Hey ${name} - ${age}! - sendMessage`);
@@ -19,6 +19,12 @@ export const initWebServer = (engine: EngineManager) => {
         player,
         `Hey ${name} - ${age}! - sendMessageToPlayer`,
       );
+    }),
+  );
+
+  engine.commands.register(
+    new Command('abc2').on(player => {
+      player.sendMessage('allowed!');
     }),
   );
 

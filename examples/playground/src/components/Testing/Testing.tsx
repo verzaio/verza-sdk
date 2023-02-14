@@ -27,13 +27,13 @@ const Testing = () => {
     new CommandParam('abc2', 'string').withDisplay('The message'),
   ])
     .withDesc('Test command')
-    .onExecution((_, {abc, abc2}) => {
+    .on((_, {abc, abc2}) => {
       console.log('Executing test!!', abc, abc2);
     });
 
   useCommand('qwerty')
     .withDesc('Qwerty command')
-    .onExecution(() => {
+    .on(() => {
       console.log('Executing abc!!');
     });
 

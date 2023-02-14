@@ -67,7 +67,7 @@ export class Command<Params extends CommandParam[] = CommandParam[]>
     }
   }
 
-  onExecution(callback: this['callback']) {
+  on(callback: this['callback']) {
     this.callback = callback;
 
     return this;

@@ -412,7 +412,8 @@ export interface JoinPacketDto {
 }
 
 export interface EncryptedPacketsDto {
-  auth: string;
+  auth?: string;
+  commands?: object;
 }
 
 export interface StatePacketDto {

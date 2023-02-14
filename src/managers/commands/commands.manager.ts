@@ -11,6 +11,8 @@ class CommandsManager {
 
   private _binded = false;
 
+  noAccessMessage = `{c5c5c5}You don't have access to`;
+
   constructor(engine: EngineManager) {
     this._engine = engine;
   }
@@ -77,13 +79,28 @@ class CommandsManager {
 
       // call it if found
       if (key) {
+        // WebServer
+        if (this._engine.api.isWebServer) {
+          if (!this._engine.api.webServer.hasAccess(player, key)) {
+            player.sendMessage(`${this.noAccessMessage} /${key}`);
+            return;
+          }
+        } else {
+          // WebSocket Server
+          if (!player.hasAccess(key)) {
+            player.sendMessage(`${this.noAccessMessage} /${key}`);
+            return;
+          }
+        }
+
         this.commands
           .get(key)
           ?.process(player, command.substring(key.length).trim());
       } else {
         // emit command to web server if available
         if (this._engine.api.isWebServerAvailable) {
-          this._engine.api.webServer.emitChatPacket(text);
+          const packet = this.findCommandPacketByKey(command);
+          this._engine.api.webServer.emitChatPacket(text, packet);
         }
       }
 
@@ -96,7 +113,7 @@ class CommandsManager {
     const cmd = command.toLowerCase();
 
     // check if is action
-    if (cmd[1] === '+') return false;
+    if (cmd[1] === '+') return;
 
     // exact match
     if (this.commands.has(cmd)) {
@@ -106,10 +123,38 @@ class CommandsManager {
     // match with parameters
     return [...this.commands.keys()].find(key => {
       // match "/test "
+      return cmd.startsWith(`${key} `);
+    });
+  }
+
+  findCommandPacketByKey(command: string) {
+    const cmd = command.toLowerCase();
+
+    // check if is action
+    if (cmd[1] === '+') return;
+
+    const commands = this._engine.network.encryptedPackets.commands as {
+      [name: string]: string;
+    };
+
+    if (!commands) return;
+
+    // exact match
+    if (commands[cmd]) {
+      return commands[cmd];
+    }
+
+    // match with parameters
+    const found = Object.keys(commands).find(key => {
+      // match "/test "
       if (cmd.startsWith(`${key} `)) {
         return true;
       }
     });
+
+    if (found) {
+      return commands[found];
+    }
   }
 
   registerForPlayers(command: Command) {

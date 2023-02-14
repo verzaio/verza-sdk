@@ -60,6 +60,10 @@ class PlayerManager extends EntityManager<
     return this.handle.velocity;
   }
 
+  private get _serverCommands() {
+    return this.engine.network.serverCommands;
+  }
+
   constructor(entity: PlayerEntity, engine: EngineManager) {
     super(entity, engine);
 
@@ -72,6 +76,20 @@ class PlayerManager extends EntityManager<
     if (engine.isServer || this.isControlling) {
       this.camera = new PlayerCameraManager(this);
     }
+  }
+
+  hasAccess(command: string): boolean {
+    if (this.engine.api.isWebServer) {
+      throw new Error('player.hasAccess is not available on WebServer');
+    }
+
+    const roles = this._serverCommands.get(command)?.roles;
+
+    // if no roles are assigned,
+    // then everyone has access
+    if (!roles?.length) return true;
+
+    return this.roles.some(e => roles.includes(e));
   }
 
   updateName(name: string) {

@@ -19,3 +19,7 @@ export type CommandParam = {
 
   isRequired: boolean;
 };
+
+export type EncryptedCommands = {
+  [name: string]: [string, string[]];
+};

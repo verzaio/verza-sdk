@@ -18,7 +18,7 @@ const WebsocketsServerTest = () => {
 
     // command
     engine.commands.register(
-      new Command('server', [new CommandParam('param', 'string')]).onExecution(
+      new Command('server', [new CommandParam('param', 'string')]).on(
         player => {
           player.sendMessage(`Hey from server`);
         },

@@ -11,8 +11,9 @@ import {
   ScriptActionPacketSendDto,
 } from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
+import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
-const EXPIRE_TIME_MS = 45000; // 45 seconds
+const EXPIRE_TIME_MS = 60000; // 60 seconds
 
 class WebServerManager {
   private _engine: EngineManager;
@@ -24,6 +25,10 @@ class WebServerManager {
   private get _accessToken() {
     return this._engine.api.accessToken;
   }
+
+  declaredCommands: string[] = [];
+
+  commandPacket: [string, string[]] = null!;
 
   webServerEndpoint: string = null!;
 
@@ -77,18 +82,83 @@ class WebServerManager {
       };
     }
 
-    const [eventId, packetData, authPacket] = data;
+    const [eventId, packetData, authPacket, commandPacket] = data;
 
     // try to create player from auth packet
     if (!this._createPlayerFromAuthPacket(authPacket)) {
       return null!;
     }
 
+    if (commandPacket && !this._createCommandPacket(commandPacket)) {
+      return null!;
+    }
+
     return this._handlePacket(eventId, packetData) ?? null;
   }
 
+  private _createCommandPacket(packet: string): boolean {
+    const commandPacket = this._engine.api.decryptPacket(packet);
+
+    if (!Array.isArray(commandPacket)) {
+      console.debug('[api] cannot decrypt command packet', packet);
+      return false;
+    }
+
+    const [date, command, roles] = commandPacket;
+
+    const diff = Math.floor(Date.now() / 1000) - date;
+
+    if (diff > EXPIRE_TIME_MS) {
+      console.debug(
+        `[api] expired command packet: ${commandPacket[0][0]} | diff: ${diff}`,
+        commandPacket,
+      );
+      return false;
+    }
+
+    this.commandPacket = [command, roles];
+
+    return true;
+  }
+
+  hasAccess(player: PlayerManager, command: string): boolean {
+    player;
+    command;
+
+    // no declared? then allow it
+    if (!this.declaredCommands.includes(command)) {
+      return true;
+    }
+
+    // no command packet? denied!
+    if (!this.commandPacket) {
+      return false;
+    }
+
+    // extract
+    const [cmd, roles] = this.commandPacket;
+
+    //console.log('cmd', player.roles, roles);
+
+    // do not match? denied!
+    if (cmd !== command) {
+      return false;
+    }
+
+    // no role found? denied!
+    const hasRole = player.roles.some(e => roles.includes(e));
+
+    if (!hasRole) {
+      return false;
+    }
+
+    // allow it
+    return true;
+  }
+
   private _createPlayerFromAuthPacket(packet: string): boolean {
-    const authPacket: [number, number] = this._engine.api.decryptPacket(packet);
+    const authPacket: [number, number, string[], string[]] =
+      this._engine.api.decryptPacket(packet);
 
     if (!Array.isArray(authPacket)) {
       console.debug(
@@ -98,7 +168,7 @@ class WebServerManager {
       return false;
     }
 
-    const [playerId, date] = authPacket;
+    const [date, playerId, roles, commands] = authPacket;
 
     const diff = Math.floor(Date.now() / 1000) - date;
 
@@ -109,11 +179,16 @@ class WebServerManager {
       return false;
     }
 
+    // set declared commands
+    this.declaredCommands = commands;
+
     // set player id
     this._engine.playerId = playerId;
 
     // create player
-    this._engine.players.create(playerId);
+    this._engine.players.create(playerId, {
+      roles,
+    });
 
     return true;
   }
@@ -124,7 +199,8 @@ class WebServerManager {
     }
 
     // length should be 3
-    if (data.length !== 3) {
+    if (data.length !== 4) {
+      console.log('22aac');
       return false;
     }
 
@@ -140,6 +216,11 @@ class WebServerManager {
 
     // auth packet
     if (typeof data[2] !== 'string') {
+      return false;
+    }
+
+    // command packet
+    if (data[3] !== null && typeof data[3] !== 'string') {
       return false;
     }
 
@@ -220,15 +301,23 @@ class WebServerManager {
     return null!;
   }
 
-  emitToWebServer(event: PacketEvent, data?: unknown) {
+  emitToWebServer(event: PacketEvent, data?: unknown, commandPacket?: string) {
     // ignore if no endpoint or is not client
     if (!this.webServerEndpoint || !this.isClient) return;
+
+    if (!this.encryptedPackets?.auth) {
+      console.debug(
+        '[api] encypted packets not found, is the "Access Token" generated?',
+      );
+      return;
+    }
 
     // prepare packet
     const packet: ServerEndpointPacket = [
       event,
       data ?? null,
       this.encryptedPackets?.auth,
+      commandPacket ?? null!,
     ];
 
     // emit script server
@@ -310,18 +399,25 @@ class WebServerManager {
 
     if (!result) return;
 
-    result.commands.forEach(command => {
-      this._engine.commands.registerWebServerCommand(command);
-    });
+    if ((result as unknown as {error: string}).error) {
+      console.error(`[webserver] error `, result);
+      return;
+    }
+
+    if (result.commands) {
+      result.commands?.forEach(command => {
+        this._engine.commands.registerWebServerCommand(command);
+      });
+    }
   }
 
-  emitChatPacket(text: string) {
+  emitChatPacket(text: string, commandPacket?: string) {
     const chatPacket: ChatPacketSendDto = {
       m: text,
     };
 
     // emit
-    this.emitToWebServer(PacketEvent.Chat, chatPacket);
+    this.emitToWebServer(PacketEvent.Chat, chatPacket, commandPacket);
   }
 
   emitCustomPacket(dto: CustomPacketSendDto) {
