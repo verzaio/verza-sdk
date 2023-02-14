@@ -35,6 +35,7 @@ class SyncManager {
         state: PLAYER_STATE_PACKET_INDEX[packet.s!],
         stateAnimIndex: packet.n,
         character: packet.c,
+        roles: packet.l,
       });
       this.players.handlePacket(packet.i!, packet);
     });

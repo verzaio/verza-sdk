@@ -84,6 +84,11 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
       player.updateName(packet.e);
     }
 
+    // roles
+    if (packet.l !== undefined) {
+      player.updateRoles(packet.l);
+    }
+
     // state
     if (packet.s !== undefined) {
       this._updateState(player, PLAYER_STATE_PACKET_INDEX[packet.s]);

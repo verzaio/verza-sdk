@@ -36,6 +36,14 @@ class PlayerManager extends EntityManager<
     return this.data.name ?? `Player ${this.id}`;
   }
 
+  get roles() {
+    return this.data.roles ?? [];
+  }
+
+  private set roles(roles: string[]) {
+    this.data.roles = roles;
+  }
+
   get onGround() {
     return this.handle?.onGround;
   }
@@ -70,8 +78,20 @@ class PlayerManager extends EntityManager<
     this.data.name = name;
   }
 
+  updateRoles(roles: string[]) {
+    this.data.roles = roles;
+  }
+
   setName(name: string) {
     this._messenger.emit('setPlayerName', [this.id, name]);
+  }
+
+  addRole(roleId: string) {
+    this._messenger.emit('addPlayerRole', [this.id, roleId]);
+  }
+
+  removeRole(roleId: string) {
+    this._messenger.emit('removePlayerRole', [this.id, roleId]);
   }
 
   setDimension(dimension: number) {

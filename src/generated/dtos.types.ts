@@ -372,6 +372,12 @@ export interface ServerPermissionsDto {
   can_delete: boolean;
 }
 
+export interface CommandConfigDto {
+  /** @maxLength 64 */
+  command: string;
+  roles: string[];
+}
+
 export interface ServerDto {
   id: string;
   name: string | null;
@@ -383,6 +389,7 @@ export interface ServerDto {
   roles: RoleDto[];
   permissions: ServerPermissionsDto;
   status: 'active' | 'inactive';
+  commands: CommandConfigDto[];
   favorited: boolean;
   /** @format date-time */
   created_at: string;
@@ -446,6 +453,8 @@ export interface PlayerPacketDto {
   v?: number[];
   /** dimension */
   d?: number;
+  /** roles */
+  l?: string[];
 }
 
 export interface PlayerPacketUpdateDto {
@@ -498,6 +507,8 @@ export interface PlayerPacketLocalUpdateDto {
   e?: string;
   /** character */
   c?: CharacterDto;
+  /** roles */
+  l?: string[];
 }
 
 export interface PositionMetadataDto {
@@ -801,6 +812,7 @@ export interface UpdateServerDto {
    */
   name?: string;
   scripts?: UpdateScriptDto[];
+  commands?: CommandConfigDto[];
 }
 
 export interface KeyDto {

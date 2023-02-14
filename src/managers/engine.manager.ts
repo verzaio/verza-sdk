@@ -219,8 +219,13 @@ export class EngineManager {
     this._binded = false;
   }
 
+  /* server */
   restartServer(reason?: string) {
     this.api.emitAction('restartServer', reason ? [reason] : undefined);
+  }
+
+  setForwardMessages(status: boolean) {
+    this.api.emitAction('setForwardMessages', [status]);
   }
 }
 

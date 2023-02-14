@@ -39,6 +39,8 @@ export type PlayerDataProps = {
   controls?: boolean;
 
   character?: CharacterDto;
+
+  roles?: string[];
 };
 
 export type PlayerCameraDistance = 'short' | 'normal' | 'long';

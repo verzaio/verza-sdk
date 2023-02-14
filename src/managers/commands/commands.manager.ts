@@ -60,8 +60,11 @@ class CommandsManager {
         console.debug(`[chat] playerId: ${playerId} not found`);
         return;
       }
+
       // check if is a command
-      if (text.startsWith('/') === false) return;
+      if (text.startsWith('/') === false || text.startsWith('/+') === true) {
+        return;
+      }
 
       // ignore if '/'
       if (text.length === 1) return;
@@ -92,8 +95,11 @@ class CommandsManager {
   findByKey(command: string) {
     const cmd = command.toLowerCase();
 
+    // check if is action
+    if (cmd[1] === '+') return false;
+
     // exact match
-    if (this.commands.has(cmd.toLowerCase())) {
+    if (this.commands.has(cmd)) {
       return cmd;
     }
 

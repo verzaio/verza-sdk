@@ -107,6 +107,10 @@ export type ScriptEventMap = {
 
   setPlayerDimension: (playerId: number, dimension: number) => void;
 
+  addPlayerRole: (playerId: number, role: string) => void;
+
+  removePlayerRole: (playerId: number, role: string) => void;
+
   setPlayerPosition: (
     playerId: number,
     position: Vector3Array,
@@ -177,6 +181,8 @@ export type ScriptEventMap = {
 
   /* server */
   restartServer: (reason?: string) => void;
+
+  setForwardMessages: (status: boolean) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {
