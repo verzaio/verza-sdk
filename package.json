@@ -1,10 +1,11 @@
 {
   "name": "@verza/sdk",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
+    "publish": "npm run build && npm publish",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "lint": "eslint ./src/ --ext .ts",
     "lint:fix": "eslint ./src/ --ext .ts --fix",
