@@ -10,23 +10,6 @@ export type PlayerState = keyof typeof PlayerStateEnum;
 
 export type CharacterGender = 'male' | 'female';
 
-export type PlayerControls = {
-  // movement
-  forward: boolean;
-  left: boolean;
-  backward: boolean;
-  right: boolean;
-  space: boolean;
-
-  // others
-  tab: boolean;
-  caps: boolean;
-  shift: boolean;
-  alt: boolean;
-  control: boolean;
-  f10: boolean;
-};
-
 export type PlayerDataProps = {
   name?: string;
 

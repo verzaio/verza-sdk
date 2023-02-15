@@ -2,6 +2,7 @@ import {Euler, Quaternion, Vector3} from 'three';
 
 import {degToRad, radToDeg} from 'three/src/math/MathUtils';
 
+import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
 import {
@@ -22,15 +23,39 @@ class PlayerManager extends EntityManager<
   PlayerEventMap
 > {
   /* accessors */
-  private _messenger: PlayerMessengerManager = null!;
+  private _local_messenger: PlayerMessengerManager = null!;
 
   get messenger() {
-    return this._messenger ?? this.engine.messenger;
+    return this._local_messenger ?? this.engine.messenger;
   }
 
   voicechat: PlayerVoicechatManager;
 
   camera: PlayerCameraManager = null!;
+
+  controls: PlayerControls = {
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+
+    jump: false,
+    sprint: false,
+
+    // others
+    caps: false,
+    alt: false,
+    control: false,
+  };
+
+  get isMovingControl() {
+    return (
+      this.controls.forward ||
+      this.controls.backward ||
+      this.controls.left ||
+      this.controls.right
+    );
+  }
 
   get name() {
     return this.data.name ?? `Player ${this.id}`;
@@ -70,7 +95,7 @@ class PlayerManager extends EntityManager<
     this.voicechat = new PlayerVoicechatManager(this);
 
     if (engine.isServer) {
-      this._messenger = new PlayerMessengerManager(this);
+      this._local_messenger = new PlayerMessengerManager(this);
     }
 
     if (engine.isServer || this.isControlling) {
@@ -101,15 +126,15 @@ class PlayerManager extends EntityManager<
   }
 
   setName(name: string) {
-    this._messenger.emit('setPlayerName', [this.id, name]);
+    this.messenger.emit('setPlayerName', [this.id, name]);
   }
 
   addRole(roleId: string) {
-    this._messenger.emit('addPlayerRole', [this.id, roleId]);
+    this.messenger.emit('addPlayerRole', [this.id, roleId]);
   }
 
   removeRole(roleId: string) {
-    this._messenger.emit('removePlayerRole', [this.id, roleId]);
+    this.messenger.emit('removePlayerRole', [this.id, roleId]);
   }
 
   setDimension(dimension: number) {
@@ -119,7 +144,7 @@ class PlayerManager extends EntityManager<
 
     this.dimension = dimension;
 
-    this._messenger.emit('setPlayerDimension', [this.id, dimension]);
+    this.messenger.emit('setPlayerDimension', [this.id, dimension]);
   }
 
   setPosition(position: Vector3 | Vector3Array, instant = true) {
@@ -132,7 +157,7 @@ class PlayerManager extends EntityManager<
     }
 
     // emit
-    this._messenger.emit('setPlayerPosition', [
+    this.messenger.emit('setPlayerPosition', [
       this.id,
       this.location.position.toArray(),
       instant,
@@ -162,7 +187,7 @@ class PlayerManager extends EntityManager<
     }
 
     // emit
-    this._messenger.emit('setPlayerRotation', [
+    this.messenger.emit('setPlayerRotation', [
       this.id,
       this.location.quaternion.toArray() as QuaternionArray,
       instant,
@@ -178,15 +203,52 @@ class PlayerManager extends EntityManager<
     this.location.rotation.y = degToRad(degrees);
 
     // emit
-    this._messenger.emit('setPlayerFacingAngle', [this.id, degrees, instant]);
+    this.messenger.emit('setPlayerFacingAngle', [this.id, degrees, instant]);
   }
 
   setCameraBehind() {
-    this._messenger.emit('setPlayerCameraBehind', [this.id]);
+    this.messenger.emit('setPlayerCameraBehind', [this.id]);
   }
 
   sendMessage(message: string) {
     this.engine.chat.sendMessageTo(this.id, message);
+  }
+
+  setMovements(status: boolean) {
+    this.messenger.emit('setPlayerMovements', [this.id, status]);
+  }
+
+  setTranslations(x: boolean, y: boolean, z: boolean) {
+    this.messenger.emit('setPlayerTranslations', [this.id, x, y, z]);
+  }
+
+  setLinearVelocity(vec: Vector3 | Vector3Array) {
+    this.messenger.emit('setPlayerLinearVelocity', [
+      this.id,
+      Array.isArray(vec) ? vec : vec.toArray(),
+    ]);
+  }
+
+  setVisible(visible: boolean) {
+    this.messenger.emit('setPlayerVisible', [this.id, visible]);
+  }
+
+  sendSuccessNotification(message: string, duration = 0) {
+    this.messenger.emit('sendPlayerNotification', [
+      this.id,
+      message,
+      'success',
+      duration,
+    ]);
+  }
+
+  sendErrorNotification(message: string, duration = 0) {
+    this.messenger.emit('sendPlayerNotification', [
+      this.id,
+      message,
+      'error',
+      duration,
+    ]);
   }
 }
 

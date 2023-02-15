@@ -27,14 +27,37 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
 
     this._binded = true;
 
-    // player updates only on client
-    if (!this.engine.isServer && this.engine.syncPlayerUpdates) {
-      this._messenger.events.on(
-        'onPlayerUpdate',
-        ({data: [playerId, packet]}) => {
+    // client side updates
+    if (this.engine.isClient) {
+      // updates
+      if (
+        this.engine.syncPlayerUpdates ||
+        this.engine.syncPlayerUpdatesPriority
+      ) {
+        this._messenger.events.on(
+          'onPlayerUpdate',
+          ({data: [playerId, packet]}) => {
+            this.handlePacket(playerId, packet as PlayerPacketDto);
+          },
+        );
+      }
+
+      // updates (priority)
+      if (this.engine.syncPlayerUpdatesPriority) {
+        this._messenger.events.on('OPU', ({data: [playerId, packet]}) => {
           this.handlePacket(playerId, packet as PlayerPacketDto);
-        },
-      );
+        });
+      }
+
+      // controls
+      if (this.engine.syncPlayerControls) {
+        this._messenger.events.on(
+          'onControlChange',
+          ({data: [key, newState]}) => {
+            this.engine.player.controls[key] = newState;
+          },
+        );
+      }
     }
 
     this._messenger.events.on('setPlayerName', ({data: [playerId, name]}) => {

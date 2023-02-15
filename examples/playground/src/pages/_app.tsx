@@ -7,7 +7,13 @@ export default function App({Component, pageProps}: AppProps) {
     <EngineProvider
       params={{
         name: 'Testing App',
+
+        // web server
         webServer: 'api/verza',
+
+        // flags
+        //syncPlayerUpdatesPriority: true,
+        syncCameraPosition: true,
       }}>
       <Component {...pageProps} />
     </EngineProvider>

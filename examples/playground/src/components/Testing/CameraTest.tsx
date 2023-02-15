@@ -1,19 +1,19 @@
-import {useCamera, useEngine} from '@verza/sdk';
+import {useEngine, usePlayerId, useStreamedPlayer} from '@verza/sdk';
 import {useEffect} from 'react';
 
 const END_TRANSITION_ID = 'end-transition';
 
 const CameraTest = () => {
-  const camera = useCamera();
+  const player = useStreamedPlayer(usePlayerId());
   const engine = useEngine();
 
   useEffect(() => {
     engine.events.on('onCameraTransitionEnd', id => {
       if (id === END_TRANSITION_ID) {
-        camera.setMode('player', false);
+        player.camera.setMode('player', false);
       }
     });
-  }, [engine, camera]);
+  }, [engine, player.camera]);
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
@@ -21,23 +21,23 @@ const CameraTest = () => {
 
       <button
         onClick={() => {
-          camera.setMode('player');
+          player.camera.setMode('player');
         }}>
         camera.setMode(player)
       </button>
 
       <button
         onClick={() => {
-          camera.setMode('world');
+          player.camera.setMode('world');
         }}>
         camera.setMode(world)
       </button>
 
       <button
         onClick={() => {
-          camera.setMode('world');
+          player.camera.setMode('world');
 
-          camera.setPosition({
+          player.camera.setPosition({
             to: [2, 4, 10],
             lookAt: [0, 0, 0],
           });
@@ -47,8 +47,8 @@ const CameraTest = () => {
 
       <button
         onClick={() => {
-          camera.setMode('world');
-          camera.setTransitions([
+          player.camera.setMode('world');
+          player.camera.setTransitions([
             {
               to: [10, 10, 10],
               from: [10, 3, 0],
@@ -74,8 +74,8 @@ const CameraTest = () => {
 
       <button
         onClick={() => {
-          camera.setMode('world');
-          camera.setTransition({
+          player.camera.setMode('world');
+          player.camera.setTransition({
             id: END_TRANSITION_ID,
             to: [10, 10, 10],
             from: [10, 3, 0],
@@ -88,13 +88,13 @@ const CameraTest = () => {
 
       <button
         onClick={() => {
-          camera.setMode('world');
-          camera.setPosition({
+          player.camera.setMode('world');
+          player.camera.setPosition({
             to: [10, 30, -10],
             lookAt: [10, 10, 0],
           });
 
-          camera.setTransitions([
+          player.camera.setTransitions([
             {
               id: END_TRANSITION_ID,
               to: [10, 30, -10],
