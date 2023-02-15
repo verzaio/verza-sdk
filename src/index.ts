@@ -5,7 +5,10 @@ export {EventsManager, EventListenersMap};
 
 export {Command, CommandParam} from 'engine/managers/commands/command.manager';
 
-export {EngineProvider} from 'engine/frameworks/react/EngineProvider';
+export {
+  EngineProvider,
+  EngineProviderProps,
+} from 'engine/frameworks/react/EngineProvider';
 
 export {
   SizePropValue,
@@ -13,7 +16,11 @@ export {
   ScriptEventMap,
 } from 'engine/definitions/types/scripts.types';
 
+export {EngineParams} from 'engine/definitions/local/types/engine.types';
+
 export {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
+
+export {PlayerControls} from 'engine/definitions/types/controls.types';
 
 export {useEngine} from 'engine/frameworks/react/hooks/useEngine';
 export {useEvent} from 'engine/frameworks/react/hooks/useEvent';
@@ -48,3 +55,5 @@ export {Model} from 'engine/frameworks/react/components/objects/Model';
 export {Box} from 'engine/frameworks/react/components/objects/Box';
 export {Gltf} from 'engine/frameworks/react/components/objects/Gltf';
 export {Line} from 'engine/frameworks/react/components/objects/Line';
+
+export {Object3D, Vector3, Quaternion} from 'three';
