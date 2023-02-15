@@ -8,6 +8,7 @@ import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import {isValidEnv} from 'engine/utils/misc.utils';
 
 import ApiManager from './api/api.manager';
+import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
@@ -39,6 +40,8 @@ export class EngineManager {
 
   params: EngineParams = {};
 
+  camera: CameraManager = null!;
+
   controller = new ControllerManager({
     connected: false,
 
@@ -57,10 +60,6 @@ export class EngineManager {
     object: new ObjectsManager(this),
   };
 
-  syncPlayers = true;
-
-  syncPlayerUpdates = true;
-
   destroyed = false;
 
   private _binded = false;
@@ -71,6 +70,26 @@ export class EngineManager {
       this.params.name ??
       this.messenger.id.substring(0, this.messenger.id.indexOf('-'))
     );
+  }
+
+  get syncPlayers() {
+    return this.params.syncPlayers ?? true;
+  }
+
+  get syncPlayerUpdatesPriority() {
+    return this.params.syncPlayerUpdatesPriority ?? false;
+  }
+
+  get syncPlayerUpdates() {
+    return this.params.syncPlayerUpdates ?? true;
+  }
+
+  get syncPlayerControls() {
+    return this.params.syncPlayerControls ?? true;
+  }
+
+  get syncCameraPosition() {
+    return this.params.syncCameraPosition ?? false;
   }
 
   get synced() {
@@ -122,6 +141,7 @@ export class EngineManager {
     // only for client
     if (this.isClient) {
       this.ui = new UIManager(this);
+      this.camera = new CameraManager(this);
     }
 
     this.chat = new ChatManager(this);
@@ -193,6 +213,7 @@ export class EngineManager {
     this.network.bind();
     this.api.bind(); // always after network
     this.ui?.bind();
+    this.camera?.bind();
   }
 
   destroy() {

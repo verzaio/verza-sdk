@@ -3,11 +3,8 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import type {EntityType} from '../enums/entities.enums';
 import {CameraModeType} from './camera.types';
 import {ChunkIndex} from './chunks.types';
-import type {
-  PlayerControls,
-  PlayerState,
-  CharacterGender,
-} from './players.types';
+import {PlayerControls} from './controls.types';
+import type {PlayerState, CharacterGender} from './players.types';
 
 export type EventKey =
   | 'ENGINE'
@@ -63,7 +60,7 @@ export type EntityEventMap<T> = {
 export type PlayerEventMap = {
   onGenderChange: (gender: CharacterGender) => void;
 
-  onInputChange: (
+  onControlChange: (
     control: keyof PlayerControls,
     newState: boolean,
     oldState: boolean,

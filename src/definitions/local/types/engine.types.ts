@@ -8,4 +8,15 @@ export type EngineParams = {
   environment?: 'prod' | 'dev';
 
   apiEndpoint?: string;
+
+  /* client side only */
+  syncPlayers?: boolean;
+
+  syncPlayerUpdatesPriority?: boolean;
+
+  syncPlayerUpdates?: boolean;
+
+  syncPlayerControls?: boolean;
+
+  syncCameraPosition?: boolean;
 };

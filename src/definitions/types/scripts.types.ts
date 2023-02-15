@@ -8,6 +8,7 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {CommandInfo} from './commands.types';
+import {PlayerControls} from './controls.types';
 import {CreateObjectProps, ObjectType} from './objects.types';
 import {KeyInfo} from './ui.types';
 import {QuaternionArray, Vector3Array} from './world.types';
@@ -86,6 +87,11 @@ export type ScriptEventMap = {
   onHide: () => void;
 
   /* players */
+  OPU: (
+    entityId: number,
+    update: PlayerPacketDto | PlayerPacketUpdateDto,
+  ) => void;
+
   onPlayerUpdate: (
     entityId: number,
     update: PlayerPacketDto | PlayerPacketUpdateDto,
@@ -111,6 +117,12 @@ export type ScriptEventMap = {
 
   removePlayerRole: (playerId: number, role: string) => void;
 
+  onControlChange: (
+    control: keyof PlayerControls,
+    newState: boolean,
+    oldState: boolean,
+  ) => void;
+
   setPlayerPosition: (
     playerId: number,
     position: Vector3Array,
@@ -131,7 +143,29 @@ export type ScriptEventMap = {
 
   setPlayerCameraBehind: (playerId: number) => void;
 
+  setPlayerMovements: (playerId: number, status: boolean) => void;
+
+  setPlayerTranslations: (
+    playerId: number,
+    x: boolean,
+    y: boolean,
+    z: boolean,
+  ) => void;
+
+  setPlayerLinearVelocity: (playerId: number, vel: Vector3Array) => void;
+
+  setPlayerVisible: (playerId: number, visible: boolean) => void;
+
+  sendPlayerNotification: (
+    playerId: number,
+    message: string,
+    type: 'success' | 'error',
+    duration: number,
+  ) => void;
+
   /* camera */
+  OCU: (position: Vector3Array, quaternion: QuaternionArray) => void;
+
   onCameraModeChange: (
     playerId: number,
     mode: CameraModeType,
