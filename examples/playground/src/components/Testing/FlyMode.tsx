@@ -5,10 +5,11 @@ import {
   useKey,
   usePlayerId,
   useStreamedPlayer,
+  Object3D,
+  Vector3,
 } from '@verza/sdk';
 import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {useState} from 'react';
-import {Object3D, Vector3} from 'three';
 
 const _LOCATION = new Object3D();
 
@@ -69,8 +70,6 @@ const FlyModeRender = () => {
       ? 3
       : 10;
 
-    //const velocity = 1;
-
     // calculate X/Y
     if (player.isMovingControl) {
       const directionOffset = calcDirectionOffset(player.controls);
@@ -101,8 +100,6 @@ const FlyModeRender = () => {
 
     // set
     player.setPosition(_LOCATION.position);
-
-    //player.setRotation(player.location.rotation);
   });
 
   return null;
