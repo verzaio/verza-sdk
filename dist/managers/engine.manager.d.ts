@@ -1,0 +1,73 @@
+import { z } from 'zod';
+import { ENTITIES_RENDERS } from '../definitions/constants/entities.constants';
+import { EngineParams } from '../definitions/local/types/engine.types';
+import { EventKey } from '../definitions/types/events.types';
+import { ScriptEventMap } from '../definitions/types/scripts.types';
+import ApiManager from './api/api.manager';
+import CameraManager from './camera.manager';
+import ChatManager from './chat.manager';
+import CommandsManager from './commands/commands.manager';
+import ControllerManager from './controller.manager';
+import ObjectsManager from './entities/objects/objects.manager';
+import PlayersManager from './entities/players/players.manager';
+import EventsManager from './events.manager';
+import MessengerManager from './messenger.manager';
+import NetworkManager from './network.manager';
+import UIManager from './ui.manager';
+export declare class EngineManager {
+    z: typeof z;
+    network: NetworkManager;
+    api: ApiManager;
+    ui: UIManager;
+    chat: ChatManager;
+    commands: CommandsManager;
+    messenger: MessengerManager<ScriptEventMap>;
+    eventsManager: Map<EventKey, EventsManager>;
+    events: EngineEvents<ScriptEventMap>;
+    params: EngineParams;
+    camera: CameraManager;
+    controller: ControllerManager<{
+        connected: boolean;
+        synced: boolean;
+        playerId: number;
+    }>;
+    entities: {
+        [key in keyof typeof ENTITIES_RENDERS]: InstanceType<(typeof ENTITIES_RENDERS)[key]['EntitiesManager']>;
+    };
+    destroyed: boolean;
+    private _binded;
+    get name(): string;
+    get syncPlayers(): boolean;
+    get syncPlayerUpdatesPriority(): boolean;
+    get syncPlayerUpdates(): boolean;
+    get syncPlayerControls(): boolean;
+    get syncCameraPosition(): boolean;
+    get synced(): boolean;
+    get connected(): boolean;
+    get playerId(): number;
+    set playerId(playerId: number);
+    get player(): import("./entities/players/player/player.manager").default;
+    get players(): PlayersManager;
+    get objects(): ObjectsManager;
+    get isServer(): boolean;
+    get isClient(): boolean;
+    constructor(params?: EngineParams);
+    connectServer(): void;
+    connectClient(): void;
+    private _setup;
+    destroy(): void;
+    restartServer(reason?: string): void;
+    setForwardMessages(status: boolean): void;
+}
+declare class EngineEvents<T extends ScriptEventMap = ScriptEventMap> extends EventsManager<T> {
+    private _engine;
+    private _bindedEvents;
+    constructor(engine: EngineManager);
+    on<A extends keyof T>(eventName: A, listener: T[A]): T[A];
+    off<A extends keyof T>(eventName: A, listener: T[A]): void;
+    once<A extends keyof T>(eventName: A, listener: T[A]): T[A];
+    removeAllListeners(): void;
+    private _bind;
+    private _unbind;
+}
+export default EngineManager;

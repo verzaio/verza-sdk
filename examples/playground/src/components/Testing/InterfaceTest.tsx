@@ -1,4 +1,4 @@
-import {useEngine, useKey} from '@verza/sdk';
+import {useEngine, useKey} from '@verza/sdk/react';
 
 const InterfaceTest = () => {
   const engine = useEngine();

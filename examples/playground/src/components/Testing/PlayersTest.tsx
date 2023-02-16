@@ -1,4 +1,9 @@
-import {useKey, useNetwork, usePlayerId, useStreamedPlayer} from '@verza/sdk';
+import {
+  useKey,
+  useNetwork,
+  usePlayerId,
+  useStreamedPlayer,
+} from '@verza/sdk/react';
 import {useEffect} from 'react';
 import {Vector3} from 'three';
 

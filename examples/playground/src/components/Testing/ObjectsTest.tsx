@@ -1,6 +1,6 @@
-import {Box, Gltf, Group, Line, useFrame, useObjects} from '@verza/sdk';
+import {Box, Group, Line, useFrame, useObjects} from '@verza/sdk/react';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
-import {useEffect, useRef} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 
 // https://github.com/KhronosGroup/glTF-Sample-Models
 
@@ -10,12 +10,12 @@ const ObjectsTest = () => {
 
   const anotherOneRef = useRef<ObjectManager>(null!);
 
-  const destroy = () => {
+  const destroy = useCallback(() => {
     if (objectRef.current) {
       objects.destroy(objectRef.current);
       objectRef.current = null!;
     }
-  };
+  }, [objects]);
 
   const createBox = () => {
     objectRef.current = objects.createBox(
@@ -62,9 +62,9 @@ const ObjectsTest = () => {
     return () => {
       destroy();
     };
-  }, [objects]);
+  }, [destroy]);
 
-  useFrame(delta => {
+  useFrame(() => {
     if (!anotherOneRef.current) return;
 
     /* anotherOneRef.current.location.rotateY(delta / 10);

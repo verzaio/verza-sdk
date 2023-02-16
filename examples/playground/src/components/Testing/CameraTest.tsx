@@ -1,4 +1,4 @@
-import {useEngine, usePlayerId, useStreamedPlayer} from '@verza/sdk';
+import {useEngine, usePlayerId, useStreamedPlayer} from '@verza/sdk/react';
 import {useEffect} from 'react';
 
 const END_TRANSITION_ID = 'end-transition';

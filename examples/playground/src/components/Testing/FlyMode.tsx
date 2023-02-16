@@ -1,3 +1,7 @@
+import {Object3D, Vector3} from '@verza/sdk';
+import {PlayerControls} from 'engine/definitions/types/controls.types';
+import {useState} from 'react';
+
 import {
   useCamera,
   useCommand,
@@ -5,11 +9,7 @@ import {
   useKey,
   usePlayerId,
   useStreamedPlayer,
-  Object3D,
-  Vector3,
-} from '@verza/sdk';
-import {PlayerControls} from 'engine/definitions/types/controls.types';
-import {useState} from 'react';
+} from '@verza/sdk/react';
 
 const _LOCATION = new Object3D();
 

@@ -1,10 +1,8 @@
-import {randomBytes, secretbox} from 'tweetnacl';
-import {
-  decodeBase64,
-  decodeUTF8,
-  encodeBase64,
-  encodeUTF8,
-} from 'tweetnacl-util';
+import tweetnacl from 'tweetnacl';
+import tweetnaclUtil from 'tweetnacl-util';
+
+const {randomBytes, secretbox} = tweetnacl;
+const {decodeBase64, decodeUTF8, encodeBase64, encodeUTF8} = tweetnaclUtil;
 
 const newNonce = () => randomBytes(secretbox.nonceLength);
 

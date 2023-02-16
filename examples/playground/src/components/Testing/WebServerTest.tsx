@@ -1,5 +1,6 @@
-import {useEngine} from '@verza/sdk';
 import {useEffect} from 'react';
+
+import {useEngine} from '@verza/sdk/react';
 
 const WebServerTest = () => {
   const engine = useEngine();

@@ -1,6 +1,8 @@
-import {CommandParam, useCommand, useEngine} from '@verza/sdk';
-
 import {useEffect} from 'react';
+
+import {CommandParam} from '@verza/sdk';
+import {useCommand, useEngine} from '@verza/sdk/react';
+
 import CameraTest from './CameraTest';
 import FlyingMode from './FlyMode';
 import InterfaceTest from './InterfaceTest';

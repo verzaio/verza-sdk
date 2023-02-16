@@ -1,6 +1,5 @@
 import {Euler, Quaternion, Vector3} from 'three';
-
-import {degToRad, radToDeg} from 'three/src/math/MathUtils';
+import {MathUtils} from 'three';
 
 import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
@@ -195,12 +194,12 @@ class PlayerManager extends EntityManager<
   }
 
   getFacingAngle() {
-    return radToDeg(this.location.rotation.y);
+    return MathUtils.radToDeg(this.location.rotation.y);
   }
 
   setFacingAngle(degrees: number, instant = true) {
     // update
-    this.location.rotation.y = degToRad(degrees);
+    this.location.rotation.y = MathUtils.degToRad(degrees);
 
     // emit
     this.messenger.emit('setPlayerFacingAngle', [this.id, degrees, instant]);
