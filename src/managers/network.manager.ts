@@ -107,7 +107,7 @@ class NetworkManager {
   // client & server
   emitToServer(event: string, data?: EventData) {
     // check packet size limit
-    if (!this._checkPacketSize(data?.d)) return;
+    if (!this._checkPacketSize(data)) return;
 
     // emit to web server
     if (this._api.isWebServerAvailable) {
@@ -126,21 +126,26 @@ class NetworkManager {
 
   emitToPlayers(event: string, data?: EventData) {
     // check packet size limit
-    if (!this._checkPacketSize(data?.d)) return;
-
-    // emit to web server
-    if (this._api.isWebServerAvailable) {
-      this._api.webServer.emitCustomPacket({
-        p: PacketDestination.Client, // PacketDestination
-
-        e: event, // event name
-
-        d: data, // data
-      });
-    }
+    if (!this._checkPacketSize(data)) return;
 
     // emit from server
     this._api.emitAction('emitToPlayers', [event, data]);
+  }
+
+  emitToPlayersWithRoles(event: string, roles: string[], data?: EventData) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
+
+    // emit to server
+    this._api.emitAction('emitToPlayersWithRoles', [event, roles, data]);
+  }
+
+  emitToPlayersWithAccess(event: string, command: string, data?: EventData) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
+
+    // emit to server
+    this._api.emitAction('emitToPlayersWithAccess', [event, command, data]);
   }
 
   emitToPlayer(
@@ -149,7 +154,7 @@ class NetworkManager {
     data?: EventData,
   ) {
     // check packet size limit
-    if (!this._checkPacketSize(data?.d)) return;
+    if (!this._checkPacketSize(data)) return;
 
     const playerId = typeof player === 'number' ? player : player.id;
 

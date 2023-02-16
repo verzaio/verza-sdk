@@ -771,6 +771,10 @@ export interface CustomPacketSendDto {
   d?: object;
   /** to player id */
   i?: number;
+  /** roles */
+  r?: string[];
+  /** command */
+  c?: string;
 }
 
 export interface PlayerIdDto {

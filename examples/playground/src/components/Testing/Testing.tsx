@@ -4,12 +4,12 @@ import {CommandParam} from '@verza/sdk';
 import {useCommand, useEngine} from '@verza/sdk/react';
 
 import CameraTest from './CameraTest';
-import FlyingMode from './FlyMode';
 import InterfaceTest from './InterfaceTest';
 import ObjectsTest from './ObjectsTest';
 import PlayersTest from './PlayersTest';
 import WebServerTest from './WebServerTest';
 import WebsocketsServerTest from './WebsocketsServerTest';
+import Playground from './Playground';
 
 const Testing = () => {
   const engine = useEngine();
@@ -40,9 +40,6 @@ const Testing = () => {
       console.log('Executing abc!!');
     });
 
-  useCommand('a1');
-  useCommand('a2');
-
   return (
     <>
       <WebsocketsServerTest />
@@ -57,7 +54,7 @@ const Testing = () => {
 
       <InterfaceTest />
 
-      <FlyingMode />
+      <Playground />
     </>
   );
 };

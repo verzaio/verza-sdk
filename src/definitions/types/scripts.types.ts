@@ -213,6 +213,18 @@ export type ScriptEventMap = {
     data?: CustomEventData,
   ) => void;
 
+  emitToPlayersWithRoles: (
+    event: string,
+    roles: string[],
+    data?: CustomEventData,
+  ) => void;
+
+  emitToPlayersWithAccess: (
+    event: string,
+    command: string,
+    data?: CustomEventData,
+  ) => void;
+
   /* server */
   restartServer: (reason?: string) => void;
 
