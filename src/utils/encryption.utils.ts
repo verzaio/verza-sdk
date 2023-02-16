@@ -7,7 +7,7 @@ const {decodeBase64, decodeUTF8, encodeBase64, encodeUTF8} = tweetnaclUtil;
 const newNonce = () => randomBytes(secretbox.nonceLength);
 
 export const hexToBase64Key = (hex: string) => {
-  const bytes = [];
+  const bytes: number[] = [];
   for (let i = 0; i < hex.length; i += 2) {
     bytes.push(parseInt(hex.substring(i, i + 2), 16));
   }

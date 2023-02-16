@@ -215,7 +215,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     }
 
     if (!Array.isArray(message.data) || !message.data.length) {
-      console.debug(`[messenger:] message.data must be an array`);
+      console.debug(`[messenger:${this.type}] message.data must be an array`);
       return;
     }
 

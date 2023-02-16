@@ -209,7 +209,7 @@ export interface CharacterDto {
   id: string;
   user: UserProfileDto;
   gender: 'male' | 'female';
-  shapekeys: CharacterShapekeyValueDto[];
+  shapekeys: CharacterShapekeyValueDto[] | null;
   skin_color: string | null;
   eyes_color: string | null;
   lipstick_color: string | null;
@@ -897,7 +897,7 @@ export interface BaseObjectDto {
   id: string;
   type: 'group' | 'model' | 'gltf' | 'box' | 'line';
   position: PositionDto;
-  source: 'hosted' | 'external' | null;
+  source: 'hosted' | 'external';
   metadata: ObjectMetadataDto;
   world: WorldDto;
   /** @format date-time */

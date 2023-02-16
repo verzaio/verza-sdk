@@ -3,7 +3,7 @@ import {CommandType} from '../enums/commands.enums';
 export type CommandInfo = {
   command: string;
 
-  desc: string;
+  desc?: string | null;
 
   params: CommandParam[];
 
@@ -13,7 +13,7 @@ export type CommandInfo = {
 export type CommandParam = {
   name: string;
 
-  display: string;
+  display?: string | null;
 
   type: keyof typeof CommandType;
 
