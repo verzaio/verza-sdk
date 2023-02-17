@@ -168,7 +168,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
     // receiver
     if (this.type === 'receiver' && message.data.action === ACTION_CONNECT) {
-      console.debug(`ACTION_CONNECT:${this.id.split('-')[0]}`);
+      //console.debug(`ACTION_CONNECT:${this.id.split('-')[0]}`);
 
       if (!message.ports.length) {
         console.log(`[messenger:${this.type}] port is missing`);
@@ -187,7 +187,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
     // sender
     if (this.type === 'sender' && message.data.action === ACTION_ACCEPT) {
-      console.debug(`ACTION_ACCEPT:${this.id.split('-')[0]}`);
+      //console.debug(`ACTION_ACCEPT:${this.id.split('-')[0]}`);
 
       // emit connected
       (this.events.emit as any)('onConnect');

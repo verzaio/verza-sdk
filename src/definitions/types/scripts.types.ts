@@ -35,6 +35,9 @@ export type CustomEventData = {
   [name: string]: any;
 };
 
+export type PointerEventType = 'mouseup' | 'mousedown' | 'mousemove';
+
+//export type Pointer
 export type ScriptEventMap = {
   /* messenger */
   register: (eventName: string) => void;
@@ -71,6 +74,8 @@ export type ScriptEventMap = {
 
   /* ui */
   onEscapeKey: () => void;
+
+  onPointerEvent: (x: number, y: number, type: PointerEventType) => void;
 
   onKey: (keyInfo: KeyInfo) => void;
 

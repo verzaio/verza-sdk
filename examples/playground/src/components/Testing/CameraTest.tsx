@@ -13,7 +13,7 @@ const CameraTest = () => {
         player.camera.setMode('player', false);
       }
     });
-  }, [engine, player.camera]);
+  }, [engine, player]);
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>

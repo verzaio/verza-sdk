@@ -1,5 +1,8 @@
 import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
-import {SizeProps} from 'engine/definitions/types/scripts.types';
+import {
+  PointerEventType,
+  SizeProps,
+} from 'engine/definitions/types/scripts.types';
 
 import ControllerManager from './controller.manager';
 import EngineManager from './engine.manager';
@@ -46,6 +49,10 @@ class UIManager {
   bind() {
     document.addEventListener('keyup', this._onEscapeKey);
 
+    //document.addEventListener('pointermove', this._onPointerEvent);
+    document.addEventListener('pointerdown', this._onPointerEvent);
+    document.addEventListener('pointerup', this._onPointerEvent);
+
     this._messenger.events.on('addInterface', ({data: [tag]}) => {
       this.interfaces.add(tag);
       this.controller.set('interfaces', new Set(this.interfaces));
@@ -60,6 +67,14 @@ class UIManager {
       this.controller.set('cursorLock', status);
     });
   }
+
+  private _onPointerEvent = (event: PointerEvent) => {
+    this._messenger.emit('onPointerEvent', [
+      event.clientX,
+      event.clientY,
+      event.type as PointerEventType,
+    ]);
+  };
 
   private _onEscapeKey = (event: KeyboardEvent) => {
     if (event.code !== 'Escape') return;
@@ -102,6 +117,10 @@ class UIManager {
 
   destroy() {
     document.removeEventListener('keyup', this._onEscapeKey);
+
+    //document.removeEventListener('pointermove', this._onPointerEvent);
+    document.removeEventListener('pointerdown', this._onPointerEvent);
+    document.removeEventListener('pointerup', this._onPointerEvent);
   }
 }
 
