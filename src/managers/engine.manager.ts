@@ -18,6 +18,7 @@ import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
+import WorldManager from './world.manager';
 
 export class EngineManager {
   z = z;
@@ -32,6 +33,10 @@ export class EngineManager {
 
   commands: CommandsManager;
 
+  camera: CameraManager = null!;
+
+  world: WorldManager;
+
   messenger = new MessengerManager<ScriptEventMap>('sender');
 
   eventsManager: Map<EventKey, EventsManager> = new Map();
@@ -39,8 +44,6 @@ export class EngineManager {
   events = new EngineEvents(this);
 
   params: EngineParams = {};
-
-  camera: CameraManager = null!;
 
   controller = new ControllerManager({
     connected: false,
@@ -138,6 +141,8 @@ export class EngineManager {
 
     this.network = new NetworkManager(this);
 
+    this.world = new WorldManager(this);
+
     // only for client
     if (this.isClient) {
       this.ui = new UIManager(this);
@@ -214,6 +219,7 @@ export class EngineManager {
     this.api.bind(); // always after network
     this.ui?.bind();
     this.camera?.bind();
+    this.world.bind();
   }
 
   destroy() {

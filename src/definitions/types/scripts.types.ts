@@ -11,7 +11,12 @@ import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
 import {CreateObjectProps, ObjectType} from './objects.types';
 import {KeyInfo} from './ui.types';
-import {QuaternionArray, Vector3Array} from './world.types';
+import {
+  IntersectsResult,
+  IntersectsResultRaw,
+  QuaternionArray,
+  Vector3Array,
+} from './world.types';
 
 export type ScriptStatus =
   | 'connected'
@@ -35,7 +40,7 @@ export type CustomEventData = {
   [name: string]: any;
 };
 
-export type PointerEventType = 'mouseup' | 'mousedown' | 'mousemove';
+export type PointerEventType = 'pointermove' | 'pointerdown' | 'pointerup';
 
 //export type Pointer
 export type ScriptEventMap = {
@@ -229,6 +234,13 @@ export type ScriptEventMap = {
     command: string,
     data?: CustomEventData,
   ) => void;
+
+  /* world */
+  setEntitySelector: (status: boolean) => void;
+
+  onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
+
+  onEntitySelected: (intersects: IntersectsResult) => void;
 
   /* server */
   restartServer: (reason?: string) => void;

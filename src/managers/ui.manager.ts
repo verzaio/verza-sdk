@@ -84,10 +84,21 @@ class UIManager {
 
   /* interfaces */
   addInterface(tag: string) {
+    this.interfaces.add(tag);
     this._messenger.emit('addInterface', [tag]);
   }
 
+  toggleInterface(tag: string) {
+    if (this.hasInterface(tag)) {
+      this.removeInterface(tag);
+      return;
+    }
+
+    this.addInterface(tag);
+  }
+
   removeInterface(tag: string) {
+    this.interfaces.delete(tag);
     this._messenger.emit('removeInterface', [tag]);
   }
 

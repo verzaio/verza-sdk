@@ -1,18 +1,20 @@
-import {useEngine, useKey} from '@verza/sdk/react';
+import {useEvent, useKey, useUI, useWorld} from '@verza/sdk/react';
 
 const InterfaceTest = () => {
-  const engine = useEngine();
+  const ui = useUI();
+  const world = useWorld();
 
   const onPressed = () => {
-    if (engine.ui.hasInterface('test')) {
-      engine.ui.removeInterface('test');
-      return;
-    }
+    ui.toggleInterface('test');
 
-    engine.ui.addInterface('test');
+    world.setEntitySelector(ui.hasInterface('test'));
   };
 
   useKey('KeyY', onPressed);
+
+  useEvent('onEntitySelected', intersects => {
+    console.log('intersects', intersects);
+  });
 
   return (
     <>

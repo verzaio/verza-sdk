@@ -220,18 +220,20 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     }
 
     // get event name
-    const event = message.data.pop();
+    const event: string = message.data.pop();
 
     // validate
     if (this.validators?.[event]) {
       try {
         const validator = this.validators[event] ?? {};
 
-        // validate data (optional)
-        Object.assign(
-          message.data,
-          validator?.parser?.parse(message.data) ?? {},
-        );
+        // validate data only for receiver
+        if (this.type === 'receiver') {
+          Object.assign(
+            message.data,
+            validator?.parser?.parse(message.data) ?? {},
+          );
+        }
 
         // call callback (optional)
         validator?.callback?.(message);

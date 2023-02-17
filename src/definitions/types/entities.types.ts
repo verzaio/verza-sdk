@@ -6,7 +6,7 @@ import type {
   QuaternionArray,
   WorldPositionRotation,
 } from 'engine/definitions/types/world.types';
-import type {ObjectDto, ObjectMetadataDto} from 'engine/generated/dtos.types';
+import type {ObjectMetadataDto} from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import EntitiesManager from 'engine/managers/entities/entities.manager';
 import EntityHandleManager from 'engine/managers/entities/entity/entity-handle.manager';
@@ -19,6 +19,7 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import PlayersManager from 'engine/managers/entities/players/players.manager';
 
 import type {EntityType} from '../enums/entities.enums';
+import {ObjectDataProps} from './objects.types';
 
 export type EntityDrawDistance = Required<ObjectMetadataDto>['d'];
 
@@ -44,12 +45,15 @@ export type CreateEntityProps = {
   };
 };
 
-export type EntityItem<Data = unknown, ID = string | number> = {
+export type EntityItem<
+  Data extends CreateEntityProps = CreateEntityProps,
+  ID = string | number,
+> = {
   id: ID;
 
   type: keyof typeof EntityType;
 
-  data: CreateEntityProps & Data;
+  data: Data;
 };
 
 /* definition */
@@ -79,4 +83,4 @@ export type MergeEntityEvents<A, B> = A extends void ? B : A & B;
 /* entities */
 export type PlayerEntity = EntityItem<PlayerDataProps, number>;
 
-export type ObjectEntity = EntityItem<ObjectDto & {parent_id?: string}, string>;
+export type ObjectEntity = EntityItem<ObjectDataProps, string>;

@@ -2,10 +2,19 @@ import {Euler, Quaternion, Vector3} from 'three';
 
 import type {ObjectDto, ObjectMetadataDto} from 'engine/generated/dtos.types';
 
-import {EntityDrawDistance, EntityCollision} from './entities.types';
+import {
+  EntityDrawDistance,
+  EntityCollision,
+  CreateEntityProps,
+} from './entities.types';
 import {QuaternionArray, Vector3Array} from './world.types';
 
 export type ObjectType = ObjectDto['t'];
+
+export type ObjectDataProps = CreateEntityProps &
+  ObjectDto & {
+    parent_id?: string;
+  };
 
 export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   id?: string;

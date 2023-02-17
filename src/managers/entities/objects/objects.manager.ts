@@ -41,6 +41,21 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     this._binded = false;
   }
 
+  ensure(id: string, data: ObjectManager['data']) {
+    const object = this.get(id);
+
+    // create
+    if (!object) {
+      return this.create(id, data);
+    }
+
+    // update
+    object.position.set(...data.position!);
+    object.rotation.set(...(data.rotation as QuaternionArray));
+
+    return object;
+  }
+
   private _createObject<T extends ObjectType = ObjectType>(
     type: T,
     props: CreateObjectPropsWithObjects<T>,

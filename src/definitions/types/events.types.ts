@@ -5,6 +5,7 @@ import {CameraModeType} from './camera.types';
 import {ChunkIndex} from './chunks.types';
 import {PlayerControls} from './controls.types';
 import type {PlayerState, CharacterGender} from './players.types';
+import {PointerEventType} from './scripts.types';
 
 export type EventKey =
   | 'ENGINE'
@@ -84,4 +85,8 @@ export type ObjectEventMap = {
 
 export type ChatEventMap = {
   onChat: (text: string) => void;
+};
+
+export type UIEventMap = {
+  onPointerEvent: (x: number, y: number, type: PointerEventType) => void;
 };

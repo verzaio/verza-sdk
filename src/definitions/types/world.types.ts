@@ -1,3 +1,8 @@
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
+import PlayerManager from 'engine/managers/entities/players/player/player.manager';
+
+import {ObjectDataProps} from './objects.types';
+
 export type Vector3Array = [x: number, y: number, z: number];
 
 export type QuaternionArray = [x: number, y: number, z: number, w: number];
@@ -29,3 +34,24 @@ export type WorldPositionRotation = [
 
   rw?: number,
 ];
+
+export type InteresectionData<T> = {
+  distance: number;
+  point: Vector3Array;
+  faceIndex?: number;
+  entity: T;
+};
+
+export type IntersectsResultRaw = {
+  object?: InteresectionData<string> & {
+    data: ObjectDataProps;
+  };
+
+  player?: InteresectionData<number>;
+};
+
+export type IntersectsResult = {
+  object?: InteresectionData<ObjectManager>;
+
+  player?: InteresectionData<PlayerManager>;
+};
