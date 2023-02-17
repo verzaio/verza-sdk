@@ -61,13 +61,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
   }
 
   setPosition(position: Vector3 | Vector3Array) {
-    // Vector3Array
-    if (Array.isArray(position)) {
-      this.location.position.set(...position);
-    } else {
-      // Vector3
-      this.location.position.copy(position);
-    }
+    this.updatePosition(position);
 
     // emit
     this._messenger.emit('setObjectPosition', [
@@ -77,23 +71,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
   }
 
   setRotation(rotation: Quaternion | Euler | QuaternionArray | Vector3Array) {
-    if (Array.isArray(rotation)) {
-      // Vector3Array
-      if (rotation.length === 3) {
-        this.location.rotation.set(...rotation);
-      } else {
-        // QuaternionArray
-        this.location.quaternion.set(...rotation);
-      }
-    } else {
-      // Euler
-      if (rotation instanceof Euler) {
-        this.location.rotation.copy(rotation);
-      } else {
-        // Quaternion
-        this.location.quaternion.copy(rotation);
-      }
-    }
+    this.updateRotation(rotation);
 
     // emit
     this._messenger.emit('setObjectRotation', [
@@ -141,6 +119,10 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
         this.engine.objects.create(item.t, item as ObjectEntity['data']);
       }
     });
+  }
+
+  edit() {
+    this.engine.objects.edit(this);
   }
 }
 

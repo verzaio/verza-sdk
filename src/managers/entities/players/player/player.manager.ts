@@ -147,13 +147,7 @@ class PlayerManager extends EntityManager<
   }
 
   setPosition(position: Vector3 | Vector3Array, instant = true) {
-    // Vector3Array
-    if (Array.isArray(position)) {
-      this.location.position.set(...position);
-    } else {
-      // Vector3
-      this.location.position.copy(position);
-    }
+    this.updatePosition(position);
 
     // emit
     this.messenger.emit('setPlayerPosition', [
@@ -167,23 +161,7 @@ class PlayerManager extends EntityManager<
     rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
     instant = true,
   ) {
-    if (Array.isArray(rotation)) {
-      // Vector3Array
-      if (rotation.length === 3) {
-        this.location.rotation.set(...rotation);
-      } else {
-        // QuaternionArray
-        this.location.quaternion.set(...rotation);
-      }
-    } else {
-      // Euler
-      if (rotation instanceof Euler) {
-        this.location.rotation.copy(rotation);
-      } else {
-        // Quaternion
-        this.location.quaternion.copy(rotation);
-      }
-    }
+    this.updateRotation(rotation);
 
     // emit
     this.messenger.emit('setPlayerRotation', [

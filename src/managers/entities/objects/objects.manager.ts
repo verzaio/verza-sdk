@@ -6,6 +6,7 @@ import {
   CreateObjectPropsWithObjects,
   ObjectType,
 } from 'engine/definitions/types/objects.types';
+import {ObjectEditMode} from 'engine/definitions/types/scripts.types';
 import {
   QuaternionArray,
   Vector3Array,
@@ -17,7 +18,8 @@ import EntitiesManager from '../entities.manager';
 import ObjectManager from './object/object.manager';
 
 class ObjectsManager extends EntitiesManager<ObjectManager> {
-  private _binded = false;
+  private _loadBinded = false;
+  private _objectsEditBinded = false;
 
   private get _messenger() {
     return this.engine.messenger;
@@ -27,18 +29,34 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     super(EntityType.object, engine);
   }
 
+  private _loadObjectsEdit() {
+    if (this._objectsEditBinded) return;
+    this._objectsEditBinded = true;
+
+    this._messenger.events.on('onObjectEditStartRaw', ({data: [props]}) => {
+      this.engine.events.emit(
+        'onObjectEditStart',
+        this.ensure(props.id, props),
+      );
+    });
+
+    this._messenger.events.on('onObjectEditRaw', ({data: [props]}) => {
+      this.engine.events.emit('onObjectEdit', this.ensure(props.id, props));
+    });
+  }
+
   private _load() {
-    if (this._binded) return;
+    if (this._loadBinded) return;
+    this._loadBinded = true;
 
     this._messenger.events.on('destroyObject', ({data: [objectId]}) => {
       this.destroy(this.get(objectId), false);
     });
-
-    this._binded = true;
   }
 
   unload() {
-    this._binded = false;
+    this._loadBinded = false;
+    this._objectsEditBinded = false;
   }
 
   ensure(id: string, data: ObjectManager['data']) {
@@ -50,8 +68,11 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
 
     // update
-    object.position.set(...data.position!);
-    object.rotation.set(...(data.rotation as QuaternionArray));
+    object.updatePosition(data.position!);
+    object.updateRotation(data.rotation!);
+
+    // set data
+    object.data = data;
 
     return object;
   }
@@ -194,6 +215,22 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     if (report) {
       this._messenger.emit('destroyObject', [entity.id]);
     }
+  }
+
+  edit(object: ObjectManager, mode: ObjectEditMode = 'position') {
+    this._messenger.emit('editObject', [object.id, mode]);
+  }
+
+  cancelEdit() {
+    this._messenger.emit('cancelObjectEdit');
+  }
+
+  setEditMode(mode: ObjectEditMode) {
+    this._messenger.emit('setObjectEditMode', [mode]);
+  }
+
+  setEditSnaps(position: number | null, rotation: number | null) {
+    this._messenger.emit('setObjectEditSnaps', [position, rotation]);
   }
 }
 

@@ -1,4 +1,4 @@
-import {Object3D} from 'three';
+import {Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {DEFAULT_ENTITY_DRAW_DISTANCE} from 'engine/definitions/constants/streamer.constants';
 import {
@@ -7,6 +7,10 @@ import {
   MergeEntityEvents,
 } from 'engine/definitions/types/entities.types';
 import {EntityEventMap} from 'engine/definitions/types/events.types';
+import {
+  QuaternionArray,
+  Vector3Array,
+} from 'engine/definitions/types/world.types';
 
 import EngineManager from '../../engine.manager';
 import EventsManager, {EventListenersMap} from '../../events.manager';
@@ -47,6 +51,10 @@ class EntityManager<
 
   get data(): T['data'] {
     return this.entity.data;
+  }
+
+  set data(data: T['data']) {
+    this.entity.data = data;
   }
 
   get location() {
@@ -122,6 +130,38 @@ class EntityManager<
       } else {
         // Vector3Array
         this.location.rotation.set(...this.data.rotation);
+      }
+    }
+  }
+
+  updatePosition(position: Vector3 | Vector3Array) {
+    // Vector3Array
+    if (Array.isArray(position)) {
+      this.location.position.set(...position);
+    } else {
+      // Vector3
+      this.location.position.copy(position);
+    }
+  }
+
+  updateRotation(
+    rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
+  ) {
+    if (Array.isArray(rotation)) {
+      // Vector3Array
+      if (rotation.length === 3) {
+        this.location.rotation.set(...rotation);
+      } else {
+        // QuaternionArray
+        this.location.quaternion.set(...rotation);
+      }
+    } else {
+      // Euler
+      if (rotation instanceof Euler) {
+        this.location.rotation.copy(rotation);
+      } else {
+        // Quaternion
+        this.location.quaternion.copy(rotation);
       }
     }
   }

@@ -4,12 +4,13 @@ import {
   PlayerPacketUpdateDto,
   ServerDto,
 } from 'engine/generated/dtos.types';
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
-import {CreateObjectProps, ObjectType} from './objects.types';
+import {CreateObjectProps, ObjectDataProps, ObjectType} from './objects.types';
 import {KeyInfo} from './ui.types';
 import {
   IntersectsResult,
@@ -41,6 +42,8 @@ export type CustomEventData = {
 };
 
 export type PointerEventType = 'pointermove' | 'pointerdown' | 'pointerup';
+
+export type ObjectEditMode = 'position' | 'rotation';
 
 //export type Pointer
 export type ScriptEventMap = {
@@ -198,6 +201,20 @@ export type ScriptEventMap = {
   /* objects */
   createObject: (type: ObjectType, props: CreateObjectProps) => void;
 
+  editObject: (objectId: string, mode: ObjectEditMode) => void;
+  setObjectEditMode: (mode: ObjectEditMode) => void;
+  setObjectEditSnaps: (
+    position: number | null,
+    rotation: number | null,
+  ) => void;
+  cancelObjectEdit: () => void;
+
+  onObjectEditRaw: (object: ObjectDataProps) => void;
+  onObjectEdit: (object: ObjectManager) => void;
+
+  onObjectEditStartRaw: (object: ObjectDataProps) => void;
+  onObjectEditStart: (object: ObjectManager) => void;
+
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
 
   setObjectRotation: (
@@ -239,7 +256,6 @@ export type ScriptEventMap = {
   setEntitySelector: (status: boolean) => void;
 
   onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
-
   onEntitySelected: (intersects: IntersectsResult) => void;
 
   /* server */
