@@ -1,6 +1,7 @@
 import {v4} from 'uuid';
 
 import {EntityType} from 'engine/definitions/enums/entities.enums';
+import {ScriptMessengerMethods} from 'engine/definitions/types/messenger.types';
 import {
   CreateObjectProps,
   CreateObjectPropsWithObjects,
@@ -29,23 +30,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     super(EntityType.object, engine);
   }
 
-  private _loadObjectsEdit() {
-    if (this._objectsEditBinded) return;
-    this._objectsEditBinded = true;
-
-    this._messenger.events.on('onObjectEditStartRaw', ({data: [props]}) => {
-      this.engine.events.emit(
-        'onObjectEditStart',
-        this.ensure(props.id, props),
-      );
-    });
-
-    this._messenger.events.on('onObjectEditRaw', ({data: [props]}) => {
-      this.engine.events.emit('onObjectEdit', this.ensure(props.id, props));
-    });
-  }
-
-  private _load() {
+  private _bind() {
     if (this._loadBinded) return;
     this._loadBinded = true;
 
@@ -82,7 +67,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     props: CreateObjectPropsWithObjects<T>,
   ) {
     // load
-    this._load();
+    this._bind();
 
     // validate id
     if (!props.id) {
@@ -121,7 +106,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       t: type,
 
-      drawDistance: drawDistance ?? 'high',
+      drawDistance,
 
       position,
 
@@ -217,11 +202,19 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
   }
 
+  private _onObjectEdit: ScriptMessengerMethods['onObjectEditRaw'] = ({
+    data: [data, type],
+  }) => {
+    this.engine.events.emit('onObjectEdit', this.ensure(data.id, data), type);
+  };
+
   edit(object: ObjectManager, mode: ObjectEditMode = 'position') {
+    this._messenger.events.on('onObjectEditRaw', this._onObjectEdit);
     this._messenger.emit('editObject', [object.id, mode]);
   }
 
   cancelEdit() {
+    this._messenger.events.off('onObjectEditRaw', this._onObjectEdit);
     this._messenger.emit('cancelObjectEdit');
   }
 

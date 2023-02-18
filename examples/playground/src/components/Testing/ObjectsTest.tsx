@@ -131,8 +131,16 @@ const ObjectsTest = () => {
       <Group
         ref={objectRef}
         props={{
-          position: [0, 3, 10],
+          position: [0, 1, 10],
         }}>
+        <Box
+          box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+          props={{
+            position: [0, 1, 0],
+            collision: 'static',
+          }}
+        />
+
         <Box
           box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
           props={{

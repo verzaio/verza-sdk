@@ -6,4 +6,4 @@ export const INTERFACE_CHAT = 'interface-chat';
 
 export const INTERFACE_LOADING = 'interface-loading';
 
-export const INTERFACE_SELECTOR = 'interface-selector';
+//export const INTERFACE_SELECTOR = 'interface-selector';

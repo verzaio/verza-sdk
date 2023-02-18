@@ -13,7 +13,7 @@ export const STREAMER_CHUNK_DRAW_DISTANCES: Record<EntityDrawDistance, number> =
     high: 16,
   };
 
-export const DEFAULT_ENTITY_DRAW_DISTANCE: EntityDrawDistance = 'low';
+export const DEFAULT_ENTITY_DRAW_DISTANCE: EntityDrawDistance = 'high';
 
 export const STREAMER_CHUNK_FETCH_RETRY_MS = 2000;
 

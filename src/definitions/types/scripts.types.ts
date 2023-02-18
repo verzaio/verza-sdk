@@ -35,6 +35,7 @@ export type SizeProps = {
   top?: SizePropValue;
   right?: SizePropValue;
   bottom?: SizePropValue;
+  zIndex?: number;
 };
 
 export type CustomEventData = {
@@ -44,6 +45,7 @@ export type CustomEventData = {
 export type PointerEventType = 'pointermove' | 'pointerdown' | 'pointerup';
 
 export type ObjectEditMode = 'position' | 'rotation';
+export type ObjectEditUpdateType = 'start' | 'update' | 'end';
 
 //export type Pointer
 export type ScriptEventMap = {
@@ -209,11 +211,11 @@ export type ScriptEventMap = {
   ) => void;
   cancelObjectEdit: () => void;
 
-  onObjectEditRaw: (object: ObjectDataProps) => void;
-  onObjectEdit: (object: ObjectManager) => void;
-
-  onObjectEditStartRaw: (object: ObjectDataProps) => void;
-  onObjectEditStart: (object: ObjectManager) => void;
+  onObjectEditRaw: (
+    object: ObjectDataProps,
+    type: ObjectEditUpdateType,
+  ) => void;
+  onObjectEdit: (object: ObjectManager, type: ObjectEditUpdateType) => void;
 
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
 

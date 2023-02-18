@@ -69,9 +69,26 @@ class EntityManager<
     return this._location.quaternion;
   }
 
-  dimension = 0;
+  get dimension() {
+    return this.data.dimension ?? 0;
+  }
 
-  drawDistance: EntityDrawDistance = DEFAULT_ENTITY_DRAW_DISTANCE;
+  set dimension(dimension: number) {
+    this.data.dimension = dimension;
+  }
+
+  get drawDistance() {
+    return this.data.m?.d ?? DEFAULT_ENTITY_DRAW_DISTANCE;
+  }
+
+  set drawDistance(drawDistance: EntityDrawDistance) {
+    if (!this.data.m) {
+      this.data.m = {d: drawDistance};
+      return;
+    }
+
+    this.data.m.d = drawDistance;
+  }
 
   constructor(entity: T, engine: EngineManager) {
     this.entity = entity;
@@ -79,14 +96,20 @@ class EntityManager<
   }
 
   restoreData() {
-    // dimension
-    if (this.data.dimension !== undefined) {
-      this.dimension = this.data.dimension;
+    // set metadata
+    if (!this.data.m) {
+      this.data.m = {};
     }
 
-    // set draw distance
-    if (this.data?.m?.d) {
-      this.drawDistance = this.data.m.d;
+    // set dimension
+    if (this.data.dimension === undefined) {
+      this.data.dimension = 0;
+    }
+
+    // set draw distance from data.drawDistance
+    if (this.data.drawDistance) {
+      this.data.m.d = this.data.drawDistance;
+      delete this.data.drawDistance; // delete
     }
 
     // world position | WorldPosition
@@ -96,6 +119,11 @@ class EntityManager<
         this.data.p.p[1], // y
         this.data.p.p[2], // z
       );
+
+      // dimension
+      if (this.data.p.p[3] !== undefined) {
+        this.data.dimension = this.data.p.p[3];
+      }
 
       // rotation as quaternion
       if (this.data.p.p[7] !== undefined) {
@@ -115,11 +143,14 @@ class EntityManager<
           );
         }
       }
+
+      delete this.data.p; // delete
     }
 
     // position
     if (this.data.position) {
       this.location.position.set(...this.data.position);
+      delete this.data.position; // delete
     }
 
     // rotation
@@ -131,6 +162,7 @@ class EntityManager<
         // Vector3Array
         this.location.rotation.set(...this.data.rotation);
       }
+      delete this.data.rotation; // delete
     }
   }
 
