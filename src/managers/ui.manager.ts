@@ -49,9 +49,9 @@ class UIManager {
   bind() {
     document.addEventListener('keyup', this._onEscapeKey);
 
-    //document.addEventListener('pointermove', this._onPointerEvent);
-    document.addEventListener('pointerdown', this._onPointerEvent);
-    document.addEventListener('pointerup', this._onPointerEvent);
+    document.body.addEventListener('pointermove', this._onPointerEvent);
+    document.body.addEventListener('pointerdown', this._onPointerEvent);
+    document.body.addEventListener('pointerup', this._onPointerEvent);
 
     this._messenger.events.on('addInterface', ({data: [tag]}) => {
       this.interfaces.add(tag);
@@ -69,6 +69,12 @@ class UIManager {
   }
 
   private _onPointerEvent = (event: PointerEvent) => {
+    // prevent `pointerdown` default action
+    // allowing parent's window to handle dragging events
+    if (event.type === 'pointerdown') {
+      event.preventDefault();
+    }
+
     this._messenger.emit('onPointerEvent', [
       event.clientX,
       event.clientY,
@@ -129,9 +135,9 @@ class UIManager {
   destroy() {
     document.removeEventListener('keyup', this._onEscapeKey);
 
-    //document.removeEventListener('pointermove', this._onPointerEvent);
-    document.removeEventListener('pointerdown', this._onPointerEvent);
-    document.removeEventListener('pointerup', this._onPointerEvent);
+    document.body.removeEventListener('pointermove', this._onPointerEvent);
+    document.body.removeEventListener('pointerdown', this._onPointerEvent);
+    document.body.removeEventListener('pointerup', this._onPointerEvent);
   }
 }
 
