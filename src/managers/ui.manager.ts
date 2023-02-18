@@ -1,8 +1,11 @@
 import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
 import {
+  IndicatorId,
+  IndicatorTitle,
   PointerEventType,
   SizeProps,
-} from 'engine/definitions/types/scripts.types';
+  ToolbarElement,
+} from 'engine/definitions/types/ui.types';
 
 import ControllerManager from './controller.manager';
 import EngineManager from './engine.manager';
@@ -44,6 +47,20 @@ class UIManager {
 
   constructor(engine: EngineManager) {
     this._engine = engine;
+  }
+
+  setSize(props: SizeProps) {
+    this._messenger.emit('setSize', [props]);
+  }
+
+  show() {
+    this.visible = true;
+    this._messenger.emit('show');
+  }
+
+  hide() {
+    this.visible = false;
+    this._messenger.emit('hide');
   }
 
   bind() {
@@ -116,20 +133,21 @@ class UIManager {
     return this.hasInterface(INTERFACE_OPTIONS);
   }
 
-  setSize(props: SizeProps) {
-    this._messenger.emit('onSetSize', [props]);
+  showIndicator(id: IndicatorId, title?: IndicatorTitle) {
+    this._messenger.emit('showIndicator', [id, title]);
   }
 
-  show() {
-    this.visible = true;
-
-    this._messenger.emit('onShow');
+  hideIndicator(id: IndicatorId) {
+    this._messenger.emit('hideIndicator', [id]);
   }
 
-  hide() {
-    this.visible = false;
+  addToolbar(toolbar: ToolbarElement) {
+    this._messenger.emit('addToolbar', [toolbar]);
+    return toolbar.id;
+  }
 
-    this._messenger.emit('onHide');
+  removeToolbar(toolbarId: string) {
+    this._messenger.emit('removeToolbar', [toolbarId]);
   }
 
   destroy() {

@@ -1,18 +1,21 @@
 export * from './types';
 
-export {EngineManager} from 'engine/managers/engine.manager';
+import * as THREE from 'three';
 
+import {v4} from 'uuid';
+
+import ControllerManager from 'engine/managers/controller.manager';
 import EventsManager, {EventListenersMap} from 'engine/managers/events.manager';
 
-export {EventsManager, EventListenersMap};
+export {EventsManager, EventListenersMap, ControllerManager};
+
+export {EngineManager} from 'engine/managers/engine.manager';
 
 export {Command, CommandParam} from 'engine/managers/commands/command.manager';
 
-export {
-  SizePropValue,
-  SizeProps,
-  ScriptEventMap,
-} from 'engine/definitions/types/scripts.types';
+export {SizePropValue, SizeProps} from 'engine/definitions/types/ui.types';
+
+export {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 export {EngineParams} from 'engine/definitions/local/types/engine.types';
 
@@ -20,4 +23,8 @@ export {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.type
 
 export {PlayerControls} from 'engine/definitions/types/controls.types';
 
-export {Object3D, Vector3, Quaternion} from 'three';
+export {THREE};
+
+export {v4 as uuid};
+
+export {Object3D, Vector3, Vector2, Quaternion, MathUtils} from 'three';

@@ -21,7 +21,7 @@ const Testing = () => {
       top: '5vw',
       right: '10vh',
     });
-    engine.ui.show();
+    //engine.ui.show();
   }, [engine]);
 
   // test cmd

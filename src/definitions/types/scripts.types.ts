@@ -11,7 +11,14 @@ import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
 import {CreateObjectProps, ObjectDataProps, ObjectType} from './objects.types';
-import {KeyInfo} from './ui.types';
+import {
+  IndicatorId,
+  IndicatorTitle,
+  KeyInfo,
+  PointerEventType,
+  SizeProps,
+  ToolbarElement,
+} from './ui.types';
 import {
   IntersectsResult,
   IntersectsResultRaw,
@@ -26,23 +33,10 @@ export type ScriptStatus =
   | 'failed';
 
 /* scripts */
-export type SizePropValue = `${number}vh` | `${number}vw` | `${number}px`;
-
-export type SizeProps = {
-  height: SizePropValue;
-  width: SizePropValue;
-  left?: SizePropValue;
-  top?: SizePropValue;
-  right?: SizePropValue;
-  bottom?: SizePropValue;
-  zIndex?: number;
-};
 
 export type CustomEventData = {
   [name: string]: any;
 };
-
-export type PointerEventType = 'pointermove' | 'pointerdown' | 'pointerup';
 
 export type ObjectEditMode = 'position' | 'rotation';
 export type ObjectEditUpdateType = 'start' | 'update' | 'end';
@@ -93,13 +87,23 @@ export type ScriptEventMap = {
 
   removeInterface: (tag: string) => void;
 
+  showIndicator: (id: IndicatorId, title?: IndicatorTitle) => void;
+
+  hideIndicator: (id: IndicatorId) => void;
+
+  addToolbar: (toolbar: ToolbarElement) => void;
+
+  removeToolbar: (toolbarId: string) => void;
+
+  onToolbarItemPressed: (id: string) => void;
+
   onCursorLock: (status: boolean) => void;
 
-  onSetSize: (props: SizeProps) => void;
+  setSize: (props: SizeProps<string>) => void;
 
-  onShow: () => void;
+  show: () => void;
 
-  onHide: () => void;
+  hide: () => void;
 
   /* players */
   OPU: (
@@ -189,10 +193,13 @@ export type ScriptEventMap = {
 
   setCameraTransitions: (
     playerId: number,
-    transitions: CameraTransition[],
+    transitions: CameraTransition<string>[],
   ) => void;
 
-  setCameraTransition: (playerId: number, transition: CameraTransition) => void;
+  setCameraTransition: (
+    playerId: number,
+    transition: CameraTransition<string>,
+  ) => void;
 
   setCameraPosition: (playerId: number, position: CameraPosition) => void;
 

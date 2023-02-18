@@ -11,13 +11,14 @@ export type CameraPosition = {
   lookAt?: Vector3 | Vector3Array;
 };
 
-export type CameraTransition = CameraPosition & {
-  id?: number | string;
-  from?: Vector3 | Vector3Array;
-  lookAtFixed?: boolean;
-  duration?: number;
-  easing?: keyof typeof EASINGS;
-};
+export type CameraTransition<T extends string = keyof typeof EASINGS> =
+  CameraPosition & {
+    id?: number | string;
+    from?: Vector3 | Vector3Array;
+    lookAtFixed?: boolean;
+    duration?: number;
+    easing?: T;
+  };
 
 export type CameraTransitionItem = CameraTransition & {
   startTime: number;

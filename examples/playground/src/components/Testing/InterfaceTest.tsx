@@ -27,8 +27,7 @@ const InterfaceTest = () => {
   useKey('KeyY', onPressed);
 
   useEvent('onEntitySelected', intersects => {
-    console.log('intersects', intersects);
-
+    //console.log('intersects', intersects);
     intersects.object?.entity.edit();
   });
 

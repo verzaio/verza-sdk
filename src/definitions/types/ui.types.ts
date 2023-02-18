@@ -38,3 +38,31 @@ export type Indicator = {
   id: IndicatorId;
   title: IndicatorTitle;
 };
+
+export type SizePropValue = `${number}vh` | `${number}vw` | `${number}px`;
+
+export type SizeProps<T extends string = SizePropValue> = {
+  height: T;
+  width: T;
+  left?: T;
+  top?: T;
+  right?: T;
+  bottom?: T;
+  zIndex?: number;
+};
+
+export type PointerEventType = 'pointermove' | 'pointerdown' | 'pointerup';
+
+export type ToolbarPosition = 'bottom' | 'right';
+
+export type ToolbarItem = {
+  id?: string;
+  name?: string;
+  key?: string | string[];
+};
+
+export type ToolbarElement = {
+  id: string;
+  position: ToolbarPosition;
+  items: ToolbarItem[];
+};
