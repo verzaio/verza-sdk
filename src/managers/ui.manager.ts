@@ -1,4 +1,7 @@
-import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
+import {
+  INTERFACE_CHAT,
+  INTERFACE_OPTIONS,
+} from 'engine/definitions/constants/ui.constants';
 import {
   IndicatorId,
   IndicatorTitle,
@@ -32,7 +35,10 @@ class UIManager {
   }
 
   get isActiveInput() {
-    return document.activeElement?.tagName === 'INPUT';
+    return (
+      this.hasInterface(INTERFACE_CHAT) ||
+      document.activeElement?.tagName === 'INPUT'
+    );
   }
 
   get activeInput() {
