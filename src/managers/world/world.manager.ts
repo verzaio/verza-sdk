@@ -1,6 +1,7 @@
 import {IntersectsResult} from 'engine/definitions/types/world.types';
 
-import EngineManager from './engine.manager';
+import EngineManager from '../engine.manager';
+import RaycasterManager from './raycaster.manager';
 
 class WorldManager {
   private _engine: EngineManager;
@@ -9,8 +10,14 @@ class WorldManager {
     return this._engine.messenger;
   }
 
+  raycaster: RaycasterManager = null!;
+
   constructor(engine: EngineManager) {
     this._engine = engine;
+
+    if (engine.isClient) {
+      this.raycaster = new RaycasterManager(engine);
+    }
   }
 
   bind() {

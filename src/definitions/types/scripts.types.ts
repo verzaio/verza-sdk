@@ -52,6 +52,8 @@ export type ScriptEventMap = {
 
   onDisconnect: () => void;
 
+  OR: (response: unknown) => void;
+
   /* engine */
   onSynced: () => void;
 
@@ -283,6 +285,10 @@ export type ScriptEventMap = {
 
   onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
   onEntitySelected: (intersects: IntersectsResult) => void;
+
+  raycastFromCursor: (x: number, y: number) => void;
+
+  raycastFromPoints: (from: Vector3Array, to: Vector3Array) => void;
 
   /* server */
   restartServer: (reason?: string) => void;

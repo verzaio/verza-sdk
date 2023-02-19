@@ -66,7 +66,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     }
   }
 
-  setPosition(position: Vector3 | Vector3Array) {
+  async setPosition(position: Vector3 | Vector3Array) {
     this.updatePosition(position);
 
     // emit
@@ -78,10 +78,15 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       return;
     }
 
-    this._messenger.emit('setPositionFromWorldSpace', [
+    /*const response = this._messenger.emitAsync('setPositionFromWorldSpace', [
       this.id,
       this.location.position.toArray(),
-    ]);
+    ]);*/
+
+    /*this._messenger.emit('setPositionFromWorldSpace', [
+      this.id,
+      this.location.position.toArray(),
+    ]);*/
   }
 
   setRotation(rotation: Quaternion | Euler | QuaternionArray | Vector3Array) {

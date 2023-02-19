@@ -1,3 +1,5 @@
+import {v4} from 'uuid';
+
 import {
   MessengerManagerEventsMap,
   MessengerMessage,
@@ -20,6 +22,8 @@ type MessengerManagerMap = {
   register: (event: string) => void;
 
   unregister: (event: string) => void;
+
+  OR: (response: unknown) => void;
 };
 
 const TYPE_HANDSHAKE_CONNECTION = 'HANDSHAKE_CONNECTION';
@@ -207,7 +211,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     this.emit('onLoad');
   }
 
-  private _onMessage = (message: MessengerMessage) => {
+  private _onMessage = async (message: MessengerMessage) => {
     // handle handshake
     if (message.data?.type === TYPE_HANDSHAKE_CONNECTION) {
       this._onHandshake(message);
@@ -220,12 +224,12 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     }
 
     // get event name
-    const event: string = message.data.pop();
+    const [eventName, requestId]: string = message.data.pop().split(':');
 
     // validate
-    if (this.validators?.[event]) {
+    if (this.validators?.[eventName]) {
       try {
-        const validator = this.validators[event] ?? {};
+        const validator = this.validators[eventName] ?? {};
 
         // validate data only for receiver
         if (this.type === 'receiver') {
@@ -236,7 +240,15 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
         }
 
         // call callback (optional)
-        validator?.callback?.(message);
+        if (validator.callback) {
+          // is request id present?
+          if (requestId) {
+            const response = await validator.callback?.(message);
+            (this.emit as any)(`OR:${requestId}`, [response], undefined, true);
+          } else {
+            validator?.callback?.(message);
+          }
+        }
       } catch (e) {
         console.error(e);
         return;
@@ -244,15 +256,22 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     }
 
     // handle registration
-    if (event === 'register') {
-      this.events.registeredEvents.add(message.data[0]);
-      return;
-    } else if (event === 'unregister') {
-      this.events.registeredEvents.delete(message.data[0]);
-      return;
+    switch (eventName) {
+      case 'register': {
+        this.events.registeredEvents.add(message.data[0]);
+        return;
+      }
+      case 'unregister': {
+        this.events.registeredEvents.delete(message.data[0]);
+        return;
+      }
+      case 'OR': {
+        (this.events.emit as any)(`OR:${requestId}`, message);
+        return;
+      }
     }
 
-    (this.events.emit as any)(event, message);
+    (this.events.emit as any)(eventName, message);
   };
 
   canEmit<A extends keyof Events>(eventName: A) {
@@ -268,14 +287,37 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     } as MessengerMessage);
   }
 
+  async emitAsync<
+    R extends unknown[] = unknown[],
+    M = MessengerMessage<R>,
+    A extends keyof Events = keyof Events,
+  >(
+    eventName: A,
+    args?: Parameters<Events[A]>,
+    transfer?: Array<Transferable | OffscreenCanvas>,
+  ): Promise<M> {
+    const requestId = v4();
+
+    this.emit(`${eventName as string}:${requestId}`, args, transfer);
+
+    const response = new Promise<M>(resolve => {
+      (this.events.once as any)(`OR:${requestId}`, (response: unknown) => {
+        resolve(response as M);
+      });
+    });
+
+    return response;
+  }
+
   emit<A extends keyof Events>(
     eventName: A,
     args?: Parameters<Events[A]>,
     transfer?: Array<Transferable | OffscreenCanvas>,
+    forcedEmit?: boolean,
   ) {
     if (!this.port) return;
 
-    if (this.type !== 'sender' && !this.canEmit(eventName)) {
+    if (this.type !== 'sender' && !forcedEmit && !this.canEmit(eventName)) {
       //console.log('not emitting, not registered!', eventName, this.type);
       return;
     }
@@ -328,7 +370,7 @@ class MessengerEvents<
   }
 
   once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
-    console.debug('[MessengerEvents] events.once not available');
+    super.once(eventName, listener);
     return listener;
   }
 

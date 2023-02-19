@@ -18,7 +18,7 @@ import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
-import WorldManager from './world.manager';
+import WorldManager from './world/world.manager';
 
 export class EngineManager {
   z = z;

@@ -10,7 +10,9 @@ export type MessengerManagerEventsMap<T extends EventListenersMap> = {
 
 export type MessengerValidators<T extends EventListenersMap> = Partial<{
   [key in keyof T]: {
-    callback?: (message: MessengerMessage<Parameters<T[key]>>) => void;
+    callback?: (
+      message: MessengerMessage<Parameters<T[key]>>,
+    ) => unknown | Promise<unknown>;
     parser?: {
       parse: (params: unknown) => any;
     };
