@@ -27,7 +27,7 @@ export const useKey = (
   optionsRef.current = options;
 
   const eventType = useMemo(
-    () => (options?.event === 'keyup' ? 'onKeyDown' : 'onKeyUp'),
+    () => (options?.event === 'keyup' ? 'onKeyUp' : 'onKeyDown'),
     [options?.event],
   );
 
