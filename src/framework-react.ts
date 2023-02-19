@@ -14,6 +14,8 @@ export {useNetwork} from 'engine/frameworks/react/hooks/useNetwork';
 export {useCamera} from 'engine/frameworks/react/hooks/useCamera';
 export {useChat} from 'engine/frameworks/react/hooks/useChat';
 export {useCommand} from 'engine/frameworks/react/hooks/useCommand';
+export {useToolbar} from 'engine/frameworks/react/hooks/useToolbar';
+export {useToolbarItemPress} from 'engine/frameworks/react/hooks/useToolbarItemPress';
 export {useWorld} from 'engine/frameworks/react/hooks/useWorld';
 export {
   useUI,

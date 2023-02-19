@@ -95,7 +95,7 @@ export type ScriptEventMap = {
 
   removeToolbar: (toolbarId: string) => void;
 
-  onToolbarItemPressed: (id: string) => void;
+  onToolbarItemPress: (id: string, toolbarId: string) => void;
 
   onCursorLock: (status: boolean) => void;
 

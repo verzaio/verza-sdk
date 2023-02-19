@@ -13,14 +13,24 @@ import {
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import {ObjectBoxDto, ObjectDto} from 'engine/generated/dtos.types';
+import ControllerManager from 'engine/managers/controller.manager';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
 import ObjectManager from './object/object.manager';
 
 class ObjectsManager extends EntitiesManager<ObjectManager> {
+  objectMode: ObjectEditMode = 'position';
+
+  controller = new ControllerManager({
+    editingObject: null! as ObjectManager,
+  });
+
+  get editingObject() {
+    return this.controller.data.editingObject;
+  }
+
   private _loadBinded = false;
-  private _objectsEditBinded = false;
 
   private get _messenger() {
     return this.engine.messenger;
@@ -41,7 +51,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   unload() {
     this._loadBinded = false;
-    this._objectsEditBinded = false;
   }
 
   ensure(id: string, data: ObjectManager['data']) {
@@ -209,16 +218,22 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   };
 
   edit(object: ObjectManager, mode: ObjectEditMode = 'position') {
+    this.objectMode = mode;
+
     this._messenger.events.on('onObjectEditRaw', this._onObjectEdit);
     this._messenger.emit('editObject', [object.id, mode]);
+
+    this.controller.set('editingObject', object);
   }
 
   cancelEdit() {
     this._messenger.events.off('onObjectEditRaw', this._onObjectEdit);
     this._messenger.emit('cancelObjectEdit');
+    this.controller.set('editingObject', null!);
   }
 
   setEditMode(mode: ObjectEditMode) {
+    this.objectMode = mode;
     this._messenger.emit('setObjectEditMode', [mode]);
   }
 

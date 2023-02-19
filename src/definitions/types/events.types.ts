@@ -89,5 +89,5 @@ export type ChatEventMap = {
 
 export type UIEventMap = {
   onPointerEvent: (x: number, y: number, type: PointerEventType) => void;
-  onToolbarItemPressed: (id: string) => void;
+  onToolbarItemPress: (id: string, toolbarId: string) => void;
 };
