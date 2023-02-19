@@ -99,9 +99,11 @@ class UIManager {
     }
 
     this._messenger.emit('onPointerEvent', [
-      event.clientX,
-      event.clientY,
-      event.type as PointerEventType,
+      {
+        type: event.type as PointerEventType,
+        x: event.clientX,
+        y: event.clientY,
+      },
     ]);
   };
 

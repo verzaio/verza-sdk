@@ -17,11 +17,10 @@ export {useCommand} from 'engine/frameworks/react/hooks/useCommand';
 export {useToolbar} from 'engine/frameworks/react/hooks/useToolbar';
 export {useToolbarItemPress} from 'engine/frameworks/react/hooks/useToolbarItemPress';
 export {useWorld} from 'engine/frameworks/react/hooks/useWorld';
-export {
-  useUI,
-  useCursorLock,
-  useInterfaces,
-} from 'engine/frameworks/react/hooks/useUI';
+export {useUI} from 'engine/frameworks/react/hooks/useUI';
+export {useCursorLock} from 'engine/frameworks/react/hooks/useCursorLock';
+export {useInterfaces} from 'engine/frameworks/react/hooks/useInterfaces';
+export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
 
 export {usePlayerId} from 'engine/frameworks/react/hooks/usePlayerId';
 

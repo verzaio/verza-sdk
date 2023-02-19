@@ -14,8 +14,10 @@ export type ServerMenuTabType =
   | 'keys'
   | 'banlist';
 
+export type KeyEvent = 'keydown' | 'keyup';
+
 export type KeyInfo = {
-  type: 'keydown' | 'keyup';
+  type: KeyEvent;
 
   code: string;
 
@@ -52,6 +54,12 @@ export type SizeProps<T extends string = SizePropValue> = {
 };
 
 export type PointerEventType = 'pointermove' | 'pointerdown' | 'pointerup';
+
+export type PointerEvent = {
+  type: PointerEventType;
+  x: number;
+  y: number;
+};
 
 export type ToolbarPosition = 'bottom' | 'right';
 

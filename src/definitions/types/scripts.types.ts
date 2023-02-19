@@ -15,7 +15,7 @@ import {
   IndicatorId,
   IndicatorTitle,
   KeyInfo,
-  PointerEventType,
+  PointerEvent,
   SizeProps,
   ToolbarElement,
 } from './ui.types';
@@ -79,7 +79,13 @@ export type ScriptEventMap = {
   /* ui */
   onEscapeKey: () => void;
 
-  onPointerEvent: (x: number, y: number, type: PointerEventType) => void;
+  onPointerEvent: (event: PointerEvent) => void;
+
+  onPointerMove: (event: PointerEvent) => void;
+
+  onPointerDown: (event: PointerEvent) => void;
+
+  onPointerUp: (event: PointerEvent) => void;
 
   onKey: (keyInfo: KeyInfo) => void;
 

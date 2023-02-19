@@ -22,11 +22,14 @@ export const useGameKey = (
   const engine = useEngine();
 
   useEffect(() => {
-    const event = options?.event ?? 'keydown';
+    const eventType = options?.event ?? 'keydown';
     const keys = Array.isArray(key) ? key : [key];
 
-    const onKey = engine.events.on('onKey', keyInfo => {
-      if (keyInfo.type !== event) return;
+    const onKeyPress = engine.events.on('onKey', keyInfo => {
+      if (eventType !== keyInfo.type) return;
+
+      // check matches
+      if (!keys.includes(keyInfo.code)) return;
 
       // disabled when options menu is enabled
       if (
@@ -47,14 +50,12 @@ export const useGameKey = (
         }
       }
 
-      // check matches
-      if (keys.includes(keyInfo.code)) {
-        callback(keyInfo);
-      }
+      // call it
+      callback(keyInfo);
     });
 
     return () => {
-      engine.events.off('onKey', onKey);
+      engine.events.off('onKey', onKeyPress);
     };
   }, [engine, callback, key, options]);
 };

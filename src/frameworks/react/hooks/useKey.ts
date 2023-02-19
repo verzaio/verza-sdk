@@ -25,10 +25,16 @@ export const useKey = (
   useGameKey(key, callback, options);
 
   useEffect(() => {
-    const event = options?.event ?? 'keydown';
+    const eventType = options?.event ?? 'keydown';
     const keys = Array.isArray(key) ? key : [key];
 
-    const onKeyDown = (event: KeyboardEvent) => {
+    const onKeyPress = (event: KeyboardEvent) => {
+      console.log(eventType);
+      if (eventType !== event.type) return;
+
+      // check matches
+      if (!keys.includes(event.code)) return;
+
       // disabled when options menu is enabled
       if (
         !options?.ignoreOptionsMenu &&
@@ -48,30 +54,28 @@ export const useKey = (
         }
       }
 
-      // check matches
-      if (keys.includes(event.code)) {
-        callback({
-          type: event.type as KeyInfo['type'],
+      // call it
+      callback({
+        type: event.type as KeyInfo['type'],
 
-          code: event.code,
+        code: event.code,
 
-          key: event.key,
+        key: event.key,
 
-          altKey: event.altKey,
+        altKey: event.altKey,
 
-          ctrlKey: event.ctrlKey,
+        ctrlKey: event.ctrlKey,
 
-          metaKey: event.metaKey,
+        metaKey: event.metaKey,
 
-          shiftKey: event.shiftKey,
-        });
-      }
+        shiftKey: event.shiftKey,
+      });
     };
 
-    document.addEventListener(event, onKeyDown);
+    document.addEventListener(eventType, onKeyPress);
 
     return () => {
-      document.removeEventListener(event, onKeyDown);
+      document.removeEventListener(eventType, onKeyPress);
     };
   }, [engine, callback, key, options]);
 };
