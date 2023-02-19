@@ -14,22 +14,22 @@ export type ServerMenuTabType =
   | 'keys'
   | 'banlist';
 
-export type KeyEvent = 'keydown' | 'keyup';
+export type KeyEventType = 'keydown' | 'keyup';
 
-export type KeyInfo = {
-  type: KeyEvent;
+export type KeyEvent = {
+  type: KeyEventType;
 
   code: string;
 
   key: string;
 
-  altKey: boolean;
+  altKey?: boolean;
 
-  ctrlKey: boolean;
+  ctrlKey?: boolean;
 
-  metaKey: boolean;
+  metaKey?: boolean;
 
-  shiftKey: boolean;
+  shiftKey?: boolean;
 };
 
 export type IndicatorId = string | number;

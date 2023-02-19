@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
@@ -13,11 +13,16 @@ export const useEvent = <
 ) => {
   const engine = useEngine();
 
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+
   useEffect(() => {
-    const onEvent = engine.events.on(event, callback);
+    const onEvent = engine.events.on(event, (...args: any[]) => {
+      (callbackRef.current as any)(...args);
+    });
 
     return () => {
       engine.events.off(event, onEvent);
     };
-  }, [engine, callback]);
+  }, [engine]);
 };

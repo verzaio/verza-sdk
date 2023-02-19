@@ -5,6 +5,7 @@ import {
 import {
   IndicatorId,
   IndicatorTitle,
+  KeyEventType,
   PointerEventType,
   SizeProps,
   ToolbarElement,
@@ -70,11 +71,14 @@ class UIManager {
   }
 
   bind() {
-    document.addEventListener('keyup', this._onEscapeKey);
-
     document.body.addEventListener('pointermove', this._onPointerEvent);
     document.body.addEventListener('pointerdown', this._onPointerEvent);
     document.body.addEventListener('pointerup', this._onPointerEvent);
+
+    document.body.addEventListener('keydown', this._onKeyEvent);
+    document.body.addEventListener('keyup', this._onKeyEvent);
+
+    document.addEventListener('keyup', this._onEscapeKey);
 
     this._messenger.events.on('addInterface', ({data: [tag]}) => {
       this.interfaces.add(tag);
@@ -103,6 +107,26 @@ class UIManager {
         type: event.type as PointerEventType,
         x: event.clientX,
         y: event.clientY,
+      },
+    ]);
+  };
+
+  private _onKeyEvent = (event: KeyboardEvent) => {
+    this._messenger.emit('onKeyEvent', [
+      {
+        type: event.type as KeyEventType,
+
+        code: event.code,
+
+        key: event.key,
+
+        altKey: event.altKey,
+
+        ctrlKey: event.ctrlKey,
+
+        metaKey: event.metaKey,
+
+        shiftKey: event.shiftKey,
       },
     ]);
   };
@@ -159,11 +183,14 @@ class UIManager {
   }
 
   destroy() {
-    document.removeEventListener('keyup', this._onEscapeKey);
-
     document.body.removeEventListener('pointermove', this._onPointerEvent);
     document.body.removeEventListener('pointerdown', this._onPointerEvent);
     document.body.removeEventListener('pointerup', this._onPointerEvent);
+
+    document.body.removeEventListener('keydown', this._onKeyEvent);
+    document.body.removeEventListener('keyup', this._onKeyEvent);
+
+    document.removeEventListener('keyup', this._onEscapeKey);
   }
 }
 

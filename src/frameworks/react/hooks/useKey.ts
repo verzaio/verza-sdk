@@ -1,10 +1,8 @@
-import {useEffect} from 'react';
+import {useEffect, useMemo, useRef} from 'react';
 
-import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
-import {KeyInfo} from 'engine/definitions/types/ui.types';
+import {KeyEvent} from 'engine/definitions/types/ui.types';
 
 import {useEngine} from './useEngine';
-import {useGameKey} from './useGameKey';
 
 type UseKeyOptions = {
   event?: 'keydown' | 'keyup';
@@ -17,29 +15,33 @@ type UseKeyOptions = {
 
 export const useKey = (
   key: string | string[],
-  callback: (event: KeyInfo) => void,
+  callback: (event: KeyEvent) => void,
   options?: UseKeyOptions,
 ) => {
   const engine = useEngine();
 
-  useGameKey(key, callback, options);
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+
+  const eventType = useMemo(
+    () => (options?.event === 'keyup' ? 'onKeyDown' : 'onKeyUp'),
+    [options?.event],
+  );
 
   useEffect(() => {
-    const eventType = options?.event ?? 'keydown';
     const keys = Array.isArray(key) ? key : [key];
 
-    const onKeyPress = (event: KeyboardEvent) => {
-      console.log(eventType);
-      if (eventType !== event.type) return;
-
+    const onKeyPress = engine.events.on(eventType, (event: KeyEvent) => {
       // check matches
       if (!keys.includes(event.code)) return;
 
+      const options = optionsRef.current;
+
       // disabled when options menu is enabled
-      if (
-        !options?.ignoreOptionsMenu &&
-        engine.ui.hasInterface(INTERFACE_OPTIONS)
-      ) {
+      if (!options?.ignoreOptionsMenu && engine.ui.isOptionsMenu()) {
         return;
       }
 
@@ -55,27 +57,11 @@ export const useKey = (
       }
 
       // call it
-      callback({
-        type: event.type as KeyInfo['type'],
-
-        code: event.code,
-
-        key: event.key,
-
-        altKey: event.altKey,
-
-        ctrlKey: event.ctrlKey,
-
-        metaKey: event.metaKey,
-
-        shiftKey: event.shiftKey,
-      });
-    };
-
-    document.addEventListener(eventType, onKeyPress);
+      callbackRef.current(event);
+    });
 
     return () => {
-      document.removeEventListener(eventType, onKeyPress);
+      engine.events.off(eventType, onKeyPress);
     };
-  }, [engine, callback, key, options]);
+  }, [engine, key, eventType]);
 };

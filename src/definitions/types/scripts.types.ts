@@ -14,7 +14,7 @@ import {CreateObjectProps, ObjectDataProps, ObjectType} from './objects.types';
 import {
   IndicatorId,
   IndicatorTitle,
-  KeyInfo,
+  KeyEvent,
   PointerEvent,
   SizeProps,
   ToolbarElement,
@@ -87,7 +87,11 @@ export type ScriptEventMap = {
 
   onPointerUp: (event: PointerEvent) => void;
 
-  onKey: (keyInfo: KeyInfo) => void;
+  onKeyEvent: (event: KeyEvent) => void;
+
+  onKeyDown: (event: KeyEvent) => void;
+
+  onKeyUp: (event: KeyEvent) => void;
 
   addInterface: (tag: string) => void;
 

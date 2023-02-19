@@ -8,7 +8,6 @@ export {useEvent} from 'engine/frameworks/react/hooks/useEvent';
 export {useFrame} from 'engine/frameworks/react/hooks/useFrame';
 export {useOnTicks} from 'engine/frameworks/react/hooks/useOnTicks';
 export {useKey} from 'engine/frameworks/react/hooks/useKey';
-export {useGameKey} from 'engine/frameworks/react/hooks/useGameKey';
 export {useControllerProp} from 'engine/frameworks/react/hooks/useControllerProp';
 export {useNetwork} from 'engine/frameworks/react/hooks/useNetwork';
 export {useCamera} from 'engine/frameworks/react/hooks/useCamera';

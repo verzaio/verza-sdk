@@ -5,7 +5,7 @@ import {CameraModeType} from './camera.types';
 import {ChunkIndex} from './chunks.types';
 import {PlayerControls} from './controls.types';
 import type {PlayerState, CharacterGender} from './players.types';
-import {PointerEvent} from './ui.types';
+import {KeyEvent, PointerEvent} from './ui.types';
 
 export type EventKey =
   | 'ENGINE'
@@ -89,5 +89,18 @@ export type ChatEventMap = {
 
 export type UIEventMap = {
   onPointerEvent: (event: PointerEvent) => void;
+
+  onPointerMove: (event: PointerEvent) => void;
+
+  onPointerDown: (event: PointerEvent) => void;
+
+  onPointerUp: (event: PointerEvent) => void;
+
+  onKeyEvent: (event: KeyEvent) => void;
+
+  onKeyDown: (event: KeyEvent) => void;
+
+  onKeyUp: (event: KeyEvent) => void;
+
   onToolbarItemPress: (id: string, toolbarId: string) => void;
 };
