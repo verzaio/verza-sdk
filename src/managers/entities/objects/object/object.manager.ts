@@ -1,4 +1,4 @@
-import {Euler, Quaternion, Vector3} from 'three';
+import {Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {ObjectEntity} from 'engine/definitions/types/entities.types';
 import {
@@ -9,6 +9,12 @@ import EngineManager from 'engine/managers/engine.manager';
 
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
+
+const _TEMP_POS = new Vector3();
+const _TEMP_POS2 = new Vector3();
+const _TEMP_QUAT = new Quaternion();
+const _TEMP_QUAT2 = new Quaternion();
+const _TEMP_OBJECT = new Object3D();
 
 class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
   parent: ObjectManager | null = null;
@@ -64,7 +70,15 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.updatePosition(position);
 
     // emit
-    this._messenger.emit('setObjectPosition', [
+    if (this.parent) {
+      this._messenger.emit('setObjectPosition', [
+        this.id,
+        this.location.position.toArray(),
+      ]);
+      return;
+    }
+
+    this._messenger.emit('setPositionFromWorldSpace', [
       this.id,
       this.location.position.toArray(),
     ]);
@@ -74,16 +88,82 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.updateRotation(rotation);
 
     // emit
+    if (this.parent) {
+      this._messenger.emit('setObjectRotation', [
+        this.id,
+        this.location.quaternion.toArray() as QuaternionArray,
+      ]);
+      return;
+    }
+
     this._messenger.emit('setObjectRotation', [
       this.id,
       this.location.quaternion.toArray() as QuaternionArray,
     ]);
   }
 
+  setPositionFromWorldSpace(position: Vector3 | Vector3Array) {
+    if (!this.parent) {
+      this.setPosition(position);
+      return;
+    }
+
+    // Vector3Array
+    if (Array.isArray(position)) {
+      _TEMP_POS.set(...position);
+    } else {
+      // Vector3
+      _TEMP_POS.copy(position);
+    }
+
+    this.location.parent?.getWorldPosition(_TEMP_POS2);
+    _TEMP_POS.sub(_TEMP_POS2);
+
+    this.setPosition(_TEMP_POS);
+  }
+
+  setRotationFromWorldSpace(
+    rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
+  ) {
+    if (!this.parent) {
+      this.setRotation(rotation);
+      return;
+    }
+
+    if (Array.isArray(rotation)) {
+      // Vector3Array
+      if (rotation.length === 3) {
+        _TEMP_OBJECT.rotation.set(...rotation);
+      } else {
+        // QuaternionArray
+        _TEMP_OBJECT.quaternion.set(...rotation);
+      }
+    } else {
+      // Euler
+      if (rotation instanceof Euler) {
+        _TEMP_OBJECT.rotation.copy(rotation);
+      } else {
+        // Quaternion
+        _TEMP_OBJECT.quaternion.copy(rotation);
+      }
+    }
+
+    this.location.parent?.getWorldQuaternion(_TEMP_QUAT2);
+
+    // conver to local-space
+    _TEMP_QUAT.multiplyQuaternions(
+      _TEMP_OBJECT.quaternion,
+      _TEMP_QUAT2.invert(),
+    );
+
+    this.setRotation(_TEMP_QUAT);
+  }
+
   detachFromParent() {
     if (!this.parent) return;
 
     this.parent.children.delete(this);
+    this.parent.location.remove(this.location);
     this.parent = null!;
   }
 
@@ -104,6 +184,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
     this.parent = parent;
     parent.children.add(this);
+    parent.location.add(this.location);
   }
 
   private _checkForChildren() {
