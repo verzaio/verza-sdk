@@ -23,6 +23,7 @@ import {
   IntersectsResult,
   IntersectsResultRaw,
   QuaternionArray,
+  RaycastOptions,
   Vector3Array,
 } from './world.types';
 
@@ -286,11 +287,23 @@ export type ScriptEventMap = {
   onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
   onEntitySelected: (intersects: IntersectsResult) => void;
 
-  raycastFromCursor: (x: number, y: number) => IntersectsResultRaw;
+  raycastFromCursor: (
+    x: number,
+    y: number,
+    options: RaycastOptions,
+  ) => IntersectsResultRaw;
 
   raycastFromPoints: (
     from: Vector3Array,
     to: Vector3Array,
+    options: RaycastOptions,
+  ) => IntersectsResultRaw;
+
+  raycastFromPoint: (
+    origin: Vector3Array,
+    direction: Vector3Array,
+    maxDistance: number | null,
+    options: RaycastOptions,
   ) => IntersectsResultRaw;
 
   /* server */

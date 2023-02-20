@@ -3,6 +3,7 @@ import {Vector3} from 'three';
 import {
   IntersectsResult,
   IntersectsResultRaw,
+  RaycastOptions,
 } from 'engine/definitions/types/world.types';
 
 import EngineManager from '../engine.manager';
@@ -18,20 +19,43 @@ class RaycasterManager {
     this._engine = engine;
   }
 
-  async raycastFromCursor(x: number, y: number) {
+  async raycastFromCursor(x: number, y: number, options: RaycastOptions = {}) {
     const {
       data: [intersects],
-    } = await this._messenger.emitAsync('raycastFromCursor', [x, y]);
+    } = await this._messenger.emitAsync('raycastFromCursor', [x, y, options]);
 
     return this.parseIntersectsResult(intersects);
   }
 
-  async raycastFromPoints(from: Vector3, to: Vector3) {
+  async raycastFromPoints(
+    from: Vector3,
+    to: Vector3,
+    options: RaycastOptions = {},
+  ) {
     const {
       data: [intersects],
     } = await this._messenger.emitAsync('raycastFromPoints', [
       from.toArray(),
       to.toArray(),
+      options,
+    ]);
+
+    return this.parseIntersectsResult(intersects);
+  }
+
+  async raycastFromPoint(
+    origin: Vector3,
+    dir: Vector3,
+    far: number | null,
+    options: RaycastOptions = {},
+  ) {
+    const {
+      data: [intersects],
+    } = await this._messenger.emitAsync('raycastFromPoint', [
+      origin.toArray(),
+      dir.toArray(),
+      far,
+      options,
     ]);
 
     return this.parseIntersectsResult(intersects);

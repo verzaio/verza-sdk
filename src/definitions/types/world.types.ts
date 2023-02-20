@@ -1,6 +1,7 @@
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
+import {EntityType} from '../enums/entities.enums';
 import {ObjectDataProps} from './objects.types';
 
 export type Vector3Array = [x: number, y: number, z: number];
@@ -54,4 +55,12 @@ export type IntersectsResult = {
   object?: InteresectionData<ObjectManager>;
 
   player?: InteresectionData<PlayerManager>;
+};
+
+export type RaycastOptions = {
+  entityTypes?: (keyof typeof EntityType)[];
+
+  excludePlayers?: number[];
+
+  excludeObjects?: string[];
 };
