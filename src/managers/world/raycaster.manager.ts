@@ -19,22 +19,22 @@ class RaycasterManager {
     this._engine = engine;
   }
 
-  async raycastFromCursor(x: number, y: number, options: RaycastOptions = {}) {
+  async raycastScreenPoint(x: number, y: number, options: RaycastOptions = {}) {
     const {
       data: [intersects],
-    } = await this._messenger.emitAsync('raycastFromCursor', [x, y, options]);
+    } = await this._messenger.emitAsync('raycastScreenPoint', [x, y, options]);
 
     return this.parseIntersectsResult(intersects);
   }
 
-  async raycastFromPoints(
+  async raycastPoints(
     from: Vector3,
     to: Vector3,
     options: RaycastOptions = {},
   ) {
     const {
       data: [intersects],
-    } = await this._messenger.emitAsync('raycastFromPoints', [
+    } = await this._messenger.emitAsync('raycastPoints', [
       from.toArray(),
       to.toArray(),
       options,
@@ -43,7 +43,7 @@ class RaycasterManager {
     return this.parseIntersectsResult(intersects);
   }
 
-  async raycastFromPoint(
+  async raycastPoint(
     origin: Vector3,
     dir: Vector3,
     far: number | null,
@@ -51,7 +51,7 @@ class RaycasterManager {
   ) {
     const {
       data: [intersects],
-    } = await this._messenger.emitAsync('raycastFromPoint', [
+    } = await this._messenger.emitAsync('raycastPoint', [
       origin.toArray(),
       dir.toArray(),
       far,

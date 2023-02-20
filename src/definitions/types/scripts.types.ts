@@ -287,19 +287,19 @@ export type ScriptEventMap = {
   onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
   onEntitySelected: (intersects: IntersectsResult) => void;
 
-  raycastFromCursor: (
+  raycastScreenPoint: (
     x: number,
     y: number,
     options: RaycastOptions,
   ) => IntersectsResultRaw;
 
-  raycastFromPoints: (
+  raycastPoints: (
     from: Vector3Array,
     to: Vector3Array,
     options: RaycastOptions,
   ) => IntersectsResultRaw;
 
-  raycastFromPoint: (
+  raycastPoint: (
     origin: Vector3Array,
     direction: Vector3Array,
     maxDistance: number | null,
