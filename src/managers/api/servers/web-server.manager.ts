@@ -345,8 +345,8 @@ class WebServerManager {
   async emitAction<A extends keyof ScriptEventMap>(
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
-  ) {
-    if (!this.isServer) return;
+  ): Promise<Response> {
+    if (!this.isServer) return null!;
 
     // format path
     const path = `${this.endpoint}/network/action/run`;
@@ -383,11 +383,14 @@ class WebServerManager {
           path,
           JSON.stringify(await response.json(), null, 2),
         );
+        return null!;
       } catch (e) {
         console.error('Verza API Error ', path, await response.text());
         console.error(e);
       }
     }
+
+    return response;
   }
 
   /* packets */

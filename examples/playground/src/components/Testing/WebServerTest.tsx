@@ -13,7 +13,7 @@ const WebServerTest = () => {
 
     const onWebServerReceived = engine.network.onServerEvent(
       'onWebServerReceived',
-      data => {
+      async data => {
         console.log('onWebServerReceived', data);
       },
     );
@@ -21,7 +21,7 @@ const WebServerTest = () => {
     return () => {
       engine.network.offServerEvent('onWebServerReceived', onWebServerReceived);
     };
-  }, [engine.player, engine.network]);
+  }, [engine]);
 
   return null;
 };

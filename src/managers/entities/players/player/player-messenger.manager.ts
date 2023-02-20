@@ -13,7 +13,14 @@ class PlayerMessengerManager {
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
   ) {
-    this._player.engine.api.emitAction(eventName, args);
+    await this._player.engine.api.emitAction(eventName, args);
+  }
+
+  async emitAsync<A extends keyof ScriptEventMap>(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+  ) {
+    return this._player.engine.api.emitActionAsync(eventName, args);
   }
 }
 

@@ -291,7 +291,7 @@ export type ScriptEventMap = {
   raycastFromPoints: (from: Vector3Array, to: Vector3Array) => void;
 
   /* server */
-  restartServer: (reason?: string) => void;
+  restartServer: (reason?: string | null) => void;
 
   setForwardMessages: (status: boolean) => void;
 } & {

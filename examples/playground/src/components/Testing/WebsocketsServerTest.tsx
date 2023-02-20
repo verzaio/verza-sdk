@@ -16,6 +16,13 @@ const WebsocketsServerTest = () => {
       console.debug('onSynced called');
     });
 
+    const onPlayerConnect = engine.players.events.on(
+      'onConnect',
+      async player => {
+        player.sendMessage(`Websocket server script connected (websocket)!`);
+      },
+    );
+
     // command
     engine.commands.register(
       new Command('server', [new CommandParam('param', 'string')]).on(
@@ -41,6 +48,7 @@ const WebsocketsServerTest = () => {
       clearInterval(intervalId);
 
       engine.events.off('onSynced', onSynced);
+      engine.players.events.on('onConnect', onPlayerConnect);
 
       engine.destroy();
     };

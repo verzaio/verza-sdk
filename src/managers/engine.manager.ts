@@ -247,8 +247,8 @@ export class EngineManager {
   }
 
   /* server */
-  restartServer(reason?: string) {
-    this.api.emitAction('restartServer', reason ? [reason] : undefined);
+  restartServer(reason?: string | null) {
+    this.api.emitAction('restartServer', [reason ?? null]);
   }
 
   setForwardMessages(status: boolean) {

@@ -11,8 +11,8 @@ import ControllerManager from 'engine/managers/controller.manager';
 import EventsManager, {EventListenersMap} from 'engine/managers/events.manager';
 import MessengerManager from 'engine/managers/messenger.manager';
 import NetworkManager from 'engine/managers/network.manager';
-import RaycasterManager from 'engine/managers/world/raycaster.manager';
 import UIManager from 'engine/managers/ui.manager';
+import RaycasterManager from 'engine/managers/world/raycaster.manager';
 import WorldManager from 'engine/managers/world/world.manager';
 
 export {

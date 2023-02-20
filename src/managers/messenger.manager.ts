@@ -1,5 +1,3 @@
-import {v4} from 'uuid';
-
 import {
   MessengerManagerEventsMap,
   MessengerMessage,
@@ -282,27 +280,27 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     eventName: A,
     args?: Parameters<Events[A]>,
   ) {
-    this._onMessage({
+    await this._onMessage({
       data: args ? [...args, eventName] : [eventName],
     } as MessengerMessage);
   }
 
   async emitAsync<
-    R extends unknown[] = unknown[],
-    M = MessengerMessage<R>,
-    A extends keyof Events = keyof Events,
+    A extends keyof Events,
+    R extends MessengerMessage<[ReturnType<Events[A]>]>,
   >(
     eventName: A,
     args?: Parameters<Events[A]>,
     transfer?: Array<Transferable | OffscreenCanvas>,
-  ): Promise<M> {
-    const requestId = v4();
+  ): Promise<R> {
+    const requestId = `${Math.random()}`;
 
     this.emit(`${eventName as string}:${requestId}`, args, transfer);
 
-    const response = new Promise<M>(resolve => {
-      (this.events.once as any)(`OR:${requestId}`, (response: unknown) => {
-        resolve(response as M);
+    // wait for response
+    const response = new Promise<R>(resolve => {
+      (this.events.once as any)(`OR:${requestId}`, (response: R) => {
+        resolve(response);
       });
     });
 

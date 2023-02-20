@@ -1,3 +1,4 @@
+import {MessengerMessage} from 'engine/definitions/types/messenger.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import {ServerDto} from 'engine/generated/dtos.types';
 import {
@@ -150,7 +151,7 @@ class ApiManager {
     return decryptMessage(data, this._accessTokenBase64);
   }
 
-  async handle(rawData: unknown): Promise<unknown> {
+  async handleWebServer(rawData: unknown): Promise<unknown> {
     return this.webServer.handle(rawData);
   }
 
@@ -168,15 +169,58 @@ class ApiManager {
     this.emitActionToServer(eventName, args);
   }
 
+  async emitActionAsync<A extends keyof ScriptEventMap>(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+  ) {
+    // client
+    if (this.isClient) {
+      return this._engine.messenger.emitAsync(eventName, args);
+    }
+
+    // server
+    return this.emitActionToServerAsync(eventName, args);
+  }
+
   async emitActionToServer<A extends keyof ScriptEventMap>(
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
   ) {
     // check if web or websocket server
-    if (this.webServer) {
-      this.webServer.emitAction(eventName, args);
+    if (this.isWebServer) {
+      await this.webServer.emitAction(eventName, args);
     } else {
       this.websocketServer.emitAction(eventName, args);
+    }
+  }
+
+  async emitActionToServerAsync<
+    A extends keyof ScriptEventMap,
+    R extends MessengerMessage<[ReturnType<ScriptEventMap[A]>]>,
+  >(eventName: A, args?: Parameters<ScriptEventMap[A]>): Promise<R> {
+    // check if web or websocket server
+    if (this.isWebServer) {
+      const response = await this.webServer.emitAction(eventName, args);
+
+      return {
+        data: [(await response?.json())?.data],
+      } as R;
+    } else {
+      const requestId = `${Math.random()}`;
+
+      this.websocketServer.emitAction(`${eventName}:${requestId}` as A, args);
+
+      // wait for response
+      const response = new Promise<R>(resolve => {
+        (this._engine.messenger.events.once as any)(
+          `OR:${requestId}`,
+          (response: R) => {
+            resolve(response);
+          },
+        );
+      });
+
+      return response;
     }
   }
 
@@ -184,6 +228,8 @@ class ApiManager {
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
   ) {
+    console.log('emitting to local', eventName);
+
     this._engine.messenger.emitLocal(eventName, args);
   }
 
