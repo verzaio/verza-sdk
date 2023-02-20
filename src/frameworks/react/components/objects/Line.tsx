@@ -8,10 +8,9 @@ import {useObjects} from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 import {useParent} from './Group';
 
-type LineProps = {
+type LineProps = CreateObjectProps<'line'> & {
   points: Vector3Array[];
   color?: string;
-  props?: CreateObjectProps<'line'>;
 };
 
 export const Line = forwardRef<ObjectManager, LineProps>((props, ref) => {
@@ -23,7 +22,7 @@ export const Line = forwardRef<ObjectManager, LineProps>((props, ref) => {
 
     const object = objects.createLine(props.points, props.color, {
       parentId: parent?.id,
-      ...props.props,
+      ...props,
     });
 
     setReactRef(ref, object);

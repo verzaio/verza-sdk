@@ -7,9 +7,8 @@ import {useObjects} from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 import {useParent} from './Group';
 
-type GltfProps = {
+type GltfProps = CreateObjectProps<'gltf'> & {
   url: string;
-  props?: CreateObjectProps<'gltf'>;
 };
 
 export const Gltf = forwardRef<ObjectManager, GltfProps>((props, ref) => {
@@ -21,7 +20,7 @@ export const Gltf = forwardRef<ObjectManager, GltfProps>((props, ref) => {
 
     const object = objects.createGltf(props.url, {
       parentId: parent?.id,
-      ...props.props,
+      ...props,
     });
 
     setReactRef(ref, object);

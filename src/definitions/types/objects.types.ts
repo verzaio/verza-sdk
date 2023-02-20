@@ -45,3 +45,8 @@ export type CreateObjectPropsWithObjects<T extends ObjectType = ObjectType> =
     line?: ObjectMetadataDto['line'];
     gltf?: ObjectMetadataDto['gltf'];
   };
+
+export type ObjectBoundingBox = {
+  min: Vector3Array;
+  max: Vector3Array;
+};

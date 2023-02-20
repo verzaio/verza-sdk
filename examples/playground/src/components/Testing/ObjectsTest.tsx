@@ -110,10 +110,8 @@ const ObjectsTest = () => {
 
       <Box
         box={{w: 2, h: 2, d: 2, c: 'green'}}
-        props={{
-          position: [-8, 1, 20],
-          collision: 'static',
-        }}
+        position={[-8, 1, 20]}
+        collision="static"
       />
 
       <Line
@@ -122,10 +120,8 @@ const ObjectsTest = () => {
           [20, 10, 20],
         ]}
         color="blue"
-        props={{
-          position: [-8, 1, 20],
-          collision: 'static',
-        }}
+        position={[-8, 1, 20]}
+        collision="static"
       />
 
       <Group
@@ -135,58 +131,44 @@ const ObjectsTest = () => {
         }}>
         <Box
           box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
-          props={{
-            position: [0, 1, 0],
-            collision: 'static',
-          }}
+          position={[0, 1, 0]}
+          collision="static"
         />
 
         <Box
           box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
-          props={{
-            position: [0, 0.5, 2],
-            collision: 'static',
-          }}
+          position={[0, 0.5, 2]}
+          collision="static"
         />
 
         <Box
           box={{w: 1, h: 0.5, d: 1, c: 'green'}}
-          props={{
-            position: [0, 0.5, 3],
-            collision: 'static',
-          }}
+          position={[0, 0.5, 3]}
+          collision="static"
         />
 
         <Box
           box={{w: 1, h: 0.5, d: 1, c: 'yellow'}}
-          props={{
-            position: [0, 0.5, 4],
-            collision: 'static',
-          }}
+          position={[0, 0.5, 4]}
+          collision="static"
         />
 
         <Box
           box={{w: 1, h: 0.5, d: 1, c: 'red'}}
-          props={{
-            position: [1, 0.5, 2],
-            collision: 'static',
-          }}
+          position={[1, 0.5, 2]}
+          collision="static"
         />
 
         <Box
           box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
-          props={{
-            position: [1, 0.5, 3],
-            collision: 'static',
-          }}
+          position={[1, 0.5, 3]}
+          collision="static"
         />
 
         <Box
           box={{w: 1, h: 0.5, d: 1, c: 'green'}}
-          props={{
-            position: [1, 0.5, 4],
-            collision: 'static',
-          }}
+          position={[1, 0.5, 4]}
+          collision="static"
         />
 
         {/* <Gltf

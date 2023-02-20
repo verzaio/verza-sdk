@@ -8,9 +8,8 @@ import {useObjects} from '../../hooks/useObjects';
 import {setReactRef} from '../../utils/misc';
 import {useParent} from './Group';
 
-type BoxProps = {
+type BoxProps = CreateObjectProps<'box'> & {
   box: ObjectBoxDto;
-  props?: CreateObjectProps<'box'>;
 };
 
 export const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
@@ -22,7 +21,7 @@ export const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
 
     const object = objects.createBox(props.box, {
       parentId: parent?.id,
-      ...props.props,
+      ...props,
     });
 
     setReactRef(ref, object);

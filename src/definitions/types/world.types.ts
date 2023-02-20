@@ -44,6 +44,12 @@ export type InteresectionData<T> = {
 };
 
 export type IntersectsResultRaw = {
+  hit?: {
+    distance: number;
+    point: Vector3Array;
+    faceIndex?: number;
+  };
+
   object?: InteresectionData<string> & {
     data: ObjectDataProps;
   };
@@ -52,6 +58,8 @@ export type IntersectsResultRaw = {
 };
 
 export type IntersectsResult = {
+  hit?: IntersectsResultRaw['hit'];
+
   object?: InteresectionData<ObjectManager>;
 
   player?: InteresectionData<PlayerManager>;

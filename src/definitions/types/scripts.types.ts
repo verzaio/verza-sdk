@@ -10,7 +10,12 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
-import {CreateObjectProps, ObjectDataProps, ObjectType} from './objects.types';
+import {
+  CreateObjectProps,
+  ObjectBoundingBox,
+  ObjectDataProps,
+  ObjectType,
+} from './objects.types';
 import {
   IndicatorId,
   IndicatorTitle,
@@ -223,6 +228,8 @@ export type ScriptEventMap = {
   /* objects */
   createObject: (type: ObjectType, props: CreateObjectProps) => void;
 
+  destroyObject: (objectId: string) => void;
+
   editObject: (objectId: string, mode: ObjectEditMode) => void;
   setObjectEditMode: (mode: ObjectEditMode) => void;
   setObjectEditSnaps: (
@@ -251,7 +258,7 @@ export type ScriptEventMap = {
     rotation: QuaternionArray | Vector3Array,
   ) => void;
 
-  destroyObject: (objectId: string) => void;
+  getObjectBoundingBox: (objectId: string) => ObjectBoundingBox;
 
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;

@@ -1,4 +1,4 @@
-import {Euler, Object3D, Quaternion, Vector3} from 'three';
+import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {ObjectEntity} from 'engine/definitions/types/entities.types';
 import {
@@ -10,10 +10,12 @@ import EngineManager from 'engine/managers/engine.manager';
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
 
-const _TEMP_POS = new Vector3();
+const _TEMP_POS1 = new Vector3();
 const _TEMP_POS2 = new Vector3();
-const _TEMP_QUAT = new Quaternion();
+
+const _TEMP_QUAT1 = new Quaternion();
 const _TEMP_QUAT2 = new Quaternion();
+
 const _TEMP_OBJECT = new Object3D();
 
 class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
@@ -37,6 +39,8 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
   get rotation() {
     return super.location.quaternion;
   }
+
+  boundingBox: Box3 = null!;
 
   private get _messenger() {
     return this.engine.messenger;
@@ -110,16 +114,16 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
     // Vector3Array
     if (Array.isArray(position)) {
-      _TEMP_POS.set(...position);
+      _TEMP_POS1.set(...position);
     } else {
       // Vector3
-      _TEMP_POS.copy(position);
+      _TEMP_POS1.copy(position);
     }
 
     this.location.parent?.getWorldPosition(_TEMP_POS2);
-    _TEMP_POS.sub(_TEMP_POS2);
+    _TEMP_POS1.sub(_TEMP_POS2);
 
-    this.setPosition(_TEMP_POS);
+    this.setPosition(_TEMP_POS1);
   }
 
   setRotationFromWorldSpace(
@@ -151,12 +155,12 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.location.parent?.getWorldQuaternion(_TEMP_QUAT2);
 
     // conver to local-space
-    _TEMP_QUAT.multiplyQuaternions(
+    _TEMP_QUAT1.multiplyQuaternions(
       _TEMP_OBJECT.quaternion,
       _TEMP_QUAT2.invert(),
     );
 
-    this.setRotation(_TEMP_QUAT);
+    this.setRotation(_TEMP_QUAT1);
   }
 
   detachFromParent() {
@@ -204,6 +208,23 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
   edit() {
     this.engine.objects.edit(this);
+  }
+
+  async computeBoundingBox() {
+    const {
+      data: [box],
+    } = await this._messenger.emitAsync('getObjectBoundingBox', [this.id]);
+
+    if (!this.boundingBox) {
+      this.boundingBox = new Box3();
+    }
+
+    _TEMP_POS1.set(...box.min);
+    _TEMP_POS2.set(...box.max);
+
+    this.boundingBox.set(_TEMP_POS1, _TEMP_POS2);
+
+    return this.boundingBox;
   }
 }
 

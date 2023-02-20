@@ -64,6 +64,11 @@ class RaycasterManager {
   parseIntersectsResult(intersects: IntersectsResultRaw): IntersectsResult {
     const result: IntersectsResult = {};
 
+    // hit
+    if (intersects.hit) {
+      result.hit = intersects.hit;
+    }
+
     // object
     if (intersects.object) {
       const entity = this._engine.objects.ensure(
