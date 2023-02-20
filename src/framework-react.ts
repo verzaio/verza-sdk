@@ -20,6 +20,7 @@ export {useUI} from 'engine/frameworks/react/hooks/useUI';
 export {useCursorLock} from 'engine/frameworks/react/hooks/useCursorLock';
 export {useInterfaces} from 'engine/frameworks/react/hooks/useInterfaces';
 export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
+export {useRaycaster} from 'engine/frameworks/react/hooks/useRaycaster';
 
 export {usePlayerId} from 'engine/frameworks/react/hooks/usePlayerId';
 

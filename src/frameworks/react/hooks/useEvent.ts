@@ -18,7 +18,7 @@ export const useEvent = <
 
   useEffect(() => {
     const onEvent = engine.events.on(event, (...args: any[]) => {
-      (callbackRef.current as any)(...args);
+      return (callbackRef.current as any)(...args);
     });
 
     return () => {

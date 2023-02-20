@@ -286,9 +286,12 @@ export type ScriptEventMap = {
   onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
   onEntitySelected: (intersects: IntersectsResult) => void;
 
-  raycastFromCursor: (x: number, y: number) => void;
+  raycastFromCursor: (x: number, y: number) => IntersectsResultRaw;
 
-  raycastFromPoints: (from: Vector3Array, to: Vector3Array) => void;
+  raycastFromPoints: (
+    from: Vector3Array,
+    to: Vector3Array,
+  ) => IntersectsResultRaw;
 
   /* server */
   restartServer: (reason?: string | null) => void;

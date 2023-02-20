@@ -1,5 +1,3 @@
-import {IntersectsResult} from 'engine/definitions/types/world.types';
-
 import EngineManager from '../engine.manager';
 import RaycasterManager from './raycaster.manager';
 
@@ -22,32 +20,11 @@ class WorldManager {
 
   bind() {
     this._messenger.events.on('onEntitySelectedRaw', ({data: [intersects]}) => {
-      const result: IntersectsResult = {};
-
-      // object
-      if (intersects.object) {
-        const entity = this._engine.objects.ensure(
-          intersects.object.entity,
-          intersects.object.data,
-        );
-
-        result.object = {
-          ...intersects.object,
-          entity,
-        };
-      }
-
-      // player
-      if (intersects.player) {
-        const entity = this._engine.players.get(intersects.player.entity);
-        result.player = {
-          ...intersects.player,
-          entity,
-        };
-      }
-
       // emit
-      this._engine.events.emit('onEntitySelected', result);
+      this._engine.events.emit(
+        'onEntitySelected',
+        this.raycaster.parseIntersectsResult(intersects),
+      );
     });
   }
 
