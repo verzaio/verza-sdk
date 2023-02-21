@@ -124,48 +124,51 @@ const ObjectsTest = () => {
         collision="static"
       />
 
-      <Group
-        ref={objectRef}
-        props={{
-          position: [0, 1, 10],
-        }}>
+      <Group id="boxesGroup" ref={objectRef} position={[0, 1, 10]}>
         <Box
+          id="box1"
           box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
           position={[0, 1, 0]}
           collision="static"
         />
 
         <Box
+          id="box2"
           box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
           position={[0, 0.5, 2]}
           collision="static"
         />
 
         <Box
+          id="box3"
           box={{w: 1, h: 0.5, d: 1, c: 'green'}}
           position={[0, 0.5, 3]}
           collision="static"
         />
 
         <Box
+          id="box4"
           box={{w: 1, h: 0.5, d: 1, c: 'yellow'}}
           position={[0, 0.5, 4]}
           collision="static"
         />
 
         <Box
+          id="redBox"
           box={{w: 1, h: 0.5, d: 1, c: 'red'}}
           position={[1, 0.5, 2]}
           collision="static"
         />
 
         <Box
+          id="box6"
           box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
           position={[1, 0.5, 3]}
           collision="static"
         />
 
         <Box
+          id="box7"
           box={{w: 1, h: 0.5, d: 1, c: 'green'}}
           position={[1, 0.5, 4]}
           collision="static"

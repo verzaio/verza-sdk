@@ -228,14 +228,19 @@ export type ScriptEventMap = {
   /* objects */
   createObject: (type: ObjectType, props: CreateObjectProps) => void;
 
+  getObject: (objectId: string) => ObjectDataProps;
+
   destroyObject: (objectId: string) => void;
 
   editObject: (objectId: string, mode: ObjectEditMode) => void;
+
   setObjectEditMode: (mode: ObjectEditMode) => void;
+
   setObjectEditSnaps: (
     position: number | null,
     rotation: number | null,
   ) => void;
+
   cancelObjectEdit: () => void;
 
   onObjectEditRaw: (
@@ -259,6 +264,8 @@ export type ScriptEventMap = {
   ) => void;
 
   getObjectBoundingBox: (objectId: string) => ObjectBoundingBox;
+
+  getObjectWorldBoundingBox: (objectId: string) => ObjectBoundingBox;
 
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;

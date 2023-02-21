@@ -16,43 +16,51 @@ import {setReactRef} from '../../utils/misc';
 const ParentContext = createContext<ObjectManager>(null!);
 
 type GroupProps = {
+  id?: string;
+
   children?: ReactNode;
-  props?: CreateObjectProps<'group'>;
+
+  position?: CreateObjectProps<'group'>['position'];
+
+  rotation?: CreateObjectProps<'group'>['rotation'];
 };
 
-export const Group = forwardRef<ObjectManager, GroupProps>((props, ref) => {
-  const objects = useObjects();
-  const [object, setObject] = useState<ObjectManager>(null!);
-  const parent = useParent();
+export const Group = forwardRef<ObjectManager, GroupProps>(
+  ({children, id, position, rotation}, ref) => {
+    const objects = useObjects();
+    const [object, setObject] = useState<ObjectManager>(null!);
+    const parent = useParent();
 
-  useEffect(() => {
-    if (parent?.destroyed === true) {
-      setObject(null!);
-      return;
-    }
+    useEffect(() => {
+      if (parent?.destroyed === true) {
+        setObject(null!);
+        return;
+      }
 
-    const object = objects.createGroup([], {
-      parentId: parent?.id,
-      ...props.props,
-    });
+      const object = objects.createGroup([], {
+        parentId: parent?.id,
 
-    setReactRef(ref, object);
+        id,
+        position,
+        rotation,
+      });
 
-    setObject(object);
+      setReactRef(ref, object);
 
-    return () => {
-      objects.destroy(object);
-    };
-  }, [objects, props, parent]);
+      setObject(object);
 
-  if (!object) return null;
+      return () => {
+        objects.destroy(object);
+      };
+    }, [objects, id, position, rotation, parent]);
 
-  return (
-    <ParentContext.Provider value={object}>
-      {props.children}
-    </ParentContext.Provider>
-  );
-});
+    if (!object) return null;
+
+    return (
+      <ParentContext.Provider value={object}>{children}</ParentContext.Provider>
+    );
+  },
+);
 
 Group.displayName = 'Group';
 

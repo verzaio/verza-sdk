@@ -23,9 +23,33 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
   children: Set<ObjectManager> = new Set();
 
+  boundingBox: Box3 = null!;
+
+  private _worldLocation: Object3D = null!;
+
   /* getter & setters */
   get objectType() {
     return this.data.t;
+  }
+
+  get worldLocation() {
+    return (async () => {
+      if (!this._worldLocation) {
+        this._worldLocation = new Object3D();
+      }
+
+      const parent = await this.resolveParent();
+
+      if (parent) {
+        this.location.getWorldPosition(this._worldLocation.position);
+        this.location.getWorldQuaternion(this._worldLocation.quaternion);
+      } else {
+        this._worldLocation.position.copy(this.location.position);
+        this._worldLocation.quaternion.copy(this.location.quaternion);
+      }
+
+      return this._worldLocation;
+    })();
   }
 
   get location() {
@@ -40,14 +64,16 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     return super.location.quaternion;
   }
 
-  boundingBox: Box3 = null!;
+  get parentId(): string | undefined {
+    return this.data.parent_id;
+  }
+
+  set parentId(parentId: string | undefined) {
+    this.data.parent_id = parentId!;
+  }
 
   private get _messenger() {
     return this.engine.messenger;
-  }
-
-  private get _parentId() {
-    return this.data.parent_id;
   }
 
   constructor(entity: ObjectEntity, engine: EngineManager) {
@@ -58,23 +84,13 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
     // check for children
     this._checkForChildren();
-
-    // check for parent via data.parent_id
-    if (this._parentId) {
-      this._attachToParent(this.engine.objects.get(this._parentId));
-
-      // check if added
-      if (this.parent) {
-        return;
-      }
-    }
   }
 
-  async setPosition(position: Vector3 | Vector3Array) {
+  setPosition(position: Vector3 | Vector3Array) {
     this.updatePosition(position);
 
     // emit
-    if (this.parent) {
+    if (this.parentId) {
       this._messenger.emit('setObjectPosition', [
         this.id,
         this.location.position.toArray(),
@@ -92,7 +108,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.updateRotation(rotation);
 
     // emit
-    if (this.parent) {
+    if (this.parentId) {
       this._messenger.emit('setObjectRotation', [
         this.id,
         this.location.quaternion.toArray() as QuaternionArray,
@@ -100,17 +116,20 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       return;
     }
 
-    this._messenger.emit('setObjectRotation', [
+    this._messenger.emit('setRotationFromWorldSpace', [
       this.id,
       this.location.quaternion.toArray() as QuaternionArray,
     ]);
   }
 
-  setPositionFromWorldSpace(position: Vector3 | Vector3Array) {
-    if (!this.parent) {
+  async setPositionFromWorldSpace(position: Vector3 | Vector3Array) {
+    if (!this.parentId) {
       this.setPosition(position);
       return;
     }
+
+    // resolve parent
+    await this.resolveParent();
 
     // Vector3Array
     if (Array.isArray(position)) {
@@ -126,13 +145,16 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.setPosition(_TEMP_POS1);
   }
 
-  setRotationFromWorldSpace(
+  async setRotationFromWorldSpace(
     rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
   ) {
-    if (!this.parent) {
+    if (!this.parentId) {
       this.setRotation(rotation);
       return;
     }
+
+    // resolve parent
+    await this.resolveParent();
 
     if (Array.isArray(rotation)) {
       // Vector3Array
@@ -171,17 +193,19 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.parent = null!;
   }
 
-  private _attachToParent(parent: ObjectManager) {
+  attachToParent(parent: ObjectManager) {
+    parent = parent ?? this.engine.objects.get(this.parentId!);
+
     if (!parent) {
       console.debug(
-        `[objects:script] no parent found (parent id: ${this._parentId} | object id: ${this.id}:${this.objectType})`,
+        `[objects:script] no parent found (parent id: ${this.parentId} | object id: ${this.id}:${this.objectType})`,
       );
       return;
     }
 
     if (parent.objectType !== 'group') {
       console.debug(
-        `[objects:script] only groups can have children (parent id: ${this._parentId}:${parent?.objectType} | object id ${this.id}:${this.objectType})`,
+        `[objects:script] only groups can have children (parent id: ${this.parentId}:${parent?.objectType} | object id ${this.id}:${this.objectType})`,
       );
       return;
     }
@@ -194,6 +218,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
   private _checkForChildren() {
     if (this.objectType !== 'group') return;
 
+    // loop children
     this.data.m?.group?.c?.forEach(item => {
       const data = item.m?.[item.t];
 
@@ -201,7 +226,25 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
         // set parent id
         (item as ObjectEntity['data']).parent_id = this.id;
 
-        this.engine.objects.create(item.t, item as ObjectEntity['data']);
+        const child = this.engine.objects.get(item.id);
+
+        // create or update
+        if (child) {
+          // attach if not attached
+          if (!child.parent) {
+            child.attachToParent(this);
+          }
+
+          // update
+          this.engine.objects.update(child, item as ObjectEntity['data']);
+        } else {
+          // create
+          this.engine.objects.create(
+            item.id,
+            item as ObjectEntity['data'],
+            this,
+          );
+        }
       }
     });
   }
@@ -225,6 +268,29 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.boundingBox.set(_TEMP_POS1, _TEMP_POS2);
 
     return this.boundingBox;
+  }
+
+  async computeWorldBoundingBox() {
+    const {
+      data: [box],
+    } = await this._messenger.emitAsync('getObjectWorldBoundingBox', [this.id]);
+
+    if (!this.boundingBox) {
+      this.boundingBox = new Box3();
+    }
+
+    _TEMP_POS1.set(...box.min);
+    _TEMP_POS2.set(...box.max);
+
+    this.boundingBox.set(_TEMP_POS1, _TEMP_POS2);
+
+    return this.boundingBox;
+  }
+
+  async resolveParent(forceUpdate?: boolean): Promise<ObjectManager | null> {
+    if (!this.parentId) return null;
+
+    return this.engine.objects.resolveObject(this.parentId, forceUpdate);
   }
 }
 

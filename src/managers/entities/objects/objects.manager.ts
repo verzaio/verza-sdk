@@ -5,6 +5,7 @@ import {ScriptMessengerMethods} from 'engine/definitions/types/messenger.types';
 import {
   CreateObjectProps,
   CreateObjectPropsWithObjects,
+  ObjectDataProps,
   ObjectType,
 } from 'engine/definitions/types/objects.types';
 import {ObjectEditMode} from 'engine/definitions/types/scripts.types';
@@ -62,11 +63,45 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
 
     // update
+    this.update(object, data);
+
+    return object;
+  }
+
+  update(object: ObjectManager, data: ObjectManager['data']) {
+    // update
     object.updatePosition(data.position!);
     object.updateRotation(data.rotation!);
 
     // set data
     object.data = data;
+
+    // update children
+    data.m?.group?.c?.forEach(data => {
+      const child = this.get(data.id);
+
+      if (child) {
+        this.update(child, data as ObjectManager['data']);
+      }
+    });
+
+    return object;
+  }
+
+  create(
+    id: string,
+    data?: ObjectDataProps,
+    parent?: ObjectManager,
+  ): ObjectManager {
+    // bind
+    this._bind();
+
+    const object = super.create(id, data);
+
+    // check for parent
+    if (parent) {
+      object.attachToParent(parent);
+    }
 
     return object;
   }
@@ -75,9 +110,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     type: T,
     props: CreateObjectPropsWithObjects<T>,
   ) {
-    // load
-    this._bind();
-
     // validate id
     if (!props.id) {
       props.id = v4();
@@ -239,6 +271,25 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   setEditSnaps(position: number | null, rotation: number | null) {
     this._messenger.emit('setObjectEditSnaps', [position, rotation]);
+  }
+
+  async resolveObject(
+    objectId: string,
+    forceUpdate?: boolean,
+  ): Promise<ObjectManager> {
+    if (!forceUpdate) {
+      const object = this.get(objectId);
+
+      if (object) return object;
+    }
+
+    const {
+      data: [objectProps],
+    } = await this._messenger.emitAsync('getObject', [objectId]);
+
+    if (!objectProps) return null!;
+
+    return this.ensure(objectId, objectProps);
   }
 }
 
