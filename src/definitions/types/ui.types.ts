@@ -30,6 +30,8 @@ export type KeyEvent = {
   metaKey?: boolean;
 
   shiftKey?: boolean;
+
+  activeInput?: boolean;
 };
 
 export type IndicatorId = string | number;

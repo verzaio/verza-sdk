@@ -8,9 +8,7 @@ type UseKeyOptions = {
   event?: 'keydown' | 'keyup';
   ignoreFlags?: boolean;
 
-  ignoreControls?: boolean;
   ignoreActiveInput?: boolean;
-  ignoreOptionsMenu?: boolean;
 };
 
 export const useKey = (
@@ -40,18 +38,9 @@ export const useKey = (
 
       const options = optionsRef.current;
 
-      // disabled when options menu is enabled
-      if (!options?.ignoreOptionsMenu && engine.ui.isOptionsMenu()) {
-        return;
-      }
-
       // ignore controls
       if (!options?.ignoreFlags) {
-        /* if (!options?.ignoreControls && !engine.player?.canControl) {
-          return;
-        } */
-
-        if (!options?.ignoreActiveInput && engine.ui.isActiveInput) {
+        if (!options?.ignoreActiveInput && event.activeInput) {
           return;
         }
       }

@@ -38,7 +38,7 @@ class UIManager {
   get isActiveInput() {
     return (
       this.hasInterface(INTERFACE_CHAT) ||
-      document.activeElement?.tagName === 'INPUT'
+      ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '')
     );
   }
 
@@ -127,6 +127,8 @@ class UIManager {
         metaKey: event.metaKey,
 
         shiftKey: event.shiftKey,
+
+        activeInput: this.isActiveInput,
       },
     ]);
   };
