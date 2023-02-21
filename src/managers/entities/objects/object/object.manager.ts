@@ -98,7 +98,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       return;
     }
 
-    this._messenger.emit('setPositionFromWorldSpace', [
+    this._messenger.emit('setObjectPositionFromWorldSpace', [
       this.id,
       this.location.position.toArray(),
     ]);
@@ -116,7 +116,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       return;
     }
 
-    this._messenger.emit('setRotationFromWorldSpace', [
+    this._messenger.emit('setObjectRotationFromWorldSpace', [
       this.id,
       this.location.quaternion.toArray() as QuaternionArray,
     ]);

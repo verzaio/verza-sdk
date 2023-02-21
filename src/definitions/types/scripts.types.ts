@@ -256,9 +256,12 @@ export type ScriptEventMap = {
     rotation: QuaternionArray | Vector3Array,
   ) => void;
 
-  setPositionFromWorldSpace: (objectId: string, position: Vector3Array) => void;
+  setObjectPositionFromWorldSpace: (
+    objectId: string,
+    position: Vector3Array,
+  ) => void;
 
-  setRotationFromWorldSpace: (
+  setObjectRotationFromWorldSpace: (
     objectId: string,
     rotation: QuaternionArray | Vector3Array,
   ) => void;
