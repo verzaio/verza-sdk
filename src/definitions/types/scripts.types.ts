@@ -45,7 +45,12 @@ export type CustomEventData = {
 };
 
 export type ObjectEditMode = 'position' | 'rotation';
-export type ObjectEditUpdateType = 'start' | 'update' | 'end';
+export type ObjectEditActionType =
+  | 'select'
+  | 'unselect'
+  | 'start'
+  | 'update'
+  | 'end';
 
 //export type Pointer
 export type ScriptEventMap = {
@@ -245,9 +250,9 @@ export type ScriptEventMap = {
 
   onObjectEditRaw: (
     object: ObjectDataProps,
-    type: ObjectEditUpdateType,
+    type: ObjectEditActionType,
   ) => void;
-  onObjectEdit: (object: ObjectManager, type: ObjectEditUpdateType) => void;
+  onObjectEdit: (object: ObjectManager, type: ObjectEditActionType) => void;
 
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
 

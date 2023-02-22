@@ -14,26 +14,6 @@ export type ServerMenuTabType =
   | 'keys'
   | 'banlist';
 
-export type KeyEventType = 'keydown' | 'keyup';
-
-export type KeyEvent = {
-  type: KeyEventType;
-
-  code: string;
-
-  key: string;
-
-  altKey?: boolean;
-
-  ctrlKey?: boolean;
-
-  metaKey?: boolean;
-
-  shiftKey?: boolean;
-
-  activeInput?: boolean;
-};
-
 export type IndicatorId = string | number;
 
 export type IndicatorTitle = string | null;
@@ -55,13 +35,43 @@ export type SizeProps<T extends string = SizePropValue> = {
   zIndex?: number;
 };
 
+export type KeyEventType = 'keydown' | 'keyup';
+
+export type UIEventBase = {
+  altKey?: boolean;
+
+  ctrlKey?: boolean;
+
+  metaKey?: boolean;
+
+  shiftKey?: boolean;
+
+  activeInput?: boolean;
+};
+
+export type KeyEvent = {
+  type: KeyEventType;
+
+  code: string;
+
+  key: string;
+} & UIEventBase;
+
 export type PointerEventType = 'pointermove' | 'pointerdown' | 'pointerup';
 
 export type PointerEvent = {
   type: PointerEventType;
+
+  pointerType: string;
+
   x: number;
+
   y: number;
-};
+
+  button: number;
+
+  buttons: number;
+} & UIEventBase;
 
 export type ToolbarPosition = 'bottom' | 'right';
 

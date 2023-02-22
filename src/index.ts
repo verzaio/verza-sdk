@@ -37,7 +37,7 @@ export {
   ScriptEventMap,
   CustomEventData,
   ObjectEditMode,
-  ObjectEditUpdateType,
+  ObjectEditActionType,
 } from 'engine/definitions/types/scripts.types';
 
 export {

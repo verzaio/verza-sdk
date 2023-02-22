@@ -249,17 +249,21 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     this.engine.events.emit('onObjectEdit', this.ensure(data.id, data), type);
   };
 
+  private _editBinded = false;
   edit(object: ObjectManager, mode: ObjectEditMode = 'position') {
     this.objectMode = mode;
 
-    this._messenger.events.on('onObjectEditRaw', this._onObjectEdit);
+    if (!this._editBinded) {
+      this._editBinded = true;
+      this._messenger.events.on('onObjectEditRaw', this._onObjectEdit);
+    }
+
     this._messenger.emit('editObject', [object.id, mode]);
 
     this.controller.set('editingObject', object);
   }
 
   cancelEdit() {
-    this._messenger.events.off('onObjectEditRaw', this._onObjectEdit);
     this._messenger.emit('cancelObjectEdit');
     this.controller.set('editingObject', null!);
   }

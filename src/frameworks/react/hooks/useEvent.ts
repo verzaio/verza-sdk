@@ -24,5 +24,5 @@ export const useEvent = <
     return () => {
       engine.events.off(event, onEvent);
     };
-  }, [engine]);
+  }, [engine, event]);
 };

@@ -7,11 +7,15 @@ import {useUI} from './useUI';
 export const useToolbar = (toolbar: ToolbarElement) => {
   const ui = useUI();
 
+  // create or update
   useEffect(() => {
     ui.addToolbar(toolbar);
+  }, [ui, toolbar]);
 
+  // unmount
+  useEffect(() => {
     return () => {
       ui.removeToolbar(toolbar.id);
     };
-  }, [ui, toolbar]);
+  }, [toolbar.id]);
 };

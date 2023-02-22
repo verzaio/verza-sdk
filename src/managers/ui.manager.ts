@@ -9,6 +9,7 @@ import {
   PointerEventType,
   SizeProps,
   ToolbarElement,
+  UIEventBase,
 } from 'engine/definitions/types/ui.types';
 
 import ControllerManager from './controller.manager';
@@ -105,8 +106,18 @@ class UIManager {
     this._messenger.emit('onPointerEvent', [
       {
         type: event.type as PointerEventType,
+
+        pointerType: event.pointerType,
+
         x: event.clientX,
+
         y: event.clientY,
+
+        button: event.button,
+
+        buttons: event.buttons,
+
+        ...this._extractBaseEventProps(event),
       },
     ]);
   };
@@ -120,18 +131,26 @@ class UIManager {
 
         key: event.key,
 
-        altKey: event.altKey,
-
-        ctrlKey: event.ctrlKey,
-
-        metaKey: event.metaKey,
-
-        shiftKey: event.shiftKey,
-
-        activeInput: this.isActiveInput,
+        ...this._extractBaseEventProps(event),
       },
     ]);
   };
+
+  private _extractBaseEventProps(
+    event: KeyboardEvent | PointerEvent,
+  ): Required<UIEventBase> {
+    return {
+      altKey: event.altKey,
+
+      ctrlKey: event.ctrlKey,
+
+      metaKey: event.metaKey,
+
+      shiftKey: event.shiftKey,
+
+      activeInput: this.isActiveInput,
+    };
+  }
 
   private _onEscapeKey = (event: KeyboardEvent) => {
     if (event.code !== 'Escape') return;
