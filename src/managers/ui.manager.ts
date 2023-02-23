@@ -58,7 +58,7 @@ class UIManager {
   }
 
   setSize(props: SizeProps) {
-    this._messenger.emit('setSize', [props]);
+    this._messenger.emit('setSize', [props as SizeProps]);
   }
 
   show() {
@@ -72,12 +72,12 @@ class UIManager {
   }
 
   bind() {
-    document.body.addEventListener('pointermove', this._onPointerEvent);
-    document.body.addEventListener('pointerdown', this._onPointerEvent);
-    document.body.addEventListener('pointerup', this._onPointerEvent);
+    document.addEventListener('pointermove', this._onPointerEvent);
+    document.addEventListener('pointerdown', this._onPointerEvent);
+    document.addEventListener('pointerup', this._onPointerEvent);
 
-    document.body.addEventListener('keydown', this._onKeyEvent);
-    document.body.addEventListener('keyup', this._onKeyEvent);
+    document.addEventListener('keydown', this._onKeyEvent);
+    document.addEventListener('keyup', this._onKeyEvent);
 
     document.addEventListener('keyup', this._onEscapeKey);
 
@@ -204,12 +204,12 @@ class UIManager {
   }
 
   destroy() {
-    document.body.removeEventListener('pointermove', this._onPointerEvent);
-    document.body.removeEventListener('pointerdown', this._onPointerEvent);
-    document.body.removeEventListener('pointerup', this._onPointerEvent);
+    document.removeEventListener('pointermove', this._onPointerEvent);
+    document.removeEventListener('pointerdown', this._onPointerEvent);
+    document.removeEventListener('pointerup', this._onPointerEvent);
 
-    document.body.removeEventListener('keydown', this._onKeyEvent);
-    document.body.removeEventListener('keyup', this._onKeyEvent);
+    document.removeEventListener('keydown', this._onKeyEvent);
+    document.removeEventListener('keyup', this._onKeyEvent);
 
     document.removeEventListener('keyup', this._onEscapeKey);
   }

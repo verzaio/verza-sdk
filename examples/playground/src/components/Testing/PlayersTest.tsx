@@ -14,6 +14,7 @@ const PlayersTest = () => {
   useEffect(() => {
     const onTesting = network.onPlayerEvent('onTesting', (player, data) => {
       console.log('player', player.name, data);
+      network.offPlayerEvent('onTesting', onTesting);
     });
 
     return () => {

@@ -276,6 +276,8 @@ export type ScriptEventMap = {
   syncEncryptedPackets: (packets: EncryptedPacketsDto) => void;
 
   /* custom events */
+  emitToScripts: (event: string, data?: CustomEventData) => void;
+
   emitToServer: (event: string, data?: CustomEventData) => void;
 
   emitToPlayers: (event: string, data?: CustomEventData) => void;
@@ -331,7 +333,9 @@ export type ScriptEventMap = {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {
   [key in `onPlayerCustomEvent_${string}`]: (
-    playerId: number,
+    player: number,
     data?: CustomEventData,
   ) => void;
+} & {
+  [key in `onScriptCustomEvent_${string}`]: (data?: CustomEventData) => void;
 };

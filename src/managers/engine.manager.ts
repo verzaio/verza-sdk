@@ -256,7 +256,7 @@ export class EngineManager {
   }
 }
 
-class EngineEvents<
+export class EngineEvents<
   T extends ScriptEventMap = ScriptEventMap,
 > extends EventsManager<T> {
   private _engine: EngineManager;
