@@ -14,6 +14,8 @@ import {
   CreateObjectProps,
   ObjectBoundingBox,
   ObjectDataProps,
+  ObjectEditActionType,
+  ObjectEditAxes,
   ObjectType,
 } from './objects.types';
 import {
@@ -43,14 +45,6 @@ export type ScriptStatus =
 export type CustomEventData = {
   [name: string]: any;
 };
-
-export type ObjectEditMode = 'position' | 'rotation';
-export type ObjectEditActionType =
-  | 'select'
-  | 'unselect'
-  | 'start'
-  | 'update'
-  | 'end';
 
 //export type Pointer
 export type ScriptEventMap = {
@@ -237,13 +231,14 @@ export type ScriptEventMap = {
 
   destroyObject: (objectId: string) => void;
 
-  editObject: (objectId: string, mode: ObjectEditMode) => void;
+  editObject: (objectId: string) => void;
 
-  setObjectEditMode: (mode: ObjectEditMode) => void;
+  setObjectEditAxes: (axes: ObjectEditAxes) => void;
 
   setObjectEditSnaps: (
     position: number | null,
     rotation: number | null,
+    scale: number | null,
   ) => void;
 
   cancelObjectEdit: () => void;

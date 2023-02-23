@@ -50,3 +50,26 @@ export type ObjectBoundingBox = {
   min: Vector3Array;
   max: Vector3Array;
 };
+
+export type ObjectEditMode = 'position' | 'rotation' | 'scale';
+
+export type ObjectEditActionType =
+  | 'select'
+  | 'unselect'
+  | 'start'
+  | 'update'
+  | 'end';
+
+export type ObjectEditAxes = Partial<{
+  showX: boolean;
+  showY: boolean;
+  showZ: boolean;
+
+  showRX: boolean;
+  showRY: boolean;
+  showRZ: boolean;
+
+  showSX: boolean;
+  showSY: boolean;
+  showSZ: boolean;
+}>;

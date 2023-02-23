@@ -1,14 +1,19 @@
 import {useEffect, useMemo, useRef} from 'react';
 
-import {KeyEvent} from 'engine/definitions/types/ui.types';
+import {KeyEvent, KeyEventType} from 'engine/definitions/types/ui.types';
 
 import {useEngine} from './useEngine';
 
 type UseKeyOptions = {
-  event?: 'keydown' | 'keyup';
+  event?: KeyEventType;
   ignoreFlags?: boolean;
 
   ignoreActiveInput?: boolean;
+};
+
+const EventsRelation: Record<KeyEventType, 'onKeyUp' | 'onKeyDown'> = {
+  keyup: 'onKeyUp',
+  keydown: 'onKeyDown',
 };
 
 export const useKey = (
@@ -25,7 +30,7 @@ export const useKey = (
   optionsRef.current = options;
 
   const eventType = useMemo(
-    () => (options?.event === 'keyup' ? 'onKeyUp' : 'onKeyDown'),
+    () => EventsRelation[options?.event ?? 'keyup'],
     [options?.event],
   );
 

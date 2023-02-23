@@ -36,9 +36,12 @@ export {Command, CommandParam} from 'engine/managers/commands/command.manager';
 export {
   ScriptEventMap,
   CustomEventData,
+} from 'engine/definitions/types/scripts.types';
+
+export {
   ObjectEditMode,
   ObjectEditActionType,
-} from 'engine/definitions/types/scripts.types';
+} from 'engine/definitions/types/objects.types';
 
 export {
   Vector3Array,

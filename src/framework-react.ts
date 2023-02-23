@@ -21,6 +21,7 @@ export {useCursorLock} from 'engine/frameworks/react/hooks/useCursorLock';
 export {useInterfaces} from 'engine/frameworks/react/hooks/useInterfaces';
 export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
 export {useRaycaster} from 'engine/frameworks/react/hooks/useRaycaster';
+export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
 
 export {usePlayerId} from 'engine/frameworks/react/hooks/usePlayerId';
 

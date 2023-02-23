@@ -6,9 +6,9 @@ import {
   CreateObjectProps,
   CreateObjectPropsWithObjects,
   ObjectDataProps,
+  ObjectEditAxes,
   ObjectType,
 } from 'engine/definitions/types/objects.types';
-import {ObjectEditMode} from 'engine/definitions/types/scripts.types';
 import {
   QuaternionArray,
   Vector3Array,
@@ -21,8 +21,6 @@ import EntitiesManager from '../entities.manager';
 import ObjectManager from './object/object.manager';
 
 class ObjectsManager extends EntitiesManager<ObjectManager> {
-  objectMode: ObjectEditMode = 'position';
-
   controller = new ControllerManager({
     editingObject: null! as ObjectManager,
   });
@@ -250,15 +248,13 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   };
 
   private _editBinded = false;
-  edit(object: ObjectManager, mode: ObjectEditMode = 'position') {
-    this.objectMode = mode;
-
+  edit(object: ObjectManager) {
     if (!this._editBinded) {
       this._editBinded = true;
       this._messenger.events.on('onObjectEditRaw', this._onObjectEdit);
     }
 
-    this._messenger.emit('editObject', [object.id, mode]);
+    this._messenger.emit('editObject', [object.id]);
 
     this.controller.set('editingObject', object);
   }
@@ -268,13 +264,16 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     this.controller.set('editingObject', null!);
   }
 
-  setEditMode(mode: ObjectEditMode) {
-    this.objectMode = mode;
-    this._messenger.emit('setObjectEditMode', [mode]);
+  setEditSnaps(
+    position: number | null,
+    rotation: number | null,
+    scale: number | null,
+  ) {
+    this._messenger.emit('setObjectEditSnaps', [position, rotation, scale]);
   }
 
-  setEditSnaps(position: number | null, rotation: number | null) {
-    this._messenger.emit('setObjectEditSnaps', [position, rotation]);
+  setEditAxes(axes: ObjectEditAxes) {
+    this._messenger.emit('setObjectEditAxes', [axes]);
   }
 
   async resolveObject(
