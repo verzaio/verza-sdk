@@ -4,9 +4,8 @@ import type {PlayerDataProps} from 'engine/definitions/types/players.types';
 import type {
   Vector3Array,
   QuaternionArray,
-  WorldPositionRotation,
 } from 'engine/definitions/types/world.types';
-import type {ObjectMetadataDto} from 'engine/generated/dtos.types';
+import type {ObjectDataDto} from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import EntitiesManager from 'engine/managers/entities/entities.manager';
 import EntityHandleManager from 'engine/managers/entities/entity/entity-handle.manager';
@@ -19,30 +18,22 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import PlayersManager from 'engine/managers/entities/players/players.manager';
 
 import type {EntityType} from '../enums/entities.enums';
-import {ObjectDataProps} from './objects.types';
+import {ObjectDataProps} from './objects/objects.types';
 
-export type EntityDrawDistance = Required<ObjectMetadataDto>['d'];
+export type EntityDrawDistance = Required<ObjectDataDto>['dd'];
 
-export type EntityCollision = Required<ObjectMetadataDto>['p'];
+export type EntityCollision = Required<ObjectDataDto>['c'];
 
 export type CreateEntityProps = {
   remote?: boolean;
 
-  dimension?: number;
+  p?: Vector3Array; // position
 
-  position?: Vector3Array;
+  r?: QuaternionArray | Vector3Array; // rotation
 
-  rotation?: QuaternionArray | Vector3Array;
+  d?: number; // dimension
 
-  drawDistance?: EntityDrawDistance;
-
-  p?: {
-    p: WorldPositionRotation;
-  };
-
-  m?: {
-    d?: EntityDrawDistance;
-  };
+  dd?: EntityDrawDistance; // draw distance
 };
 
 export type EntityItem<

@@ -41,7 +41,7 @@ export {
 export {
   ObjectEditMode,
   ObjectEditActionType,
-} from 'engine/definitions/types/objects.types';
+} from 'engine/definitions/types/objects/objects.types';
 
 export {
   Vector3Array,

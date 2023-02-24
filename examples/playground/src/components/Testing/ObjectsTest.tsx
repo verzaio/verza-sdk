@@ -1,4 +1,4 @@
-import {Box, Group, Line, useFrame, useObjects} from '@verza/sdk/react';
+import {Box, Group, useFrame, useObjects} from '@verza/sdk/react';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {useCallback, useEffect, useRef} from 'react';
 
@@ -108,7 +108,7 @@ const ObjectsTest = () => {
 
       <button onClick={() => destroy()}>objects.destroy</button>
 
-      <Box
+      {/* <Box
         box={{w: 2, h: 2, d: 2, c: 'green'}}
         position={[-8, 1, 20]}
         collision="static"
@@ -122,9 +122,13 @@ const ObjectsTest = () => {
         color="blue"
         position={[-8, 1, 20]}
         collision="static"
-      />
+      /> */}
 
-      <Group id="boxesGroup" ref={objectRef} position={[0, 1, 10]}>
+      <Group
+        id="boxesGroup"
+        ref={objectRef}
+        position={[0, 1, 10]}
+        scale={[2, 2, 2]}>
         <Box
           id="box1"
           box={{w: 1, h: 0.5, d: 1, c: 'violet'}}

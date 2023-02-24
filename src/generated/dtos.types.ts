@@ -512,126 +512,31 @@ export interface PlayerPacketLocalUpdateDto {
   l?: string[];
 }
 
-export interface PositionMetadataDto {
+export interface ObjectDataDto {
+  t: string;
+  /** object data */
+  o: object;
+  /** position | Vector3Array */
+  p?: number[];
   /** rotation | QuaternionArray */
-  rotation?: number[];
-}
-
-export interface BasicPositionDto {
-  /** position | WorldPosition */
-  p: number[];
-  /** metadata */
-  m?: PositionMetadataDto;
-}
-
-export interface ObjectGroupDto {
-  c?: ObjectDto[];
-}
-
-export interface ObjectModelDto {
-  /**
-   * model id
-   * @maxLength 64
-   */
-  m: string;
-  /** data */
-  d?: object;
-}
-
-export interface ObjectBoxDto {
-  /**
-   * width
-   * @min 0
-   * @max 50
-   */
-  w: number;
-  /**
-   * height
-   * @min 0
-   * @max 50
-   */
-  h: number;
-  /**
-   * depth
-   * @min 0
-   * @max 50
-   */
-  d: number;
-  /**
-   * widthSegments
-   * @min 0
-   * @max 50
-   */
-  ws?: number;
-  /**
-   * widthSegments
-   * @min 0
-   * @max 50
-   */
-  hs?: number;
-  /**
-   * depthsegments
-   * @min 0
-   * @max 50
-   */
-  ds?: number;
-  /** color */
-  c?: string;
-}
-
-export interface ObjectGltfDto {
-  /** resource url */
-  u: string;
-}
-
-export interface ObjectLinePointDto {
-  /** point | Vector3Array */
-  p: number[];
-}
-
-export interface ObjectLineDto {
-  /** points | ObjectLinePointDto[] */
-  p: ObjectLinePointDto[];
-  /** color */
-  c?: string;
-}
-
-export interface ObjectMetadataDto {
+  r?: number[];
+  /** scale | Vector3Array */
+  s?: number[];
+  /** dimension */
+  d?: number;
   /** collision */
-  p?: 'static' | 'kinematic' | 'dynamic';
+  c?: 'static' | 'kinematic' | 'dynamic';
   /** draw distance */
-  d?: 'low' | 'mid' | 'high';
-  /**
-   * scale
-   * @min 0.1
-   * @max 100
-   */
-  s?: number;
+  dd?: 'low' | 'mid' | 'high';
   /** shadows */
   ss?: boolean;
-  /** group */
-  group?: ObjectGroupDto;
-  /** model */
-  model?: ObjectModelDto;
-  /** box */
-  box?: ObjectBoxDto;
-  /** gltf */
-  gltf?: ObjectGltfDto;
-  /** gltf */
-  line?: ObjectLineDto;
 }
 
 export interface ObjectDto {
   /** object id */
   id: string;
-  /** type */
-  t: 'group' | 'model' | 'gltf' | 'box' | 'line';
-  /** position */
-  p?: BasicPositionDto;
-  /** source */
-  s?: 'hosted' | 'external';
-  /** metadata */
-  m?: ObjectMetadataDto;
+  /** data */
+  d?: ObjectDataDto;
 }
 
 export interface ChunkDto {
@@ -882,6 +787,11 @@ export interface UpdateWorldDto {
   name?: string;
 }
 
+export interface PositionMetadataDto {
+  /** rotation | QuaternionArray */
+  rotation?: number[];
+}
+
 export interface PositionDto {
   id: string;
   x: number;
@@ -897,32 +807,28 @@ export interface BaseObjectDto {
   id: string;
   type: 'group' | 'model' | 'gltf' | 'box' | 'line';
   position: PositionDto;
-  source: 'hosted' | 'external';
-  metadata: ObjectMetadataDto;
+  data: ObjectDataDto;
   world: WorldDto;
   /** @format date-time */
   created_at: string;
 }
 
-export interface CreatePositionDto {
-  /** position | Vector3Array */
-  position: number[];
-  /** position | QuaternionArray */
-  rotation?: number[];
-  dimension: number;
+export interface CreateObjectDto {
+  /** data */
+  id?: string;
+  /** data */
+  data: ObjectDataDto;
 }
 
-export interface CreateObjectDto {
-  type: 'group' | 'model' | 'gltf' | 'box' | 'line';
-  source?: 'hosted' | 'external';
-  position: CreatePositionDto;
-  metadata?: ObjectMetadataDto;
+export interface UpdateObjectDto {
+  /** data */
+  data: ObjectDataDto;
 }
 
 export interface UpdatePositionDto {
   /** position | Vector3Array */
-  position: number[];
+  position?: number[];
   /** position | QuaternionArray */
   rotation?: number[];
-  dimension: number;
+  dimension?: number;
 }

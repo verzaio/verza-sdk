@@ -70,24 +70,19 @@ class EntityManager<
   }
 
   get dimension() {
-    return this.data.dimension ?? 0;
+    return this.data.d ?? 0;
   }
 
   set dimension(dimension: number) {
-    this.data.dimension = dimension;
+    this.data.d = dimension;
   }
 
   get drawDistance() {
-    return this.data.m?.d ?? DEFAULT_ENTITY_DRAW_DISTANCE;
+    return this.data.dd ?? DEFAULT_ENTITY_DRAW_DISTANCE;
   }
 
   set drawDistance(drawDistance: EntityDrawDistance) {
-    if (!this.data.m) {
-      this.data.m = {d: drawDistance};
-      return;
-    }
-
-    this.data.m.d = drawDistance;
+    this.data.dd = drawDistance;
   }
 
   constructor(entity: T, engine: EngineManager) {
@@ -96,73 +91,20 @@ class EntityManager<
   }
 
   restoreData() {
-    // set metadata
-    if (!this.data.m) {
-      this.data.m = {};
-    }
-
-    // set dimension
-    if (this.data.dimension === undefined) {
-      this.data.dimension = 0;
-    }
-
-    // set draw distance from data.drawDistance
-    if (this.data.drawDistance) {
-      this.data.m.d = this.data.drawDistance;
-      delete this.data.drawDistance; // delete
-    }
-
-    // world position | WorldPosition
-    if (this.data.p?.p) {
-      this.location.position.set(
-        this.data.p.p[0], // x
-        this.data.p.p[1], // y
-        this.data.p.p[2], // z
-      );
-
-      // dimension
-      if (this.data.p.p[3] !== undefined) {
-        this.data.dimension = this.data.p.p[3];
-      }
-
-      // rotation as quaternion
-      if (this.data.p.p[7] !== undefined) {
-        this.location.quaternion.set(
-          this.data.p.p[4], // rx
-          this.data.p.p[5], // ry
-          this.data.p.p[6], // rz
-          this.data.p.p[7], // rw
-        );
-      } else {
-        // rotation as euler
-        if (this.data.p.p[4] !== undefined) {
-          this.location.rotation.set(
-            this.data.p.p[4], // rx
-            this.data.p.p[5], // ry
-            this.data.p.p[6], // rz
-          );
-        }
-      }
-
-      delete this.data.p; // delete
-    }
-
     // position
-    if (this.data.position) {
-      this.location.position.set(...this.data.position);
-      delete this.data.position; // delete
+    if (this.data.p) {
+      this.location.position.set(...this.data.p);
     }
 
     // rotation
-    if (this.data.rotation) {
+    if (this.data.r) {
       // QuaternionArray
-      if (this.data.rotation.length === 4) {
-        this.location.quaternion.set(...this.data.rotation);
+      if (this.data.r.length === 4) {
+        this.location.quaternion.set(...this.data.r);
       } else {
         // Vector3Array
-        this.location.rotation.set(...this.data.rotation);
+        this.location.rotation.set(...this.data.r);
       }
-      delete this.data.rotation; // delete
     }
   }
 

@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/types/objects.types';
+import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import {useObjects} from '../../hooks/useObjects';
@@ -15,18 +15,14 @@ import {setReactRef} from '../../utils/misc';
 
 const ParentContext = createContext<ObjectManager>(null!);
 
-type GroupProps = {
+type GroupProps = CreateObjectProps<'group'> & {
   id?: string;
 
   children?: ReactNode;
-
-  position?: CreateObjectProps<'group'>['position'];
-
-  rotation?: CreateObjectProps<'group'>['rotation'];
 };
 
 export const Group = forwardRef<ObjectManager, GroupProps>(
-  ({children, id, position, rotation}, ref) => {
+  ({children, id, position, rotation, scale}, ref) => {
     const objects = useObjects();
     const [object, setObject] = useState<ObjectManager>(null!);
     const parent = useParent();
@@ -43,6 +39,7 @@ export const Group = forwardRef<ObjectManager, GroupProps>(
         id,
         position,
         rotation,
+        scale,
       });
 
       setReactRef(ref, object);
@@ -52,7 +49,7 @@ export const Group = forwardRef<ObjectManager, GroupProps>(
       return () => {
         objects.destroy(object);
       };
-    }, [objects, id, position, rotation, parent]);
+    }, [objects, id, position, rotation, scale, parent]);
 
     if (!object) return null;
 

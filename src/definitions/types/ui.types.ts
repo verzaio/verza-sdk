@@ -23,7 +23,11 @@ export type Indicator = {
   title: IndicatorTitle;
 };
 
-export type SizePropValue = `${number}vh` | `${number}vw` | `${number}px`;
+export type SizePropValue =
+  | `${number}vh`
+  | `${number}vw`
+  | `${number}px`
+  | `${number}%`;
 
 export type SizeProps<T extends string = SizePropValue> = {
   height: T;

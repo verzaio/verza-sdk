@@ -1,6 +1,7 @@
 import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {ObjectEntity} from 'engine/definitions/types/entities.types';
+import {ObjectGroupType} from 'engine/definitions/types/objects/objects-definition.types';
 import {
   QuaternionArray,
   Vector3Array,
@@ -64,6 +65,10 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     return super.location.quaternion;
   }
 
+  get scale() {
+    return super.location.scale;
+  }
+
   get parentId(): string | undefined {
     return this.data.parent_id;
   }
@@ -84,6 +89,15 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
     // check for children
     this._checkForChildren();
+  }
+
+  restoreData() {
+    super.restoreData();
+
+    // scale
+    if (this.data.s !== undefined) {
+      this.scale.set(...(this.data.s as Vector3Array));
+    }
   }
 
   setPosition(position: Vector3 | Vector3Array) {
@@ -120,6 +134,26 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       this.id,
       this.location.quaternion.toArray() as QuaternionArray,
     ]);
+  }
+
+  setScale(scale: Vector3 | Vector3Array) {
+    this.updateScale(scale);
+
+    // emit
+    this._messenger.emit('setObjectScale', [
+      this.id,
+      this.location.scale.toArray(),
+    ]);
+  }
+
+  updateScale(scale: Vector3 | Vector3Array) {
+    // Vector3Array
+    if (Array.isArray(scale)) {
+      this.location.scale.set(...scale);
+    } else {
+      // Vector3
+      this.location.scale.copy(scale);
+    }
   }
 
   async setPositionFromWorldSpace(position: Vector3 | Vector3Array) {
@@ -219,14 +253,14 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     if (this.objectType !== 'group') return;
 
     // loop children
-    this.data.m?.group?.c?.forEach(item => {
-      const data = item.m?.[item.t];
+    (this.data as ObjectGroupType).o?.c?.forEach(item => {
+      const data = item.o;
 
       if (data) {
         // set parent id
-        (item as ObjectEntity['data']).parent_id = this.id;
+        item.parent_id = this.id;
 
-        const child = this.engine.objects.get(item.id);
+        const child = this.engine.objects.get(item.id!);
 
         // create or update
         if (child) {
@@ -240,7 +274,7 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
         } else {
           // create
           this.engine.objects.create(
-            item.id,
+            item.id!,
             item as ObjectEntity['data'],
             this,
           );

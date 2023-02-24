@@ -10,14 +10,13 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
+import {ObjectTypes} from './objects/objects-definition.types';
 import {
-  CreateObjectProps,
   ObjectBoundingBox,
   ObjectDataProps,
   ObjectEditActionType,
   ObjectEditAxes,
-  ObjectType,
-} from './objects.types';
+} from './objects/objects.types';
 import {
   IndicatorId,
   IndicatorTitle,
@@ -225,7 +224,7 @@ export type ScriptEventMap = {
   onCameraTransitionEnd: (id?: number | string) => void;
 
   /* objects */
-  createObject: (type: ObjectType, props: CreateObjectProps) => void;
+  createObject: (objectId: string, props: Partial<ObjectTypes>) => void;
 
   getObject: (objectId: string) => ObjectDataProps;
 
@@ -255,6 +254,8 @@ export type ScriptEventMap = {
     objectId: string,
     rotation: QuaternionArray | Vector3Array,
   ) => void;
+
+  setObjectScale: (objectId: string, scale: Vector3Array) => void;
 
   setObjectPositionFromWorldSpace: (
     objectId: string,
