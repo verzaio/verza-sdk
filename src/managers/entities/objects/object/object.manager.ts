@@ -11,10 +11,11 @@ import EngineManager from 'engine/managers/engine.manager';
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
 
-const _TEMP_POS1 = new Vector3();
+const _TEMP_POS = new Vector3();
 const _TEMP_POS2 = new Vector3();
+const _TEMP_POS3 = new Vector3();
 
-const _TEMP_QUAT1 = new Quaternion();
+const _TEMP_QUAT = new Quaternion();
 const _TEMP_QUAT2 = new Quaternion();
 
 const _TEMP_OBJECT = new Object3D();
@@ -167,16 +168,25 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
     // Vector3Array
     if (Array.isArray(position)) {
-      _TEMP_POS1.set(...position);
+      _TEMP_POS.set(...position);
     } else {
       // Vector3
-      _TEMP_POS1.copy(position);
+      _TEMP_POS.copy(position);
     }
 
+    // position
     this.location.parent?.getWorldPosition(_TEMP_POS2);
-    _TEMP_POS1.sub(_TEMP_POS2);
+    _TEMP_POS.sub(_TEMP_POS2);
 
-    this.setPosition(_TEMP_POS1);
+    // rotation
+    this.location.parent?.getWorldQuaternion(_TEMP_QUAT);
+    _TEMP_POS.applyQuaternion(_TEMP_QUAT.invert());
+
+    // scale
+    this.location.parent?.getWorldScale(_TEMP_POS3);
+    _TEMP_POS.divide(_TEMP_POS3);
+
+    this.setPosition(_TEMP_POS);
   }
 
   async setRotationFromWorldSpace(
@@ -211,12 +221,12 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.location.parent?.getWorldQuaternion(_TEMP_QUAT2);
 
     // conver to local-space
-    _TEMP_QUAT1.multiplyQuaternions(
-      _TEMP_OBJECT.quaternion,
+    _TEMP_QUAT.multiplyQuaternions(
       _TEMP_QUAT2.invert(),
+      _TEMP_OBJECT.quaternion,
     );
 
-    this.setRotation(_TEMP_QUAT1);
+    this.setRotation(_TEMP_QUAT);
   }
 
   detachFromParent() {
@@ -296,10 +306,10 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       this.boundingBox = new Box3();
     }
 
-    _TEMP_POS1.set(...box.min);
+    _TEMP_POS.set(...box.min);
     _TEMP_POS2.set(...box.max);
 
-    this.boundingBox.set(_TEMP_POS1, _TEMP_POS2);
+    this.boundingBox.set(_TEMP_POS, _TEMP_POS2);
 
     return this.boundingBox;
   }
@@ -313,10 +323,10 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       this.boundingBox = new Box3();
     }
 
-    _TEMP_POS1.set(...box.min);
+    _TEMP_POS.set(...box.min);
     _TEMP_POS2.set(...box.max);
 
-    this.boundingBox.set(_TEMP_POS1, _TEMP_POS2);
+    this.boundingBox.set(_TEMP_POS, _TEMP_POS2);
 
     return this.boundingBox;
   }

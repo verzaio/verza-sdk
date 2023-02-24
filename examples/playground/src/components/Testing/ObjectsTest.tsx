@@ -125,14 +125,53 @@ const ObjectsTest = () => {
       /> */}
 
       <Group
+        id="boxesGroup2"
+        position={[5, 3, 8]}
+        scale={[1.5, 1.5, 1.5]}
+        rotation={[Math.PI / 4, 0, 0]}>
+        <Box
+          id="test1"
+          box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+          position={[0, 1, 1]}
+          rotation={[Math.PI / 4, 0, 0]}
+          collision="static"
+        />
+
+        <Box
+          id="test2"
+          box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+          position={[0, 0.5, 2]}
+          collision="static"
+        />
+      </Group>
+
+      <Group
         id="boxesGroup"
         ref={objectRef}
-        position={[0, 1, 10]}
-        scale={[2, 2, 2]}>
+        position={[2, 3, 10]}
+        scale={[2, 2, 2]}
+        rotation={[0, 0, Math.PI / 4]}>
+        {/* <Group position={[2, 2, 2]} rotation={[0, 0, Math.PI / 2]}>
+          <Box
+            id="box1"
+            box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+            position={[0, 1, 0]}
+            collision="static"
+          />
+
+          <Box
+            id="box2"
+            box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+            position={[0, 0.5, 2]}
+            collision="static"
+          />
+        </Group> */}
+
         <Box
           id="box1"
           box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
           position={[0, 1, 0]}
+          rotation={[Math.PI / 4, 0, 0]}
           collision="static"
         />
 
