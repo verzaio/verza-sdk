@@ -343,6 +343,14 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
     return this.engine.objects.resolveObject(this.parentId, forceUpdate);
   }
+
+  clone(withId?: string) {
+    return this.engine.objects.clone(this, withId);
+  }
+
+  destroy() {
+    this.engine.objects.destroy(this);
+  }
 }
 
 export default ObjectManager;

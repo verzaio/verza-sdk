@@ -10,6 +10,7 @@ import {
   PickObject,
 } from 'engine/definitions/types/objects/objects-definition.types';
 import {
+  ObjectDataProps,
   ObjectEditAxes,
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
@@ -94,7 +95,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   create(
     id: string,
-    data?: ObjectManager['data'],
+    data: ObjectManager['data'],
     parent?: ObjectManager,
   ): ObjectManager {
     // bind
@@ -110,7 +111,21 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  private _createObject<T extends ObjectType = ObjectType>(
+  private _createObject(id: string, data: ObjectManager['data']) {
+    const object = this.create(id, data);
+
+    // emit
+    this._messenger.emit('createObject', [
+      data.id!,
+      {
+        [data.t]: data,
+      },
+    ]);
+
+    return object;
+  }
+
+  private _createObjectType<T extends ObjectType = ObjectType>(
     type: T,
     props: CreateObjectProps<T>,
   ) {
@@ -158,8 +173,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       t: type,
 
-      dd: drawDistance,
-
       p: position,
 
       r: rotation,
@@ -167,6 +180,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       s: scale,
 
       c: collision,
+
+      dd: drawDistance,
 
       ss: shadows,
 
@@ -191,7 +206,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     children: ObjectTypeValues[] = [],
     props: CreateObjectProps<'group'> = {},
   ) {
-    return this._createObject('group', {
+    return this._createObjectType('group', {
       data: {
         c: children ?? [],
       },
@@ -200,7 +215,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   createModel(model: string, props: CreateObjectProps<'model'> = {}) {
-    return this._createObject('model', {
+    return this._createObjectType('model', {
       data: {
         m: model,
       },
@@ -209,7 +224,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   createGltf(url: string, props: CreateObjectProps<'gltf'> = {}) {
-    return this._createObject('gltf', {
+    return this._createObjectType('gltf', {
       data: {
         u: url,
       },
@@ -218,7 +233,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   createBox(box: ObjectBoxType['o'], props: CreateObjectProps<'box'> = {}) {
-    return this._createObject('box', {
+    return this._createObjectType('box', {
       data: box,
       ...props,
     });
@@ -229,7 +244,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     color?: string,
     props: CreateObjectProps<'line'> = {},
   ) {
-    return this._createObject('line', {
+    return this._createObjectType('line', {
       data: {
         p: points.map(p => p),
         c: color,
@@ -312,6 +327,40 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     if (!objectProps) return null!;
 
     return this.ensure(objectId, objectProps);
+  }
+
+  async clone(object: ObjectManager, withId?: string) {
+    const {
+      data: [objectProps],
+    } = await this._messenger.emitAsync('getObject', [object.id]);
+
+    // we leave the same parent as the original object
+
+    // clean props
+    this._cleanObjectProps(objectProps);
+
+    const id = withId ?? v4();
+
+    objectProps.id = id;
+
+    const newObject = this._createObject(id, objectProps);
+
+    return newObject;
+  }
+
+  private _cleanObjectProps(objectProps: ObjectDataProps) {
+    if (objectProps.t === 'group') {
+      (objectProps as ObjectGroupType).o?.c?.forEach(e => {
+        // remove id & parent
+        delete e.id;
+        delete e.parent_id;
+
+        if (e.t === 'group') {
+          this._cleanObjectProps(e);
+          return;
+        }
+      });
+    }
   }
 }
 
