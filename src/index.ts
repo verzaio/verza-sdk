@@ -79,4 +79,4 @@ export {z} from 'zod';
 
 export {v4 as uuid};
 
-export {Object3D, Vector3, Vector2, Quaternion, MathUtils} from 'three';
+export {Object3D, Vector3, Vector2, Quaternion, Euler, MathUtils} from 'three';

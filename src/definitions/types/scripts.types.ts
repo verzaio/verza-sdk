@@ -115,6 +115,8 @@ export type ScriptEventMap = {
 
   onCursorLock: (status: boolean) => void;
 
+  onInputFocus: (status: boolean) => void;
+
   setSize: (props: SizeProps<string>) => void;
 
   show: () => void;

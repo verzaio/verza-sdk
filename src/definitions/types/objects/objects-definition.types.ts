@@ -9,7 +9,7 @@ export type PickObject<T extends ObjectType> = ObjectTypes[T];
 export type ObjectBaseType<
   T extends ObjectType = ObjectType,
   D = unknown,
-> = Omit<ObjectDataDto, 'p' | 'r' | 'c'> & {
+> = Omit<ObjectDataDto, 'p' | 'r' | 'c' | 't'> & {
   id?: string;
   parent_id?: string;
   t: T;

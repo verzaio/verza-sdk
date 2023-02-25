@@ -20,6 +20,8 @@ class UIManager {
 
   private _engine: EngineManager;
 
+  private _activeInput = false;
+
   /* controller */
   controller = new ControllerManager({
     interfaces: new Set<string>(),
@@ -38,8 +40,9 @@ class UIManager {
 
   get isActiveInput() {
     return (
+      this._activeInput ||
       this.hasInterface(INTERFACE_CHAT) ||
-      ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '')
+      this._isFocusElement()
     );
   }
 
@@ -72,14 +75,38 @@ class UIManager {
   }
 
   bind() {
-    document.addEventListener('pointermove', this._onPointerEvent);
-    document.addEventListener('pointerdown', this._onPointerEvent);
-    document.addEventListener('pointerup', this._onPointerEvent);
+    document.body.addEventListener('focusin', this._onInputFocus, {
+      passive: false,
+    });
 
-    document.addEventListener('keydown', this._onKeyEvent);
-    document.addEventListener('keyup', this._onKeyEvent);
+    document.body.addEventListener('focusout', this._onInputFocus, {
+      passive: false,
+    });
 
-    document.addEventListener('keyup', this._onEscapeKey);
+    document.addEventListener('pointermove', this._onPointerEvent, {
+      passive: false,
+    });
+    document.addEventListener('pointerdown', this._onPointerEvent, {
+      passive: false,
+    });
+    document.addEventListener('pointerup', this._onPointerEvent, {
+      passive: false,
+    });
+
+    document.addEventListener('keydown', this._onKeyEvent, {
+      passive: false,
+    });
+    document.addEventListener('keyup', this._onKeyEvent, {
+      passive: false,
+    });
+
+    document.addEventListener('keyup', this._onEscapeKey, {
+      passive: false,
+    });
+
+    this._messenger.events.on('onInputFocus', ({data: [status]}) => {
+      this._activeInput = status;
+    });
 
     this._messenger.events.on('addInterface', ({data: [tag]}) => {
       this.interfaces.add(tag);
@@ -94,7 +121,34 @@ class UIManager {
     this._messenger.events.on('onCursorLock', ({data: [status]}) => {
       this.controller.set('cursorLock', status);
     });
+
+    this._messenger.events.on('onCursorLock', ({data: [status]}) => {
+      this.controller.set('cursorLock', status);
+    });
   }
+
+  private _isFocusElement() {
+    return ['INPUT', 'TEXTAREA'].includes(
+      document.activeElement?.tagName ?? '',
+    );
+  }
+
+  private _lastFocusState = false;
+  private _onInputFocus = () => {
+    const focusState = this._isFocusElement();
+
+    if (focusState !== this._lastFocusState) {
+      this._lastFocusState = focusState;
+
+      this._messenger.emit('onInputFocus', [this._lastFocusState]);
+    }
+  };
+
+  private _onEscapeKey = (event: KeyboardEvent) => {
+    if (event.code !== 'Escape') return;
+
+    this._messenger.emit('onEscapeKey');
+  };
 
   private _onPointerEvent = (event: PointerEvent) => {
     // prevent `pointerdown` default action
@@ -123,6 +177,9 @@ class UIManager {
   };
 
   private _onKeyEvent = (event: KeyboardEvent) => {
+    // ignore if active input
+    if (this.activeInput) return;
+
     this._messenger.emit('onKeyEvent', [
       {
         type: event.type as KeyEventType,
@@ -151,12 +208,6 @@ class UIManager {
       activeInput: this.isActiveInput,
     };
   }
-
-  private _onEscapeKey = (event: KeyboardEvent) => {
-    if (event.code !== 'Escape') return;
-
-    this._messenger.emit('onEscapeKey');
-  };
 
   /* interfaces */
   addInterface(tag: string) {
@@ -204,6 +255,9 @@ class UIManager {
   }
 
   destroy() {
+    document.body.removeEventListener('focusin', this._onInputFocus);
+    document.body.removeEventListener('focusout', this._onInputFocus);
+
     document.removeEventListener('pointermove', this._onPointerEvent);
     document.removeEventListener('pointerdown', this._onPointerEvent);
     document.removeEventListener('pointerup', this._onPointerEvent);

@@ -50,6 +50,9 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
         this._worldLocation.quaternion.copy(this.location.quaternion);
       }
 
+      // scale
+      this._worldLocation.scale.copy(this.location.scale);
+
       return this._worldLocation;
     })();
   }
@@ -329,6 +332,10 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.boundingBox.set(_TEMP_POS, _TEMP_POS2);
 
     return this.boundingBox;
+  }
+
+  async resolve(): Promise<ObjectManager | null> {
+    return this.engine.objects.resolveObject(this.id, true);
   }
 
   async resolveParent(forceUpdate?: boolean): Promise<ObjectManager | null> {
