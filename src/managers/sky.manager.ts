@@ -18,15 +18,15 @@ class SkyManager {
   }
 
   setMoonPhase(phase: MoonPhases) {
-    this._engine.messenger.emitAsync('setMoonPhase', [phase]);
+    this._engine.messenger.emit('setMoonPhase', [phase]);
   }
 
   setTime(time: number) {
-    this._engine.messenger.emitAsync('setTime', [time]);
+    this._engine.messenger.emit('setTime', [time]);
   }
 
   setTimeRepresentation(hours: number, minutes = 0, seconds = 0) {
-    this._engine.messenger.emitAsync('setTimeRepresentation', [
+    this._engine.messenger.emit('setTimeRepresentation', [
       hours,
       minutes,
       seconds,
@@ -34,7 +34,7 @@ class SkyManager {
   }
 
   setHemisphereLight(color: string, groundColor: string, intensity = 0) {
-    this._engine.messenger.emitAsync('setHemisphereLight', [
+    this._engine.messenger.emit('setHemisphereLight', [
       color,
       groundColor,
       intensity,
@@ -42,7 +42,7 @@ class SkyManager {
   }
 
   setLight(color: string, intensity: number) {
-    this._engine.messenger.emitAsync('setLight', [color, intensity]);
+    this._engine.messenger.emit('setLight', [color, intensity]);
   }
 }
 
