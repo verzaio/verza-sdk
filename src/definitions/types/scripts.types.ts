@@ -6,6 +6,7 @@ import {
 } from 'engine/generated/dtos.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
+import {MoonPhases} from 'engine/managers/sky.manager';
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {CommandInfo} from './commands.types';
@@ -330,6 +331,25 @@ export type ScriptEventMap = {
   restartServer: (reason?: string | null) => void;
 
   setForwardMessages: (status: boolean) => void;
+
+  /* sky */
+
+  setMoonPhase: (phase: MoonPhases) => void;
+
+  setTimeRepresentation: (
+    hours: number,
+    minutes: number,
+    seconds: number,
+  ) => void;
+
+  setTime: (time: number) => void;
+
+  setHemisphereLight: (
+    color: string,
+    groundColor: string,
+    intensity: number,
+  ) => void;
+  setLight: (color: string, intensity: number) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {
