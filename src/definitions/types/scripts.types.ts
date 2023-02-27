@@ -18,6 +18,7 @@ import {
   ObjectEditAxes,
 } from './objects/objects.types';
 import {
+  FileTransfer,
   IndicatorId,
   IndicatorTitle,
   KeyEvent,
@@ -98,6 +99,14 @@ export type ScriptEventMap = {
   onKeyDown: (event: KeyEvent) => void;
 
   onKeyUp: (event: KeyEvent) => void;
+
+  onDragLeave: () => void;
+
+  onDragEnter: () => void;
+
+  onDragOver: () => void;
+
+  onDrop: (file?: FileTransfer) => void;
 
   addInterface: (tag: string) => void;
 
@@ -258,6 +267,10 @@ export type ScriptEventMap = {
   ) => void;
 
   setObjectScale: (objectId: string, scale: Vector3Array) => void;
+
+  setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
+
+  rerenderObject: (objectId: string) => void;
 
   setObjectPositionFromWorldSpace: (
     objectId: string,

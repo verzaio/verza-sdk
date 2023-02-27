@@ -28,7 +28,7 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
 
   dimension?: number;
 
-  collision?: EntityCollision;
+  collision?: EntityCollision | null;
 
   shadows?: boolean;
 

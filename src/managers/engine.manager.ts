@@ -134,10 +134,10 @@ export class EngineManager {
   constructor(params?: EngineParams) {
     this.params = params ?? {};
 
-    this.api = new ApiManager(this);
-
     // register all events
     this.messenger.events.registerEvents = true;
+
+    this.api = new ApiManager(this);
 
     this.network = new NetworkManager(this);
 

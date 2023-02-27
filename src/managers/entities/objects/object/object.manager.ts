@@ -1,7 +1,11 @@
 import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {ObjectEntity} from 'engine/definitions/types/entities.types';
-import {ObjectGroupType} from 'engine/definitions/types/objects/objects-definition.types';
+import {
+  ObjectGroupType,
+  PickObject,
+} from 'engine/definitions/types/objects/objects-definition.types';
+import {ObjectType} from 'engine/definitions/types/objects/objects.types';
 import {
   QuaternionArray,
   Vector3Array,
@@ -342,6 +346,32 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     if (!this.parentId) return null;
 
     return this.engine.objects.resolveObject(this.parentId, forceUpdate);
+  }
+
+  setData<
+    T extends ObjectType = ObjectType,
+    D extends PickObject<T> = PickObject<T>,
+  >(data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>) {
+    this.data = {
+      ...this.data,
+      ...data,
+
+      o: {
+        ...this.data.o,
+        ...data.o,
+      },
+    };
+
+    this._messenger.emit('setObjectData', [
+      this.id,
+      {
+        [this.objectType]: data,
+      },
+    ]);
+  }
+
+  rerender() {
+    this._messenger.emit('rerenderObject', [this.id]);
   }
 
   clone(withId?: string) {

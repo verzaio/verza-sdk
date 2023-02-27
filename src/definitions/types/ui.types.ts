@@ -90,3 +90,10 @@ export type ToolbarElement = {
   position: ToolbarPosition;
   items: ToolbarItem[];
 };
+
+export type FileTransfer = {
+  name: string;
+  type: string;
+  size: number;
+  buffer: ArrayBuffer;
+};

@@ -5,8 +5,7 @@ import {ObjectBoxType} from 'engine/definitions/types/objects/objects-definition
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import {useObjects} from '../../hooks/useObjects';
-import {setReactRef} from '../../utils/misc';
-import {useParent} from './Group';
+import {useObjectCreator} from './Group';
 
 type BoxProps = CreateObjectProps<'box'> & {
   box: ObjectBoxType['o'];
@@ -14,23 +13,19 @@ type BoxProps = CreateObjectProps<'box'> & {
 
 export const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
   const objects = useObjects();
-  const parent = useParent();
+  const {setObject, objectProps, parent} = useObjectCreator();
 
   useEffect(() => {
-    if (parent?.destroyed === true) return;
-
     const object = objects.createBox(props.box, {
-      parentId: parent?.id,
       ...props,
+
+      ...objectProps(props.id),
     });
 
-    setReactRef(ref, object);
+    setObject(object, ref);
+  }, [setObject, objectProps, objects, props, parent]);
 
-    return () => {
-      objects.destroy(object);
-    };
-  }, [objects, props, parent]);
-
+  //
   return null;
 });
 

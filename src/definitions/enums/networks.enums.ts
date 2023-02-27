@@ -50,6 +50,8 @@ export enum PacketEvent {
 
   Update = 'u', // player or entity update
 
+  Object = 'o', // object
+
   Chunk = 'c', // chunk
 
   Voice = 'v', // voice
@@ -82,7 +84,7 @@ export enum PacketId {
 
   s = 2, // state
 
-  c = 3, // chunk
+  o = 3, // objects
 
   v = 4, // voice
 
@@ -92,9 +94,11 @@ export enum PacketId {
 
   n = 7, // custom
 
-  j = 8, // script sync
+  c = 20, // chunk
 
-  a = 9, // script action
+  j = 30, // script sync
+
+  a = 31, // script action
 }
 
 export enum PacketSource {

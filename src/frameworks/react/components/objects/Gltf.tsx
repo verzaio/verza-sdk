@@ -4,8 +4,7 @@ import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import {useObjects} from '../../hooks/useObjects';
-import {setReactRef} from '../../utils/misc';
-import {useParent} from './Group';
+import {useObjectCreator} from './Group';
 
 type GltfProps = CreateObjectProps<'gltf'> & {
   url: string;
@@ -13,22 +12,17 @@ type GltfProps = CreateObjectProps<'gltf'> & {
 
 export const Gltf = forwardRef<ObjectManager, GltfProps>((props, ref) => {
   const objects = useObjects();
-  const parent = useParent();
+  const {setObject, objectProps} = useObjectCreator();
 
   useEffect(() => {
-    if (parent?.destroyed === true) return;
-
     const object = objects.createGltf(props.url, {
-      parentId: parent?.id,
       ...props,
+
+      ...objectProps(props.id),
     });
 
-    setReactRef(ref, object);
-
-    return () => {
-      objects.destroy(object);
-    };
-  }, [objects, props, parent]);
+    setObject(object, ref);
+  }, [setObject, objectProps, objects, props]);
 
   return null;
 });

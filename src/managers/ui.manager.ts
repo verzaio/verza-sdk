@@ -3,6 +3,7 @@ import {
   INTERFACE_OPTIONS,
 } from 'engine/definitions/constants/ui.constants';
 import {
+  FileTransfer,
   IndicatorId,
   IndicatorTitle,
   KeyEventType,
@@ -104,6 +105,11 @@ class UIManager {
       passive: false,
     });
 
+    document.addEventListener('dragenter', this._onDragEvent);
+    document.addEventListener('dragleave', this._onDragEvent);
+    document.addEventListener('dragover', this._onDragEvent);
+    document.addEventListener('drop', this._onDragDrop);
+
     this._messenger.events.on('onInputFocus', ({data: [status]}) => {
       this._activeInput = status;
     });
@@ -126,6 +132,47 @@ class UIManager {
       this.controller.set('cursorLock', status);
     });
   }
+
+  private _onDragEvent = (event: DragEvent) => {
+    event.preventDefault();
+
+    switch (event.type) {
+      case 'dragenter': {
+        this._emitDragEvent('onDragEnter');
+        break;
+      }
+      case 'dragleave': {
+        this._emitDragEvent('onDragLeave');
+        break;
+      }
+      case 'dragover': {
+        this._emitDragEvent('onDragOver');
+        break;
+      }
+    }
+  };
+
+  private _onDragDrop = async (event: DragEvent) => {
+    event.preventDefault();
+
+    const files = event.dataTransfer?.files;
+    if (!files?.length) return;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files.item(i);
+
+      if (!file) continue;
+
+      const buffer = await file.arrayBuffer();
+
+      this._emitDragDrop({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        buffer,
+      });
+    }
+  };
 
   private _isFocusElement() {
     return ['INPUT', 'TEXTAREA'].includes(
@@ -192,6 +239,19 @@ class UIManager {
       },
     ]);
   };
+
+  private _emitDragEvent(event: 'onDragLeave' | 'onDragEnter' | 'onDragOver') {
+    this._messenger.emit(event);
+  }
+
+  private _emitDragDrop(file?: FileTransfer) {
+    if (!file) {
+      this._messenger.emit('onDrop');
+      return;
+    }
+
+    this._messenger.emit('onDrop', [file], [file.buffer]);
+  }
 
   private _extractBaseEventProps(
     event: KeyboardEvent | PointerEvent,
@@ -266,6 +326,11 @@ class UIManager {
     document.removeEventListener('keyup', this._onKeyEvent);
 
     document.removeEventListener('keyup', this._onEscapeKey);
+
+    document.removeEventListener('dragenter', this._onDragEvent);
+    document.removeEventListener('dragleave', this._onDragEvent);
+    document.removeEventListener('dragover', this._onDragEvent);
+    document.removeEventListener('drop', this._onDragDrop);
   }
 }
 

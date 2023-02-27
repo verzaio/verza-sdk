@@ -142,6 +142,18 @@ export interface NotificationEventDto {
   event: 'status' | 'new_notification';
 }
 
+export interface AssetDto {
+  id: string;
+  asset_url: string;
+  /** @format date-time */
+  created_at: string;
+}
+
+export interface CreateAssetDto {
+  /** @format binary */
+  asset_file: File;
+}
+
 export interface CharacterShapekeyDto {
   id: string;
   name: string;
@@ -390,6 +402,7 @@ export interface ServerDto {
   permissions: ServerPermissionsDto;
   status: 'active' | 'inactive';
   commands: CommandConfigDto[];
+  assets_url?: string;
   favorited: boolean;
   /** @format date-time */
   created_at: string;
@@ -513,7 +526,7 @@ export interface PlayerPacketLocalUpdateDto {
 }
 
 export interface ObjectDataDto {
-  t: string;
+  t: 'group' | 'model' | 'gltf' | 'box' | 'line';
   /** object data */
   o: object;
   /** position | Vector3Array */
@@ -530,6 +543,38 @@ export interface ObjectDataDto {
   dd?: 'low' | 'mid' | 'high';
   /** shadows */
   ss?: boolean;
+}
+
+export interface ObjectPacketDto {
+  /** packet id */
+  t: number;
+  /** object id */
+  i: string;
+  /** data */
+  d?: ObjectDataDto;
+  /** remove */
+  r?: boolean;
+}
+
+export interface ObjectPacketUpdatePositionDto {
+  /** position | Vector3Array */
+  p: number[];
+  /** position | QuaternionArray */
+  r?: number[];
+  d?: number;
+}
+
+export interface ObjectPacketUpdateDto {
+  /** object id (creation or update) */
+  i?: string;
+  /** creation data */
+  d?: ObjectDataDto;
+  /** update data */
+  u?: ObjectDataDto;
+  /** update position */
+  p?: ObjectPacketUpdatePositionDto;
+  /** remove */
+  r?: boolean;
 }
 
 export interface ObjectDto {
@@ -559,8 +604,8 @@ export interface ChunksDummyFiltersDto {
 }
 
 export interface ChunkPacketRequestDto {
-  /** world id */
-  w: string;
+  /** server id */
+  s: string;
   /** chunk index */
   i: string;
   /** is dummy */
@@ -823,12 +868,4 @@ export interface CreateObjectDto {
 export interface UpdateObjectDto {
   /** data */
   data: ObjectDataDto;
-}
-
-export interface UpdatePositionDto {
-  /** position | Vector3Array */
-  position?: number[];
-  /** position | QuaternionArray */
-  rotation?: number[];
-  dimension?: number;
 }

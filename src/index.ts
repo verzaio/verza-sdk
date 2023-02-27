@@ -33,45 +33,9 @@ export {EngineManager} from 'engine/managers/engine.manager';
 
 export {Command, CommandParam} from 'engine/managers/commands/command.manager';
 
-export {
-  ScriptEventMap,
-  CustomEventData,
-} from 'engine/definitions/types/scripts.types';
-
-export {
-  ObjectEditMode,
-  ObjectEditActionType,
-} from 'engine/definitions/types/objects/objects.types';
-
-export {
-  Vector3Array,
-  QuaternionArray,
-  WorldPosition,
-  WorldPositionRotation,
-  IntersectsResult,
-  RaycastOptions,
-} from 'engine/definitions/types/world.types';
-
 export {EngineParams} from 'engine/definitions/local/types/engine.types';
 
 export {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
-
-export {
-  KeyEventType,
-  KeyEvent,
-  IndicatorId,
-  IndicatorTitle,
-  Indicator,
-  SizePropValue,
-  SizeProps,
-  ToolbarElement,
-  ToolbarItem,
-  ToolbarPosition,
-  PointerEvent,
-  PointerEventType,
-} from 'engine/definitions/types/ui.types';
-
-export {PlayerControls} from 'engine/definitions/types/controls.types';
 
 export {THREE};
 

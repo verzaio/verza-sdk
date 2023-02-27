@@ -70,14 +70,23 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  update(object: ObjectManager, data: ObjectManager['data']) {
+  update(object: ObjectManager, data: ObjectManager['data'], sync?: boolean) {
     // update
-    object.updatePosition(data.p!);
-    object.updateRotation(data.r!);
-    object.updateScale(data.s!);
+    if (sync) {
+      data.p && object.setPosition(data.p);
+      data.r && object.setRotation(data.r);
+      data.s && object.setScale(data.s);
 
-    // set data
-    object.data = data;
+      // set data
+      object.setData(data);
+    } else {
+      data.p && object.updatePosition(data.p);
+      data.r && object.updateRotation(data.r);
+      data.s && object.updateScale(data.s);
+
+      // set data
+      object.data = data;
+    }
 
     // update children
     if (object.objectType === 'group') {
@@ -187,6 +196,10 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       o: props.data,
     };
+
+    if (this.is(objectData.id)) {
+      return this.update(this.get(props.id), objectData, true);
+    }
 
     // create
     const object = this.create(props.id!, objectData);
