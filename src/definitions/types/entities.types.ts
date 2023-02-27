@@ -25,7 +25,7 @@ export type EntityDrawDistance = Required<ObjectDataDto>['dd'];
 export type EntityCollision = Required<ObjectDataDto>['c'];
 
 export type CreateEntityProps = {
-  remote?: boolean; // permanent
+  permanent?: boolean; // remote
 
   p?: Vector3Array; // position
 

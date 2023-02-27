@@ -1,3 +1,5 @@
+import {Color} from 'three';
+
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
@@ -72,3 +74,22 @@ export type RaycastOptions = {
 
   excludeObjects?: string[];
 };
+
+export type DayPresets = 'sunrise' | 'day' | 'sunset' | 'night';
+
+export type DayPresetInfo = {
+  groundColor: Color;
+  color: Color;
+  lightColor: Color;
+  intensity: number;
+};
+
+export type MoonPhases =
+  | 'newMoon'
+  | 'waxingCrescent'
+  | 'firstQuarter'
+  | 'waxingGibbous'
+  | 'fullMoon'
+  | 'waningGibbous'
+  | 'lastQuarter'
+  | 'waningCrescent';

@@ -211,10 +211,15 @@ class ApiManager {
       this.websocketServer.emitAction(`${eventName}:${requestId}` as A, args);
 
       // wait for response
-      const response = new Promise<R>(resolve => {
+      const response = new Promise<R>((resolve, reject) => {
         (this._engine.messenger.events.once as any)(
           `OR:${requestId}`,
           (response: R) => {
+            if ((response?.data?.[0] as any)?.error) {
+              reject(response.data[0]);
+              return;
+            }
+
             resolve(response);
           },
         );
@@ -228,8 +233,6 @@ class ApiManager {
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
   ) {
-    console.log('emitting to local', eventName);
-
     this._engine.messenger.emitLocal(eventName, args);
   }
 

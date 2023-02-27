@@ -248,7 +248,26 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
           }
         }
       } catch (e) {
-        console.error(e);
+        // log error if request is not present
+        if (!requestId) {
+          console.error(e);
+          return;
+        }
+
+        // send error response
+        (this.emit as any)(
+          `OR:${requestId}`,
+          [
+            {
+              error: `Error processing "${eventName}"`,
+              ...JSON.parse(
+                JSON.stringify(typeof e === 'object' ? e : {details: e}),
+              ),
+            },
+          ],
+          undefined,
+          true,
+        );
         return;
       }
     }
@@ -298,8 +317,13 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     this.emit(`${eventName as string}:${requestId}`, args, transfer);
 
     // wait for response
-    const response = new Promise<R>(resolve => {
+    const response = new Promise<R>((resolve, reject) => {
       (this.events.once as any)(`OR:${requestId}`, (response: R) => {
+        if ((response?.data?.[0] as any)?.error) {
+          reject(response.data[0]);
+          return;
+        }
+
         resolve(response);
       });
     });

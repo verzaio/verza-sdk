@@ -29,6 +29,7 @@ import {
 import {
   IntersectsResult,
   IntersectsResultRaw,
+  MoonPhases,
   QuaternionArray,
   RaycastOptions,
   Vector3Array,
@@ -345,6 +346,25 @@ export type ScriptEventMap = {
   restartServer: (reason?: string | null) => void;
 
   setForwardMessages: (status: boolean) => void;
+
+  /* sky */
+  setMoonPhase: (phase: MoonPhases) => void;
+
+  setTimeRepresentation: (
+    hours: number,
+    minutes: number,
+    seconds: number,
+  ) => void;
+
+  setTime: (time: number) => void;
+
+  setHemisphereLight: (
+    color: string,
+    groundColor: string,
+    intensity: number,
+  ) => void;
+
+  setLight: (color: string, intensity: number) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {

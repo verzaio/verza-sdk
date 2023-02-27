@@ -12,8 +12,12 @@ const WebsocketsServerTest = () => {
 
     engine.connectServer();
 
-    const onSynced = engine.events.on('onSynced', () => {
+    const onSynced = engine.events.on('onSynced', async () => {
       console.debug('onSynced called');
+
+      /* const response = await engine.api.emitActionAsync('addInterface', [
+          'a',
+        ]); */
     });
 
     const onPlayerConnect = engine.players.events.on(
