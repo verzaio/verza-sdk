@@ -362,7 +362,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
   }
 }
 
-class MessengerEvents<
+export class MessengerEvents<
   T extends EventListenersMap = EventListenersMap,
 > extends EventsManager<T> {
   registerEvents = false;

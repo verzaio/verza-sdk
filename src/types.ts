@@ -8,10 +8,11 @@ import ObjectsManager from 'engine/managers/entities/objects/objects.manager';
 import PlayerAnimationsManager from 'engine/managers/entities/players/player/player-animations.manager';
 import PlayerCameraManager from 'engine/managers/entities/players/player/player-camera.manager';
 import PlayerHandleManager from 'engine/managers/entities/players/player/player-handle.manager';
-import PlayerMessengerManager from 'engine/managers/entities/players/player/player-messenger.manager';
 import PlayerVoicechatManager from 'engine/managers/entities/players/player/player-voicechat.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 import PlayersManager from 'engine/managers/entities/players/players.manager';
+
+import MessengerEmitterManager from './managers/messenger-emitter.manager';
 
 export {
   ScriptEventMap,
@@ -60,11 +61,11 @@ export type {
 export type {ObjectsManager, ObjectManager, ObjectHandleManager};
 
 export type {
+  MessengerEmitterManager,
   PlayersManager,
   PlayerManager,
   PlayerHandleManager,
   PlayerVoicechatManager,
   PlayerCameraManager,
-  PlayerMessengerManager,
   PlayerAnimationsManager,
 };

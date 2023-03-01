@@ -42,7 +42,7 @@ class CommandsManager {
     // only websocket server
     if (this._engine.api.isWebsocketServer) {
       // register commands for player
-      this._engine.players.events.on('onConnect', player => {
+      this._engine.players.events.on('onCreate', player => {
         if (!this._engine.synced) return; // ignore if not synced
 
         this.commands.forEach(command => {
@@ -56,7 +56,7 @@ class CommandsManager {
       const player =
         playerId !== undefined
           ? this._engine.players.get(playerId)
-          : this._engine.player;
+          : this._engine.localPlayer;
 
       if (!player) {
         console.debug(`[chat] playerId: ${playerId} not found`);
@@ -163,7 +163,7 @@ class CommandsManager {
     // client
     if (this._engine.isClient) {
       this._engine.messenger.emit('registerCommand', [
-        this._engine.player.id,
+        this._engine.localPlayer.id,
         command.toObject(),
         this._engine.name,
       ]);
@@ -214,7 +214,7 @@ class CommandsManager {
     // if client
     if (this._engine.isClient) {
       this._engine.messenger.emit('unregisterCommand', [
-        this._engine.player.id,
+        this._engine.localPlayer.id,
         command.command,
       ]);
       return;
@@ -281,7 +281,7 @@ class CommandsManager {
 
   registerWebServerCommand(command: CommandInfo) {
     this._engine.messenger.emit('registerCommand', [
-      this._engine.player.id,
+      this._engine.localPlayer.id,
       command,
       command.tag ?? this._engine.name,
     ]);

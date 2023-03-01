@@ -1,14 +1,9 @@
-import {
-  useKey,
-  useNetwork,
-  usePlayerId,
-  useStreamedPlayer,
-} from '@verza/sdk/react';
+import {useKey, useNetwork, useStreamedLocalPlayer} from '@verza/sdk/react';
 import {useEffect} from 'react';
 import {Vector3} from 'three';
 
 const PlayersTest = () => {
-  const player = useStreamedPlayer(usePlayerId());
+  const player = useStreamedLocalPlayer();
   const network = useNetwork();
 
   useEffect(() => {

@@ -158,6 +158,7 @@ class ApiManager {
   async emitAction<A extends keyof ScriptEventMap>(
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
+    playerId?: number,
   ) {
     // client
     if (this.isClient) {
@@ -166,12 +167,13 @@ class ApiManager {
     }
 
     // server
-    this.emitActionToServer(eventName, args);
+    this.emitActionToServer(eventName, args, playerId);
   }
 
   async emitActionAsync<A extends keyof ScriptEventMap>(
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
+    playerId?: number,
   ) {
     // client
     if (this.isClient) {
@@ -179,28 +181,37 @@ class ApiManager {
     }
 
     // server
-    return this.emitActionToServerAsync(eventName, args);
+    return this.emitActionToServerAsync(eventName, args, playerId);
   }
 
   async emitActionToServer<A extends keyof ScriptEventMap>(
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
+    playerId?: number,
   ) {
     // check if web or websocket server
     if (this.isWebServer) {
-      await this.webServer.emitAction(eventName, args);
+      await this.webServer.emitAction(eventName, args, playerId);
     } else {
-      this.websocketServer.emitAction(eventName, args);
+      this.websocketServer.emitAction(eventName, args, playerId);
     }
   }
 
   async emitActionToServerAsync<
     A extends keyof ScriptEventMap,
     R extends MessengerMessage<[ReturnType<ScriptEventMap[A]>]>,
-  >(eventName: A, args?: Parameters<ScriptEventMap[A]>): Promise<R> {
+  >(
+    eventName: A,
+    args?: Parameters<ScriptEventMap[A]>,
+    playerId?: number,
+  ): Promise<R> {
     // check if web or websocket server
     if (this.isWebServer) {
-      const response = await this.webServer.emitAction(eventName, args);
+      const response = await this.webServer.emitAction(
+        eventName,
+        args,
+        playerId,
+      );
 
       return {
         data: [(await response?.json())?.data],
@@ -208,7 +219,11 @@ class ApiManager {
     } else {
       const requestId = `${Math.random()}`;
 
-      this.websocketServer.emitAction(`${eventName}:${requestId}` as A, args);
+      this.websocketServer.emitAction(
+        `${eventName}:${requestId}` as A,
+        args,
+        playerId,
+      );
 
       // wait for response
       const response = new Promise<R>((resolve, reject) => {

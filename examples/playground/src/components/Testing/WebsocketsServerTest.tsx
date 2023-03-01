@@ -15,13 +15,38 @@ const WebsocketsServerTest = () => {
     const onSynced = engine.events.on('onSynced', async () => {
       console.debug('onSynced called');
 
+      console.log('requesting object');
+
+      const object = await engine.objects.resolveObject(
+        '145bb3da-ae85-4fbb-9c3a-0e8e17f882f8',
+      );
+
+      console.log('object', object);
+
+      const OBJECT_ID = '145bb3da-ae85-4fbb-9c3a-0e8e17f882f9';
+
+      const created = engine.objects.createBox(
+        {
+          w: 1,
+          h: 1,
+          d: 1,
+          c: 'violet',
+        },
+        {
+          id: OBJECT_ID,
+          position: [2, 3, 2],
+        },
+      );
+
+      console.log('created', created);
+
       /* const response = await engine.api.emitActionAsync('addInterface', [
           'a',
         ]); */
     });
 
-    const onPlayerConnect = engine.players.events.on(
-      'onConnect',
+    const onPlayerCreate = engine.players.events.on(
+      'onCreate',
       async player => {
         player.sendMessage(`Websocket server script connected (websocket)!`);
       },
@@ -52,7 +77,7 @@ const WebsocketsServerTest = () => {
       clearInterval(intervalId);
 
       engine.events.off('onSynced', onSynced);
-      engine.players.events.on('onConnect', onPlayerConnect);
+      engine.players.events.on('onCreate', onPlayerCreate);
 
       engine.destroy();
     };

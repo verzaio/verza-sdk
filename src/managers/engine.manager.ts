@@ -1,6 +1,7 @@
 import {z} from 'zod';
 
 import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
+import {STREAMER_CHUNK_SIZE} from 'engine/definitions/constants/streamer.constants';
 import {LocalEngineEvents} from 'engine/definitions/local/constants/engine.constants';
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EventKey} from 'engine/definitions/types/events.types';
@@ -14,6 +15,7 @@ import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
 import ObjectsManager from './entities/objects/objects.manager';
 import PlayersManager from './entities/players/players.manager';
+import StreamerManager from './entities/streamer/streamer.manager';
 import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
 import NetworkManager from './network.manager';
@@ -34,6 +36,8 @@ export class EngineManager {
   commands: CommandsManager;
 
   camera: CameraManager = null!;
+
+  streamer: StreamerManager = null!;
 
   world: WorldManager;
 
@@ -67,7 +71,6 @@ export class EngineManager {
 
   private _binded = false;
 
-  /* accessors */
   get name() {
     return (
       this.params.name ??
@@ -103,16 +106,16 @@ export class EngineManager {
     return this.controller.data.connected;
   }
 
-  get playerId() {
+  get localPlayerId() {
     return this.controller.data.playerId;
   }
 
-  set playerId(playerId: number) {
+  set localPlayerId(playerId: number) {
     this.controller.set('playerId', playerId);
   }
 
-  get player() {
-    return this.entities.player.get(this.playerId);
+  get localPlayer() {
+    return this.entities.player.get(this.localPlayerId);
   }
 
   get players() {
@@ -131,6 +134,10 @@ export class EngineManager {
     return this.api.isClient;
   }
 
+  get chunkSize() {
+    return this.network.server?.world?.chunk_size ?? STREAMER_CHUNK_SIZE;
+  }
+
   constructor(params?: EngineParams) {
     this.params = params ?? {};
 
@@ -147,6 +154,11 @@ export class EngineManager {
     if (this.isClient) {
       this.ui = new UIManager(this);
       this.camera = new CameraManager(this);
+    }
+
+    // only for server
+    if (this.isServer) {
+      this.streamer = new StreamerManager(this);
     }
 
     this.chat = new ChatManager(this);
@@ -178,7 +190,7 @@ export class EngineManager {
 
     // sync player id
     this.messenger.events.on('setPlayerId', ({data: [playerId]}) => {
-      this.playerId = playerId;
+      this.localPlayerId = playerId;
     });
 
     // connect it
@@ -219,6 +231,7 @@ export class EngineManager {
     this.api.bind(); // always after network
     this.ui?.bind();
     this.camera?.bind();
+    this.streamer?.bind();
     this.world.bind();
   }
 

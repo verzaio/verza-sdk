@@ -5,7 +5,6 @@ import type {
   Vector3Array,
   QuaternionArray,
 } from 'engine/definitions/types/world.types';
-import type {ObjectDataDto} from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import EntitiesManager from 'engine/managers/entities/entities.manager';
 import EntityHandleManager from 'engine/managers/entities/entity/entity-handle.manager';
@@ -17,23 +16,22 @@ import PlayerHandleManager from 'engine/managers/entities/players/player/player-
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 import PlayersManager from 'engine/managers/entities/players/players.manager';
 
-import type {EntityType} from '../enums/entities.enums';
+import type {EntityDrawDistance, EntityType} from '../enums/entities.enums';
+import {EntityCollision} from '../enums/objects.enums';
 import {ObjectDataProps} from './objects/objects.types';
 
-export type EntityDrawDistance = Required<ObjectDataDto>['dd'];
+export type EntityDrawDistanceType = keyof typeof EntityDrawDistance;
 
-export type EntityCollision = Required<ObjectDataDto>['c'];
+export type EntityCollisionType = keyof typeof EntityCollision;
 
 export type CreateEntityProps = {
-  permanent?: boolean; // remote
-
   p?: Vector3Array; // position
 
   r?: QuaternionArray | Vector3Array; // rotation
 
   d?: number; // dimension
 
-  dd?: EntityDrawDistance; // draw distance
+  dd?: EntityDrawDistanceType; // draw distance
 };
 
 export type EntityItem<

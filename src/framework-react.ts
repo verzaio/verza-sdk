@@ -23,7 +23,9 @@ export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
 export {useRaycaster} from 'engine/frameworks/react/hooks/useRaycaster';
 export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
 
-export {usePlayerId} from 'engine/frameworks/react/hooks/usePlayerId';
+export {useLocalPlayerId} from 'engine/frameworks/react/hooks/useLocalPlayerId';
+export {useLocalPlayer} from 'engine/frameworks/react/hooks/useLocalPlayer';
+export {useStreamedLocalPlayer} from 'engine/frameworks/react/hooks/useStreamedLocalPlayer';
 
 export {useObjects} from 'engine/frameworks/react/hooks/useObjects';
 export {usePlayers} from 'engine/frameworks/react/hooks/usePlayers';

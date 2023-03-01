@@ -1,10 +1,10 @@
-import {useEngine, usePlayerId, useStreamedPlayer} from '@verza/sdk/react';
+import {useEngine, useLocalPlayer} from '@verza/sdk/react';
 import {useEffect} from 'react';
 
 const END_TRANSITION_ID = 'end-transition';
 
 const CameraTest = () => {
-  const player = useStreamedPlayer(usePlayerId());
+  const player = useLocalPlayer();
   const engine = useEngine();
 
   useEffect(() => {

@@ -25,7 +25,6 @@ export const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
     setObject(object, ref);
   }, [setObject, objectProps, objects, props, parent]);
 
-  //
   return null;
 });
 

@@ -1,4 +1,5 @@
 import {
+  ChunkDto,
   EncryptedPacketsDto,
   PlayerPacketDto,
   PlayerPacketUpdateDto,
@@ -8,6 +9,7 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
+import {ChunkIndex} from './chunks.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
 import {ObjectTypes} from './objects/objects-definition.types';
@@ -235,14 +237,27 @@ export type ScriptEventMap = {
 
   onCameraTransitionEnd: (id?: number | string) => void;
 
+  /* entities */
+  getEntitiesInChunk: (chunkIndex: ChunkIndex) => ChunkDto;
+
   /* objects */
   createObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  saveObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  saveObjectLocal: (objectId: string) => void;
+
+  deleteObject: (objectId: string) => void;
 
   getObject: (objectId: string) => ObjectDataProps;
 
   destroyObject: (objectId: string) => void;
 
   editObject: (objectId: string) => void;
+
+  setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
+
+  rerenderObject: (objectId: string) => void;
 
   setObjectEditAxes: (axes: ObjectEditAxes) => void;
 
@@ -268,10 +283,6 @@ export type ScriptEventMap = {
   ) => void;
 
   setObjectScale: (objectId: string, scale: Vector3Array) => void;
-
-  setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
-
-  rerenderObject: (objectId: string) => void;
 
   setObjectPositionFromWorldSpace: (
     objectId: string,

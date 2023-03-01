@@ -1,5 +1,6 @@
 import {PLAYER_STATE_PACKET_INDEX} from 'engine/definitions/constants/players.constants';
 import {EntityType} from 'engine/definitions/enums/entities.enums';
+import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {PlayerState} from 'engine/definitions/types/players.types';
 import {
   QuaternionArray,
@@ -54,7 +55,7 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
         this._messenger.events.on(
           'onControlChange',
           ({data: [key, newState]}) => {
-            this.engine.player.controls[key] = newState;
+            this.engine.localPlayer.controls[key] = newState;
           },
         );
       }
@@ -130,11 +131,13 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     // dimension
     if (packet.d !== undefined) {
       player.dimension = packet.d ?? 0;
+      player.updateChunkIndex();
     }
 
     // position
     if (packet.p) {
       player.location.position.set(...(packet.p as Vector3Array));
+      player.updateChunkIndex();
     }
 
     // rotation
@@ -173,6 +176,17 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
 
   sendMessageTo(player: PlayerManager | number, text: string) {
     this.engine.chat.sendMessageTo(player, text);
+  }
+
+  forEachInChunk(
+    chunkIndex: ChunkIndex,
+    callback: (player: PlayerManager) => void,
+  ) {
+    this.engine.players.entitiesMap.forEach(player => {
+      if (player.chunksIn.has(chunkIndex)) {
+        callback(player);
+      }
+    });
   }
 }
 

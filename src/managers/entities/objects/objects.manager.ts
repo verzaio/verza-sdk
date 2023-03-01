@@ -19,9 +19,11 @@ import {
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import ControllerManager from 'engine/managers/controller.manager';
+import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
+import PlayerManager from '../players/player/player.manager';
 import ObjectManager from './object/object.manager';
 
 class ObjectsManager extends EntitiesManager<ObjectManager> {
@@ -35,18 +37,19 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   private _loadBinded = false;
 
-  private get _messenger() {
-    return this.engine.messenger;
-  }
+  private _messenger: MessengerEmitterManager;
 
   constructor(engine: EngineManager) {
     super(EntityType.object, engine);
+
+    this._messenger = new MessengerEmitterManager(engine);
   }
 
   private _bind() {
     if (this._loadBinded) return;
     this._loadBinded = true;
 
+    //
     this._messenger.events.on('destroyObject', ({data: [objectId]}) => {
       this.destroy(this.get(objectId), false);
     });
@@ -84,6 +87,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       data.r && object.updateRotation(data.r);
       data.s && object.updateScale(data.s);
 
+      object.updateChunkIndex(false);
+
       // set data
       object.data = data;
     }
@@ -120,16 +125,22 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  private _createObject(id: string, data: ObjectManager['data']) {
+  private _createObject(id: string, data: ObjectDataProps) {
     const object = this.create(id, data);
 
     // emit
-    this._messenger.emit('createObject', [
-      data.id!,
-      {
-        [data.t]: data,
-      },
-    ]);
+    this.emitHandler(object, player => {
+      this._messenger.emit(
+        'createObject',
+        [
+          id,
+          {
+            [data.t]: data,
+          },
+        ],
+        player.id,
+      );
+    });
 
     return object;
   }
@@ -175,7 +186,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       shadows,
     } = props;
 
-    const objectData: PickObject<any> = {
+    const objectData: PickObject<ObjectType> = {
       id,
 
       parent_id: parentId,
@@ -194,10 +205,10 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       ss: shadows,
 
-      o: props.data,
+      o: props.data as any,
     };
 
-    if (this.is(objectData.id)) {
+    if (this.is(objectData.id!)) {
       return this.update(this.get(props.id), objectData, true);
     }
 
@@ -205,12 +216,18 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     const object = this.create(props.id!, objectData);
 
     // emit
-    this._messenger.emit('createObject', [
-      objectData.id!,
-      {
-        [objectData.t]: objectData,
-      },
-    ]);
+    this.emitHandler(object, player => {
+      this._messenger.emit(
+        'createObject',
+        [
+          objectData.id!,
+          {
+            [objectData.t]: objectData,
+          },
+        ],
+        player.id,
+      );
+    });
 
     return object;
   }
@@ -284,18 +301,24 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     // emit
     if (report) {
-      this._messenger.emit('destroyObject', [entity.id]);
+      this.emitHandler(entity, player => {
+        this._messenger.emit('destroyObject', [entity.id], player.id);
+      });
     }
   }
 
   private _onObjectEdit: ScriptMessengerMethods['onObjectEditRaw'] = ({
     data: [data, type],
   }) => {
+    this._CHECK_FOR_CLIENT();
+
     this.engine.events.emit('onObjectEdit', this.ensure(data.id!, data), type);
   };
 
   private _editBinded = false;
   edit(object: ObjectManager) {
+    this._CHECK_FOR_CLIENT();
+
     if (!this._editBinded) {
       this._editBinded = true;
       this._messenger.events.on('onObjectEditRaw', this._onObjectEdit);
@@ -307,6 +330,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   cancelEdit() {
+    this._CHECK_FOR_CLIENT();
+
     this._messenger.emit('cancelObjectEdit');
     this.controller.set('editingObject', null!);
   }
@@ -316,10 +341,14 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     rotation: number | null,
     scale: number | null,
   ) {
+    this._CHECK_FOR_CLIENT();
+
     this._messenger.emit('setObjectEditSnaps', [position, rotation, scale]);
   }
 
   setEditAxes(axes: ObjectEditAxes) {
+    this._CHECK_FOR_CLIENT();
+
     this._messenger.emit('setObjectEditAxes', [axes]);
   }
 
@@ -343,6 +372,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   async clone(object: ObjectManager, withId?: string) {
+    this._CHECK_FOR_CLIENT();
+
     const {
       data: [objectProps],
     } = await this._messenger.emitAsync('getObject', [object.id]);
@@ -373,6 +404,26 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
           return;
         }
       });
+    }
+  }
+
+  emitHandler(
+    object: ObjectManager,
+    callback: (player: PlayerManager) => void,
+  ) {
+    // client or webserver
+    if (this.engine.isClient || this.engine.api.isWebServer) {
+      callback(this.engine.localPlayer);
+      return;
+    }
+
+    // or websockets server
+    this.engine.players.forEachInChunk(object.chunkIndex, callback);
+  }
+
+  private _CHECK_FOR_CLIENT() {
+    if (!this.engine.isClient) {
+      throw new Error('This method is only available on client');
     }
   }
 }

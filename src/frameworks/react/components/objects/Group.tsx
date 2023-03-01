@@ -73,11 +73,22 @@ export const useObjectCreator = () => {
     };
   }, []);
 
+  const destroyObject = useCallback(() => {
+    objects.destroy(objectRef.current);
+    objectRef.current = null!;
+  }, []);
+
   const setObject = useCallback((object: ObjectManager, ref?: any) => {
     if (ref) {
       ref.current = object;
     }
 
+    if (objectRef.current && object?.id !== objectRef.current.id) {
+      destroyObject();
+    }
+
+    objectIdRef.current = object?.id;
+    objectRef.current = object;
     setObjectState(object);
   }, []);
 
@@ -85,9 +96,7 @@ export const useObjectCreator = () => {
   useEffect(() => {
     return () => {
       if (objectRef.current) {
-        objects.destroy(objectRef.current);
-
-        objectRef.current = null!;
+        destroyObject();
         setObject(null!);
       }
     };

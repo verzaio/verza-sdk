@@ -1,8 +1,9 @@
 import {Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {DEFAULT_ENTITY_DRAW_DISTANCE} from 'engine/definitions/constants/streamer.constants';
+import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
-  EntityDrawDistance,
+  EntityDrawDistanceType,
   EntityItem,
   MergeEntityEvents,
 } from 'engine/definitions/types/entities.types';
@@ -11,11 +12,14 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
+import {calcChunkIndex} from 'engine/utils/chunks.utils';
 
 import EngineManager from '../../engine.manager';
 import EventsManager, {EventListenersMap} from '../../events.manager';
 import EntityHandleManager from './entity-handle.manager';
 import EntityStreamManager from './entity-stream.manager';
+
+const TEMP_POS = new Vector3();
 
 class EntityManager<
   T extends EntityItem = EntityItem,
@@ -40,6 +44,8 @@ class EntityManager<
 
   streamer: EntityStreamManager = null!;
 
+  chunkIndex: ChunkIndex = null!;
+
   /* accessors */
   get id(): T['id'] {
     return this.entity.id;
@@ -55,6 +61,12 @@ class EntityManager<
 
   set data(data: T['data']) {
     this.entity.data = data;
+  }
+
+  get worldPosition() {
+    this.location.getWorldPosition(TEMP_POS);
+
+    return TEMP_POS;
   }
 
   get location() {
@@ -81,7 +93,7 @@ class EntityManager<
     return this.data.dd ?? DEFAULT_ENTITY_DRAW_DISTANCE;
   }
 
-  set drawDistance(drawDistance: EntityDrawDistance) {
+  set drawDistance(drawDistance: EntityDrawDistanceType) {
     this.data.dd = drawDistance;
   }
 
@@ -106,6 +118,16 @@ class EntityManager<
         this.location.rotation.set(...this.data.r);
       }
     }
+  }
+
+  updateChunkIndex() {
+    this.chunkIndex = calcChunkIndex(
+      this.worldPosition.x,
+      this.worldPosition.y,
+      this.worldPosition.z,
+      this.dimension,
+      this.engine.chunkSize,
+    );
   }
 
   updatePosition(position: Vector3 | Vector3Array) {

@@ -1,6 +1,6 @@
 import {ObjectDataDto} from 'engine/generated/dtos.types';
 
-import {EntityCollision} from '../entities.types';
+import {EntityCollisionType, EntityDrawDistanceType} from '../entities.types';
 import {QuaternionArray, Vector3Array} from '../world.types';
 import {ObjectType} from './objects.types';
 
@@ -15,7 +15,9 @@ export type ObjectBaseType<
   t: T;
   o: D;
 
-  c?: EntityCollision | null;
+  c?: EntityCollisionType | null;
+
+  dd?: EntityDrawDistanceType;
 
   p?: Vector3Array; // position
   r?: QuaternionArray | Vector3Array; // rotation

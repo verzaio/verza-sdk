@@ -1,6 +1,7 @@
 import {Euler, Quaternion, Vector3} from 'three';
 import {MathUtils} from 'three';
 
+import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
@@ -9,11 +10,11 @@ import {
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
+import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
 
 import EntityManager from '../../entity/entity.manager';
 import PlayerCameraManager from './player-camera.manager';
 import type PlayerHandleManager from './player-handle.manager';
-import PlayerMessengerManager from './player-messenger.manager';
 import PlayerVoicechatManager from './player-voicechat.manager';
 
 class PlayerManager extends EntityManager<
@@ -21,12 +22,9 @@ class PlayerManager extends EntityManager<
   PlayerHandleManager,
   PlayerEventMap
 > {
-  /* accessors */
-  private _local_messenger: PlayerMessengerManager = null!;
+  chunksIn = new Set<ChunkIndex>();
 
-  get messenger() {
-    return this._local_messenger ?? this.engine.messenger;
-  }
+  messenger: MessengerEmitterManager;
 
   voicechat: PlayerVoicechatManager;
 
@@ -93,13 +91,13 @@ class PlayerManager extends EntityManager<
 
     this.voicechat = new PlayerVoicechatManager(this);
 
-    if (engine.isServer) {
-      this._local_messenger = new PlayerMessengerManager(this);
-    }
+    this.messenger = new MessengerEmitterManager(engine);
 
     if (engine.isServer || this.isControlling) {
       this.camera = new PlayerCameraManager(this);
     }
+
+    this.updateChunkIndex();
   }
 
   hasAccess(command: string): boolean {
@@ -144,6 +142,8 @@ class PlayerManager extends EntityManager<
     this.dimension = dimension;
 
     this.messenger.emit('setPlayerDimension', [this.id, dimension]);
+
+    this.updateChunkIndex();
   }
 
   setPosition(position: Vector3 | Vector3Array, instant = true) {
@@ -155,6 +155,8 @@ class PlayerManager extends EntityManager<
       this.location.position.toArray(),
       instant,
     ]);
+
+    this.updateChunkIndex();
   }
 
   setRotation(
@@ -226,6 +228,63 @@ class PlayerManager extends EntityManager<
       'error',
       duration,
     ]);
+  }
+
+  updateChunkIndex() {
+    // ignore client-side
+    if (this.engine.isClient) return;
+
+    super.updateChunkIndex();
+
+    // update chunks if chunk changed
+    if (this._lastChunk !== this.chunkIndex) {
+      this._calculateChunks();
+    }
+  }
+
+  private _lastChunk: ChunkIndex = null!;
+
+  private async _calculateChunks() {
+    // this function will calculate 27 chunks
+    // in the X, Y and Z axes
+
+    this._lastChunk = this.chunkIndex;
+
+    const chunk = {
+      x: this.position.x,
+
+      y: this.position.y,
+
+      z: this.position.z,
+
+      dimension: this.dimension,
+    };
+
+    const distance = 1;
+
+    // prepare params
+    const end = Math.ceil(distance / 2);
+    const start = end * -1;
+
+    this.chunksIn.clear();
+
+    // y is always 0 for `entities` mode
+    const yStart = start;
+    const yEnd = end;
+
+    let x = 0;
+    let y = 0;
+    let z = 0;
+
+    for (z = start; z <= end; z++) {
+      for (x = start; x <= end; x++) {
+        for (y = yStart; y <= yEnd; y++) {
+          this.chunksIn.add(
+            `${chunk.x + x}_${chunk.y + y}_${chunk.z + z}_${chunk.dimension}`,
+          );
+        }
+      }
+    }
   }
 }
 

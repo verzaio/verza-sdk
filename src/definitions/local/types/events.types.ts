@@ -1,10 +1,9 @@
-/* export type EngineEventMap = Pick<
-  ScriptEventMap,
-  | 'onChat'
-  | 'onCommand'
-  | 'onCommandNotFound'
-  | 'onCursorLock'
-  | 'onAddInterface'
-  | 'onRemoveInterface'
-  | 'onKey'
->; */
+import {ChunkIndex} from 'engine/definitions/types/chunks.types';
+import {ObjectManager} from 'engine/types';
+
+export type ObjectEventMap = {
+  onChunkIndexChange: (
+    object: ObjectManager,
+    oldChunkIndex: ChunkIndex,
+  ) => void;
+};

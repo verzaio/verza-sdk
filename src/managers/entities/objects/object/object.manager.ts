@@ -1,16 +1,22 @@
 import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
+import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
+import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {ObjectEntity} from 'engine/definitions/types/entities.types';
 import {
   ObjectGroupType,
   PickObject,
 } from 'engine/definitions/types/objects/objects-definition.types';
-import {ObjectType} from 'engine/definitions/types/objects/objects.types';
+import {
+  ObjectDataProps,
+  ObjectType,
+} from 'engine/definitions/types/objects/objects.types';
 import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
+import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
 
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
@@ -24,12 +30,18 @@ const _TEMP_QUAT2 = new Quaternion();
 
 const _TEMP_OBJECT = new Object3D();
 
-class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
+class ObjectManager extends EntityManager<
+  ObjectEntity,
+  ObjectHandleManager,
+  ObjectEventMap
+> {
   parent: ObjectManager | null = null;
 
   children: Set<ObjectManager> = new Set();
 
   boundingBox: Box3 = null!;
+
+  private _messenger: MessengerEmitterManager;
 
   private _worldLocation: Object3D = null!;
 
@@ -77,6 +89,14 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     return super.location.scale;
   }
 
+  get permanent() {
+    return !!this.data.pp;
+  }
+
+  set permanent(permanent: boolean) {
+    this.data.pp = permanent;
+  }
+
   get parentId(): string | undefined {
     return this.data.parent_id;
   }
@@ -85,18 +105,18 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.data.parent_id = parentId!;
   }
 
-  private get _messenger() {
-    return this.engine.messenger;
-  }
-
   constructor(entity: ObjectEntity, engine: EngineManager) {
     super(entity, engine);
+
+    this._messenger = new MessengerEmitterManager(engine);
 
     // restore position
     this.restoreData();
 
     // check for children
     this._checkForChildren();
+
+    this.updateChunkIndex(false);
   }
 
   restoreData() {
@@ -108,50 +128,93 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     }
   }
 
+  private _lastChunkIndex: ChunkIndex = null!;
+  updateChunkIndex(emit = true) {
+    // ignore client-side and if not the parent object
+    if (this.engine.isClient || this.parent) return;
+
+    super.updateChunkIndex();
+
+    if (this._lastChunkIndex !== this.chunkIndex) {
+      if (emit) {
+        this.engine.objects.events.emit(
+          'onChunkIndexChange',
+          this,
+          this._lastChunkIndex,
+        );
+      }
+
+      // update it
+      this._lastChunkIndex = this.chunkIndex;
+    }
+  }
+
   setPosition(position: Vector3 | Vector3Array) {
     this.updatePosition(position);
 
+    this.updateChunkIndex();
+
     // emit
     if (this.parentId) {
-      this._messenger.emit('setObjectPosition', [
-        this.id,
-        this.location.position.toArray(),
-      ]);
+      this.engine.objects.emitHandler(this, player => {
+        this._messenger.emit(
+          'setObjectPosition',
+          [this.id, this.location.position.toArray()],
+          player.id,
+        );
+      });
       return;
     }
 
-    this._messenger.emit('setObjectPositionFromWorldSpace', [
-      this.id,
-      this.location.position.toArray(),
-    ]);
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectPositionFromWorldSpace',
+        [this.id, this.location.position.toArray()],
+        player.id,
+      );
+    });
   }
 
   setRotation(rotation: Quaternion | Euler | QuaternionArray | Vector3Array) {
     this.updateRotation(rotation);
 
+    this.updateChunkIndex();
+
     // emit
     if (this.parentId) {
-      this._messenger.emit('setObjectRotation', [
-        this.id,
-        this.location.quaternion.toArray() as QuaternionArray,
-      ]);
+      this.engine.objects.emitHandler(this, player => {
+        this._messenger.emit(
+          'setObjectRotation',
+          [this.id, this.location.quaternion.toArray() as QuaternionArray],
+          player.id,
+        );
+      });
+
       return;
     }
 
-    this._messenger.emit('setObjectRotationFromWorldSpace', [
-      this.id,
-      this.location.quaternion.toArray() as QuaternionArray,
-    ]);
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectRotationFromWorldSpace',
+        [this.id, this.location.quaternion.toArray() as QuaternionArray],
+        player.id,
+      );
+    });
   }
 
   setScale(scale: Vector3 | Vector3Array) {
     this.updateScale(scale);
 
+    this.updateChunkIndex();
+
     // emit
-    this._messenger.emit('setObjectScale', [
-      this.id,
-      this.location.scale.toArray(),
-    ]);
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectScale',
+        [this.id, this.location.scale.toArray()],
+        player.id,
+      );
+    });
   }
 
   updateScale(scale: Vector3 | Vector3Array) {
@@ -362,16 +425,24 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
       },
     };
 
-    this._messenger.emit('setObjectData', [
-      this.id,
-      {
-        [this.objectType]: data,
-      },
-    ]);
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectData',
+        [
+          this.id,
+          {
+            [this.objectType]: data,
+          },
+        ],
+        player.id,
+      );
+    });
   }
 
   rerender() {
-    this._messenger.emit('rerenderObject', [this.id]);
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('rerenderObject', [this.id], player.id);
+    });
   }
 
   clone(withId?: string) {
@@ -380,6 +451,63 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
 
   destroy() {
     this.engine.objects.destroy(this);
+  }
+
+  async save() {
+    // find parent
+    if (this.parent) {
+      await this.parent.save();
+      return;
+    }
+
+    if (this.engine.isClient) {
+      await this._messenger.emitAsync('saveObjectLocal', [this.id]);
+    } else {
+      await this._messenger.emitAsync('saveObject', [
+        this.id,
+        {
+          [this.objectType]: this.toData(),
+        },
+      ]);
+    }
+
+    this.permanent = true;
+  }
+
+  async delete() {
+    // find parent
+    if (this.parent) {
+      this.parent.delete();
+      return;
+    }
+
+    await this._messenger.emitAsync('deleteObject', [this.id]);
+
+    this.permanent = false;
+  }
+
+  toData(): ObjectDataProps {
+    return {
+      ...this.data,
+
+      parent_id: this.parentId,
+
+      // children
+      ...(this.children && {
+        o: {
+          ...this.data.o,
+
+          ...(this.children.size > 0 && {
+            c: [...this.children.values()]?.map(e => e.toData()),
+          }),
+        },
+      }),
+
+      // update position & rotation
+      p: this.position.toArray(),
+      r: this.rotation.toArray() as QuaternionArray,
+      s: this.scale.toArray(),
+    };
   }
 }
 

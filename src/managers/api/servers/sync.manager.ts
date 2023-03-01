@@ -28,6 +28,11 @@ class SyncManager {
   }
 
   private _bind() {
+    // chunk
+    this.events.on(NetworkSyncEvent.Chunk, (playerId, chunkIndex) => {
+      this._engine.streamer.handleChunk(playerId, chunkIndex);
+    });
+
     // player set
     this.events.on(NetworkSyncEvent.PlayerSet, packet => {
       this.players.create(packet.i!, {

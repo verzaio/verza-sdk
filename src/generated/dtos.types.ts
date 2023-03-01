@@ -416,7 +416,9 @@ export interface ScriptActionPacketSendDto {
    */
   e: string;
   /** sync data */
-  d: object;
+  d?: object;
+  /** player id */
+  p?: number;
 }
 
 export interface JoinPacketDto {
@@ -526,7 +528,7 @@ export interface PlayerPacketLocalUpdateDto {
 }
 
 export interface ObjectDataDto {
-  t: 'group' | 'model' | 'gltf' | 'box' | 'line';
+  t: string;
   /** object data */
   o: object;
   /** position | Vector3Array */
@@ -538,56 +540,26 @@ export interface ObjectDataDto {
   /** dimension */
   d?: number;
   /** collision */
-  c?: 'static' | 'kinematic' | 'dynamic';
+  c?: string | null;
   /** draw distance */
-  dd?: 'low' | 'mid' | 'high';
+  dd?: string;
   /** shadows */
   ss?: boolean;
-}
-
-export interface ObjectPacketDto {
-  /** packet id */
-  t: number;
-  /** object id */
-  i: string;
-  /** data */
-  d?: ObjectDataDto;
-  /** remove */
-  r?: boolean;
-}
-
-export interface ObjectPacketUpdatePositionDto {
-  /** position | Vector3Array */
-  p: number[];
-  /** position | QuaternionArray */
-  r?: number[];
-  d?: number;
-}
-
-export interface ObjectPacketUpdateDto {
-  /** object id (creation or update) */
-  i?: string;
-  /** creation data */
-  d?: ObjectDataDto;
-  /** update data */
-  u?: ObjectDataDto;
-  /** update position */
-  p?: ObjectPacketUpdatePositionDto;
-  /** remove */
-  r?: boolean;
+  /** permanent object */
+  pp?: boolean;
 }
 
 export interface ObjectDto {
   /** object id */
   id: string;
   /** data */
-  d?: ObjectDataDto;
+  d: ObjectDataDto;
 }
 
 export interface ChunkDto {
-  index: string;
-  chunk_size: number;
-  objects: ObjectDto[];
+  i: string;
+  s: number;
+  o: ObjectDto[];
 }
 
 export interface ChunkPacketDto {
@@ -604,8 +576,6 @@ export interface ChunksDummyFiltersDto {
 }
 
 export interface ChunkPacketRequestDto {
-  /** server id */
-  s: string;
   /** chunk index */
   i: string;
   /** is dummy */
@@ -850,22 +820,10 @@ export interface PositionDto {
 
 export interface BaseObjectDto {
   id: string;
-  type: 'group' | 'model' | 'gltf' | 'box' | 'line';
+  type: string;
   position: PositionDto;
   data: ObjectDataDto;
   world: WorldDto;
   /** @format date-time */
   created_at: string;
-}
-
-export interface CreateObjectDto {
-  /** data */
-  id?: string;
-  /** data */
-  data: ObjectDataDto;
-}
-
-export interface UpdateObjectDto {
-  /** data */
-  data: ObjectDataDto;
 }

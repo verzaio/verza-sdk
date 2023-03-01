@@ -48,8 +48,8 @@ export type NetworkEventMap = {
 };
 
 export type EntityEventMap<T> = {
-  onConnect: (entity: T) => void;
-  onDisconnect: (entity: T) => void;
+  onCreate: (entity: T) => void;
+  onDestroy: (entity: T) => void;
 
   onEnter: (entity: T) => void;
   onLeave: (entity: T) => void;
