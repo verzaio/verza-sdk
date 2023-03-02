@@ -9,7 +9,7 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
-import {ChunkIndex} from './chunks.types';
+import {ChunkData, ChunkIndex} from './chunks.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
 import {ObjectTypes} from './objects/objects-definition.types';
@@ -240,8 +240,13 @@ export type ScriptEventMap = {
   /* entities */
   getEntitiesInChunk: (chunkIndex: ChunkIndex) => ChunkDto;
 
+  /* chunks */
+  sendChunk: (chunkIndex: ChunkIndex, chunk: ChunkData) => void;
+
   /* objects */
   createObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  syncObject: (objectId: string, props: Partial<ObjectTypes>) => void;
 
   saveObject: (objectId: string, props: Partial<ObjectTypes>) => void;
 

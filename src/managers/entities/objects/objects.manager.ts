@@ -215,6 +215,14 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     // create
     const object = this.create(props.id!, objectData);
 
+    // mark as controller
+    object.isController = true;
+
+    // chunk change
+    if (this.engine.isServer) {
+      this.engine.streamer.refreshEntity(object);
+    }
+
     // emit
     this.emitHandler(object, player => {
       this._messenger.emit(

@@ -41,6 +41,8 @@ class ObjectManager extends EntityManager<
 
   boundingBox: Box3 = null!;
 
+  isController = false;
+
   private _messenger: MessengerEmitterManager;
 
   private _worldLocation: Object3D = null!;
@@ -137,16 +139,20 @@ class ObjectManager extends EntityManager<
 
     if (this._lastChunkIndex !== this.chunkIndex) {
       if (emit) {
-        this.engine.objects.events.emit(
-          'onChunkIndexChange',
-          this,
-          this._lastChunkIndex,
-        );
+        this.emitChunkIndexChange();
       }
 
       // update it
       this._lastChunkIndex = this.chunkIndex;
     }
+  }
+
+  emitChunkIndexChange() {
+    this.engine.objects.events.emit(
+      'onChunkIndexChange',
+      this,
+      this._lastChunkIndex,
+    );
   }
 
   setPosition(position: Vector3 | Vector3Array) {
@@ -471,6 +477,10 @@ class ObjectManager extends EntityManager<
       ]);
     }
 
+    // remove from streamer, now it will be
+    // handled by the verza's server
+    this.engine.streamer?.removeEntity(this);
+
     this.permanent = true;
   }
 
@@ -484,6 +494,8 @@ class ObjectManager extends EntityManager<
     await this._messenger.emitAsync('deleteObject', [this.id]);
 
     this.permanent = false;
+
+    this.destroy();
   }
 
   toData(): ObjectDataProps {

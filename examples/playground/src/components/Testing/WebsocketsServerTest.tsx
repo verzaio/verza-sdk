@@ -23,7 +23,8 @@ const WebsocketsServerTest = () => {
 
       console.log('object', object);
 
-      const OBJECT_ID = '145bb3da-ae85-4fbb-9c3a-0e8e17f882f9';
+      //const OBJECT_ID = '145bb3da-ae85-4fbb-9c3a-0e8e17f882f9';
+      //
 
       const created = engine.objects.createBox(
         {
@@ -33,12 +34,16 @@ const WebsocketsServerTest = () => {
           c: 'violet',
         },
         {
-          id: OBJECT_ID,
+          //id: OBJECT_ID,
           position: [2, 3, 2],
         },
       );
 
       console.log('created', created);
+
+      /* setTimeout(() => {
+        created.destroy();
+      }, 3000); */
 
       /* const response = await engine.api.emitActionAsync('addInterface', [
           'a',

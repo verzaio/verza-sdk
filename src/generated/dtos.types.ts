@@ -558,7 +558,6 @@ export interface ObjectDto {
 
 export interface ChunkDto {
   i: string;
-  s: number;
   o: ObjectDto[];
 }
 
