@@ -219,7 +219,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     object.isController = true;
 
     // chunk change
-    if (this.engine.isServer) {
+    if (this.engine.isServer && !object.parent) {
       this.engine.streamer.refreshEntity(object);
     }
 

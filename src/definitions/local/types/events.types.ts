@@ -4,6 +4,6 @@ import {ObjectManager} from 'engine/types';
 export type ObjectEventMap = {
   onChunkIndexChange: (
     object: ObjectManager,
-    oldChunkIndex: ChunkIndex,
+    prevChunkIndex: ChunkIndex,
   ) => void;
 };

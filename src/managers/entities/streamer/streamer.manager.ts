@@ -30,7 +30,7 @@ class StreamerManager {
       this._chunks.get(chunkIndex)?.delete(entity);
     } else {
       // if new, then sync it
-      this.syncEntity(entity);
+      this.syncEntity(entity, chunkIndex);
     }
 
     this._entitiesRel.set(entity, entity.chunkIndex);
@@ -53,25 +53,36 @@ class StreamerManager {
     this._chunks.get(chunkIndex)?.delete(entity);
   }
 
-  syncEntity(entity: StreamerEntity) {
+  syncEntity(entity: StreamerEntity, prevChunkIndex?: ChunkIndex) {
     switch (entity.type) {
       case 'object': {
-        this.syncEntities(entity.chunkIndex, {
-          o: [
-            {
-              [entity.objectType]: entity.toData(),
-            },
-          ],
-        });
+        this.syncEntities(
+          {
+            o: [
+              {
+                [entity.objectType]: entity.toData(),
+              },
+            ],
+          },
+          entity.chunkIndex,
+          prevChunkIndex,
+        );
         break;
       }
     }
   }
 
-  syncEntities(chunkIndex: ChunkIndex, data: ChunkData) {
-    this._engine.players.forEachInChunk(chunkIndex, player => {
-      console.log('sending to playerid', player.id);
-      this._api.emitAction('sendChunk', [chunkIndex, data], player.id);
+  syncEntities(
+    data: ChunkData,
+    chunkIndex: ChunkIndex,
+    prevChunkIndex?: ChunkIndex,
+  ) {
+    this._engine.players.entitiesMap.forEach(player => {
+      if (player.chunksIn.has(chunkIndex)) {
+        this._api.emitAction('sendChunk', [chunkIndex, data], player.id);
+      } else if (prevChunkIndex && player.chunksIn.has(prevChunkIndex)) {
+        this._api.emitAction('sendChunk', [prevChunkIndex, data], player.id);
+      }
     });
   }
 
@@ -83,11 +94,7 @@ class StreamerManager {
 
     // sync objects
     this._engine.objects.events.on('onChunkIndexChange', object => {
-      console.log('onChunkIndexChange', object.id);
-
       this.refreshEntity(object);
-
-      this.syncEntity(object);
     });
   }
 
@@ -97,8 +104,19 @@ class StreamerManager {
     playerId;
     chunkIndex;
 
-    //this._api.emitAction('sendChunk', [chunkIndex, data], player.id);
-    //console.log('handleChunk', playerId, chunkIndex);
+    const chunk: ChunkData = {
+      o: [],
+    };
+
+    this._chunks.get(chunkIndex)?.forEach(object => {
+      chunk.o?.push({
+        [object.objectType]: object.toData(),
+      });
+    });
+
+    if (!chunk.o?.length) return;
+
+    this._api.emitAction('sendChunk', [chunkIndex, chunk], playerId);
   }
 }
 
