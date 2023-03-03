@@ -13,6 +13,7 @@ export type ObjectEditMode = 'position' | 'rotation' | 'scale';
 export type ObjectEditActionType =
   | 'select'
   | 'unselect'
+  | 'sync'
   | 'start'
   | 'update'
   | 'end';

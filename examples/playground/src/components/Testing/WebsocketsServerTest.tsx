@@ -15,18 +15,9 @@ const WebsocketsServerTest = () => {
     const onSynced = engine.events.on('onSynced', async () => {
       console.debug('onSynced called');
 
-      console.log('requesting object');
+      const OBJECT_ID = '145bb3da-ae85-4fbb-9c3a-0e8e17f882f9';
 
-      const object = await engine.objects.resolveObject(
-        '145bb3da-ae85-4fbb-9c3a-0e8e17f882f8',
-      );
-
-      console.log('object', object);
-
-      //const OBJECT_ID = '145bb3da-ae85-4fbb-9c3a-0e8e17f882f9';
-      //
-
-      const created = engine.objects.createBox(
+      /* const created = engine.objects.createBox(
         {
           w: 1,
           h: 1,
@@ -34,15 +25,18 @@ const WebsocketsServerTest = () => {
           c: 'violet',
         },
         {
-          //id: OBJECT_ID,
+          id: OBJECT_ID,
           position: [2, 3, 2],
         },
       );
+      await created.save(); */
 
-      console.log('created', created);
+      console.log('requesting object');
+      const object = await engine.objects.resolveObject(OBJECT_ID);
+      console.log('object', object);
 
       /* setTimeout(() => {
-        created.destroy();
+        object.delete();
       }, 3000); */
 
       /* const response = await engine.api.emitActionAsync('addInterface', [

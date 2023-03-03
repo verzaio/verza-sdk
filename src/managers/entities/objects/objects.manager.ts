@@ -477,9 +477,11 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   async sync(object: ObjectManager) {
     // find parent
     if (object.parent) {
-      this.save(object.parent);
+      this.sync(object.parent);
       return;
     }
+
+    if (!object.remote) return;
 
     // sync it
     this._messenger.emit('syncObjectLocal', [object.id]);
@@ -504,7 +506,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
 
     // remove from streamer, now it will be
-    // handled by the verza's server
+    // handled by verza's servers
     this.engine.streamer?.removeEntity(object);
 
     object.permanent = true;
