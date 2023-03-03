@@ -56,6 +56,8 @@ export type EntityEventMap<T> = {
 
   onStreamIn: (entity: T) => void;
   onStreamOut: (entity: T) => void;
+
+  onChunkIndexChange: (entity: T, chunkIndex: ChunkIndex) => void;
 };
 
 export type PlayerEventMap = {

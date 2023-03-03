@@ -92,11 +92,37 @@ class ObjectManager extends EntityManager<
   }
 
   get permanent() {
-    return !!this.data.pp;
+    if (this.parent) {
+      return this.parent.permanent;
+    }
+
+    return !!this.data.po;
   }
 
   set permanent(permanent: boolean) {
-    this.data.pp = permanent;
+    if (this.parent) {
+      this.parent.permanent = permanent;
+      return;
+    }
+
+    if (permanent) {
+      this.data.po = permanent;
+    } else {
+      delete this.data.po;
+    }
+  }
+
+  get remote() {
+    if (this.parent) {
+      return this.parent.remote;
+    }
+
+    return !!this.data.ro;
+  }
+
+  set remote(remote: boolean) {
+    /* satisfies */
+    remote;
   }
 
   get parentId(): string | undefined {
@@ -459,43 +485,20 @@ class ObjectManager extends EntityManager<
     this.engine.objects.destroy(this);
   }
 
+  saveVolatile() {
+    this.engine.objects.saveVolatile(this);
+  }
+
+  async sync() {
+    this.engine.objects.sync(this);
+  }
+
   async save() {
-    // find parent
-    if (this.parent) {
-      await this.parent.save();
-      return;
-    }
-
-    if (this.engine.isClient) {
-      await this._messenger.emitAsync('saveObjectLocal', [this.id]);
-    } else {
-      await this._messenger.emitAsync('saveObject', [
-        this.id,
-        {
-          [this.objectType]: this.toData(),
-        },
-      ]);
-    }
-
-    // remove from streamer, now it will be
-    // handled by the verza's server
-    this.engine.streamer?.removeEntity(this);
-
-    this.permanent = true;
+    this.engine.objects.save(this);
   }
 
   async delete() {
-    // find parent
-    if (this.parent) {
-      this.parent.delete();
-      return;
-    }
-
-    await this._messenger.emitAsync('deleteObject', [this.id]);
-
-    this.permanent = false;
-
-    this.destroy();
+    this.engine.objects.delete(this);
   }
 
   toData(): ObjectDataProps {

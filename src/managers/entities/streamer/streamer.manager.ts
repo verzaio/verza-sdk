@@ -19,6 +19,10 @@ class StreamerManager {
     this._engine = engine;
   }
 
+  is(entity: StreamerEntity) {
+    return this._entitiesRel.has(entity);
+  }
+
   refreshEntity(entity: StreamerEntity) {
     if (!entity.chunkIndex) return;
 
@@ -99,11 +103,6 @@ class StreamerManager {
   }
 
   handleChunk(playerId: number, chunkIndex: ChunkIndex) {
-    // TODO: Implement
-
-    playerId;
-    chunkIndex;
-
     const chunk: ChunkData = {
       o: [],
     };

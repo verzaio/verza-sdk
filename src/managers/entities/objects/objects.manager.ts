@@ -49,9 +49,21 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     if (this._loadBinded) return;
     this._loadBinded = true;
 
-    //
     this._messenger.events.on('destroyObject', ({data: [objectId]}) => {
       this.destroy(this.get(objectId), false);
+    });
+
+    this._messenger.events.on('destroyObjectClient', ({data: [objectId]}) => {
+      this.destroy(this.get(objectId));
+    });
+
+    this._messenger.events.on('syncObject', ({data: [objectId, props]}) => {
+      const objectProps = Object.values(props)[0];
+      const object = this.get(objectId);
+
+      if (object && objectProps) {
+        this.update(object, objectProps);
+      }
     });
   }
 
@@ -87,7 +99,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       data.r && object.updateRotation(data.r);
       data.s && object.updateScale(data.s);
 
-      object.updateChunkIndex(false);
+      object.updateChunkIndex();
 
       // set data
       object.data = data;
@@ -433,6 +445,91 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     if (!this.engine.isClient) {
       throw new Error('This method is only available on client');
     }
+  }
+
+  private _savingTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+
+  private _cleanSavingTimeout(object: ObjectManager) {
+    const savingTimeout = this._savingTimeouts.get(object.id);
+
+    if (savingTimeout) {
+      clearTimeout(savingTimeout);
+      this._savingTimeouts.delete(object.id);
+    }
+  }
+
+  saveVolatile(object: ObjectManager) {
+    if (this._savingTimeouts.has(object.id)) return;
+
+    // clear timeout
+    this._cleanSavingTimeout(object);
+
+    this._savingTimeouts.set(
+      object.id,
+      setTimeout(() => {
+        this._savingTimeouts.delete(object.id);
+
+        object.save();
+      }, 100),
+    );
+  }
+
+  async sync(object: ObjectManager) {
+    // find parent
+    if (object.parent) {
+      this.save(object.parent);
+      return;
+    }
+
+    // sync it
+    this._messenger.emit('syncObjectLocal', [object.id]);
+  }
+
+  async save(object: ObjectManager) {
+    // find parent
+    if (object.parent) {
+      await object.parent.save();
+      return;
+    }
+
+    if (this.engine.isClient) {
+      await this._messenger.emitAsync('saveObjectLocal', [object.id]);
+    } else {
+      await this._messenger.emitAsync('saveObject', [
+        object.id,
+        {
+          [object.objectType]: object.toData(),
+        },
+      ]);
+    }
+
+    // remove from streamer, now it will be
+    // handled by the verza's server
+    this.engine.streamer?.removeEntity(object);
+
+    object.permanent = true;
+  }
+
+  async delete(object: ObjectManager) {
+    // find parent
+    if (object.parent) {
+      await object.parent.delete();
+      return;
+    }
+
+    // allow to delete only if permanent or remote
+    if (!object.permanent && !object.remote) {
+      this.destroy(object);
+      return;
+    }
+
+    this._cleanSavingTimeout(object);
+
+    await this._messenger.emitAsync('deleteObject', [object.id]);
+
+    object.permanent = false;
+
+    this.destroy(object, false);
   }
 }
 

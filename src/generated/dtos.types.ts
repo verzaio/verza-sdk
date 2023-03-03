@@ -546,7 +546,9 @@ export interface ObjectDataDto {
   /** shadows */
   ss?: boolean;
   /** permanent object */
-  pp?: boolean;
+  po?: boolean;
+  /** remote object */
+  ro?: boolean;
 }
 
 export interface ObjectDto {

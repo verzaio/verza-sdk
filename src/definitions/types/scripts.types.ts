@@ -248,6 +248,8 @@ export type ScriptEventMap = {
 
   syncObject: (objectId: string, props: Partial<ObjectTypes>) => void;
 
+  syncObjectLocal: (objectId: string) => void;
+
   saveObject: (objectId: string, props: Partial<ObjectTypes>) => void;
 
   saveObjectLocal: (objectId: string) => void;
@@ -257,6 +259,8 @@ export type ScriptEventMap = {
   getObject: (objectId: string) => ObjectDataProps;
 
   destroyObject: (objectId: string) => void;
+
+  destroyObjectClient: (objectId: string) => void;
 
   editObject: (objectId: string) => void;
 

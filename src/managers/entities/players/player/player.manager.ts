@@ -1,6 +1,7 @@
 import {Euler, Quaternion, Vector3} from 'three';
 import {MathUtils} from 'three';
 
+import {STREAMER_CHUNK_SIZE} from 'engine/definitions/constants/streamer.constants';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
@@ -11,6 +12,7 @@ import {
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
+import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';
 import PlayerCameraManager from './player-camera.manager';
@@ -250,15 +252,14 @@ class PlayerManager extends EntityManager<
 
     this._lastChunk = this.chunkIndex;
 
-    const chunk = {
-      x: this.position.x,
+    const chunk = getChunkInfo(
+      this.position.x,
+      this.position.y,
+      this.position.z,
+      this.dimension,
 
-      y: this.position.y,
-
-      z: this.position.z,
-
-      dimension: this.dimension,
-    };
+      STREAMER_CHUNK_SIZE,
+    );
 
     const distance = 1;
 
