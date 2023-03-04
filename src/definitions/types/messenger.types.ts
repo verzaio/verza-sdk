@@ -22,5 +22,7 @@ export type MessengerValidators<T extends EventListenersMap> = Partial<{
 export type ScriptMessengerMethods = {
   [key in keyof ScriptEventMap]: (
     message: MessengerMessage<Parameters<ScriptEventMap[key]>>,
-  ) => ReturnType<ScriptEventMap[key]>;
+  ) =>
+    | Promise<ReturnType<ScriptEventMap[key]>>
+    | ReturnType<ScriptEventMap[key]>;
 };

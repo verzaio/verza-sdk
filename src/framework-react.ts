@@ -11,6 +11,7 @@ export {useKey} from 'engine/frameworks/react/hooks/useKey';
 export {useControllerProp} from 'engine/frameworks/react/hooks/useControllerProp';
 export {useNetwork} from 'engine/frameworks/react/hooks/useNetwork';
 export {useCamera} from 'engine/frameworks/react/hooks/useCamera';
+export {useAssets} from 'engine/frameworks/react/hooks/useAssets';
 export {useChat} from 'engine/frameworks/react/hooks/useChat';
 export {useCommand} from 'engine/frameworks/react/hooks/useCommand';
 export {useToolbar} from 'engine/frameworks/react/hooks/useToolbar';
@@ -24,7 +25,9 @@ export {useRaycaster} from 'engine/frameworks/react/hooks/useRaycaster';
 export {useSky} from 'engine/frameworks/react/hooks/useSky';
 export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
 
-export {usePlayerId} from 'engine/frameworks/react/hooks/usePlayerId';
+export {useLocalPlayerId} from 'engine/frameworks/react/hooks/useLocalPlayerId';
+export {useLocalPlayer} from 'engine/frameworks/react/hooks/useLocalPlayer';
+export {useStreamedLocalPlayer} from 'engine/frameworks/react/hooks/useStreamedLocalPlayer';
 
 export {useObjects} from 'engine/frameworks/react/hooks/useObjects';
 export {usePlayers} from 'engine/frameworks/react/hooks/usePlayers';

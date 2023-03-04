@@ -1,4 +1,5 @@
 import {
+  ChunkDto,
   EncryptedPacketsDto,
   PlayerPacketDto,
   PlayerPacketUpdateDto,
@@ -6,9 +7,9 @@ import {
 } from 'engine/generated/dtos.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
-import {MoonPhases} from 'engine/managers/sky.manager';
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
+import {ChunkData, ChunkIndex} from './chunks.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
 import {ObjectTypes} from './objects/objects-definition.types';
@@ -19,6 +20,7 @@ import {
   ObjectEditAxes,
 } from './objects/objects.types';
 import {
+  FileTransfer,
   IndicatorId,
   IndicatorTitle,
   KeyEvent,
@@ -29,6 +31,7 @@ import {
 import {
   IntersectsResult,
   IntersectsResultRaw,
+  MoonPhases,
   QuaternionArray,
   RaycastOptions,
   Vector3Array,
@@ -100,6 +103,14 @@ export type ScriptEventMap = {
 
   onKeyUp: (event: KeyEvent) => void;
 
+  onDragLeave: () => void;
+
+  onDragEnter: () => void;
+
+  onDragOver: () => void;
+
+  onDrop: (file?: FileTransfer) => void;
+
   addInterface: (tag: string) => void;
 
   removeInterface: (tag: string) => void;
@@ -115,6 +126,8 @@ export type ScriptEventMap = {
   onToolbarItemPress: (id: string, toolbarId: string) => void;
 
   onCursorLock: (status: boolean) => void;
+
+  onInputFocus: (status: boolean) => void;
 
   setSize: (props: SizeProps<string>) => void;
 
@@ -224,14 +237,51 @@ export type ScriptEventMap = {
 
   onCameraTransitionEnd: (id?: number | string) => void;
 
+  /* entities */
+  getEntitiesInChunk: (chunkIndex: ChunkIndex) => ChunkDto;
+
+  /* chunks */
+  sendChunk: (chunkIndex: ChunkIndex, chunk: ChunkData) => void;
+
+  /* assets */
+  uploadAsset: (file: FileTransfer) => string;
+
+  deleteAsset: (assetId: string) => void;
+
   /* objects */
   createObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  isObjectStreamed: (objectId: string) => boolean;
+
+  syncObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  syncObjectLocal: (objectId: string) => void;
+
+  saveObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  saveObjectLocal: (objectId: string) => void;
+
+  deleteObject: (objectId: string) => void;
 
   getObject: (objectId: string) => ObjectDataProps;
 
   destroyObject: (objectId: string) => void;
 
+  destroyObjectClient: (objectId: string) => void;
+
   editObject: (objectId: string) => void;
+
+  setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
+
+  rerenderObject: (objectId: string) => void;
+
+  onObjectStreamIn: (object: ObjectManager) => void;
+
+  onObjectStreamOut: (object: ObjectManager) => void;
+
+  onObjectStreamInRaw: (objectId: string) => void;
+
+  onObjectStreamOutRaw: (objectId: string) => void;
 
   setObjectEditAxes: (axes: ObjectEditAxes) => void;
 
@@ -333,7 +383,6 @@ export type ScriptEventMap = {
   setForwardMessages: (status: boolean) => void;
 
   /* sky */
-
   setMoonPhase: (phase: MoonPhases) => void;
 
   setTimeRepresentation: (
@@ -349,6 +398,7 @@ export type ScriptEventMap = {
     groundColor: string,
     intensity: number,
   ) => void;
+
   setLight: (color: string, intensity: number) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
@@ -359,4 +409,8 @@ export type ScriptEventMap = {
   ) => void;
 } & {
   [key in `onScriptCustomEvent_${string}`]: (data?: CustomEventData) => void;
+} & {
+  [key in `onObjectStreamInRaw_${string}`]: () => void;
+} & {
+  [key in `onObjectStreamOutRaw_${string}`]: () => void;
 };

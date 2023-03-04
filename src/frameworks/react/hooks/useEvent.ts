@@ -1,12 +1,12 @@
 import {useEffect, useRef} from 'react';
 
-import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+import {EngineScriptEventMap} from 'engine/definitions/local/types/events.types';
 
 import {useEngine} from './useEngine';
 
 export const useEvent = <
-  T extends keyof ScriptEventMap = keyof ScriptEventMap,
-  P extends ScriptEventMap[T] = ScriptEventMap[T],
+  T extends keyof EngineScriptEventMap = keyof EngineScriptEventMap,
+  P extends EngineScriptEventMap[T] = EngineScriptEventMap[T],
 >(
   event: T,
   callback: P,

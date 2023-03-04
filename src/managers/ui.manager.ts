@@ -3,6 +3,7 @@ import {
   INTERFACE_OPTIONS,
 } from 'engine/definitions/constants/ui.constants';
 import {
+  FileTransfer,
   IndicatorId,
   IndicatorTitle,
   KeyEventType,
@@ -19,6 +20,8 @@ class UIManager {
   visible = false;
 
   private _engine: EngineManager;
+
+  private _activeInput = false;
 
   /* controller */
   controller = new ControllerManager({
@@ -38,8 +41,9 @@ class UIManager {
 
   get isActiveInput() {
     return (
+      this._activeInput ||
       this.hasInterface(INTERFACE_CHAT) ||
-      ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '')
+      this._isFocusElement()
     );
   }
 
@@ -72,14 +76,43 @@ class UIManager {
   }
 
   bind() {
-    document.addEventListener('pointermove', this._onPointerEvent);
-    document.addEventListener('pointerdown', this._onPointerEvent);
-    document.addEventListener('pointerup', this._onPointerEvent);
+    document.body.addEventListener('focusin', this._onInputFocus, {
+      passive: false,
+    });
 
-    document.addEventListener('keydown', this._onKeyEvent);
-    document.addEventListener('keyup', this._onKeyEvent);
+    document.body.addEventListener('focusout', this._onInputFocus, {
+      passive: false,
+    });
 
-    document.addEventListener('keyup', this._onEscapeKey);
+    document.addEventListener('pointermove', this._onPointerEvent, {
+      passive: false,
+    });
+    document.addEventListener('pointerdown', this._onPointerEvent, {
+      passive: false,
+    });
+    document.addEventListener('pointerup', this._onPointerEvent, {
+      passive: false,
+    });
+
+    document.addEventListener('keydown', this._onKeyEvent, {
+      passive: false,
+    });
+    document.addEventListener('keyup', this._onKeyEvent, {
+      passive: false,
+    });
+
+    document.addEventListener('keyup', this._onEscapeKey, {
+      passive: false,
+    });
+
+    document.addEventListener('dragenter', this._onDragEvent);
+    document.addEventListener('dragleave', this._onDragEvent);
+    document.addEventListener('dragover', this._onDragEvent);
+    document.addEventListener('drop', this._onDragDrop);
+
+    this._messenger.events.on('onInputFocus', ({data: [status]}) => {
+      this._activeInput = status;
+    });
 
     this._messenger.events.on('addInterface', ({data: [tag]}) => {
       this.interfaces.add(tag);
@@ -94,7 +127,75 @@ class UIManager {
     this._messenger.events.on('onCursorLock', ({data: [status]}) => {
       this.controller.set('cursorLock', status);
     });
+
+    this._messenger.events.on('onCursorLock', ({data: [status]}) => {
+      this.controller.set('cursorLock', status);
+    });
   }
+
+  private _onDragEvent = (event: DragEvent) => {
+    event.preventDefault();
+
+    switch (event.type) {
+      case 'dragenter': {
+        this._emitDragEvent('onDragEnter');
+        break;
+      }
+      case 'dragleave': {
+        this._emitDragEvent('onDragLeave');
+        break;
+      }
+      case 'dragover': {
+        this._emitDragEvent('onDragOver');
+        break;
+      }
+    }
+  };
+
+  private _onDragDrop = async (event: DragEvent) => {
+    event.preventDefault();
+
+    const files = event.dataTransfer?.files;
+    if (!files?.length) return;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files.item(i);
+
+      if (!file) continue;
+
+      const buffer = await file.arrayBuffer();
+
+      this._emitDragDrop({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        buffer,
+      });
+    }
+  };
+
+  private _isFocusElement() {
+    return ['INPUT', 'TEXTAREA'].includes(
+      document.activeElement?.tagName ?? '',
+    );
+  }
+
+  private _lastFocusState = false;
+  private _onInputFocus = () => {
+    const focusState = this._isFocusElement();
+
+    if (focusState !== this._lastFocusState) {
+      this._lastFocusState = focusState;
+
+      this._messenger.emit('onInputFocus', [this._lastFocusState]);
+    }
+  };
+
+  private _onEscapeKey = (event: KeyboardEvent) => {
+    if (event.code !== 'Escape') return;
+
+    this._messenger.emit('onEscapeKey');
+  };
 
   private _onPointerEvent = (event: PointerEvent) => {
     // prevent `pointerdown` default action
@@ -123,6 +224,9 @@ class UIManager {
   };
 
   private _onKeyEvent = (event: KeyboardEvent) => {
+    // ignore if active input
+    if (this.activeInput) return;
+
     this._messenger.emit('onKeyEvent', [
       {
         type: event.type as KeyEventType,
@@ -135,6 +239,19 @@ class UIManager {
       },
     ]);
   };
+
+  private _emitDragEvent(event: 'onDragLeave' | 'onDragEnter' | 'onDragOver') {
+    this._messenger.emit(event);
+  }
+
+  private _emitDragDrop(file?: FileTransfer) {
+    if (!file) {
+      this._messenger.emit('onDrop');
+      return;
+    }
+
+    this._messenger.emit('onDrop', [file], [file.buffer]);
+  }
 
   private _extractBaseEventProps(
     event: KeyboardEvent | PointerEvent,
@@ -151,12 +268,6 @@ class UIManager {
       activeInput: this.isActiveInput,
     };
   }
-
-  private _onEscapeKey = (event: KeyboardEvent) => {
-    if (event.code !== 'Escape') return;
-
-    this._messenger.emit('onEscapeKey');
-  };
 
   /* interfaces */
   addInterface(tag: string) {
@@ -204,6 +315,9 @@ class UIManager {
   }
 
   destroy() {
+    document.body.removeEventListener('focusin', this._onInputFocus);
+    document.body.removeEventListener('focusout', this._onInputFocus);
+
     document.removeEventListener('pointermove', this._onPointerEvent);
     document.removeEventListener('pointerdown', this._onPointerEvent);
     document.removeEventListener('pointerup', this._onPointerEvent);
@@ -212,6 +326,11 @@ class UIManager {
     document.removeEventListener('keyup', this._onKeyEvent);
 
     document.removeEventListener('keyup', this._onEscapeKey);
+
+    document.removeEventListener('dragenter', this._onDragEvent);
+    document.removeEventListener('dragleave', this._onDragEvent);
+    document.removeEventListener('dragover', this._onDragEvent);
+    document.removeEventListener('drop', this._onDragDrop);
   }
 }
 

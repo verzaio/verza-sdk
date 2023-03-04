@@ -1,9 +1,9 @@
 export enum ObjectType {
-  Group = 'group',
-  Model = 'model',
-  Gltf = 'gltf',
-  Box = 'box',
-  Line = 'line',
+  group = 'group',
+  model = 'model',
+  gltf = 'gltf',
+  box = 'box',
+  line = 'line',
 }
 
 export enum ObjectSource {

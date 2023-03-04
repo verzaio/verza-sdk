@@ -1,12 +1,22 @@
 import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
+import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
+import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {ObjectEntity} from 'engine/definitions/types/entities.types';
-import {ObjectGroupType} from 'engine/definitions/types/objects/objects-definition.types';
+import {
+  ObjectGroupType,
+  PickObject,
+} from 'engine/definitions/types/objects/objects-definition.types';
+import {
+  ObjectDataProps,
+  ObjectType,
+} from 'engine/definitions/types/objects/objects.types';
 import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
+import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
 
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
@@ -20,12 +30,20 @@ const _TEMP_QUAT2 = new Quaternion();
 
 const _TEMP_OBJECT = new Object3D();
 
-class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
+class ObjectManager extends EntityManager<
+  ObjectEntity,
+  ObjectHandleManager,
+  ObjectEventMap
+> {
   parent: ObjectManager | null = null;
 
   children: Set<ObjectManager> = new Set();
 
   boundingBox: Box3 = null!;
+
+  isController = false;
+
+  private _messenger: MessengerEmitterManager;
 
   private _worldLocation: Object3D = null!;
 
@@ -50,6 +68,9 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
         this._worldLocation.quaternion.copy(this.location.quaternion);
       }
 
+      // scale
+      this._worldLocation.scale.copy(this.location.scale);
+
       return this._worldLocation;
     })();
   }
@@ -70,6 +91,40 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     return super.location.scale;
   }
 
+  get permanent() {
+    if (this.parent) {
+      return this.parent.permanent;
+    }
+
+    return !!this.data.po;
+  }
+
+  set permanent(permanent: boolean) {
+    if (this.parent) {
+      this.parent.permanent = permanent;
+      return;
+    }
+
+    if (permanent) {
+      this.data.po = permanent;
+    } else {
+      delete this.data.po;
+    }
+  }
+
+  get remote() {
+    if (this.parent) {
+      return this.parent.remote;
+    }
+
+    return !!this.data.ro;
+  }
+
+  set remote(remote: boolean) {
+    /* satisfies */
+    remote;
+  }
+
   get parentId(): string | undefined {
     return this.data.parent_id;
   }
@@ -78,18 +133,18 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     this.data.parent_id = parentId!;
   }
 
-  private get _messenger() {
-    return this.engine.messenger;
-  }
-
   constructor(entity: ObjectEntity, engine: EngineManager) {
     super(entity, engine);
+
+    this._messenger = new MessengerEmitterManager(engine);
 
     // restore position
     this.restoreData();
 
     // check for children
     this._checkForChildren();
+
+    this.updateChunkIndex(false);
   }
 
   restoreData() {
@@ -101,50 +156,97 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     }
   }
 
+  private _lastChunkIndex: ChunkIndex = null!;
+  updateChunkIndex(emit = true) {
+    // ignore client-side and if not the parent object
+    if (this.engine.isClient || this.parent) return;
+
+    super.updateChunkIndex();
+
+    if (this._lastChunkIndex !== this.chunkIndex) {
+      if (emit) {
+        this.emitChunkIndexChange();
+      }
+
+      // update it
+      this._lastChunkIndex = this.chunkIndex;
+    }
+  }
+
+  emitChunkIndexChange() {
+    this.engine.objects.events.emit(
+      'onChunkIndexChange',
+      this,
+      this._lastChunkIndex,
+    );
+  }
+
   setPosition(position: Vector3 | Vector3Array) {
     this.updatePosition(position);
 
+    this.updateChunkIndex();
+
     // emit
     if (this.parentId) {
-      this._messenger.emit('setObjectPosition', [
-        this.id,
-        this.location.position.toArray(),
-      ]);
+      this.engine.objects.emitHandler(this, player => {
+        this._messenger.emit(
+          'setObjectPosition',
+          [this.id, this.location.position.toArray()],
+          player.id,
+        );
+      });
       return;
     }
 
-    this._messenger.emit('setObjectPositionFromWorldSpace', [
-      this.id,
-      this.location.position.toArray(),
-    ]);
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectPositionFromWorldSpace',
+        [this.id, this.location.position.toArray()],
+        player.id,
+      );
+    });
   }
 
   setRotation(rotation: Quaternion | Euler | QuaternionArray | Vector3Array) {
     this.updateRotation(rotation);
 
+    this.updateChunkIndex();
+
     // emit
     if (this.parentId) {
-      this._messenger.emit('setObjectRotation', [
-        this.id,
-        this.location.quaternion.toArray() as QuaternionArray,
-      ]);
+      this.engine.objects.emitHandler(this, player => {
+        this._messenger.emit(
+          'setObjectRotation',
+          [this.id, this.location.quaternion.toArray() as QuaternionArray],
+          player.id,
+        );
+      });
+
       return;
     }
 
-    this._messenger.emit('setObjectRotationFromWorldSpace', [
-      this.id,
-      this.location.quaternion.toArray() as QuaternionArray,
-    ]);
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectRotationFromWorldSpace',
+        [this.id, this.location.quaternion.toArray() as QuaternionArray],
+        player.id,
+      );
+    });
   }
 
   setScale(scale: Vector3 | Vector3Array) {
     this.updateScale(scale);
 
+    this.updateChunkIndex();
+
     // emit
-    this._messenger.emit('setObjectScale', [
-      this.id,
-      this.location.scale.toArray(),
-    ]);
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectScale',
+        [this.id, this.location.scale.toArray()],
+        player.id,
+      );
+    });
   }
 
   updateScale(scale: Vector3 | Vector3Array) {
@@ -331,10 +433,123 @@ class ObjectManager extends EntityManager<ObjectEntity, ObjectHandleManager> {
     return this.boundingBox;
   }
 
+  async resolve(): Promise<ObjectManager | null> {
+    return this.engine.objects.resolveObject(this.id, true);
+  }
+
   async resolveParent(forceUpdate?: boolean): Promise<ObjectManager | null> {
     if (!this.parentId) return null;
 
     return this.engine.objects.resolveObject(this.parentId, forceUpdate);
+  }
+
+  setData<
+    T extends ObjectType = ObjectType,
+    D extends PickObject<T> = PickObject<T>,
+  >(data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>) {
+    this.data = {
+      ...this.data,
+      ...data,
+
+      o: {
+        ...this.data.o,
+        ...data.o,
+      },
+    };
+
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectData',
+        [
+          this.id,
+          {
+            [this.objectType]: data,
+          },
+        ],
+        player.id,
+      );
+    });
+  }
+
+  rerender() {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('rerenderObject', [this.id], player.id);
+    });
+  }
+
+  clone(withId?: string) {
+    return this.engine.objects.clone(this, withId);
+  }
+
+  destroy() {
+    this.engine.objects.destroy(this);
+  }
+
+  saveVolatile() {
+    this.engine.objects.saveVolatile(this);
+  }
+
+  async isStreamed() {
+    const {
+      data: [streamed],
+    } = await this.engine.messenger.emitAsync('isObjectStreamed', [this.id]);
+
+    return streamed;
+  }
+
+  async waitForStream(): Promise<void> {
+    const streamed = await this.isStreamed();
+    if (streamed) return;
+
+    return new Promise(resolve => {
+      const onStreamIn = this.engine.messenger.events.on(
+        `onObjectStreamInRaw_${this.id}`,
+        () => {
+          this.engine.messenger.events.off(
+            `onObjectStreamInRaw_${this.id}`,
+            onStreamIn,
+          );
+
+          resolve();
+        },
+      );
+    });
+  }
+
+  async sync() {
+    this.engine.objects.sync(this);
+  }
+
+  async save() {
+    this.engine.objects.save(this);
+  }
+
+  async delete() {
+    this.engine.objects.delete(this);
+  }
+
+  toData(): ObjectDataProps {
+    return {
+      ...this.data,
+
+      parent_id: this.parentId,
+
+      // children
+      ...(this.children && {
+        o: {
+          ...this.data.o,
+
+          ...(this.children.size > 0 && {
+            c: [...this.children.values()]?.map(e => e.toData()),
+          }),
+        },
+      }),
+
+      // update position & rotation
+      p: this.position.toArray(),
+      r: this.rotation.toArray() as QuaternionArray,
+      s: this.scale.toArray(),
+    };
   }
 }
 

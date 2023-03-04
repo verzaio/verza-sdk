@@ -142,6 +142,18 @@ export interface NotificationEventDto {
   event: 'status' | 'new_notification';
 }
 
+export interface AssetDto {
+  id: string;
+  asset_url: string;
+  /** @format date-time */
+  created_at: string;
+}
+
+export interface CreateAssetDto {
+  /** @format binary */
+  asset_file: File;
+}
+
 export interface CharacterShapekeyDto {
   id: string;
   name: string;
@@ -390,6 +402,7 @@ export interface ServerDto {
   permissions: ServerPermissionsDto;
   status: 'active' | 'inactive';
   commands: CommandConfigDto[];
+  assets_url?: string;
   favorited: boolean;
   /** @format date-time */
   created_at: string;
@@ -403,7 +416,9 @@ export interface ScriptActionPacketSendDto {
    */
   e: string;
   /** sync data */
-  d: object;
+  d?: object;
+  /** player id */
+  p?: number;
 }
 
 export interface JoinPacketDto {
@@ -525,24 +540,27 @@ export interface ObjectDataDto {
   /** dimension */
   d?: number;
   /** collision */
-  c?: 'static' | 'kinematic' | 'dynamic';
+  c?: string | null;
   /** draw distance */
-  dd?: 'low' | 'mid' | 'high';
+  dd?: string;
   /** shadows */
   ss?: boolean;
+  /** permanent object */
+  po?: boolean;
+  /** remote object */
+  ro?: boolean;
 }
 
 export interface ObjectDto {
   /** object id */
   id: string;
   /** data */
-  d?: ObjectDataDto;
+  d: ObjectDataDto;
 }
 
 export interface ChunkDto {
-  index: string;
-  chunk_size: number;
-  objects: ObjectDto[];
+  i: string;
+  o: ObjectDto[];
 }
 
 export interface ChunkPacketDto {
@@ -559,8 +577,6 @@ export interface ChunksDummyFiltersDto {
 }
 
 export interface ChunkPacketRequestDto {
-  /** world id */
-  w: string;
   /** chunk index */
   i: string;
   /** is dummy */
@@ -805,30 +821,10 @@ export interface PositionDto {
 
 export interface BaseObjectDto {
   id: string;
-  type: 'group' | 'model' | 'gltf' | 'box' | 'line';
+  type: string;
   position: PositionDto;
   data: ObjectDataDto;
   world: WorldDto;
   /** @format date-time */
   created_at: string;
-}
-
-export interface CreateObjectDto {
-  /** data */
-  id?: string;
-  /** data */
-  data: ObjectDataDto;
-}
-
-export interface UpdateObjectDto {
-  /** data */
-  data: ObjectDataDto;
-}
-
-export interface UpdatePositionDto {
-  /** position | Vector3Array */
-  position?: number[];
-  /** position | QuaternionArray */
-  rotation?: number[];
-  dimension?: number;
 }

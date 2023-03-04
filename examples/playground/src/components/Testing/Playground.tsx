@@ -1,7 +1,7 @@
-import {useNetwork, usePlayerId, useStreamedPlayer} from '@verza/sdk/react';
+import {useNetwork, useStreamedLocalPlayer} from '@verza/sdk/react';
 
 const Playground = () => {
-  const player = useStreamedPlayer(usePlayerId());
+  const player = useStreamedLocalPlayer();
   const network = useNetwork();
 
   player;

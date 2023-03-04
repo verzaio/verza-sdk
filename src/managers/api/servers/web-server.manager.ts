@@ -183,7 +183,7 @@ class WebServerManager {
     this.declaredCommands = commands;
 
     // set player id
-    this._engine.playerId = playerId;
+    this._engine.localPlayerId = playerId;
 
     // create player
     this._engine.players.create(playerId, {
@@ -277,7 +277,7 @@ class WebServerManager {
           .parse(packet);
 
         this._engine.messenger.emitLocal(`onPlayerCustomEvent_${parsed.e}`, [
-          this._engine.player.id,
+          this._engine.localPlayer.id,
 
           parsed.d,
         ]);
@@ -345,6 +345,7 @@ class WebServerManager {
   async emitAction<A extends keyof ScriptEventMap>(
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
+    playerId?: number,
   ): Promise<Response> {
     if (!this.isServer) return null!;
 
@@ -366,6 +367,7 @@ class WebServerManager {
       body: JSON.stringify({
         e: eventName,
         d: args as object,
+        p: playerId,
       } satisfies ScriptActionPacketSendDto),
 
       headers: {

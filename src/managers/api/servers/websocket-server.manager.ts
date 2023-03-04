@@ -175,10 +175,12 @@ class WebsocketServerManager {
   async emitAction<A extends keyof ScriptEventMap>(
     eventName: A,
     args?: Parameters<ScriptEventMap[A]>,
+    playerId?: number,
   ) {
     this.socket.emit(PacketEvent.ScriptAction, {
       e: eventName,
       d: args as object,
+      p: playerId,
     } satisfies ScriptActionPacketSendDto);
   }
 

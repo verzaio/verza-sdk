@@ -124,7 +124,8 @@ const ObjectsTest = () => {
         collision="static"
       /> */}
 
-      <Group
+      {/* <Group
+       ref={objectRef }
         id="boxesGroup2"
         position={[5, 3, 8]}
         scale={[1.5, 1.5, 1.5]}
@@ -143,11 +144,10 @@ const ObjectsTest = () => {
           position={[0, 0.5, 2]}
           collision="static"
         />
-      </Group>
+      </Group> */}
 
       <Group
         id="boxesGroup"
-        ref={objectRef}
         position={[2, 3, 10]}
         scale={[2, 2, 2]}
         rotation={[0, 0, Math.PI / 4]}>
@@ -168,17 +168,17 @@ const ObjectsTest = () => {
         </Group> */}
 
         <Box
+          shadows
           id="box1"
           box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
-          position={[0, 1, 0]}
+          position={[0, 2, 0]}
           rotation={[Math.PI / 4, 0, 0]}
-          collision="static"
         />
 
         <Box
           id="box2"
           box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
-          position={[0, 0.5, 2]}
+          position={[2, 0.5, 2]}
           collision="static"
         />
 
@@ -233,7 +233,8 @@ const ObjectsTest = () => {
       /> */}
 
       {/* <Gltf
-        props={{position: [0, 1, 10], collision: 'static'}}
+        position={[0, 1, 10]}
+        collision="static"
         url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb"
       /> */}
     </div>

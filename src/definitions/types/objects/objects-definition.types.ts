@@ -1,5 +1,6 @@
 import {ObjectDataDto} from 'engine/generated/dtos.types';
 
+import {EntityCollisionType, EntityDrawDistanceType} from '../entities.types';
 import {QuaternionArray, Vector3Array} from '../world.types';
 import {ObjectType} from './objects.types';
 
@@ -8,11 +9,15 @@ export type PickObject<T extends ObjectType> = ObjectTypes[T];
 export type ObjectBaseType<
   T extends ObjectType = ObjectType,
   D = unknown,
-> = Omit<ObjectDataDto, 'p' | 'r'> & {
+> = Omit<ObjectDataDto, 'p' | 'r' | 'c' | 't'> & {
   id?: string;
   parent_id?: string;
   t: T;
   o: D;
+
+  c?: EntityCollisionType | null;
+
+  dd?: EntityDrawDistanceType;
 
   p?: Vector3Array; // position
   r?: QuaternionArray | Vector3Array; // rotation

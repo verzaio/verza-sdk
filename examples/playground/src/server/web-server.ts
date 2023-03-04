@@ -46,6 +46,8 @@ export const initWebServer = (engine: EngineManager) => {
       hey: 'emitToPlayers received? (onWebServerReceived)',
     });
 
-    engine.player.sendMessage(`Hey ${name}! Name: {red,name=1} {white}Test`);
+    engine.localPlayer.sendMessage(
+      `Hey ${name}! Name: {red,name=1} {white}Test`,
+    );
   });
 };

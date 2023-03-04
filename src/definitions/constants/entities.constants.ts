@@ -9,8 +9,8 @@ import Player from 'engine/world/entities/Player/Player';
 
 import {
   EntitiesRenders,
-  EntityDrawDistance,
-  EntityCollision,
+  EntityDrawDistanceType,
+  EntityCollisionType,
 } from '../types/entities.types';
 
 export const ENTITIES_RENDERS: EntitiesRenders = {
@@ -29,13 +29,13 @@ export const ENTITIES_RENDERS: EntitiesRenders = {
   },
 };
 
-export const ENTITY_COLLISIONS: EntityCollision[] = [
+export const ENTITY_COLLISIONS: EntityCollisionType[] = [
   'static',
   'kinematic',
   'dynamic',
 ];
 
-export const ENTITY_DRAW_DISTANCES: EntityDrawDistance[] = [
+export const ENTITY_DRAW_DISTANCES: EntityDrawDistanceType[] = [
   'low',
   'mid',
   'high',

@@ -1,14 +1,6 @@
-import EngineManager from './engine.manager';
+import {MoonPhases} from 'engine/definitions/types/world.types';
 
-export type MoonPhases =
-  | 'newMoon'
-  | 'waxingCrescent'
-  | 'firstQuarter'
-  | 'waxingGibbous'
-  | 'fullMoon'
-  | 'waningGibbous'
-  | 'lastQuarter'
-  | 'waningCrescent';
+import EngineManager from './engine.manager';
 
 class SkyManager {
   private _engine: EngineManager;

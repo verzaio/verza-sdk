@@ -1,8 +1,8 @@
 import {Euler, Quaternion, Vector3} from 'three';
 
 import {
-  EntityCollision,
-  EntityDrawDistance,
+  EntityCollisionType,
+  EntityDrawDistanceType,
 } from 'engine/definitions/types/entities.types';
 import {PickObject} from 'engine/definitions/types/objects/objects-definition.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
@@ -24,11 +24,11 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
 
   scale?: Vector3 | Vector3Array;
 
-  drawDistance?: EntityDrawDistance;
+  drawDistance?: EntityDrawDistanceType;
 
   dimension?: number;
 
-  collision?: EntityCollision;
+  collision?: EntityCollisionType | null;
 
   shadows?: boolean;
 
