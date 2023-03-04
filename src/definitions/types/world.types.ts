@@ -85,11 +85,11 @@ export type DayPresetInfo = {
 };
 
 export type MoonPhases =
-  | 'newMoon'
-  | 'waxingCrescent'
-  | 'firstQuarter'
-  | 'waxingGibbous'
-  | 'fullMoon'
-  | 'waningGibbous'
-  | 'lastQuarter'
-  | 'waningCrescent';
+  | 'NEW_MOON'
+  | 'WAXING_CRESCENT'
+  | 'FIRST_QUARTER'
+  | 'WAXING_GIBBOUS'
+  | 'FULL_MOON'
+  | 'WANING_GIBBOUS'
+  | 'LAST_QUARTER'
+  | 'WANING_CRESCENT';
