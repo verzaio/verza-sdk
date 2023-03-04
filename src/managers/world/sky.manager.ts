@@ -1,6 +1,6 @@
 import {MoonPhases} from 'engine/definitions/types/world.types';
 
-import EngineManager from './engine.manager';
+import EngineManager from '../engine.manager';
 
 class SkyManager {
   private _engine: EngineManager;
@@ -13,19 +13,19 @@ class SkyManager {
     this._engine.messenger.emit('setMoonPhase', [phase]);
   }
 
-  setTime(time: number) {
-    this._engine.messenger.emit('setTime', [time]);
+  setTime(seconds: number) {
+    this._engine.messenger.emit('setTime', [seconds]);
   }
 
-  setTimeRepresentation(hours: number, minutes = 0, seconds = 0) {
+  setTimeRepresentation(hour: number, minute = 0, second = 0) {
     this._engine.messenger.emit('setTimeRepresentation', [
-      hours,
-      minutes,
-      seconds,
+      hour,
+      minute,
+      second,
     ]);
   }
 
-  setHemisphereLight(color: string, groundColor: string, intensity = 0) {
+  setHemisphereLight(color: string, groundColor: string, intensity = 1) {
     this._engine.messenger.emit('setHemisphereLight', [
       color,
       groundColor,
@@ -33,7 +33,7 @@ class SkyManager {
     ]);
   }
 
-  setLight(color: string, intensity: number) {
+  setLight(color: string, intensity = 1) {
     this._engine.messenger.emit('setLight', [color, intensity]);
   }
 }

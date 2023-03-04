@@ -1,6 +1,6 @@
 import EngineManager from '../engine.manager';
-import SkyManager from '../sky.manager';
 import RaycasterManager from './raycaster.manager';
+import SkyManager from './sky.manager';
 
 class WorldManager {
   private _engine: EngineManager;
@@ -10,6 +10,7 @@ class WorldManager {
   }
 
   raycaster: RaycasterManager = null!;
+
   sky: SkyManager = null!;
 
   constructor(engine: EngineManager) {
