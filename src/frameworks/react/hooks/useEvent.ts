@@ -1,7 +1,6 @@
 import {useEffect, useRef} from 'react';
 
 import {EngineScriptEventMap} from 'engine/definitions/local/types/events.types';
-import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 
 import {useEngine} from './useEngine';
 
