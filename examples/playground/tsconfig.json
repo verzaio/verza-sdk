@@ -17,6 +17,7 @@
     "baseUrl": "./",
     "paths": {
       "@app/*": ["./src/*"],
+      "@verza/sdk/react": ["../../src/framework-react"],
       "@verza/sdk": ["../../src"],
       "engine/*": ["../../src/*"]
     }

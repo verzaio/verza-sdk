@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["es2019", "dom"],
-    "module": "es6",
+    "lib": ["es6", "dom"],
+    "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "jsx": "react",
@@ -14,11 +14,11 @@
     "resolveJsonModule": true,
     "noImplicitThis": false,
     "baseUrl": "./",
-    "outDir": "lib",
+    "outDir": "dist",
     "paths": {
       "engine/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "lib"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

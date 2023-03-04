@@ -1,17 +1,25 @@
-import {Object3D} from 'three';
+import {Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {DEFAULT_ENTITY_DRAW_DISTANCE} from 'engine/definitions/constants/streamer.constants';
+import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
-  EntityDrawDistance,
+  EntityDrawDistanceType,
   EntityItem,
   MergeEntityEvents,
 } from 'engine/definitions/types/entities.types';
 import {EntityEventMap} from 'engine/definitions/types/events.types';
+import {
+  QuaternionArray,
+  Vector3Array,
+} from 'engine/definitions/types/world.types';
+import {calcChunkIndex} from 'engine/utils/chunks.utils';
 
 import EngineManager from '../../engine.manager';
 import EventsManager, {EventListenersMap} from '../../events.manager';
 import EntityHandleManager from './entity-handle.manager';
 import EntityStreamManager from './entity-stream.manager';
+
+const TEMP_POS = new Vector3();
 
 class EntityManager<
   T extends EntityItem = EntityItem,
@@ -36,6 +44,8 @@ class EntityManager<
 
   streamer: EntityStreamManager = null!;
 
+  chunkIndex: ChunkIndex = null!;
+
   /* accessors */
   get id(): T['id'] {
     return this.entity.id;
@@ -47,6 +57,16 @@ class EntityManager<
 
   get data(): T['data'] {
     return this.entity.data;
+  }
+
+  set data(data: T['data']) {
+    this.entity.data = data;
+  }
+
+  get worldPosition() {
+    this.location.getWorldPosition(TEMP_POS);
+
+    return TEMP_POS;
   }
 
   get location() {
@@ -61,9 +81,21 @@ class EntityManager<
     return this._location.quaternion;
   }
 
-  dimension = 0;
+  get dimension() {
+    return this.data.d ?? 0;
+  }
 
-  drawDistance: EntityDrawDistance = DEFAULT_ENTITY_DRAW_DISTANCE;
+  set dimension(dimension: number) {
+    this.data.d = dimension;
+  }
+
+  get drawDistance() {
+    return this.data.dd ?? DEFAULT_ENTITY_DRAW_DISTANCE;
+  }
+
+  set drawDistance(drawDistance: EntityDrawDistanceType) {
+    this.data.dd = drawDistance;
+  }
 
   constructor(entity: T, engine: EngineManager) {
     this.entity = entity;
@@ -71,57 +103,61 @@ class EntityManager<
   }
 
   restoreData() {
-    // dimension
-    if (this.data.dimension !== undefined) {
-      this.dimension = this.data.dimension;
-    }
-
-    // set draw distance
-    if (this.data?.m?.d) {
-      this.drawDistance = this.data.m.d;
-    }
-
-    // world position | WorldPosition
-    if (this.data.p?.p) {
-      this.location.position.set(
-        this.data.p.p[0], // x
-        this.data.p.p[1], // y
-        this.data.p.p[2], // z
-      );
-
-      // rotation as quaternion
-      if (this.data.p.p[7] !== undefined) {
-        this.location.quaternion.set(
-          this.data.p.p[4], // rx
-          this.data.p.p[5], // ry
-          this.data.p.p[6], // rz
-          this.data.p.p[7], // rw
-        );
-      } else {
-        // rotation as euler
-        if (this.data.p.p[4] !== undefined) {
-          this.location.rotation.set(
-            this.data.p.p[4], // rx
-            this.data.p.p[5], // ry
-            this.data.p.p[6], // rz
-          );
-        }
-      }
-    }
-
     // position
-    if (this.data.position) {
-      this.location.position.set(...this.data.position);
+    if (this.data.p) {
+      this.location.position.set(...this.data.p);
     }
 
     // rotation
-    if (this.data.rotation) {
+    if (this.data.r) {
       // QuaternionArray
-      if (this.data.rotation.length === 4) {
-        this.location.quaternion.set(...this.data.rotation);
+      if (this.data.r.length === 4) {
+        this.location.quaternion.set(...this.data.r);
       } else {
         // Vector3Array
-        this.location.rotation.set(...this.data.rotation);
+        this.location.rotation.set(...this.data.r);
+      }
+    }
+  }
+
+  updateChunkIndex() {
+    this.chunkIndex = calcChunkIndex(
+      this.worldPosition.x,
+      this.worldPosition.y,
+      this.worldPosition.z,
+      this.dimension,
+      this.engine.chunkSize,
+    );
+  }
+
+  updatePosition(position: Vector3 | Vector3Array) {
+    // Vector3Array
+    if (Array.isArray(position)) {
+      this.location.position.set(...position);
+    } else {
+      // Vector3
+      this.location.position.copy(position);
+    }
+  }
+
+  updateRotation(
+    rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
+  ) {
+    if (Array.isArray(rotation)) {
+      // Vector3Array
+      if (rotation.length === 3) {
+        this.location.rotation.set(...rotation);
+      } else {
+        // QuaternionArray
+        this.location.quaternion.set(...rotation);
+      }
+    } else {
+      // Euler
+      if (rotation instanceof Euler) {
+        this.location.rotation.copy(rotation);
+      } else {
+        // Quaternion
+        this.location.quaternion.copy(rotation);
       }
     }
   }

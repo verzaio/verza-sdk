@@ -35,7 +35,7 @@ export const initWebServer = (engine: EngineManager) => {
   engine.commands.register(new Command('+hello3'));
 
   // event listener
-  engine.network.onPlayerEvent('onClientToWebServer', data => {
+  engine.network.onPlayerEvent('onClientToWebServer', async data => {
     const {name} = engine.z
       .object({
         name: engine.z.string(),
@@ -46,6 +46,8 @@ export const initWebServer = (engine: EngineManager) => {
       hey: 'emitToPlayers received? (onWebServerReceived)',
     });
 
-    engine.player.sendMessage(`Hey ${name}! Name: {red,name=1} {white}Test`);
+    engine.localPlayer.sendMessage(
+      `Hey ${name}! Name: {red,name=1} {white}Test`,
+    );
   });
 };

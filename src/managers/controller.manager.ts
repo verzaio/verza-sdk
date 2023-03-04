@@ -5,7 +5,7 @@ type DataBase = {
 };
 
 type ControllerEventMap<T extends DataBase> = {
-  [key in keyof T]: (value: T[key], name: keyof T) => void;
+  [key in keyof T]: (value: T[key]) => void;
 };
 
 class ControllerManager<Data extends DataBase = DataBase> {
@@ -17,10 +17,11 @@ class ControllerManager<Data extends DataBase = DataBase> {
     this.data = data;
   }
 
-  set<T extends keyof Data>(name: T, value: Data[T]) {
+  set<T extends keyof Data, V extends Data[T]>(name: T, value: V) {
     this.data[name] = value;
 
-    (this.events.emit as any)(name, value, name);
+    // too recursive, TS give me a break
+    (this.events.emit as any)(name, value);
 
     return value;
   }

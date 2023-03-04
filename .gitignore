@@ -23,7 +23,7 @@ yarn.lock
 .env.production.local
 
 # typescript
-/lib*
+/dist*
 *.tsbuildinfo
 
 

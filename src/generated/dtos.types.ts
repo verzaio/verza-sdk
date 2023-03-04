@@ -142,6 +142,18 @@ export interface NotificationEventDto {
   event: 'status' | 'new_notification';
 }
 
+export interface AssetDto {
+  id: string;
+  asset_url: string;
+  /** @format date-time */
+  created_at: string;
+}
+
+export interface CreateAssetDto {
+  /** @format binary */
+  asset_file: File;
+}
+
 export interface CharacterShapekeyDto {
   id: string;
   name: string;
@@ -209,7 +221,7 @@ export interface CharacterDto {
   id: string;
   user: UserProfileDto;
   gender: 'male' | 'female';
-  shapekeys: CharacterShapekeyValueDto[];
+  shapekeys: CharacterShapekeyValueDto[] | null;
   skin_color: string | null;
   eyes_color: string | null;
   lipstick_color: string | null;
@@ -390,6 +402,7 @@ export interface ServerDto {
   permissions: ServerPermissionsDto;
   status: 'active' | 'inactive';
   commands: CommandConfigDto[];
+  assets_url?: string;
   favorited: boolean;
   /** @format date-time */
   created_at: string;
@@ -403,7 +416,9 @@ export interface ScriptActionPacketSendDto {
    */
   e: string;
   /** sync data */
-  d: object;
+  d?: object;
+  /** player id */
+  p?: number;
 }
 
 export interface JoinPacketDto {
@@ -512,132 +527,40 @@ export interface PlayerPacketLocalUpdateDto {
   l?: string[];
 }
 
-export interface PositionMetadataDto {
+export interface ObjectDataDto {
+  t: string;
+  /** object data */
+  o: object;
+  /** position | Vector3Array */
+  p?: number[];
   /** rotation | QuaternionArray */
-  rotation?: number[];
-}
-
-export interface BasicPositionDto {
-  /** position | WorldPosition */
-  p: number[];
-  /** metadata */
-  m?: PositionMetadataDto;
-}
-
-export interface ObjectGroupDto {
-  c?: ObjectDto[];
-}
-
-export interface ObjectModelDto {
-  /**
-   * model id
-   * @maxLength 64
-   */
-  m: string;
-  /** data */
-  d?: object;
-}
-
-export interface ObjectBoxDto {
-  /**
-   * width
-   * @min 0
-   * @max 50
-   */
-  w: number;
-  /**
-   * height
-   * @min 0
-   * @max 50
-   */
-  h: number;
-  /**
-   * depth
-   * @min 0
-   * @max 50
-   */
-  d: number;
-  /**
-   * widthSegments
-   * @min 0
-   * @max 50
-   */
-  ws?: number;
-  /**
-   * widthSegments
-   * @min 0
-   * @max 50
-   */
-  hs?: number;
-  /**
-   * depthsegments
-   * @min 0
-   * @max 50
-   */
-  ds?: number;
-  /** color */
-  c?: string;
-}
-
-export interface ObjectGltfDto {
-  /** resource url */
-  u: string;
-}
-
-export interface ObjectLinePointDto {
-  /** point | Vector3Array */
-  p: number[];
-}
-
-export interface ObjectLineDto {
-  /** points | ObjectLinePointDto[] */
-  p: ObjectLinePointDto[];
-  /** color */
-  c?: string;
-}
-
-export interface ObjectMetadataDto {
+  r?: number[];
+  /** scale | Vector3Array */
+  s?: number[];
+  /** dimension */
+  d?: number;
   /** collision */
-  p?: 'static' | 'kinematic' | 'dynamic';
+  c?: string | null;
   /** draw distance */
-  d?: 'low' | 'mid' | 'high';
-  /**
-   * scale
-   * @min 0.1
-   * @max 100
-   */
-  s?: number;
+  dd?: string;
   /** shadows */
   ss?: boolean;
-  /** group */
-  group?: ObjectGroupDto;
-  /** model */
-  model?: ObjectModelDto;
-  /** box */
-  box?: ObjectBoxDto;
-  /** gltf */
-  gltf?: ObjectGltfDto;
-  /** gltf */
-  line?: ObjectLineDto;
+  /** permanent object */
+  po?: boolean;
+  /** remote object */
+  ro?: boolean;
 }
 
 export interface ObjectDto {
   /** object id */
   id: string;
-  /** type */
-  t: 'group' | 'model' | 'gltf' | 'box' | 'line';
-  /** position */
-  p?: BasicPositionDto;
-  /** source */
-  s?: 'hosted' | 'external';
-  /** metadata */
-  m?: ObjectMetadataDto;
+  /** data */
+  d: ObjectDataDto;
 }
 
 export interface ChunkDto {
-  index: string;
-  chunk_size: number;
-  objects: ObjectDto[];
+  i: string;
+  o: ObjectDto[];
 }
 
 export interface ChunkPacketDto {
@@ -654,8 +577,6 @@ export interface ChunksDummyFiltersDto {
 }
 
 export interface ChunkPacketRequestDto {
-  /** world id */
-  w: string;
   /** chunk index */
   i: string;
   /** is dummy */
@@ -771,6 +692,10 @@ export interface CustomPacketSendDto {
   d?: object;
   /** to player id */
   i?: number;
+  /** roles */
+  r?: string[];
+  /** command */
+  c?: string;
 }
 
 export interface PlayerIdDto {
@@ -878,6 +803,11 @@ export interface UpdateWorldDto {
   name?: string;
 }
 
+export interface PositionMetadataDto {
+  /** rotation | QuaternionArray */
+  rotation?: number[];
+}
+
 export interface PositionDto {
   id: string;
   x: number;
@@ -891,34 +821,10 @@ export interface PositionDto {
 
 export interface BaseObjectDto {
   id: string;
-  type: 'group' | 'model' | 'gltf' | 'box' | 'line';
+  type: string;
   position: PositionDto;
-  source: 'hosted' | 'external' | null;
-  metadata: ObjectMetadataDto;
+  data: ObjectDataDto;
   world: WorldDto;
   /** @format date-time */
   created_at: string;
-}
-
-export interface CreatePositionDto {
-  /** position | Vector3Array */
-  position: number[];
-  /** position | QuaternionArray */
-  rotation?: number[];
-  dimension: number;
-}
-
-export interface CreateObjectDto {
-  type: 'group' | 'model' | 'gltf' | 'box' | 'line';
-  source?: 'hosted' | 'external';
-  position: CreatePositionDto;
-  metadata?: ObjectMetadataDto;
-}
-
-export interface UpdatePositionDto {
-  /** position | Vector3Array */
-  position: number[];
-  /** position | QuaternionArray */
-  rotation?: number[];
-  dimension: number;
 }

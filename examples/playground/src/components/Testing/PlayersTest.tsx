@@ -1,14 +1,15 @@
-import {useKey, useNetwork, usePlayerId, useStreamedPlayer} from '@verza/sdk';
+import {useKey, useNetwork, useStreamedLocalPlayer} from '@verza/sdk/react';
 import {useEffect} from 'react';
 import {Vector3} from 'three';
 
 const PlayersTest = () => {
-  const player = useStreamedPlayer(usePlayerId());
+  const player = useStreamedLocalPlayer();
   const network = useNetwork();
 
   useEffect(() => {
     const onTesting = network.onPlayerEvent('onTesting', (player, data) => {
       console.log('player', player.name, data);
+      network.offPlayerEvent('onTesting', onTesting);
     });
 
     return () => {

@@ -10,10 +10,6 @@ import {
 import EngineManager from './engine.manager';
 import PlayerManager from './entities/players/player/player.manager';
 
-type EventData = {
-  [name: string]: unknown;
-};
-
 class NetworkManager {
   private _engine: EngineManager;
 
@@ -62,52 +58,107 @@ class NetworkManager {
     );
   }
 
-  onPlayerEvent(
-    event: string,
-    listener: (player: PlayerManager, data: CustomEventData) => void,
-  ) {
-    const listenerWrapper = (playerId: number, data?: CustomEventData) => {
-      listener(this._engine.players.get(playerId), data!);
-    };
-
-    return this._engine.events.on(
-      `onPlayerCustomEvent_${event}`,
-      listenerWrapper,
-    );
-  }
-
-  onServerEvent(event: string, listener: (data: CustomEventData) => void) {
+  onServerEvent(eventName: string, listener: (data: CustomEventData) => void) {
     if (this._isServer) {
       throw new Error(
         "You can't use network.onServerEvent server-side. If you're receving an event form the client use network.onPlayerEvent instead",
       );
     }
 
-    const listenerWrapper = (data?: CustomEventData) => {
-      listener(data!);
-    };
-
     return this._engine.events.on(
-      `onServerCustomEvent_${event}`,
-      listenerWrapper,
+      `onServerCustomEvent_${eventName}`,
+      listener as (data?: CustomEventData) => void,
     );
   }
 
-  offServerEvent(event: string, listener: (data?: CustomEventData) => void) {
-    return this._engine.events.off(`onServerCustomEvent_${event}`, listener);
+  onScriptEvent(eventName: string, listener: (data: CustomEventData) => void) {
+    if (!this._isClient) {
+      throw new Error(
+        "You can't use network.onScriptEvent server-side. If you're receving an event form the client use network.onServerEvent or network.onPlayerEvent instead",
+      );
+    }
+
+    return this._engine.events.on(
+      `onScriptCustomEvent_${eventName}`,
+      listener as (data?: CustomEventData) => void,
+    );
+  }
+
+  offServerEvent(
+    eventName: string,
+    listener: (data?: CustomEventData) => void,
+  ) {
+    return this._engine.events.off(
+      `onServerCustomEvent_${eventName}`,
+      listener,
+    );
+  }
+
+  offScriptEvent(
+    eventName: string,
+    listener: (data?: CustomEventData) => void,
+  ) {
+    return this._engine.events.off(
+      `onScriptCustomEvent_${eventName}`,
+      listener,
+    );
+  }
+
+  private _playerEvents = new Map<
+    string,
+    Map<
+      (player: PlayerManager, data?: CustomEventData) => void,
+      (playerId: number, data?: CustomEventData) => void
+    >
+  >();
+
+  onPlayerEvent(
+    eventName: string,
+    listener: (player: PlayerManager, data?: CustomEventData) => void,
+  ) {
+    const map = this._playerEvents.get(eventName) ?? new Map();
+
+    const eventListener = this._engine.events.on(
+      `onPlayerCustomEvent_${eventName}`,
+      (playerId, data) => {
+        const player = this._engine.players.get(playerId);
+        if (player) {
+          listener(player, data);
+        }
+      },
+    );
+
+    map.set(listener, eventListener);
+    this._playerEvents.set(eventName, map);
+
+    return listener;
   }
 
   offPlayerEvent(
-    event: string,
-    listener: (player: number, data?: CustomEventData) => void,
+    eventName: string,
+    listener: (player: PlayerManager, data?: CustomEventData) => void,
   ) {
-    return this._engine.events.off(`onPlayerCustomEvent_${event}`, listener);
+    const map = this._playerEvents.get(eventName);
+    if (!map) return;
+
+    const eventListener = map.get(listener);
+    if (!eventListener) return;
+
+    this._engine.events.off(`onPlayerCustomEvent_${eventName}`, eventListener);
+    map.delete(listener);
+
+    if (!map.size) {
+      this._playerEvents.delete(eventName);
+      return;
+    }
+
+    this._playerEvents.set(eventName, map);
   }
 
   // client & server
-  emitToServer(event: string, data?: EventData) {
+  emitToServer(event: string, data?: CustomEventData) {
     // check packet size limit
-    if (!this._checkPacketSize(data?.d)) return;
+    if (!this._checkPacketSize(data)) return;
 
     // emit to web server
     if (this._api.isWebServerAvailable) {
@@ -124,32 +175,55 @@ class NetworkManager {
     this._api.emitAction('emitToServer', [event, data]);
   }
 
-  emitToPlayers(event: string, data?: EventData) {
-    // check packet size limit
-    if (!this._checkPacketSize(data?.d)) return;
-
-    // emit to web server
-    if (this._api.isWebServerAvailable) {
-      this._api.webServer.emitCustomPacket({
-        p: PacketDestination.Client, // PacketDestination
-
-        e: event, // event name
-
-        d: data, // data
-      });
+  emitToScripts(event: string, data?: CustomEventData) {
+    if (!this._isClient) {
+      console.debug(`[network] this.emitToScripts is only available on client`);
+      return;
     }
+
+    // emit to scripts
+    this._messenger.emit('emitToScripts', [event, data]);
+  }
+
+  emitToPlayers(event: string, data?: CustomEventData) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
 
     // emit from server
     this._api.emitAction('emitToPlayers', [event, data]);
   }
 
+  emitToPlayersWithRoles(
+    event: string,
+    roles: string[],
+    data?: CustomEventData,
+  ) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
+
+    // emit to server
+    this._api.emitAction('emitToPlayersWithRoles', [event, roles, data]);
+  }
+
+  emitToPlayersWithAccess(
+    event: string,
+    command: string,
+    data?: CustomEventData,
+  ) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
+
+    // emit to server
+    this._api.emitAction('emitToPlayersWithAccess', [event, command, data]);
+  }
+
   emitToPlayer(
     player: PlayerManager | number,
     event: string,
-    data?: EventData,
+    data?: CustomEventData,
   ) {
     // check packet size limit
-    if (!this._checkPacketSize(data?.d)) return;
+    if (!this._checkPacketSize(data)) return;
 
     const playerId = typeof player === 'number' ? player : player.id;
 

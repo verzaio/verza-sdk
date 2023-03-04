@@ -1,37 +1,31 @@
 import {forwardRef, useEffect} from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/types/objects.types';
+import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
 import {Vector3Array} from 'engine/definitions/types/world.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import {useObjects} from '../../hooks/useObjects';
-import {setReactRef} from '../../utils/misc';
-import {useParent} from './Group';
+import {useObjectCreator} from './Group';
 
-type LineProps = {
+type LineProps = CreateObjectProps<'line'> & {
   points: Vector3Array[];
   color?: string;
-  props?: CreateObjectProps<'line'>;
 };
 
 export const Line = forwardRef<ObjectManager, LineProps>((props, ref) => {
   const objects = useObjects();
-  const parent = useParent();
+
+  const {setObject, objectProps} = useObjectCreator();
 
   useEffect(() => {
-    if (parent?.destroyed === true) return;
-
     const object = objects.createLine(props.points, props.color, {
-      parentId: parent?.id,
-      ...props.props,
+      ...props,
+
+      ...objectProps(props?.id),
     });
 
-    setReactRef(ref, object);
-
-    return () => {
-      objects.destroy(object);
-    };
-  }, [objects, props, parent]);
+    setObject(object, ref);
+  }, [setObject, objectProps, objects, props]);
 
   return null;
 });

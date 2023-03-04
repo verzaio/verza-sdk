@@ -4,9 +4,7 @@ import type {PlayerDataProps} from 'engine/definitions/types/players.types';
 import type {
   Vector3Array,
   QuaternionArray,
-  WorldPositionRotation,
 } from 'engine/definitions/types/world.types';
-import type {ObjectDto, ObjectMetadataDto} from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import EntitiesManager from 'engine/managers/entities/entities.manager';
 import EntityHandleManager from 'engine/managers/entities/entity/entity-handle.manager';
@@ -18,38 +16,33 @@ import PlayerHandleManager from 'engine/managers/entities/players/player/player-
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 import PlayersManager from 'engine/managers/entities/players/players.manager';
 
-import type {EntityType} from '../enums/entities.enums';
+import type {EntityDrawDistance, EntityType} from '../enums/entities.enums';
+import {EntityCollision} from '../enums/objects.enums';
+import {ObjectDataProps} from './objects/objects.types';
 
-export type EntityDrawDistance = Required<ObjectMetadataDto>['d'];
+export type EntityDrawDistanceType = keyof typeof EntityDrawDistance;
 
-export type EntityCollision = Required<ObjectMetadataDto>['p'];
+export type EntityCollisionType = keyof typeof EntityCollision;
 
 export type CreateEntityProps = {
-  remote?: boolean;
+  p?: Vector3Array; // position
 
-  dimension?: number;
+  r?: QuaternionArray | Vector3Array; // rotation
 
-  position?: Vector3Array;
+  d?: number; // dimension
 
-  rotation?: QuaternionArray | Vector3Array;
-
-  drawDistance?: EntityDrawDistance;
-
-  p?: {
-    p: WorldPositionRotation;
-  };
-
-  m?: {
-    d?: EntityDrawDistance;
-  };
+  dd?: EntityDrawDistanceType; // draw distance
 };
 
-export type EntityItem<Data = unknown, ID = string | number> = {
+export type EntityItem<
+  Data extends CreateEntityProps = CreateEntityProps,
+  ID = string | number,
+> = {
   id: ID;
 
   type: keyof typeof EntityType;
 
-  data: CreateEntityProps & Data;
+  data: Data;
 };
 
 /* definition */
@@ -79,4 +72,4 @@ export type MergeEntityEvents<A, B> = A extends void ? B : A & B;
 /* entities */
 export type PlayerEntity = EntityItem<PlayerDataProps, number>;
 
-export type ObjectEntity = EntityItem<ObjectDto & {parent_id?: string}, string>;
+export type ObjectEntity = EntityItem<ObjectDataProps, string>;

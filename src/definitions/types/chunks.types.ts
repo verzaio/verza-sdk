@@ -1,3 +1,5 @@
+import {ObjectTypes} from './objects/objects-definition.types';
+
 export type ChunkEventsMode = 'entities' | 'map';
 
 // x_y_z_dimension
@@ -25,4 +27,8 @@ export type ChunkPosition = {
   dimension: number;
 
   chunkSize: number;
+};
+
+export type ChunkData = {
+  o?: Partial<ObjectTypes>[];
 };

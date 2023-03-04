@@ -1,77 +1,61 @@
-import {useEffect} from 'react';
+import {useEffect, useMemo, useRef} from 'react';
 
-import {INTERFACE_OPTIONS} from 'engine/definitions/constants/ui.constants';
-import {KeyInfo} from 'engine/definitions/types/ui.types';
+import {KeyEvent, KeyEventType} from 'engine/definitions/types/ui.types';
 
 import {useEngine} from './useEngine';
-import {useGameKey} from './useGameKey';
 
 type UseKeyOptions = {
-  event?: 'keydown' | 'keyup';
+  event?: KeyEventType;
   ignoreFlags?: boolean;
 
-  ignoreControls?: boolean;
   ignoreActiveInput?: boolean;
-  ignoreOptionsMenu?: boolean;
+};
+
+const EventsRelation: Record<KeyEventType, 'onKeyUp' | 'onKeyDown'> = {
+  keyup: 'onKeyUp',
+  keydown: 'onKeyDown',
 };
 
 export const useKey = (
   key: string | string[],
-  callback: (event: KeyInfo) => void,
+  callback: (event: KeyEvent) => void,
   options?: UseKeyOptions,
 ) => {
   const engine = useEngine();
 
-  useGameKey(key, callback, options);
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+
+  const eventType = useMemo(
+    () => EventsRelation[options?.event ?? 'keyup'],
+    [options?.event],
+  );
 
   useEffect(() => {
-    const event = options?.event ?? 'keydown';
     const keys = Array.isArray(key) ? key : [key];
 
-    const onKeyDown = (event: KeyboardEvent) => {
-      // disabled when options menu is enabled
-      if (
-        !options?.ignoreOptionsMenu &&
-        engine.ui.hasInterface(INTERFACE_OPTIONS)
-      ) {
-        return;
-      }
+    const onKeyPress = engine.events.on(eventType, (event: KeyEvent) => {
+      // check matches
+      if (!keys.includes(event.code)) return;
+
+      const options = optionsRef.current;
 
       // ignore controls
       if (!options?.ignoreFlags) {
-        /* if (!options?.ignoreControls && !engine.player?.canControl) {
-          return;
-        } */
-
-        if (!options?.ignoreActiveInput && engine.ui.isActiveInput) {
+        if (!options?.ignoreActiveInput && event.activeInput) {
           return;
         }
       }
 
-      // check matches
-      if (keys.includes(event.code)) {
-        callback({
-          type: event.type as KeyInfo['type'],
-
-          code: event.code,
-
-          key: event.key,
-
-          altKey: event.altKey,
-
-          ctrlKey: event.ctrlKey,
-
-          metaKey: event.metaKey,
-
-          shiftKey: event.shiftKey,
-        });
-      }
-    };
-
-    document.addEventListener(event, onKeyDown);
+      // call it
+      callbackRef.current(event);
+    });
 
     return () => {
-      document.removeEventListener(event, onKeyDown);
+      engine.events.off(eventType, onKeyPress);
     };
-  }, [engine, callback, key, options]);
+  }, [engine, key, eventType]);
 };

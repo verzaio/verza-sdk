@@ -80,7 +80,7 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
     this.entitiesMap.set(id, entity as T);
     this.entities.push(entity as T);
 
-    this.events.emit('onConnect', entity);
+    this.events.emit('onCreate', entity);
 
     return entity;
   }
@@ -104,7 +104,7 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
     this.entitiesMap.delete(entity.id);
     this.entities.splice(this.entities.indexOf(entity), 1);
 
-    this.events.emit('onDisconnect', entity);
+    this.events.emit('onDestroy', entity);
   }
 
   streamIn(entity: T, data?: T['data']) {

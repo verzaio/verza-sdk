@@ -23,7 +23,7 @@ export default async function handler(
 
   initWebServer(engine);
 
-  const response = await engine.api.handle(req.body);
+  const response = await engine.api.handleWebServer(req.body);
 
   res.status(200).json(response);
 }

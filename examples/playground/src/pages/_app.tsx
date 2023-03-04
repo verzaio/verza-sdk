@@ -1,6 +1,6 @@
 import '@app/styles/globals.css';
 import type {AppProps} from 'next/app';
-import {EngineProvider} from '@verza/sdk';
+import {EngineProvider} from '@verza/sdk/react';
 
 export default function App({Component, pageProps}: AppProps) {
   return (

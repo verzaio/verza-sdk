@@ -1,18 +1,28 @@
-import {useEngine, useKey} from '@verza/sdk';
+import {useEngine, useKey, useObjects, useUI} from '@verza/sdk/react';
+import {useEffect} from 'react';
 
 const InterfaceTest = () => {
+  const ui = useUI();
   const engine = useEngine();
+  const objects = useObjects();
+
+  objects;
 
   const onPressed = () => {
-    if (engine.ui.hasInterface('test')) {
-      engine.ui.removeInterface('test');
-      return;
-    }
-
-    engine.ui.addInterface('test');
+    ui.toggleInterface('test_interface');
   };
 
   useKey('KeyY', onPressed);
+
+  useEffect(() => {
+    const onChange = engine.events.on('onObjectEdit', (_, type) => {
+      console.log('onObjectEdit', type);
+    });
+
+    return () => {
+      engine.events.off('onObjectEdit', onChange);
+    };
+  }, [engine]);
 
   return (
     <>

@@ -1,6 +1,6 @@
-import {Box, Gltf, Group, Line, useFrame, useObjects} from '@verza/sdk';
+import {Box, Group, useFrame, useObjects} from '@verza/sdk/react';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
-import {useEffect, useRef} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 
 // https://github.com/KhronosGroup/glTF-Sample-Models
 
@@ -10,12 +10,12 @@ const ObjectsTest = () => {
 
   const anotherOneRef = useRef<ObjectManager>(null!);
 
-  const destroy = () => {
+  const destroy = useCallback(() => {
     if (objectRef.current) {
       objects.destroy(objectRef.current);
       objectRef.current = null!;
     }
-  };
+  }, [objects]);
 
   const createBox = () => {
     objectRef.current = objects.createBox(
@@ -62,9 +62,9 @@ const ObjectsTest = () => {
     return () => {
       destroy();
     };
-  }, [objects]);
+  }, [destroy]);
 
-  useFrame(delta => {
+  useFrame(() => {
     if (!anotherOneRef.current) return;
 
     /* anotherOneRef.current.location.rotateY(delta / 10);
@@ -108,12 +108,10 @@ const ObjectsTest = () => {
 
       <button onClick={() => destroy()}>objects.destroy</button>
 
-      <Box
+      {/* <Box
         box={{w: 2, h: 2, d: 2, c: 'green'}}
-        props={{
-          position: [-8, 1, 20],
-          collision: 'static',
-        }}
+        position={[-8, 1, 20]}
+        collision="static"
       />
 
       <Line
@@ -122,63 +120,101 @@ const ObjectsTest = () => {
           [20, 10, 20],
         ]}
         color="blue"
-        props={{
-          position: [-8, 1, 20],
-          collision: 'static',
-        }}
-      />
+        position={[-8, 1, 20]}
+        collision="static"
+      /> */}
+
+      {/* <Group
+       ref={objectRef }
+        id="boxesGroup2"
+        position={[5, 3, 8]}
+        scale={[1.5, 1.5, 1.5]}
+        rotation={[Math.PI / 4, 0, 0]}>
+        <Box
+          id="test1"
+          box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+          position={[0, 1, 1]}
+          rotation={[Math.PI / 4, 0, 0]}
+          collision="static"
+        />
+
+        <Box
+          id="test2"
+          box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+          position={[0, 0.5, 2]}
+          collision="static"
+        />
+      </Group> */}
 
       <Group
-        ref={objectRef}
-        props={{
-          position: [0, 3, 10],
-        }}>
+        id="boxesGroup"
+        position={[2, 3, 10]}
+        scale={[2, 2, 2]}
+        rotation={[0, 0, Math.PI / 4]}>
+        {/* <Group position={[2, 2, 2]} rotation={[0, 0, Math.PI / 2]}>
+          <Box
+            id="box1"
+            box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+            position={[0, 1, 0]}
+            collision="static"
+          />
+
+          <Box
+            id="box2"
+            box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+            position={[0, 0.5, 2]}
+            collision="static"
+          />
+        </Group> */}
+
         <Box
+          shadows
+          id="box1"
+          box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+          position={[0, 2, 0]}
+          rotation={[Math.PI / 4, 0, 0]}
+        />
+
+        <Box
+          id="box2"
           box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
-          props={{
-            position: [0, 0.5, 2],
-            collision: 'static',
-          }}
+          position={[2, 0.5, 2]}
+          collision="static"
         />
 
         <Box
+          id="box3"
           box={{w: 1, h: 0.5, d: 1, c: 'green'}}
-          props={{
-            position: [0, 0.5, 3],
-            collision: 'static',
-          }}
+          position={[0, 0.5, 3]}
+          collision="static"
         />
 
         <Box
+          id="box4"
           box={{w: 1, h: 0.5, d: 1, c: 'yellow'}}
-          props={{
-            position: [0, 0.5, 4],
-            collision: 'static',
-          }}
+          position={[0, 0.5, 4]}
+          collision="static"
         />
 
         <Box
+          id="redBox"
           box={{w: 1, h: 0.5, d: 1, c: 'red'}}
-          props={{
-            position: [1, 0.5, 2],
-            collision: 'static',
-          }}
+          position={[1, 0.5, 2]}
+          collision="static"
         />
 
         <Box
+          id="box6"
           box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
-          props={{
-            position: [1, 0.5, 3],
-            collision: 'static',
-          }}
+          position={[1, 0.5, 3]}
+          collision="static"
         />
 
         <Box
+          id="box7"
           box={{w: 1, h: 0.5, d: 1, c: 'green'}}
-          props={{
-            position: [1, 0.5, 4],
-            collision: 'static',
-          }}
+          position={[1, 0.5, 4]}
+          collision="static"
         />
 
         {/* <Gltf
@@ -197,7 +233,8 @@ const ObjectsTest = () => {
       /> */}
 
       {/* <Gltf
-        props={{position: [0, 1, 10], collision: 'static'}}
+        position={[0, 1, 10]}
+        collision="static"
         url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb"
       /> */}
     </div>

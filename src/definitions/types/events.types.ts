@@ -5,6 +5,7 @@ import {CameraModeType} from './camera.types';
 import {ChunkIndex} from './chunks.types';
 import {PlayerControls} from './controls.types';
 import type {PlayerState, CharacterGender} from './players.types';
+import {KeyEvent, PointerEvent} from './ui.types';
 
 export type EventKey =
   | 'ENGINE'
@@ -47,14 +48,16 @@ export type NetworkEventMap = {
 };
 
 export type EntityEventMap<T> = {
-  onConnect: (entity: T) => void;
-  onDisconnect: (entity: T) => void;
+  onCreate: (entity: T) => void;
+  onDestroy: (entity: T) => void;
 
   onEnter: (entity: T) => void;
   onLeave: (entity: T) => void;
 
   onStreamIn: (entity: T) => void;
   onStreamOut: (entity: T) => void;
+
+  onChunkIndexChange: (entity: T, chunkIndex: ChunkIndex) => void;
 };
 
 export type PlayerEventMap = {
@@ -84,4 +87,22 @@ export type ObjectEventMap = {
 
 export type ChatEventMap = {
   onChat: (text: string) => void;
+};
+
+export type UIEventMap = {
+  onPointerEvent: (event: PointerEvent) => void;
+
+  onPointerMove: (event: PointerEvent) => void;
+
+  onPointerDown: (event: PointerEvent) => void;
+
+  onPointerUp: (event: PointerEvent) => void;
+
+  onKeyEvent: (event: KeyEvent) => void;
+
+  onKeyDown: (event: KeyEvent) => void;
+
+  onKeyUp: (event: KeyEvent) => void;
+
+  onToolbarItemPress: (id: string, toolbarId: string) => void;
 };

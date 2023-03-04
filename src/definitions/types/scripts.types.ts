@@ -1,17 +1,41 @@
 import {
+  ChunkDto,
   EncryptedPacketsDto,
   PlayerPacketDto,
   PlayerPacketUpdateDto,
   ServerDto,
 } from 'engine/generated/dtos.types';
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
+import {ChunkData, ChunkIndex} from './chunks.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
-import {CreateObjectProps, ObjectType} from './objects.types';
-import {KeyInfo} from './ui.types';
-import {QuaternionArray, Vector3Array} from './world.types';
+import {ObjectTypes} from './objects/objects-definition.types';
+import {
+  ObjectBoundingBox,
+  ObjectDataProps,
+  ObjectEditActionType,
+  ObjectEditAxes,
+} from './objects/objects.types';
+import {
+  FileTransfer,
+  IndicatorId,
+  IndicatorTitle,
+  KeyEvent,
+  PointerEvent,
+  SizeProps,
+  ToolbarElement,
+} from './ui.types';
+import {
+  IntersectsResult,
+  IntersectsResultRaw,
+  MoonPhases,
+  QuaternionArray,
+  RaycastOptions,
+  Vector3Array,
+} from './world.types';
 
 export type ScriptStatus =
   | 'connected'
@@ -20,21 +44,12 @@ export type ScriptStatus =
   | 'failed';
 
 /* scripts */
-export type SizePropValue = `${number}vh` | `${number}vw` | `${number}px`;
-
-export type SizeProps = {
-  height: SizePropValue;
-  width: SizePropValue;
-  left?: SizePropValue;
-  top?: SizePropValue;
-  right?: SizePropValue;
-  bottom?: SizePropValue;
-};
 
 export type CustomEventData = {
   [name: string]: any;
 };
 
+//export type Pointer
 export type ScriptEventMap = {
   /* messenger */
   register: (eventName: string) => void;
@@ -44,6 +59,8 @@ export type ScriptEventMap = {
   onConnect: () => void;
 
   onDisconnect: () => void;
+
+  OR: (response: unknown) => void;
 
   /* engine */
   onSynced: () => void;
@@ -72,19 +89,51 @@ export type ScriptEventMap = {
   /* ui */
   onEscapeKey: () => void;
 
-  onKey: (keyInfo: KeyInfo) => void;
+  onPointerEvent: (event: PointerEvent) => void;
+
+  onPointerMove: (event: PointerEvent) => void;
+
+  onPointerDown: (event: PointerEvent) => void;
+
+  onPointerUp: (event: PointerEvent) => void;
+
+  onKeyEvent: (event: KeyEvent) => void;
+
+  onKeyDown: (event: KeyEvent) => void;
+
+  onKeyUp: (event: KeyEvent) => void;
+
+  onDragLeave: () => void;
+
+  onDragEnter: () => void;
+
+  onDragOver: () => void;
+
+  onDrop: (file?: FileTransfer) => void;
 
   addInterface: (tag: string) => void;
 
   removeInterface: (tag: string) => void;
 
+  showIndicator: (id: IndicatorId, title?: IndicatorTitle) => void;
+
+  hideIndicator: (id: IndicatorId) => void;
+
+  addToolbar: (toolbar: ToolbarElement) => void;
+
+  removeToolbar: (toolbarId: string) => void;
+
+  onToolbarItemPress: (id: string, toolbarId: string) => void;
+
   onCursorLock: (status: boolean) => void;
 
-  onSetSize: (props: SizeProps) => void;
+  onInputFocus: (status: boolean) => void;
 
-  onShow: () => void;
+  setSize: (props: SizeProps<string>) => void;
 
-  onHide: () => void;
+  show: () => void;
+
+  hide: () => void;
 
   /* players */
   OPU: (
@@ -174,10 +223,13 @@ export type ScriptEventMap = {
 
   setCameraTransitions: (
     playerId: number,
-    transitions: CameraTransition[],
+    transitions: CameraTransition<string>[],
   ) => void;
 
-  setCameraTransition: (playerId: number, transition: CameraTransition) => void;
+  setCameraTransition: (
+    playerId: number,
+    transition: CameraTransition<string>,
+  ) => void;
 
   setCameraPosition: (playerId: number, position: CameraPosition) => void;
 
@@ -185,8 +237,67 @@ export type ScriptEventMap = {
 
   onCameraTransitionEnd: (id?: number | string) => void;
 
+  /* entities */
+  getEntitiesInChunk: (chunkIndex: ChunkIndex) => ChunkDto;
+
+  /* chunks */
+  sendChunk: (chunkIndex: ChunkIndex, chunk: ChunkData) => void;
+
+  /* assets */
+  uploadAsset: (file: FileTransfer) => string;
+
+  deleteAsset: (assetId: string) => void;
+
   /* objects */
-  createObject: (type: ObjectType, props: CreateObjectProps) => void;
+  createObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  isObjectStreamed: (objectId: string) => boolean;
+
+  syncObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  syncObjectLocal: (objectId: string) => void;
+
+  saveObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  saveObjectLocal: (objectId: string) => void;
+
+  deleteObject: (objectId: string) => void;
+
+  getObject: (objectId: string) => ObjectDataProps;
+
+  destroyObject: (objectId: string) => void;
+
+  destroyObjectClient: (objectId: string) => void;
+
+  editObject: (objectId: string) => void;
+
+  setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
+
+  rerenderObject: (objectId: string) => void;
+
+  onObjectStreamIn: (object: ObjectManager) => void;
+
+  onObjectStreamOut: (object: ObjectManager) => void;
+
+  onObjectStreamInRaw: (objectId: string) => void;
+
+  onObjectStreamOutRaw: (objectId: string) => void;
+
+  setObjectEditAxes: (axes: ObjectEditAxes) => void;
+
+  setObjectEditSnaps: (
+    position: number | null,
+    rotation: number | null,
+    scale: number | null,
+  ) => void;
+
+  cancelObjectEdit: () => void;
+
+  onObjectEditRaw: (
+    object: ObjectDataProps,
+    type: ObjectEditActionType,
+  ) => void;
+  onObjectEdit: (object: ObjectManager, type: ObjectEditActionType) => void;
 
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
 
@@ -195,7 +306,21 @@ export type ScriptEventMap = {
     rotation: QuaternionArray | Vector3Array,
   ) => void;
 
-  destroyObject: (objectId: string) => void;
+  setObjectScale: (objectId: string, scale: Vector3Array) => void;
+
+  setObjectPositionFromWorldSpace: (
+    objectId: string,
+    position: Vector3Array,
+  ) => void;
+
+  setObjectRotationFromWorldSpace: (
+    objectId: string,
+    rotation: QuaternionArray | Vector3Array,
+  ) => void;
+
+  getObjectBoundingBox: (objectId: string) => ObjectBoundingBox;
+
+  getObjectWorldBoundingBox: (objectId: string) => ObjectBoundingBox;
 
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;
@@ -203,6 +328,8 @@ export type ScriptEventMap = {
   syncEncryptedPackets: (packets: EncryptedPacketsDto) => void;
 
   /* custom events */
+  emitToScripts: (event: string, data?: CustomEventData) => void;
+
   emitToServer: (event: string, data?: CustomEventData) => void;
 
   emitToPlayers: (event: string, data?: CustomEventData) => void;
@@ -213,15 +340,73 @@ export type ScriptEventMap = {
     data?: CustomEventData,
   ) => void;
 
+  emitToPlayersWithRoles: (
+    event: string,
+    roles: string[],
+    data?: CustomEventData,
+  ) => void;
+
+  emitToPlayersWithAccess: (
+    event: string,
+    command: string,
+    data?: CustomEventData,
+  ) => void;
+
+  /* world */
+  setEntitySelector: (status: boolean) => void;
+
+  onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
+  onEntitySelected: (intersects: IntersectsResult) => void;
+
+  raycastScreenPoint: (
+    x: number,
+    y: number,
+    options: RaycastOptions,
+  ) => IntersectsResultRaw;
+
+  raycastPoints: (
+    from: Vector3Array,
+    to: Vector3Array,
+    options: RaycastOptions,
+  ) => IntersectsResultRaw;
+
+  raycastPoint: (
+    origin: Vector3Array,
+    direction: Vector3Array,
+    maxDistance: number | null,
+    options: RaycastOptions,
+  ) => IntersectsResultRaw;
+
   /* server */
-  restartServer: (reason?: string) => void;
+  restartServer: (reason?: string | null) => void;
 
   setForwardMessages: (status: boolean) => void;
+
+  /* sky */
+  setMoonPhase: (phase: MoonPhases) => void;
+
+  setTimeRepresentation: (hour: number, minute: number, second: number) => void;
+
+  setTime: (time: number) => void;
+
+  setHemisphereLight: (
+    color: string,
+    groundColor: string,
+    intensity: number,
+  ) => void;
+
+  setLight: (color: string, intensity: number) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {
   [key in `onPlayerCustomEvent_${string}`]: (
-    playerId: number,
+    player: number,
     data?: CustomEventData,
   ) => void;
+} & {
+  [key in `onScriptCustomEvent_${string}`]: (data?: CustomEventData) => void;
+} & {
+  [key in `onObjectStreamInRaw_${string}`]: () => void;
+} & {
+  [key in `onObjectStreamOutRaw_${string}`]: () => void;
 };

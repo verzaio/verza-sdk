@@ -1,11 +1,14 @@
 import {PlayerPacketDto} from 'engine/generated/dtos.types';
 
+import {ChunkIndex} from '../types/chunks.types';
 import {EntityType} from './entities.enums';
 
 export enum NetworkSyncEvent {
   SyncRequest = 's.r',
 
   Ready = 'r',
+
+  Chunk = 'c',
 
   // player
   PlayerSet = 'p.se',
@@ -19,6 +22,9 @@ export enum NetworkSyncEvent {
 
 export type NetworkSyncEventMap = {
   [NetworkSyncEvent.Ready]: [];
+
+  // chunk
+  [NetworkSyncEvent.Chunk]: [playerId: number, chunkIndex: ChunkIndex];
 
   // player
   [NetworkSyncEvent.PlayerSet]: [packet: PlayerPacketDto];
@@ -49,6 +55,8 @@ export enum PacketEvent {
   Quit = 'q', // quit
 
   Update = 'u', // player or entity update
+
+  Object = 'o', // object
 
   Chunk = 'c', // chunk
 
@@ -82,7 +90,7 @@ export enum PacketId {
 
   s = 2, // state
 
-  c = 3, // chunk
+  //o = 3, // reserved
 
   v = 4, // voice
 
@@ -92,9 +100,11 @@ export enum PacketId {
 
   n = 7, // custom
 
-  j = 8, // script sync
+  c = 20, // chunk
 
-  a = 9, // script action
+  j = 30, // script sync
+
+  a = 31, // script action
 }
 
 export enum PacketSource {

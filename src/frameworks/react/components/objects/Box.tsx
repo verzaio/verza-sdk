@@ -1,36 +1,29 @@
 import {forwardRef, useEffect} from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/types/objects.types';
-import {ObjectBoxDto} from 'engine/generated/dtos.types';
+import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+import {ObjectBoxType} from 'engine/definitions/types/objects/objects-definition.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import {useObjects} from '../../hooks/useObjects';
-import {setReactRef} from '../../utils/misc';
-import {useParent} from './Group';
+import {useObjectCreator} from './Group';
 
-type BoxProps = {
-  box: ObjectBoxDto;
-  props?: CreateObjectProps<'box'>;
+type BoxProps = CreateObjectProps<'box'> & {
+  box: ObjectBoxType['o'];
 };
 
 export const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
   const objects = useObjects();
-  const parent = useParent();
+  const {setObject, objectProps, parent} = useObjectCreator();
 
   useEffect(() => {
-    if (parent?.destroyed === true) return;
-
     const object = objects.createBox(props.box, {
-      parentId: parent?.id,
-      ...props.props,
+      ...props,
+
+      ...objectProps(props.id),
     });
 
-    setReactRef(ref, object);
-
-    return () => {
-      objects.destroy(object);
-    };
-  }, [objects, props, parent]);
+    setObject(object, ref);
+  }, [setObject, objectProps, objects, props, parent]);
 
   return null;
 });
