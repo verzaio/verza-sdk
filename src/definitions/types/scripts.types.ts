@@ -243,8 +243,15 @@ export type ScriptEventMap = {
   /* chunks */
   sendChunk: (chunkIndex: ChunkIndex, chunk: ChunkData) => void;
 
+  /* assets */
+  uploadAsset: (file: FileTransfer) => string;
+
+  deleteAsset: (assetId: string) => void;
+
   /* objects */
   createObject: (objectId: string, props: Partial<ObjectTypes>) => void;
+
+  isObjectStreamed: (objectId: string) => boolean;
 
   syncObject: (objectId: string, props: Partial<ObjectTypes>) => void;
 
@@ -267,6 +274,14 @@ export type ScriptEventMap = {
   setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
 
   rerenderObject: (objectId: string) => void;
+
+  onObjectStreamIn: (object: ObjectManager) => void;
+
+  onObjectStreamOut: (object: ObjectManager) => void;
+
+  onObjectStreamInRaw: (objectId: string) => void;
+
+  onObjectStreamOutRaw: (objectId: string) => void;
 
   setObjectEditAxes: (axes: ObjectEditAxes) => void;
 
@@ -394,4 +409,8 @@ export type ScriptEventMap = {
   ) => void;
 } & {
   [key in `onScriptCustomEvent_${string}`]: (data?: CustomEventData) => void;
+} & {
+  [key in `onObjectStreamInRaw_${string}`]: () => void;
+} & {
+  [key in `onObjectStreamOutRaw_${string}`]: () => void;
 };

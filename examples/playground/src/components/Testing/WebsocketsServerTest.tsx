@@ -15,7 +15,7 @@ const WebsocketsServerTest = () => {
     const onSynced = engine.events.on('onSynced', async () => {
       console.debug('onSynced called');
 
-      const OBJECT_ID = '145bb3da-ae85-4fbb-9c3a-0e8e17f882f9';
+      //const OBJECT_ID = '145bb3da-ae85-4fbb-9c3a-0e8e17f882f9';
 
       /* const created = engine.objects.createBox(
         {
@@ -31,9 +31,9 @@ const WebsocketsServerTest = () => {
       );
       await created.save(); */
 
-      console.log('requesting object');
+      /* console.log('requesting object');
       const object = await engine.objects.resolveObject(OBJECT_ID);
-      console.log('object', object);
+      console.log('object', object); */
 
       /* setTimeout(() => {
         object.delete();

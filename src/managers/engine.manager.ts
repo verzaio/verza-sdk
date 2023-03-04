@@ -4,11 +4,13 @@ import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants'
 import {STREAMER_CHUNK_SIZE} from 'engine/definitions/constants/streamer.constants';
 import {LocalEngineEvents} from 'engine/definitions/local/constants/engine.constants';
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
+import {EngineScriptEventMap} from 'engine/definitions/local/types/events.types';
 import {EventKey} from 'engine/definitions/types/events.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import {isValidEnv} from 'engine/utils/misc.utils';
 
 import ApiManager from './api/api.manager';
+import AssetsManager from './assets.manager';
 import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
@@ -18,6 +20,7 @@ import PlayersManager from './entities/players/players.manager';
 import StreamerManager from './entities/streamer/streamer.manager';
 import EventsManager from './events.manager';
 import MessengerManager from './messenger.manager';
+import MethodsHandlerManager from './methods-handler.manager';
 import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
 import WorldManager from './world/world.manager';
@@ -40,6 +43,10 @@ export class EngineManager {
   streamer: StreamerManager = null!;
 
   world: WorldManager;
+
+  assets: AssetsManager = null!;
+
+  methodsHandler: MethodsHandlerManager;
 
   messenger = new MessengerManager<ScriptEventMap>('sender');
 
@@ -150,10 +157,13 @@ export class EngineManager {
 
     this.world = new WorldManager(this);
 
+    this.methodsHandler = new MethodsHandlerManager(this);
+
     // only for client
     if (this.isClient) {
       this.ui = new UIManager(this);
       this.camera = new CameraManager(this);
+      this.assets = new AssetsManager(this);
     }
 
     // only for server
@@ -270,7 +280,7 @@ export class EngineManager {
 }
 
 export class EngineEvents<
-  T extends ScriptEventMap = ScriptEventMap,
+  T extends EngineScriptEventMap = EngineScriptEventMap,
 > extends EventsManager<T> {
   private _engine: EngineManager;
 
@@ -283,9 +293,15 @@ export class EngineEvents<
   }
 
   on<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
-    // ignore local events
-    if (!LocalEngineEvents.includes(eventName as keyof ScriptEventMap)) {
-      this._bind(eventName);
+    // bind handler
+    const method = this._engine.methodsHandler.get(eventName as string);
+    if (method) {
+      this._bind(method[0] as A, method[1]);
+    } else {
+      // ignore local events
+      if (!LocalEngineEvents.includes(eventName as keyof ScriptEventMap)) {
+        this._bind(eventName);
+      }
     }
 
     return super.on(eventName, listener);
@@ -294,7 +310,13 @@ export class EngineEvents<
   off<A extends keyof T>(eventName: A, listener: T[A]): void {
     super.off(eventName, listener);
 
-    this._unbind(eventName);
+    // bind handler
+    const method = this._engine.methodsHandler.get(eventName as string);
+    if (method) {
+      this._unbind(method[0] as A);
+    } else {
+      this._unbind(eventName);
+    }
   }
 
   once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
@@ -309,15 +331,22 @@ export class EngineEvents<
     [...this._bindedEvents.keys()].forEach(event => this._unbind(event));
   }
 
-  private _bind<A extends keyof T>(eventName: A) {
+  private _bind<A extends keyof T>(
+    eventName: A,
+    callback?: (event?: MessageEvent) => void,
+  ) {
     if (this._bindedEvents.has(eventName)) return;
 
     this._bindedEvents.set(
       eventName,
       this._engine.messenger.events.on(
-        eventName as any,
+        eventName as keyof ScriptEventMap,
         (event: MessageEvent) => {
-          this.emit(eventName, ...(event?.data ?? []));
+          if (callback) {
+            callback(event);
+          } else {
+            this.emit(eventName, ...(event?.data ?? []));
+          }
         },
       ),
     );
@@ -329,7 +358,7 @@ export class EngineEvents<
       this.getEmitter().listenerCount(eventName as string) === 0
     ) {
       this._engine.messenger.events.off(
-        eventName as any,
+        eventName as keyof ScriptEventMap,
         this._bindedEvents.get(eventName) as any,
       );
 

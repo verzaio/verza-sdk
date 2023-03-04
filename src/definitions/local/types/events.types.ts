@@ -1,5 +1,5 @@
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
-import {ObjectManager} from 'engine/types';
+import {ObjectManager, ScriptEventMap} from 'engine/types';
 
 export type ObjectEventMap = {
   onChunkIndexChange: (
@@ -7,3 +7,5 @@ export type ObjectEventMap = {
     prevChunkIndex: ChunkIndex,
   ) => void;
 };
+
+export type EngineScriptEventMap = Omit<ScriptEventMap, `${string}Raw` | 'OR'>;

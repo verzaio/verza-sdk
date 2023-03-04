@@ -11,6 +11,7 @@ export {useKey} from 'engine/frameworks/react/hooks/useKey';
 export {useControllerProp} from 'engine/frameworks/react/hooks/useControllerProp';
 export {useNetwork} from 'engine/frameworks/react/hooks/useNetwork';
 export {useCamera} from 'engine/frameworks/react/hooks/useCamera';
+export {useAssets} from 'engine/frameworks/react/hooks/useAssets';
 export {useChat} from 'engine/frameworks/react/hooks/useChat';
 export {useCommand} from 'engine/frameworks/react/hooks/useCommand';
 export {useToolbar} from 'engine/frameworks/react/hooks/useToolbar';

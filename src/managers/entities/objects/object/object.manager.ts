@@ -489,6 +489,33 @@ class ObjectManager extends EntityManager<
     this.engine.objects.saveVolatile(this);
   }
 
+  async isStreamed() {
+    const {
+      data: [streamed],
+    } = await this.engine.messenger.emitAsync('isObjectStreamed', [this.id]);
+
+    return streamed;
+  }
+
+  async waitForStream(): Promise<void> {
+    const streamed = await this.isStreamed();
+    if (streamed) return;
+
+    return new Promise(resolve => {
+      const onStreamIn = this.engine.messenger.events.on(
+        `onObjectStreamInRaw_${this.id}`,
+        () => {
+          this.engine.messenger.events.off(
+            `onObjectStreamInRaw_${this.id}`,
+            onStreamIn,
+          );
+
+          resolve();
+        },
+      );
+    });
+  }
+
   async sync() {
     this.engine.objects.sync(this);
   }
