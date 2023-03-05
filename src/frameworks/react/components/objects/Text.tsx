@@ -6,22 +6,29 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-export const Box = forwardRef<ObjectManager, CreateObjectProps<'box'>>(
-  ({...props}, ref) => {
+type TextProps = Omit<CreateObjectProps<'text'>, 'text'> & {
+  text?: string;
+  children?: string;
+};
+
+export const Text = forwardRef<ObjectManager, TextProps>(
+  ({children, ...props}, ref) => {
     const objects = useObjects();
     const {setObject, objectProps, parent} = useObjectCreator();
 
     useEffect(() => {
-      const object = objects.create('box', {
+      const object = objects.create('text', {
         ...props,
         ...objectProps(props.id),
+
+        text: props.text ?? children ?? 'No Text',
       });
 
       setObject(object, ref);
-    }, [setObject, objectProps, objects, props, parent]);
+    }, [setObject, objectProps, objects, props, children, parent]);
 
     return null;
   },
 );
 
-Box.displayName = 'Box';
+Text.displayName = 'Box';

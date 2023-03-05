@@ -34,9 +34,9 @@ export type ObjectGroupType = ObjectBaseType<
 export type ObjectModelType = ObjectBaseType<
   'model',
   {
-    m: string; // model id
+    model: string; // model id
 
-    d?: unknown; // data
+    data?: unknown; // data
   }
 >;
 
@@ -50,28 +50,98 @@ export type ObjectGltfType = ObjectBaseType<
 export type ObjectBoxType = ObjectBaseType<
   'box',
   {
-    w: number; // width
+    width: number; // width
 
-    h: number; // height
+    height: number; // height
 
-    d: number; // depth
+    depth: number; // depth
 
-    ws?: number; // widthSegments
+    widthSegments?: number; // widthSegments
 
-    hs?: number; // widthSegments
+    heightSegments?: number; // widthSegments
 
-    ds?: number; // depthsegments
+    depthSegments?: number; // depthsegments
 
-    c?: string; // color
+    color?: string; // color
+  }
+>;
+
+export type ObjectSphereType = ObjectBaseType<
+  'sphere',
+  {
+    radius: number; // radius
+
+    heightSegments?: number; // height
+
+    widthSegments?: number; // depth
+
+    color?: string; // color
   }
 >;
 
 export type ObjectLineType = ObjectBaseType<
   'line',
   {
-    p: Vector3Array[];
+    points: Vector3Array[];
 
-    c?: string;
+    color?: string;
+  }
+>;
+
+export type ObjectTextType = ObjectBaseType<
+  'text',
+  {
+    text: string;
+
+    color?: string;
+
+    fontSize?: number;
+
+    maxWidth?: number;
+
+    lineHeight?: number;
+
+    letterSpacing?: number;
+
+    textAlign?: 'center' | 'left' | 'right' | 'justify';
+
+    font?: string;
+
+    anchorX?: number | 'center' | 'left' | 'right';
+
+    anchorY?:
+      | number
+      | 'bottom'
+      | 'top'
+      | 'middle'
+      | 'top-baseline'
+      | 'bottom-baseline';
+
+    direction?: 'auto' | 'ltr' | 'rtl';
+
+    overflowWrap?: 'normal' | 'break-word';
+
+    whiteSpace?: 'normal' | 'nowrap' | 'overflowWrap';
+
+    outlineWidth?: string | number;
+
+    outlineOffsetX?: string | number;
+
+    outlineOffsetY?: string | number;
+
+    outlineBlur?: string | number;
+
+    outlineColor?: string;
+
+    outlineOpacity?: number;
+
+    strokeWidth?: string | number;
+
+    strokeColor?: string;
+
+    strokeOpacity?: number;
+
+    fillOpacity?: number;
   }
 >;
 
@@ -82,9 +152,13 @@ export type ObjectTypes = {
 
   box: ObjectBoxType;
 
+  sphere: ObjectSphereType;
+
   line: ObjectLineType;
 
   gltf: ObjectGltfType;
+
+  text: ObjectTextType;
 };
 
 export type ObjectTypeValues<T extends ObjectTypes = ObjectTypes> = T[keyof T];

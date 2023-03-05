@@ -6,13 +6,13 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-export const Box = forwardRef<ObjectManager, CreateObjectProps<'box'>>(
+export const Sphere = forwardRef<ObjectManager, CreateObjectProps<'sphere'>>(
   ({...props}, ref) => {
     const objects = useObjects();
     const {setObject, objectProps, parent} = useObjectCreator();
 
     useEffect(() => {
-      const object = objects.create('box', {
+      const object = objects.create('sphere', {
         ...props,
         ...objectProps(props.id),
       });
@@ -24,4 +24,4 @@ export const Box = forwardRef<ObjectManager, CreateObjectProps<'box'>>(
   },
 );
 
-Box.displayName = 'Box';
+Sphere.displayName = 'Box';

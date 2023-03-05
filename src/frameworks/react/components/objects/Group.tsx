@@ -28,7 +28,9 @@ export const Group = forwardRef<ObjectManager, GroupProps>(
     const {setObject, objectProps, object} = useObjectCreator();
 
     useEffect(() => {
-      const object = objects.createGroup([], {
+      const object = objects.create('group', {
+        c: [],
+
         ...props,
 
         ...objectProps(props.id),

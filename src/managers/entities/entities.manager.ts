@@ -43,7 +43,7 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
     return this.entitiesMap.get(id)!;
   }
 
-  create(id: string | number, data?: T['data']) {
+  protected _create(id: string | number, data?: T['data']) {
     let entity: T = null!;
 
     entity = this.get(id);

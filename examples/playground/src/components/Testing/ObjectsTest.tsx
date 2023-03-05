@@ -18,18 +18,15 @@ const ObjectsTest = () => {
   }, [objects]);
 
   const createBox = () => {
-    objectRef.current = objects.createBox(
-      {
-        w: 2,
-        h: 2,
-        d: 3,
-        c: 'red',
-      },
-      {
-        position: [1, 2, 10],
-        collision: 'static',
-      },
-    );
+    objectRef.current = objects.create('box', {
+      width: 2,
+      height: 2,
+      depth: 3,
+      color: 'red',
+
+      position: [1, 2, 10],
+      collision: 'static',
+    });
   };
 
   const setPosition = () => {
@@ -49,13 +46,11 @@ const ObjectsTest = () => {
   };
 
   const createGltf = () => {
-    objectRef.current = objects.createGltf(
-      'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf',
-      {
-        position: [1, 2, 10],
-        collision: 'static',
-      },
-    );
+    objectRef.current = objects.create('gltf', {
+      u: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf',
+      position: [1, 2, 10],
+      collision: 'static',
+    });
   };
 
   useEffect(() => {
@@ -109,7 +104,7 @@ const ObjectsTest = () => {
       <button onClick={() => destroy()}>objects.destroy</button>
 
       {/* <Box
-        box={{w: 2, h: 2, d: 2, c: 'green'}}
+        box={{width: 2, h: 2, d: 2, color: 'green'}}
         position={[-8, 1, 20]}
         collision="static"
       />
@@ -132,7 +127,7 @@ const ObjectsTest = () => {
         rotation={[Math.PI / 4, 0, 0]}>
         <Box
           id="test1"
-          box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+          box={{width: 1, h: 0.5, d: 1, color: 'violet'}}
           position={[0, 1, 1]}
           rotation={[Math.PI / 4, 0, 0]}
           collision="static"
@@ -140,7 +135,7 @@ const ObjectsTest = () => {
 
         <Box
           id="test2"
-          box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+          box={{width: 1, h: 0.5, d: 1, color: 'blue'}}
           position={[0, 0.5, 2]}
           collision="static"
         />
@@ -154,14 +149,14 @@ const ObjectsTest = () => {
         {/* <Group position={[2, 2, 2]} rotation={[0, 0, Math.PI / 2]}>
           <Box
             id="box1"
-            box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+            box={{width: 1, h: 0.5, d: 1, color: 'violet'}}
             position={[0, 1, 0]}
             collision="static"
           />
 
           <Box
             id="box2"
-            box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+            box={{width: 1, h: 0.5, d: 1, color: 'blue'}}
             position={[0, 0.5, 2]}
             collision="static"
           />
@@ -170,59 +165,78 @@ const ObjectsTest = () => {
         <Box
           shadows
           id="box1"
-          box={{w: 1, h: 0.5, d: 1, c: 'violet'}}
+          width={1}
+          height={0.5}
+          depth={1}
+          color="violet"
           position={[0, 2, 0]}
           rotation={[Math.PI / 4, 0, 0]}
         />
 
         <Box
           id="box2"
-          box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+          width={1}
+          height={0.5}
+          depth={1}
+          color="blue"
           position={[2, 0.5, 2]}
           collision="static"
         />
 
         <Box
           id="box3"
-          box={{w: 1, h: 0.5, d: 1, c: 'green'}}
+          width={1}
+          height={0.5}
+          depth={1}
+          color="green"
           position={[0, 0.5, 3]}
           collision="static"
         />
 
         <Box
           id="box4"
-          box={{w: 1, h: 0.5, d: 1, c: 'yellow'}}
+          width={1}
+          height={0.5}
+          depth={1}
+          color="yellow"
           position={[0, 0.5, 4]}
           collision="static"
         />
 
         <Box
           id="redBox"
-          box={{w: 1, h: 0.5, d: 1, c: 'red'}}
+          width={1}
+          height={0.5}
+          depth={1}
+          color="red"
           position={[1, 0.5, 2]}
           collision="static"
         />
 
         <Box
           id="box6"
-          box={{w: 1, h: 0.5, d: 1, c: 'blue'}}
+          width={1}
+          height={0.5}
+          depth={1}
+          color="blue"
           position={[1, 0.5, 3]}
           collision="static"
         />
 
         <Box
           id="box7"
-          box={{w: 1, h: 0.5, d: 1, c: 'green'}}
+          width={1}
+          height={0.5}
+          depth={1}
+          color="green"
           position={[1, 0.5, 4]}
           collision="static"
         />
 
         {/* <Gltf
           ref={anotherOneRef}
-          props={{
-            position: [0, 1.01, 7],
-            collision: 'static',
-          }}
+          position={[0, 1.01, 7]}
+          collision="static"
           url="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box%20With%20Spaces/glTF/Box%20With%20Spaces.gltf"
         /> */}
       </Group>

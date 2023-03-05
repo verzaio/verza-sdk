@@ -6,8 +6,9 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-type GltfProps = CreateObjectProps<'gltf'> & {
+type GltfProps = Omit<CreateObjectProps<'gltf'>, 'u'> & {
   url: string;
+  u?: string;
 };
 
 export const Gltf = forwardRef<ObjectManager, GltfProps>((props, ref) => {
@@ -15,10 +16,13 @@ export const Gltf = forwardRef<ObjectManager, GltfProps>((props, ref) => {
   const {setObject, objectProps} = useObjectCreator();
 
   useEffect(() => {
-    const object = objects.createGltf(props.url, {
-      ...props,
+    const {url, u, ...allProps} = props;
+    const object = objects.create('gltf', {
+      u: u ?? url,
 
-      ...objectProps(props.id),
+      ...allProps,
+
+      ...objectProps(allProps.id),
     });
 
     setObject(object, ref);

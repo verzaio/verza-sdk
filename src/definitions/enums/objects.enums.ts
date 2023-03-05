@@ -3,7 +3,9 @@ export enum ObjectType {
   model = 'model',
   gltf = 'gltf',
   box = 'box',
+  sphere = 'sphere',
   line = 'line',
+  text = 'text',
 }
 
 export enum ObjectSource {

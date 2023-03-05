@@ -30,7 +30,7 @@ const _TEMP_QUAT2 = new Quaternion();
 
 const _TEMP_OBJECT = new Object3D();
 
-class ObjectManager extends EntityManager<
+class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   ObjectEntity,
   ObjectHandleManager,
   ObjectEventMap
@@ -131,6 +131,10 @@ class ObjectManager extends EntityManager<
 
   set parentId(parentId: string | undefined) {
     this.data.parent_id = parentId!;
+  }
+
+  get props(): PickObject<OT>['o'] {
+    return this.data.o;
   }
 
   constructor(entity: ObjectEntity, engine: EngineManager) {
@@ -385,7 +389,7 @@ class ObjectManager extends EntityManager<
           this.engine.objects.update(child, item as ObjectEntity['data']);
         } else {
           // create
-          this.engine.objects.create(
+          this.engine.objects._createRaw(
             item.id!,
             item as ObjectEntity['data'],
             this,
@@ -443,10 +447,15 @@ class ObjectManager extends EntityManager<
     return this.engine.objects.resolveObject(this.parentId, forceUpdate);
   }
 
-  setData<
-    T extends ObjectType = ObjectType,
-    D extends PickObject<T> = PickObject<T>,
-  >(data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>) {
+  setProps<D extends PickObject<OT>['o'] = PickObject<OT>['o']>(
+    props: Partial<D>,
+  ) {
+    this.setData({o: props} as PickObject<OT>);
+  }
+
+  setData<D extends PickObject<OT> = PickObject<OT>>(
+    data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>,
+  ) {
     this.data = {
       ...this.data,
       ...data,
