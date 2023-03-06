@@ -152,6 +152,12 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     // check for children
     this._checkForChildren();
 
+    // check for parent via data.parent_id
+    if (this.parentId) {
+      this.attachToParent(this.engine.objects.get(this.parentId));
+      return;
+    }
+
     this.updateChunkIndex(false);
   }
 
@@ -167,7 +173,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   private _lastChunkIndex: ChunkIndex = null!;
   updateChunkIndex(emit = true) {
     // ignore client-side and if not the parent object
-    if (this.engine.isClient || this.parent) return;
+    if (this.engine.isClient || this.parentId) return;
 
     super.updateChunkIndex();
 
@@ -348,12 +354,10 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   attachToParent(parent: ObjectManager) {
-    parent = parent ?? this.engine.objects.get(this.parentId!);
-
     if (!parent) {
-      console.debug(
+      /* console.debug(
         `[objects:script] no parent found (parent id: ${this.parentId} | object id: ${this.id}:${this.objectType})`,
-      );
+      ); */
       return;
     }
 

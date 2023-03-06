@@ -6,7 +6,9 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-export const Model = forwardRef<ObjectManager, CreateObjectProps<'model'>>(
+export type ModelProps = CreateObjectProps<'model'>;
+
+export const Model = forwardRef<ObjectManager<'model'>, ModelProps>(
   (props, ref) => {
     const objects = useObjects();
 

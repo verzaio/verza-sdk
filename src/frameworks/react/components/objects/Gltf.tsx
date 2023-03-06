@@ -6,7 +6,7 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-type GltfProps = Omit<CreateObjectProps<'gltf'>, 'u'> & {
+export type GltfProps = Omit<CreateObjectProps<'gltf'>, 'u'> & {
   url: string;
   u?: string;
 };

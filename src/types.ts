@@ -25,7 +25,9 @@ export {
 } from 'engine/definitions/types/objects/objects.types';
 
 export {
+  Vector2Array,
   Vector3Array,
+  EulerArray,
   QuaternionArray,
   WorldPosition,
   WorldPositionRotation,
@@ -56,6 +58,8 @@ export {
   ObjectStandardMaterial,
 } from 'engine/definitions/types/objects/objects-materials.types';
 
+export {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+
 export {PlayerControls} from 'engine/definitions/types/controls.types';
 
 export type {
@@ -79,7 +83,7 @@ export type {
 
 // custom blending destination factors
 export {
-  BlendingDstFactor,
+  type BlendingDstFactor,
   ZeroFactor,
   OneFactor,
   SrcColorFactor,
@@ -93,11 +97,11 @@ export {
 } from 'three';
 
 // custom blending src factors
-export {BlendingSrcFactor, SrcAlphaSaturateFactor} from 'three';
+export {type BlendingSrcFactor, SrcAlphaSaturateFactor} from 'three';
 
 // depth modes
 export {
-  DepthModes,
+  type DepthModes,
   NeverDepth,
   AlwaysDepth,
   LessDepth,
@@ -109,11 +113,11 @@ export {
 } from 'three';
 
 // side
-export {Side, FrontSide, BackSide, DoubleSide} from 'three';
+export {type Side, FrontSide, BackSide, DoubleSide} from 'three';
 
 // blending modes
 export {
-  Blending,
+  type Blending,
   NoBlending,
   NormalBlending,
   AdditiveBlending,
@@ -123,7 +127,7 @@ export {
 } from 'three';
 
 export {
-  BlendingEquation,
+  type BlendingEquation,
   AddEquation,
   SubtractEquation,
   ReverseSubtractEquation,
@@ -133,17 +137,17 @@ export {
 
 // Normal Map types
 export {
-  NormalMapTypes,
+  type NormalMapTypes,
   TangentSpaceNormalMap,
   ObjectSpaceNormalMap,
 } from 'three';
 
 // Texture Encodings
-export {TextureEncoding, LinearEncoding, sRGBEncoding} from 'three';
+export {type TextureEncoding, LinearEncoding, sRGBEncoding} from 'three';
 
 // Mapping modes
 export {
-  Mapping,
+  type Mapping,
   UVMapping,
   CubeReflectionMapping,
   CubeRefractionMapping,
@@ -154,7 +158,7 @@ export {
 
 // Wrapping modes
 export {
-  Wrapping,
+  type Wrapping,
   RepeatWrapping,
   ClampToEdgeWrapping,
   MirroredRepeatWrapping,
@@ -162,7 +166,7 @@ export {
 
 // Filters
 export {
-  TextureFilter,
+  type TextureFilter,
   NearestFilter,
   NearestMipmapNearestFilter,
   NearestMipMapNearestFilter,
@@ -177,9 +181,8 @@ export {
 
 // Pixel formats
 export {
-  PixelFormat,
+  type PixelFormat,
   AlphaFormat,
-  RGBFormat,
   RGBAFormat,
   LuminanceFormat,
   LuminanceAlphaFormat,

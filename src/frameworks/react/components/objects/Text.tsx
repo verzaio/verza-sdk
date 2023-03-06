@@ -6,12 +6,12 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-type TextProps = Omit<CreateObjectProps<'text'>, 'text'> & {
+export type TextProps = Omit<CreateObjectProps<'text'>, 'text'> & {
   text?: string;
   children?: string;
 };
 
-export const Text = forwardRef<ObjectManager, TextProps>(
+export const Text = forwardRef<ObjectManager<'text'>, TextProps>(
   ({children, ...props}, ref) => {
     const objects = useObjects();
     const {setObject, objectProps, parent} = useObjectCreator();

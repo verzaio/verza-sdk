@@ -1,3 +1,5 @@
+import {Euler} from 'three';
+
 import {v4} from 'uuid';
 
 import {EntityType} from 'engine/definitions/enums/entities.enums';
@@ -177,9 +179,19 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     // validate rot
     if (props.rotation) {
-      props.rotation = Array.isArray(props.rotation)
-        ? props.rotation
-        : (props.rotation.toArray() as QuaternionArray);
+      if (!Array.isArray(props.rotation)) {
+        // Euler
+        if (props.rotation instanceof Euler) {
+          props.rotation = [
+            props.rotation.x,
+            props.rotation.y,
+            props.rotation.z,
+          ];
+        } else {
+          // Quaternion
+          props.rotation = props.rotation.toArray() as QuaternionArray;
+        }
+      }
     }
 
     // validate rot

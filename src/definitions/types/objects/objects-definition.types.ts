@@ -57,11 +57,11 @@ export type ObjectGltfType = ObjectBaseType<
 export type ObjectBoxType = ObjectBaseType<
   'box',
   {
-    width: number; // width
+    width?: number; // width
 
-    height: number; // height
+    height?: number; // height
 
-    depth: number; // depth
+    depth?: number; // depth
 
     widthSegments?: number; // widthSegments
 
@@ -78,7 +78,7 @@ export type ObjectBoxType = ObjectBaseType<
 export type ObjectSphereType = ObjectBaseType<
   'sphere',
   {
-    radius: number; // radius
+    radius?: number; // radius
 
     heightSegments?: number; // height
 

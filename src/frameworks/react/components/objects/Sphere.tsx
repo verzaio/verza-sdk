@@ -6,7 +6,9 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-export const Sphere = forwardRef<ObjectManager, CreateObjectProps<'sphere'>>(
+export type SphereProps = CreateObjectProps<'sphere'>;
+
+export const Sphere = forwardRef<ObjectManager<'sphere'>, SphereProps>(
   ({...props}, ref) => {
     const objects = useObjects();
     const {setObject, objectProps, parent} = useObjectCreator();

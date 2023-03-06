@@ -275,13 +275,6 @@ export type ObjectTexture = {
   source: string;
 
   /**
-   * If the texture will be shared
-   *
-   * * @default true
-   */
-  shared?: boolean;
-
-  /**
    * @default DEFAULT_MAPPING
    */
   mapping?: Mapping;

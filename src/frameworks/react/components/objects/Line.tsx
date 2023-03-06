@@ -6,24 +6,24 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-export const Line = forwardRef<ObjectManager, CreateObjectProps<'line'>>(
-  (props, ref) => {
-    const objects = useObjects();
+export type LineProps = CreateObjectProps<'line'>;
 
-    const {setObject, objectProps} = useObjectCreator();
+export const Line = forwardRef<ObjectManager, LineProps>((props, ref) => {
+  const objects = useObjects();
 
-    useEffect(() => {
-      const object = objects.create('line', {
-        ...props,
-        ...objectProps(props?.id),
-      });
+  const {setObject, objectProps} = useObjectCreator();
 
-      setObject(object, ref);
-    }, [setObject, objectProps, objects, props]);
+  useEffect(() => {
+    const object = objects.create('line', {
+      ...props,
+      ...objectProps(props?.id),
+    });
 
-    return null;
-  },
-);
+    setObject(object, ref);
+  }, [setObject, objectProps, objects, props]);
+
+  return null;
+});
 
 Line.displayName = 'Line';
 

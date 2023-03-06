@@ -37,10 +37,19 @@ export {usePlayer} from 'engine/frameworks/react/hooks/usePlayer';
 export {useStreamedPlayer} from 'engine/frameworks/react/hooks/useStreamedPlayer';
 export {useStreamedObject} from 'engine/frameworks/react/hooks/useStreamedObject';
 
-export {Group} from 'engine/frameworks/react/components/objects/Group';
-export {Model} from 'engine/frameworks/react/components/objects/Model';
-export {Box} from 'engine/frameworks/react/components/objects/Box';
-export {Sphere} from 'engine/frameworks/react/components/objects/Sphere';
-export {Gltf} from 'engine/frameworks/react/components/objects/Gltf';
-export {Line} from 'engine/frameworks/react/components/objects/Line';
-export {Text} from 'engine/frameworks/react/components/objects/Text';
+export {
+  Group,
+  GroupProps,
+} from 'engine/frameworks/react/components/objects/Group';
+export {
+  Model,
+  ModelProps,
+} from 'engine/frameworks/react/components/objects/Model';
+export {Box, BoxProps} from 'engine/frameworks/react/components/objects/Box';
+export {
+  Sphere,
+  SphereProps,
+} from 'engine/frameworks/react/components/objects/Sphere';
+export {Gltf, GltfProps} from 'engine/frameworks/react/components/objects/Gltf';
+export {Line, LineProps} from 'engine/frameworks/react/components/objects/Line';
+export {Text, TextProps} from 'engine/frameworks/react/components/objects/Text';
