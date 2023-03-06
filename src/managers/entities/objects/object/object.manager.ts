@@ -133,6 +133,10 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.data.parent_id = parentId!;
   }
 
+  get userData() {
+    return this.data.o.userData ?? {};
+  }
+
   get props(): PickObject<OT>['o'] {
     return this.data.o;
   }
@@ -463,6 +467,13 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       o: {
         ...this.data.o,
         ...data.o,
+
+        ...(data.o?.userData && {
+          userData: {
+            ...this.data.o.userData,
+            ...data.o?.userData,
+          },
+        }),
       },
     };
 

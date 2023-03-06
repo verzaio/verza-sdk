@@ -2,9 +2,16 @@ import {ObjectDataDto} from 'engine/generated/dtos.types';
 
 import {EntityCollisionType, EntityDrawDistanceType} from '../entities.types';
 import {QuaternionArray, Vector3Array} from '../world.types';
+import {ObjectStandardMaterial} from './objects-materials.types';
 import {ObjectType} from './objects.types';
 
 export type PickObject<T extends ObjectType> = ObjectTypes[T];
+
+export type ObjectDataBase = {
+  userData?: {
+    [name: string]: unknown;
+  };
+};
 
 export type ObjectBaseType<
   T extends ObjectType = ObjectType,
@@ -13,7 +20,7 @@ export type ObjectBaseType<
   id?: string;
   parent_id?: string;
   t: T;
-  o: D;
+  o: ObjectDataBase & D;
 
   c?: EntityCollisionType | null;
 
@@ -63,6 +70,8 @@ export type ObjectBoxType = ObjectBaseType<
     depthSegments?: number; // depthsegments
 
     color?: string; // color
+
+    material?: ObjectStandardMaterial;
   }
 >;
 
@@ -76,6 +85,8 @@ export type ObjectSphereType = ObjectBaseType<
     widthSegments?: number; // depth
 
     color?: string; // color
+
+    material?: ObjectStandardMaterial;
   }
 >;
 
