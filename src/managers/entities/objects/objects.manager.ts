@@ -1,12 +1,12 @@
+import {Euler} from 'three';
+
 import {v4} from 'uuid';
 
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ScriptMessengerMethods} from 'engine/definitions/types/messenger.types';
 import {
-  ObjectBoxType,
   ObjectGroupType,
-  ObjectTypeValues,
   PickObject,
 } from 'engine/definitions/types/objects/objects-definition.types';
 import {
@@ -14,10 +14,7 @@ import {
   ObjectEditAxes,
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
-import {
-  QuaternionArray,
-  Vector3Array,
-} from 'engine/definitions/types/world.types';
+import {QuaternionArray} from 'engine/definitions/types/world.types';
 import ControllerManager from 'engine/managers/controller.manager';
 import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
 
@@ -76,7 +73,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     // create
     if (!object) {
-      return this.create(id, data);
+      return this._createRaw(id, data);
     }
 
     // update
@@ -119,7 +116,14 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  create(
+  create<T extends ObjectType = ObjectType>(
+    type: T,
+    props: CreateObjectProps<T>,
+  ) {
+    return this._createFromType(type, props);
+  }
+
+  _createRaw(
     id: string,
     data: ObjectManager['data'],
     parent?: ObjectManager,
@@ -127,7 +131,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     // bind
     this._bind();
 
-    const object = super.create(id, data);
+    const object = super._create(id, data);
 
     // check for parent
     if (parent) {
@@ -138,7 +142,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   private _createObject(id: string, data: ObjectDataProps) {
-    const object = this.create(id, data);
+    const object = this._createRaw(id, data);
 
     // emit
     this.emitHandler(object, player => {
@@ -157,7 +161,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  private _createObjectType<T extends ObjectType = ObjectType>(
+  private _createFromType<T extends ObjectType = ObjectType>(
     type: T,
     props: CreateObjectProps<T>,
   ) {
@@ -175,9 +179,19 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     // validate rot
     if (props.rotation) {
-      props.rotation = Array.isArray(props.rotation)
-        ? props.rotation
-        : (props.rotation.toArray() as QuaternionArray);
+      if (!Array.isArray(props.rotation)) {
+        // Euler
+        if (props.rotation instanceof Euler) {
+          props.rotation = [
+            props.rotation.x,
+            props.rotation.y,
+            props.rotation.z,
+          ];
+        } else {
+          // Quaternion
+          props.rotation = props.rotation.toArray() as QuaternionArray;
+        }
+      }
     }
 
     // validate rot
@@ -196,6 +210,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       collision,
       scale,
       shadows,
+      ...dataProps
     } = props;
 
     const objectData: PickObject<ObjectType> = {
@@ -217,7 +232,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       ss: shadows,
 
-      o: props.data as any,
+      o: dataProps as any,
     };
 
     if (this.is(objectData.id!)) {
@@ -225,7 +240,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
 
     // create
-    const object = this.create(props.id!, objectData);
+    const object = this._createRaw(props.id!, objectData);
 
     // mark as controller
     object.isController = true;
@@ -250,57 +265,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     });
 
     return object;
-  }
-
-  createGroup(
-    children: ObjectTypeValues[] = [],
-    props: CreateObjectProps<'group'> = {},
-  ) {
-    return this._createObjectType('group', {
-      data: {
-        c: children ?? [],
-      },
-      ...props,
-    });
-  }
-
-  createModel(model: string, props: CreateObjectProps<'model'> = {}) {
-    return this._createObjectType('model', {
-      data: {
-        m: model,
-      },
-      ...props,
-    });
-  }
-
-  createGltf(url: string, props: CreateObjectProps<'gltf'> = {}) {
-    return this._createObjectType('gltf', {
-      data: {
-        u: url,
-      },
-      ...props,
-    });
-  }
-
-  createBox(box: ObjectBoxType['o'], props: CreateObjectProps<'box'> = {}) {
-    return this._createObjectType('box', {
-      data: box,
-      ...props,
-    });
-  }
-
-  createLine(
-    points: Vector3Array[],
-    color?: string,
-    props: CreateObjectProps<'line'> = {},
-  ) {
-    return this._createObjectType('line', {
-      data: {
-        p: points.map(p => p),
-        c: color,
-      },
-      ...props,
-    });
   }
 
   destroy(entity: ObjectManager, report = true): void {

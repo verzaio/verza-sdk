@@ -31,6 +31,4 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   collision?: EntityCollisionType | null;
 
   shadows?: boolean;
-
-  data?: PickObject<T>['o'];
-};
+} & PickObject<T>['o'];

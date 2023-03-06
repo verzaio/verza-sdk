@@ -25,7 +25,9 @@ export {
 } from 'engine/definitions/types/objects/objects.types';
 
 export {
+  Vector2Array,
   Vector3Array,
+  EulerArray,
   QuaternionArray,
   WorldPosition,
   WorldPositionRotation,
@@ -49,6 +51,15 @@ export {
   FileTransfer,
 } from 'engine/definitions/types/ui.types';
 
+export {
+  ObjectMaterial,
+  ObjectTextureType,
+  ObjectTexture,
+  ObjectStandardMaterial,
+} from 'engine/definitions/types/objects/objects-materials.types';
+
+export {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+
 export {PlayerControls} from 'engine/definitions/types/controls.types';
 
 export type {
@@ -69,3 +80,117 @@ export type {
   PlayerCameraManager,
   PlayerAnimationsManager,
 };
+
+// custom blending destination factors
+export {
+  type BlendingDstFactor,
+  ZeroFactor,
+  OneFactor,
+  SrcColorFactor,
+  OneMinusSrcColorFactor,
+  SrcAlphaFactor,
+  OneMinusSrcAlphaFactor,
+  DstAlphaFactor,
+  OneMinusDstAlphaFactor,
+  DstColorFactor,
+  OneMinusDstColorFactor,
+} from 'three';
+
+// custom blending src factors
+export {type BlendingSrcFactor, SrcAlphaSaturateFactor} from 'three';
+
+// depth modes
+export {
+  type DepthModes,
+  NeverDepth,
+  AlwaysDepth,
+  LessDepth,
+  LessEqualDepth,
+  EqualDepth,
+  GreaterEqualDepth,
+  GreaterDepth,
+  NotEqualDepth,
+} from 'three';
+
+// side
+export {type Side, FrontSide, BackSide, DoubleSide} from 'three';
+
+// blending modes
+export {
+  type Blending,
+  NoBlending,
+  NormalBlending,
+  AdditiveBlending,
+  SubtractiveBlending,
+  MultiplyBlending,
+  CustomBlending,
+} from 'three';
+
+export {
+  type BlendingEquation,
+  AddEquation,
+  SubtractEquation,
+  ReverseSubtractEquation,
+  MinEquation,
+  MaxEquation,
+} from 'three';
+
+// Normal Map types
+export {
+  type NormalMapTypes,
+  TangentSpaceNormalMap,
+  ObjectSpaceNormalMap,
+} from 'three';
+
+// Texture Encodings
+export {type TextureEncoding, LinearEncoding, sRGBEncoding} from 'three';
+
+// Mapping modes
+export {
+  type Mapping,
+  UVMapping,
+  CubeReflectionMapping,
+  CubeRefractionMapping,
+  EquirectangularReflectionMapping,
+  EquirectangularRefractionMapping,
+  CubeUVReflectionMapping,
+} from 'three';
+
+// Wrapping modes
+export {
+  type Wrapping,
+  RepeatWrapping,
+  ClampToEdgeWrapping,
+  MirroredRepeatWrapping,
+} from 'three';
+
+// Filters
+export {
+  type TextureFilter,
+  NearestFilter,
+  NearestMipmapNearestFilter,
+  NearestMipMapNearestFilter,
+  NearestMipmapLinearFilter,
+  NearestMipMapLinearFilter,
+  LinearFilter,
+  LinearMipmapNearestFilter,
+  LinearMipMapNearestFilter,
+  LinearMipmapLinearFilter,
+  LinearMipMapLinearFilter,
+} from 'three';
+
+// Pixel formats
+export {
+  type PixelFormat,
+  AlphaFormat,
+  RGBAFormat,
+  LuminanceFormat,
+  LuminanceAlphaFormat,
+  DepthFormat,
+  DepthStencilFormat,
+  RedFormat,
+  RedIntegerFormat,
+  RGFormat,
+  RGIntegerFormat,
+  RGBAIntegerFormat,
+} from 'three';

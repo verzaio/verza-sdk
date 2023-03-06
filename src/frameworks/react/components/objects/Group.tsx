@@ -16,19 +16,21 @@ import {useObjects} from '../../hooks/useObjects';
 
 const ParentContext = createContext<ObjectManager>(null!);
 
-type GroupProps = CreateObjectProps<'group'> & {
+export type GroupProps = CreateObjectProps<'group'> & {
   id?: string;
 
   children?: ReactNode;
 };
 
-export const Group = forwardRef<ObjectManager, GroupProps>(
+export const Group = forwardRef<ObjectManager<'group'>, GroupProps>(
   ({children, ...props}, ref) => {
     const objects = useObjects();
     const {setObject, objectProps, object} = useObjectCreator();
 
     useEffect(() => {
-      const object = objects.createGroup([], {
+      const object = objects.create('group', {
+        c: [],
+
         ...props,
 
         ...objectProps(props.id),

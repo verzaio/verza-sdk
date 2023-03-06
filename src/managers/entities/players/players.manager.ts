@@ -1,7 +1,10 @@
 import {PLAYER_STATE_PACKET_INDEX} from 'engine/definitions/constants/players.constants';
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
-import {PlayerState} from 'engine/definitions/types/players.types';
+import {
+  PlayerDataProps,
+  PlayerState,
+} from 'engine/definitions/types/players.types';
 import {
   QuaternionArray,
   Vector3Array,
@@ -21,6 +24,10 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
 
   constructor(engine: EngineManager) {
     super(EntityType.player, engine);
+  }
+
+  create(id: number, data?: PlayerDataProps) {
+    return this._create(id, data);
   }
 
   load() {

@@ -30,7 +30,7 @@ const _TEMP_QUAT2 = new Quaternion();
 
 const _TEMP_OBJECT = new Object3D();
 
-class ObjectManager extends EntityManager<
+class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   ObjectEntity,
   ObjectHandleManager,
   ObjectEventMap
@@ -133,6 +133,14 @@ class ObjectManager extends EntityManager<
     this.data.parent_id = parentId!;
   }
 
+  get userData() {
+    return this.data.o.userData ?? {};
+  }
+
+  get props(): PickObject<OT>['o'] {
+    return this.data.o;
+  }
+
   constructor(entity: ObjectEntity, engine: EngineManager) {
     super(entity, engine);
 
@@ -143,6 +151,12 @@ class ObjectManager extends EntityManager<
 
     // check for children
     this._checkForChildren();
+
+    // check for parent via data.parent_id
+    if (this.parentId) {
+      this.attachToParent(this.engine.objects.get(this.parentId));
+      return;
+    }
 
     this.updateChunkIndex(false);
   }
@@ -159,7 +173,7 @@ class ObjectManager extends EntityManager<
   private _lastChunkIndex: ChunkIndex = null!;
   updateChunkIndex(emit = true) {
     // ignore client-side and if not the parent object
-    if (this.engine.isClient || this.parent) return;
+    if (this.engine.isClient || this.parentId) return;
 
     super.updateChunkIndex();
 
@@ -340,12 +354,10 @@ class ObjectManager extends EntityManager<
   }
 
   attachToParent(parent: ObjectManager) {
-    parent = parent ?? this.engine.objects.get(this.parentId!);
-
     if (!parent) {
-      console.debug(
+      /* console.debug(
         `[objects:script] no parent found (parent id: ${this.parentId} | object id: ${this.id}:${this.objectType})`,
-      );
+      ); */
       return;
     }
 
@@ -385,7 +397,7 @@ class ObjectManager extends EntityManager<
           this.engine.objects.update(child, item as ObjectEntity['data']);
         } else {
           // create
-          this.engine.objects.create(
+          this.engine.objects._createRaw(
             item.id!,
             item as ObjectEntity['data'],
             this,
@@ -443,10 +455,15 @@ class ObjectManager extends EntityManager<
     return this.engine.objects.resolveObject(this.parentId, forceUpdate);
   }
 
-  setData<
-    T extends ObjectType = ObjectType,
-    D extends PickObject<T> = PickObject<T>,
-  >(data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>) {
+  setProps<D extends PickObject<OT>['o'] = PickObject<OT>['o']>(
+    props: Partial<D>,
+  ) {
+    this.setData({o: props} as PickObject<OT>);
+  }
+
+  setData<D extends PickObject<OT> = PickObject<OT>>(
+    data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>,
+  ) {
     this.data = {
       ...this.data,
       ...data,
@@ -454,6 +471,13 @@ class ObjectManager extends EntityManager<
       o: {
         ...this.data.o,
         ...data.o,
+
+        ...(data.o?.userData && {
+          userData: {
+            ...this.data.o.userData,
+            ...data.o?.userData,
+          },
+        }),
       },
     };
 
