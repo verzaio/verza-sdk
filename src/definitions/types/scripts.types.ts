@@ -322,6 +322,16 @@ export type ScriptEventMap = {
 
   getObjectWorldBoundingBox: (objectId: string) => ObjectBoundingBox;
 
+  setObjectLinearVelocity: (objectId: string, vector: Vector3Array) => void;
+
+  setObjectAngularVelocity: (objectId: string, vector: Vector3Array) => void;
+
+  applyObjectImpulse: (objectId: string, vector: Vector3Array) => void;
+
+  addObjectTorque: (objectId: string, vector: Vector3Array) => void;
+
+  applyObjectTorqueImpulse: (objectId: string, vector: Vector3Array) => void;
+
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;
 

@@ -575,6 +575,48 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       s: this.scale.toArray(),
     };
   }
+
+  setLinearVelocity(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectLinearVelocity',
+        [this.id, vector],
+        player.id,
+      );
+    });
+  }
+
+  setAngularVelocity(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectAngularVelocity',
+        [this.id, vector],
+        player.id,
+      );
+    });
+  }
+
+  applyImpulse(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('applyObjectImpulse', [this.id, vector], player.id);
+    });
+  }
+
+  addTorque(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('addObjectTorque', [this.id, vector], player.id);
+    });
+  }
+
+  applyTorqueImpulse(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'applyObjectTorqueImpulse',
+        [this.id, vector],
+        player.id,
+      );
+    });
+  }
 }
 
 export default ObjectManager;

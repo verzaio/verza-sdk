@@ -209,6 +209,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       drawDistance,
       collision,
       collider,
+      mass,
       scale,
       shadows,
       ...dataProps
@@ -232,6 +233,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       ...(collision && {c: collision}),
 
       ...(collider && {cc: collider}),
+
+      ...(mass && {m: mass}),
 
       ...(drawDistance && {dd: drawDistance}),
 
