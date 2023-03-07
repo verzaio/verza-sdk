@@ -67,8 +67,6 @@ export type ScriptEventMap = {
 
   setPlayerId: (playerId: number) => void;
 
-  onFrame: (delta: number) => void;
-
   /* chat */
   onChat: (text: string, playerId?: number) => void;
 
@@ -321,6 +319,16 @@ export type ScriptEventMap = {
   getObjectBoundingBox: (objectId: string) => ObjectBoundingBox;
 
   getObjectWorldBoundingBox: (objectId: string) => ObjectBoundingBox;
+
+  setObjectLinearVelocity: (objectId: string, vector: Vector3Array) => void;
+
+  setObjectAngularVelocity: (objectId: string, vector: Vector3Array) => void;
+
+  applyObjectImpulse: (objectId: string, vector: Vector3Array) => void;
+
+  addObjectTorque: (objectId: string, vector: Vector3Array) => void;
+
+  applyObjectTorqueImpulse: (objectId: string, vector: Vector3Array) => void;
 
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;

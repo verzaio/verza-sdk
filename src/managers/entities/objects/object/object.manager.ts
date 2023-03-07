@@ -458,7 +458,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   setProps<D extends PickObject<OT>['o'] = PickObject<OT>['o']>(
     props: Partial<D>,
   ) {
-    this.setData({o: props} as PickObject<OT>);
+    this.setData({o: props} as unknown as PickObject<OT>);
   }
 
   setData<D extends PickObject<OT> = PickObject<OT>>(
@@ -574,6 +574,48 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       r: this.rotation.toArray() as QuaternionArray,
       s: this.scale.toArray(),
     };
+  }
+
+  setLinearVelocity(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectLinearVelocity',
+        [this.id, vector],
+        player.id,
+      );
+    });
+  }
+
+  setAngularVelocity(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectAngularVelocity',
+        [this.id, vector],
+        player.id,
+      );
+    });
+  }
+
+  applyImpulse(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('applyObjectImpulse', [this.id, vector], player.id);
+    });
+  }
+
+  addTorque(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('addObjectTorque', [this.id, vector], player.id);
+    });
+  }
+
+  applyTorqueImpulse(vector: Vector3Array) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'applyObjectTorqueImpulse',
+        [this.id, vector],
+        player.id,
+      );
+    });
   }
 }
 

@@ -18,3 +18,10 @@ export enum EntityCollision {
   kinematic = 'kinematic',
   dynamic = 'dynamic',
 }
+
+export enum EntityCollider {
+  sphere = 'sphere',
+  box = 'box',
+  hull = 'hull',
+  trimesh = 'trimesh',
+}

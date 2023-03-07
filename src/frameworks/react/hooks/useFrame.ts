@@ -1,22 +1,13 @@
 import {useEffect} from 'react';
 
 export const useFrame = (callback: (delta: number) => void) => {
-  // TODO: Use remote?
-  //useEvent('onFrame', callback);
-
   useEffect(() => {
     let lastTime = performance.now();
-    let running = true;
 
+    let frameLoop = 0;
     const check = () => {
-      requestAnimationFrame(delta => {
-        if (!running) return;
-
-        try {
-          callback((delta - lastTime) / 100);
-        } catch (e) {
-          console.log(e);
-        }
+      frameLoop = requestAnimationFrame(delta => {
+        callback((delta - lastTime) / 100);
 
         lastTime = delta;
 
@@ -27,7 +18,7 @@ export const useFrame = (callback: (delta: number) => void) => {
     check();
 
     return () => {
-      running = false;
+      cancelAnimationFrame(frameLoop);
     };
   }, [callback]);
 };
