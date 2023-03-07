@@ -528,6 +528,7 @@ export interface PlayerPacketLocalUpdateDto {
 }
 
 export interface ObjectDataDto {
+  /** type | ObjectType */
   t: string;
   /** object data */
   o: object;
@@ -539,11 +540,13 @@ export interface ObjectDataDto {
   s?: number[];
   /** dimension */
   d?: number;
-  /** collision */
+  /** collision | EntityCollision */
   c?: string | null;
-  /** collider */
+  /** collider | EntityCollider */
   cc?: string | null;
-  /** draw distance */
+  /** mass */
+  m?: number;
+  /** draw distance | EntityDrawDistance */
   dd?: string;
   /** shadows */
   ss?: boolean;

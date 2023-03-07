@@ -67,8 +67,6 @@ export type ScriptEventMap = {
 
   setPlayerId: (playerId: number) => void;
 
-  onFrame: (delta: number) => void;
-
   /* chat */
   onChat: (text: string, playerId?: number) => void;
 
