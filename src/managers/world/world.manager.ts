@@ -22,6 +22,18 @@ class WorldManager {
     }
   }
 
+  setTime(seconds: number) {
+    this._engine.messenger.emit('setTime', [seconds]);
+  }
+
+  setTimeRepresentation(hour: number, minute = 0, second = 0) {
+    this._engine.messenger.emit('setTimeRepresentation', [
+      hour,
+      minute,
+      second,
+    ]);
+  }
+
   bind() {
     this._messenger.events.on('onEntitySelectedRaw', ({data: [intersects]}) => {
       // emit
