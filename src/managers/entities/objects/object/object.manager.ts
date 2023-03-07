@@ -458,7 +458,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   setProps<D extends PickObject<OT>['o'] = PickObject<OT>['o']>(
     props: Partial<D>,
   ) {
-    this.setData({o: props} as PickObject<OT>);
+    this.setData({o: props} as unknown as PickObject<OT>);
   }
 
   setData<D extends PickObject<OT> = PickObject<OT>>(

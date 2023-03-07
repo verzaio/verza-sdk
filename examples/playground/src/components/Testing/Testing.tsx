@@ -9,7 +9,6 @@ import ObjectsTest from './ObjectsTest';
 import PlayersTest from './PlayersTest';
 import WebServerTest from './WebServerTest';
 import WebsocketsServerTest from './WebsocketsServerTest';
-import Playground from './Playground';
 
 const Testing = () => {
   const engine = useEngine();
@@ -53,8 +52,6 @@ const Testing = () => {
       <ObjectsTest />
 
       <InterfaceTest />
-
-      <Playground />
     </>
   );
 };

@@ -1,6 +1,8 @@
-import {ObjectDataDto} from 'engine/generated/dtos.types';
-
-import {EntityCollisionType, EntityDrawDistanceType} from '../entities.types';
+import {
+  EntityColliderType,
+  EntityCollisionType,
+  EntityDrawDistanceType,
+} from '../entities.types';
 import {QuaternionArray, Vector3Array} from '../world.types';
 import {ObjectStandardMaterial} from './objects-materials.types';
 import {ObjectType} from './objects.types';
@@ -13,22 +15,36 @@ export type ObjectDataBase = {
   };
 };
 
-export type ObjectBaseType<
-  T extends ObjectType = ObjectType,
-  D = unknown,
-> = Omit<ObjectDataDto, 'p' | 'r' | 'c' | 't'> & {
-  id?: string;
-  parent_id?: string;
-  t: T;
-  o: ObjectDataBase & D;
+export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
+  id?: string; // id
 
-  c?: EntityCollisionType | null;
+  parent_id?: string; // parent
+
+  t: T; // type
+
+  o: ObjectDataBase & D; // object data
 
   dd?: EntityDrawDistanceType;
 
   p?: Vector3Array; // position
+
   r?: QuaternionArray | Vector3Array; // rotation
+
   s?: Vector3Array; // scale
+
+  d?: number; // dimension
+
+  ss?: boolean; // shadows
+
+  c?: EntityCollisionType | null; // collision
+
+  cc?: EntityColliderType | null; // collider
+
+  m?: number; // mass
+
+  po?: boolean; // permanent object
+
+  ro?: boolean; // remote object
 };
 
 export type ObjectGroupType = ObjectBaseType<

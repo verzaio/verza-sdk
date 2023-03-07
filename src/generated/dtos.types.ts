@@ -541,6 +541,8 @@ export interface ObjectDataDto {
   d?: number;
   /** collision */
   c?: string | null;
+  /** collider */
+  cc?: string | null;
   /** draw distance */
   dd?: string;
   /** shadows */

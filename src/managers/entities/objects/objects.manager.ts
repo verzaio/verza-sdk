@@ -208,6 +208,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       rotation,
       drawDistance,
       collision,
+      collider,
       scale,
       shadows,
       ...dataProps
@@ -216,23 +217,25 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     const objectData: PickObject<ObjectType> = {
       id,
 
-      parent_id: parentId,
-
       t: type,
 
-      p: position,
-
-      r: rotation,
-
-      s: scale,
-
-      c: collision,
-
-      dd: drawDistance,
-
-      ss: shadows,
-
       o: dataProps as any,
+
+      ...(parentId && {parent_id: parentId}),
+
+      ...(position && {p: position}),
+
+      ...(rotation && {r: rotation}),
+
+      ...(scale && {s: scale}),
+
+      ...(collision && {c: collision}),
+
+      ...(collider && {cc: collider}),
+
+      ...(drawDistance && {dd: drawDistance}),
+
+      ...(shadows && {ss: shadows}),
     };
 
     if (this.is(objectData.id!)) {

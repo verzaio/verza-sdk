@@ -17,12 +17,14 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import PlayersManager from 'engine/managers/entities/players/players.manager';
 
 import type {EntityDrawDistance, EntityType} from '../enums/entities.enums';
-import {EntityCollision} from '../enums/objects.enums';
+import {EntityCollider, EntityCollision} from '../enums/objects.enums';
 import {ObjectDataProps} from './objects/objects.types';
 
 export type EntityDrawDistanceType = keyof typeof EntityDrawDistance;
 
 export type EntityCollisionType = keyof typeof EntityCollision;
+
+export type EntityColliderType = keyof typeof EntityCollider;
 
 export type CreateEntityProps = {
   p?: Vector3Array; // position
