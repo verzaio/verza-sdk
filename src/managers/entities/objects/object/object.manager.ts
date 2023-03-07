@@ -16,7 +16,7 @@ import {
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
-import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
+import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';

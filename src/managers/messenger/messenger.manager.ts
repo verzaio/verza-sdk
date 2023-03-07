@@ -4,7 +4,7 @@ import {
   MessengerValidators,
 } from 'engine/definitions/types/messenger.types';
 
-import EventsManager, {EventListenersMap} from './events.manager';
+import EventsManager, {EventListenersMap} from '../events.manager';
 
 type MessengerType = 'sender' | 'receiver';
 

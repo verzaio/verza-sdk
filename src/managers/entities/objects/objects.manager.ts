@@ -16,7 +16,7 @@ import {
 } from 'engine/definitions/types/objects/objects.types';
 import {QuaternionArray} from 'engine/definitions/types/world.types';
 import ControllerManager from 'engine/managers/controller.manager';
-import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
+import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';

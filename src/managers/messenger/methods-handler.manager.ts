@@ -1,22 +1,36 @@
 import {ScriptMessengerMethods} from 'engine/definitions/types/messenger.types';
 
-import {EngineManager} from '..';
+import {EngineManager} from '../..';
 
 class MethodsHandlerManager {
   private _engine: EngineManager;
 
+  private _eventsList = new Map<string, keyof ScriptMessengerMethods>();
+
   constructor(engine: EngineManager) {
     this._engine = engine;
+
+    // add as a list
+    Object.keys(this.methods).forEach(name => {
+      const parts = name.split('_');
+
+      this._eventsList.set(parts[0], name as keyof ScriptMessengerMethods);
+    });
   }
 
   get(eventName: string): [keyof ScriptMessengerMethods, () => void] | null {
-    const methodName = `${eventName}Raw` as keyof ScriptMessengerMethods;
+    const methodName = `${
+      eventName.split('_')[0]
+    }Raw` as keyof ScriptMessengerMethods;
 
-    if (this.methods[methodName] === undefined) {
+    if (!this._eventsList.has(methodName)) {
       return null;
     }
 
-    return [methodName, this.methods[methodName] as () => void];
+    return [
+      methodName,
+      this.methods[this._eventsList.get(methodName)!] as () => void,
+    ];
   }
 
   methods: Partial<ScriptMessengerMethods> = {

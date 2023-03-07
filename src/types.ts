@@ -12,7 +12,7 @@ import PlayerVoicechatManager from 'engine/managers/entities/players/player/play
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 import PlayersManager from 'engine/managers/entities/players/players.manager';
 
-import MessengerEmitterManager from './managers/messenger-emitter.manager';
+import MessengerEmitterManager from './managers/messenger/messenger-emitter.manager';
 
 export {
   ScriptEventMap,

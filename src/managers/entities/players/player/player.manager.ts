@@ -11,7 +11,7 @@ import {
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
-import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
+import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';
