@@ -28,7 +28,7 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
 
   rotation?: Quaternion | Euler | QuaternionArray | Vector3Array;
 
-  scale?: Vector3 | Vector3Array;
+  scale?: Vector3 | Vector3Array | number;
 
   drawDistance?: EntityDrawDistanceType;
 
