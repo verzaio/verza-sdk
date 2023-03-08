@@ -42,13 +42,13 @@ export type ObjectMaterial = {
 
   /**
    * Which blending to use when displaying objects with this material. Default is NormalBlending.
-   * @default THREE.NormalBlending
+   * @default NormalBlending
    */
   blending?: Blending;
 
   /**
    * Blending source. It's one of the blending mode constants defined in Three.js. Default is SrcAlphaFactor.
-   * @default THREE.SrcAlphaFactor
+   * @default SrcAlphaFactor
    */
   blendSrc?: BlendingSrcFactor | BlendingDstFactor;
 

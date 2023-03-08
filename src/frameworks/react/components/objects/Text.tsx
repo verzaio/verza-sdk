@@ -1,31 +1,27 @@
-import {forwardRef, useEffect} from 'react';
+import {forwardRef, useMemo} from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import {useObjects} from '../../hooks/useObjects';
-import {useObjectCreator} from './Group';
+import useObjectCreator from './hooks/useObjectCreator';
 
-export type TextProps = Omit<CreateObjectProps<'text'>, 'text'> & {
+export type TextProps = Omit<ComponentObjectProps<'text'>, 'text'> & {
   text?: string;
   children?: string;
 };
 
-export const Text = forwardRef<ObjectManager<'text'>, TextProps>(
+export const Text = forwardRef<ObjectManager, TextProps>(
   ({children, ...props}, ref) => {
-    const objects = useObjects();
-    const {setObject, objectProps, parent} = useObjectCreator();
-
-    useEffect(() => {
-      const object = objects.create('text', {
-        ...props,
-        ...objectProps(props.id),
-
-        text: props.text ?? children ?? 'No Text',
-      });
-
-      setObject(object, ref);
-    }, [setObject, objectProps, objects, props, children, parent]);
+    useObjectCreator(
+      'text',
+      useMemo(() => {
+        return {
+          ...props,
+          text: props.text ?? children ?? 'No Text',
+        };
+      }, [children, props]),
+      ref,
+    );
 
     return null;
   },

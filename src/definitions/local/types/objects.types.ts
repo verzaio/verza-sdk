@@ -12,6 +12,11 @@ import {
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 
+import {ObjectEventMapList} from './events.types';
+
+export type ComponentObjectProps<T extends ObjectType = ObjectType> =
+  ObjectEventMapList<T> & CreateObjectProps<T>;
+
 export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   id?: string;
 

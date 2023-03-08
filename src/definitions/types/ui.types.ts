@@ -61,7 +61,12 @@ export type KeyEvent = {
   key: string;
 } & UIEventBase;
 
-export type PointerEventType = 'pointermove' | 'pointerdown' | 'pointerup';
+export type PointerEventType =
+  | 'pointermove'
+  | 'pointerdown'
+  | 'pointerup'
+  | 'pointerenter'
+  | 'pointerleave';
 
 export type PointerEvent = {
   type: PointerEventType;

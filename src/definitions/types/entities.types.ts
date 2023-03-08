@@ -50,8 +50,8 @@ export type EntityItem<
 /* definition */
 export type EntityDefinition<
   T extends EntityManager,
-  H extends EntityHandleManager<any>,
-  M extends EntitiesManager,
+  H extends EntityHandleManager<T>,
+  M extends EntitiesManager<T>,
 > = {
   EntitiesManager: {new (engine: EngineManager): M};
 

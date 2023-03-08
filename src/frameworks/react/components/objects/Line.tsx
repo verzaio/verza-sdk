@@ -1,26 +1,14 @@
-import {forwardRef, useEffect} from 'react';
+import {forwardRef} from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import {useObjects} from '../../hooks/useObjects';
-import {useObjectCreator} from './Group';
+import useObjectCreator from './hooks/useObjectCreator';
 
-export type LineProps = CreateObjectProps<'line'>;
+export type LineProps = ComponentObjectProps<'line'>;
 
 export const Line = forwardRef<ObjectManager, LineProps>((props, ref) => {
-  const objects = useObjects();
-
-  const {setObject, objectProps} = useObjectCreator();
-
-  useEffect(() => {
-    const object = objects.create('line', {
-      ...props,
-      ...objectProps(props?.id),
-    });
-
-    setObject(object, ref);
-  }, [setObject, objectProps, objects, props]);
+  useObjectCreator('line', props, ref);
 
   return null;
 });

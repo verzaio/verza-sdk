@@ -1,29 +1,16 @@
-import {forwardRef, useEffect} from 'react';
+import {forwardRef} from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import {useObjects} from '../../hooks/useObjects';
-import {useObjectCreator} from './Group';
+import useObjectCreator from './hooks/useObjectCreator';
 
-export type SphereProps = CreateObjectProps<'sphere'>;
+export type SphereProps = ComponentObjectProps<'sphere'>;
 
-export const Sphere = forwardRef<ObjectManager<'sphere'>, SphereProps>(
-  ({...props}, ref) => {
-    const objects = useObjects();
-    const {setObject, objectProps, parent} = useObjectCreator();
+export const Sphere = forwardRef<ObjectManager, SphereProps>((props, ref) => {
+  useObjectCreator('sphere', props, ref);
 
-    useEffect(() => {
-      const object = objects.create('sphere', {
-        ...props,
-        ...objectProps(props.id),
-      });
-
-      setObject(object, ref);
-    }, [setObject, objectProps, objects, props, parent]);
-
-    return null;
-  },
-);
+  return null;
+});
 
 Sphere.displayName = 'Box';

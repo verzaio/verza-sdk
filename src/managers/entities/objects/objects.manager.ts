@@ -16,12 +16,13 @@ import {
 } from 'engine/definitions/types/objects/objects.types';
 import {QuaternionArray} from 'engine/definitions/types/world.types';
 import ControllerManager from 'engine/managers/controller.manager';
-import MessengerEmitterManager from 'engine/managers/messenger-emitter.manager';
+import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
 import PlayerManager from '../players/player/player.manager';
 import ObjectManager from './object/object.manager';
+import ObjectsHandlerManager from './objects-handler.manager';
 
 class ObjectsManager extends EntitiesManager<ObjectManager> {
   controller = new ControllerManager({
@@ -36,36 +37,28 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   private _messenger: MessengerEmitterManager;
 
+  private _handler: ObjectsHandlerManager;
+
   constructor(engine: EngineManager) {
     super(EntityType.object, engine);
 
     this._messenger = new MessengerEmitterManager(engine);
+
+    this._handler = new ObjectsHandlerManager(this, this._messenger);
   }
 
-  private _bind() {
+  bind() {
     if (this._loadBinded) return;
     this._loadBinded = true;
 
-    this._messenger.events.on('destroyObject', ({data: [objectId]}) => {
-      this.destroy(this.get(objectId), false);
-    });
-
-    this._messenger.events.on('destroyObjectClient', ({data: [objectId]}) => {
-      this.destroy(this.get(objectId));
-    });
-
-    this._messenger.events.on('syncObject', ({data: [objectId, props]}) => {
-      const objectProps = Object.values(props)[0];
-      const object = this.get(objectId);
-
-      if (object && objectProps) {
-        this.update(object, objectProps);
-      }
-    });
+    this._handler.bind();
   }
 
   unload() {
+    if (!this._loadBinded) return;
     this._loadBinded = false;
+
+    this._handler.unbind();
   }
 
   ensure(id: string, data: ObjectManager['data']) {
@@ -129,7 +122,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     parent?: ObjectManager,
   ): ObjectManager {
     // bind
-    this._bind();
+    this.bind();
 
     const object = super._create(id, data);
 

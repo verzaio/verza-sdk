@@ -16,7 +16,7 @@ import EntitiesManager from '../entities.manager';
 import PlayerManager from './player/player.manager';
 
 class PlayersManager extends EntitiesManager<PlayerManager> {
-  private _binded = false;
+  private _loadBinded = false;
 
   private get _messenger() {
     return this.engine.messenger;
@@ -31,9 +31,9 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
   }
 
   load() {
-    if (this._binded) return;
+    if (this._loadBinded) return;
 
-    this._binded = true;
+    this._loadBinded = true;
 
     // client side updates
     if (this.engine.isClient) {
@@ -101,7 +101,11 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
   }
 
   unload() {
-    this._binded = false;
+    this._loadBinded = false;
+
+    // remove all events
+    this.events.removeAllListeners();
+    this.watcher.removeAllListeners();
   }
 
   handlePacket(playerId: number, packet: PlayerPacketDto) {

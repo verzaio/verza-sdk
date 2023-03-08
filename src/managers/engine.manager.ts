@@ -15,12 +15,15 @@ import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
 import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
+import EntityEventsManager from './entities/entity/entity-events.manager';
 import ObjectsManager from './entities/objects/objects.manager';
 import PlayersManager from './entities/players/players.manager';
 import StreamerManager from './entities/streamer/streamer.manager';
 import EventsManager from './events.manager';
-import MessengerManager from './messenger.manager';
-import MethodsHandlerManager from './methods-handler.manager';
+import MessengerManager from './messenger/messenger.manager';
+import MethodsHandlerManager, {
+  MethodsHandler,
+} from './messenger/methods-handler.manager';
 import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
 import WorldManager from './world/world.manager';
@@ -50,7 +53,7 @@ export class EngineManager {
 
   messenger = new MessengerManager<ScriptEventMap>('sender');
 
-  eventsManager: Map<EventKey, EventsManager> = new Map();
+  eventsManager: Map<EventKey, EventsManager | EntityEventsManager> = new Map();
 
   events = new EngineEvents(this);
 
@@ -243,6 +246,10 @@ export class EngineManager {
     this.camera?.bind();
     this.streamer?.bind();
     this.world.bind();
+
+    if (this.objects.entitiesMap.size) {
+      this.objects.bind();
+    }
   }
 
   destroy() {
@@ -259,8 +266,8 @@ export class EngineManager {
     this.messenger.destroy();
     this.commands.destroy();
     this.ui?.destroy();
-    this.entities.player.unload();
-    this.entities.object.unload();
+    this.players.unload();
+    this.objects.unload();
 
     // remove all events
     this.events.removeAllListeners();
@@ -286,6 +293,8 @@ export class EngineEvents<
 
   private _bindedEvents = new Map<keyof T, (...args: any[]) => void>();
 
+  private _bindedHandler = new Map<keyof T, MethodsHandler>();
+
   constructor(engine: EngineManager) {
     super();
 
@@ -294,9 +303,9 @@ export class EngineEvents<
 
   on<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
     // bind handler
-    const method = this._engine.methodsHandler.get(eventName as string);
-    if (method) {
-      this._bind(method[0] as A, method[1]);
+    const handler = this._engine.methodsHandler.get(eventName as string);
+    if (handler) {
+      this._bindHandler(handler[0] as A, handler[1]);
     } else {
       // ignore local events
       if (!LocalEngineEvents.includes(eventName as keyof ScriptEventMap)) {
@@ -312,15 +321,15 @@ export class EngineEvents<
 
     // bind handler
     const method = this._engine.methodsHandler.get(eventName as string);
-    if (method) {
-      this._unbind(method[0] as A);
+    if (method?.[1]?.load) {
+      this._unbindHandler(method[0] as A);
     } else {
       this._unbind(eventName);
     }
   }
 
   once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
-    console.debug('[EngineEvents] events.once not available');
+    console.debug('[EngineEvents] events.once is not available');
     return listener;
   }
 
@@ -363,6 +372,35 @@ export class EngineEvents<
       );
 
       this._bindedEvents.delete(eventName);
+    }
+  }
+
+  private _bindHandler<A extends keyof T>(
+    eventName: A,
+    handler: MethodsHandler,
+  ) {
+    // is local
+    if (handler.load) {
+      if (this._bindedHandler.has(eventName)) return;
+
+      handler.load((eventName as string).split('_')[1]);
+
+      this._bindedHandler.set(eventName, handler);
+    } else {
+      this._bind(eventName, handler.listener as () => void);
+    }
+  }
+
+  private _unbindHandler<A extends keyof T>(eventName: A) {
+    if (
+      this._bindedHandler.has(eventName) &&
+      this.getEmitter().listenerCount(eventName as string) === 0
+    ) {
+      this._bindedHandler
+        .get(eventName)
+        ?.unload?.((eventName as string).split('_')[1]);
+
+      this._bindedHandler.delete(eventName);
     }
   }
 }

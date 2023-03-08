@@ -1,10 +1,23 @@
 import type {EntityType} from '../../definitions/enums/entities.enums';
 import EngineManager from '../engine.manager';
 import EventsManager from '../events.manager';
+import EntityEventsManager from './entity/entity-events.manager';
 import EntityStreamManager from './entity/entity-stream.manager';
 import EntityManager from './entity/entity.manager';
 
-class EntitiesManager<T extends EntityManager = EntityManager> {
+type WatcherEventMap<
+  Events extends string | number | symbol,
+  E extends EntityManager,
+> = {
+  [name in Events]: (entity: E, subscribed: boolean) => void;
+};
+
+class EntitiesManager<
+  T extends EntityManager = EntityManager,
+  EventsMap extends Parameters<T['events']['on']>[0] = Parameters<
+    T['events']['on']
+  >[0],
+> {
   public type: keyof typeof EntityType;
 
   public entities: T[] = [];
@@ -12,6 +25,12 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
   public entitiesMap: Map<string | number, T> = new Map();
 
   public streamed: Map<string | number, T> = new Map();
+
+  watcher = new EventsManager<WatcherEventMap<EventsMap, T>>();
+
+  eventsToWatch = new Set<EventsMap>();
+
+  //this.engine.entities[this.type]
 
   engine: EngineManager;
 
@@ -28,11 +47,11 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
 
     this.engine = engine;
 
-    this.events =
-      this.engine.eventsManager.get(this.type) ?? new EventsManager();
+    this.events = (this.engine.eventsManager.get(this.type) ??
+      new EventsManager()) as EntityEventsManager;
 
     // set events
-    this.engine.eventsManager.set(this.type, this.events);
+    this.engine.eventsManager.set(this.type, this.events as EventsManager);
   }
 
   is(id: string | number) {
@@ -64,9 +83,9 @@ class EntitiesManager<T extends EntityManager = EntityManager> {
     entity = new this.Manager(newEntity, this.engine) as T;
 
     // create events
-    entity.events =
-      this.engine.eventsManager.get(`${entity.type}.${entity.id}`) ??
-      new EventsManager();
+    entity.events = (this.engine.eventsManager.get(
+      `${entity.type}.${entity.id}`,
+    ) ?? new EntityEventsManager(entity)) as EntityEventsManager;
 
     // set events
     this.engine.eventsManager.set(`${entity.type}.${entity.id}`, entity.events);

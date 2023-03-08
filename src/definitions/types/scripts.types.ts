@@ -95,6 +95,10 @@ export type ScriptEventMap = {
 
   onPointerUp: (event: PointerEvent) => void;
 
+  onPointerLeave: (event: PointerEvent) => void;
+
+  onPointerEnter: (event: PointerEvent) => void;
+
   onKeyEvent: (event: KeyEvent) => void;
 
   onKeyDown: (event: KeyEvent) => void;
