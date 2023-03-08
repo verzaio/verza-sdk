@@ -1,11 +1,10 @@
-import React, {createContext, forwardRef, ReactNode, useContext} from 'react';
+import React, {forwardRef, ReactNode} from 'react';
 
 import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import useObjectCreator from './hooks/useObjectCreator';
-
-const ParentContext = createContext<ObjectManager>(null!);
+import {ParentContext} from './hooks/useObjectParent';
 
 export type GroupProps = CreateObjectProps<'group'> & {
   id?: string;
@@ -26,7 +25,3 @@ export const Group = forwardRef<ObjectManager, GroupProps>(
 );
 
 Group.displayName = 'Group';
-
-export const useParent = () => {
-  return useContext(ParentContext);
-};

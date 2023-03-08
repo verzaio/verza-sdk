@@ -6,10 +6,10 @@ import {
 } from 'engine/definitions/local/types/events.types';
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
-import {useObjects} from 'engine/framework-react';
+import {useObjects} from 'engine/frameworks/react/hooks/useObjects';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import {useParent} from '../Group';
+import useObjectParent from './useObjectParent';
 
 const EVENT_KEYS: (keyof ObjectEventMap)[] = [
   'onPointerMove',
@@ -25,7 +25,7 @@ const useObjectCreator = <T extends ObjectType = ObjectType>(
   ref: any,
 ) => {
   const objects = useObjects();
-  const parent = useParent();
+  const parent = useObjectParent();
   const parentIdRef = useRef(parent?.id);
   parentIdRef.current = parent?.id;
 
