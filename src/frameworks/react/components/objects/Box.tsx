@@ -1,25 +1,14 @@
-import {forwardRef, useEffect} from 'react';
+import {forwardRef} from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import {useObjects} from '../../hooks/useObjects';
-import {useObjectCreator} from './Group';
+import useObjectCreator from './hooks/useObjectCreator';
 
-export type BoxProps = CreateObjectProps<'box'>;
+export type BoxProps = ComponentObjectProps<'box'>;
 
-export const Box = forwardRef<ObjectManager, BoxProps>(({...props}, ref) => {
-  const objects = useObjects();
-  const {setObject, objectProps, parent} = useObjectCreator();
-
-  useEffect(() => {
-    const object = objects.create('box', {
-      ...props,
-      ...objectProps(props.id),
-    });
-
-    setObject(object, ref);
-  }, [setObject, objectProps, objects, props, parent]);
+export const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
+  useObjectCreator('box', props, ref);
 
   return null;
 });

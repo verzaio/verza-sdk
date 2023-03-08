@@ -1,32 +1,28 @@
-import {forwardRef, useEffect} from 'react';
+import {forwardRef, useMemo} from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import {useObjects} from '../../hooks/useObjects';
-import {useObjectCreator} from './Group';
+import useObjectCreator from './hooks/useObjectCreator';
 
-export type GltfProps = Omit<CreateObjectProps, 'u'> & {
+export type GltfProps = Omit<ComponentObjectProps<'gltf'>, 'u'> & {
   url: string;
   u?: string;
 };
 
 export const Gltf = forwardRef<ObjectManager, GltfProps>((props, ref) => {
-  const objects = useObjects();
-  const {setObject, objectProps} = useObjectCreator();
+  useObjectCreator(
+    'gltf',
+    useMemo(() => {
+      const {url, u, ...allProps} = props;
 
-  useEffect(() => {
-    const {url, u, ...allProps} = props;
-    const object = objects.create('gltf', {
-      u: u ?? url,
-
-      ...allProps,
-
-      ...objectProps(allProps.id),
-    });
-
-    setObject(object, ref);
-  }, [setObject, objectProps, objects, props]);
+      return {
+        u: u ?? url,
+        ...allProps,
+      };
+    }, [props]),
+    ref,
+  );
 
   return null;
 });

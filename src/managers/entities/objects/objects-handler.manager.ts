@@ -1,6 +1,8 @@
 import {POINTER_EVENTS_RELATION} from 'engine/definitions/local/constants/ui.types';
 import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
-import {ObjectManager, ObjectsManager, PointerEvent} from 'engine/index';
+import {PointerEvent} from 'engine/definitions/types/ui.types';
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
+import ObjectsManager from 'engine/managers/entities/objects/objects.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 
 import EntityEventsManager from '../entity/entity-events.manager';
@@ -85,16 +87,20 @@ class ObjectsHandlerManager {
       },
     );
 
-    if (!result.object) return;
+    const object = result.object?.entity;
+
+    if (!object) return;
 
     const ids = this._tracker.get(POINTER_EVENTS_RELATION[event.type]);
 
-    if (!ids?.has(result.object.entity.id)) return;
+    if (!ids?.has(object.id)) return;
 
-    result.object.entity.events.emit(
-      POINTER_EVENTS_RELATION[event.type],
-      event,
-    );
+    object.events.emit(POINTER_EVENTS_RELATION[event.type], {
+      ...event,
+
+      object,
+      intersects: result,
+    });
   };
 
   private _pointerTimeoutIdOver: ReturnType<typeof setTimeout> = null!;
@@ -122,7 +128,10 @@ class ObjectsHandlerManager {
         this._enteredObjects.forEach(objectId => {
           this._objects.get(objectId)?.events.emit('onPointerLeave', {
             ...eventInfo,
+
             type: 'pointerleave',
+            object: this._objects.get(objectId)!,
+            intersects: result,
           });
         });
 
@@ -135,7 +144,10 @@ class ObjectsHandlerManager {
 
         this._objects.get(objectId)?.events.emit('onPointerLeave', {
           ...eventInfo,
+
           type: 'pointerleave',
+          object,
+          intersects: result,
         });
         this._enteredObjects.delete(objectId);
       });
@@ -145,13 +157,19 @@ class ObjectsHandlerManager {
 
         object.events.emit('onPointerEnter', {
           ...eventInfo,
+
           type: 'pointerenter',
+          object,
+          intersects: result,
         });
       }
 
       object.events.emit('onPointerMove', {
         ...eventInfo,
+
         type: 'pointermove',
+        object,
+        intersects: result,
       });
     };
 
