@@ -275,6 +275,8 @@ export type ScriptEventMap = {
 
   setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
 
+  setObjectVisible: (objectId: string, visible: boolean) => void;
+
   rerenderObject: (objectId: string) => void;
 
   onObjectStreamIn: (object: ObjectManager) => void;

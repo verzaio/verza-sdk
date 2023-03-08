@@ -455,6 +455,12 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.engine.objects.resolveObject(this.parentId, forceUpdate);
   }
 
+  setVisible(visible: boolean) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('setObjectVisible', [this.id, visible], player.id);
+    });
+  }
+
   setProps<D extends PickObject<OT>['o'] = PickObject<OT>['o']>(
     props: Partial<D>,
   ) {

@@ -205,6 +205,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       mass,
       scale,
       shadows,
+
       ...dataProps
     } = props;
 
