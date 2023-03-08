@@ -1,5 +1,6 @@
 import {useEffect, useMemo, useRef} from 'react';
 
+import {POINTER_EVENTS_RELATION} from 'engine/definitions/local/constants/ui.types';
 import {
   PointerEvent,
   PointerEventType,
@@ -12,15 +13,6 @@ type UsePointerOptions = {
   ignoreFlags?: boolean;
 
   ignoreActiveInput?: boolean;
-};
-
-const EventsRelation: Record<
-  PointerEventType,
-  'onPointerMove' | 'onPointerDown' | 'onPointerUp'
-> = {
-  pointermove: 'onPointerMove',
-  pointerdown: 'onPointerDown',
-  pointerup: 'onPointerUp',
 };
 
 export const usePointer = (
@@ -36,7 +28,7 @@ export const usePointer = (
   optionsRef.current = options;
 
   const eventType = useMemo(
-    () => EventsRelation[options?.event ?? 'pointerup'],
+    () => POINTER_EVENTS_RELATION[options?.event ?? 'pointerup'],
     [options?.event],
   );
 

@@ -6,7 +6,7 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 import {useObjects} from '../../hooks/useObjects';
 import {useObjectCreator} from './Group';
 
-export type TextProps = Omit<CreateObjectProps<'text'>, 'text'> & {
+export type TextProps = Omit<CreateObjectProps, 'text'> & {
   text?: string;
   children?: string;
 };

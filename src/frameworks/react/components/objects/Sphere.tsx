@@ -8,7 +8,7 @@ import {useObjectCreator} from './Group';
 
 export type SphereProps = CreateObjectProps<'sphere'>;
 
-export const Sphere = forwardRef<ObjectManager<'sphere'>, SphereProps>(
+export const Sphere = forwardRef<ObjectManager, SphereProps>(
   ({...props}, ref) => {
     const objects = useObjects();
     const {setObject, objectProps, parent} = useObjectCreator();

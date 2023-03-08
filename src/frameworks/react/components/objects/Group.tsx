@@ -22,7 +22,7 @@ export type GroupProps = CreateObjectProps<'group'> & {
   children?: ReactNode;
 };
 
-export const Group = forwardRef<ObjectManager<'group'>, GroupProps>(
+export const Group = forwardRef<ObjectManager, GroupProps>(
   ({children, ...props}, ref) => {
     const objects = useObjects();
     const {setObject, objectProps, object} = useObjectCreator();

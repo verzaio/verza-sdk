@@ -8,22 +8,20 @@ import {useObjectCreator} from './Group';
 
 export type BoxProps = CreateObjectProps<'box'>;
 
-export const Box = forwardRef<ObjectManager<'box'>, BoxProps>(
-  ({...props}, ref) => {
-    const objects = useObjects();
-    const {setObject, objectProps, parent} = useObjectCreator();
+export const Box = forwardRef<ObjectManager, BoxProps>(({...props}, ref) => {
+  const objects = useObjects();
+  const {setObject, objectProps, parent} = useObjectCreator();
 
-    useEffect(() => {
-      const object = objects.create('box', {
-        ...props,
-        ...objectProps(props.id),
-      });
+  useEffect(() => {
+    const object = objects.create('box', {
+      ...props,
+      ...objectProps(props.id),
+    });
 
-      setObject(object, ref);
-    }, [setObject, objectProps, objects, props, parent]);
+    setObject(object, ref);
+  }, [setObject, objectProps, objects, props, parent]);
 
-    return null;
-  },
-);
+  return null;
+});
 
 Box.displayName = 'Box';

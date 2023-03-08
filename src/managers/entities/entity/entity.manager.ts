@@ -15,7 +15,8 @@ import {
 import {calcChunkIndex} from 'engine/utils/chunks.utils';
 
 import EngineManager from '../../engine.manager';
-import EventsManager, {EventListenersMap} from '../../events.manager';
+import {EventListenersMap} from '../../events.manager';
+import EntityEventsManager from './entity-events.manager';
 import EntityHandleManager from './entity-handle.manager';
 import EntityStreamManager from './entity-stream.manager';
 
@@ -37,7 +38,7 @@ class EntityManager<
 
   streamed = false;
 
-  events: EventsManager<MergeEntityEvents<Events, EntityEventMap<this>>> =
+  events: EntityEventsManager<MergeEntityEvents<Events, EntityEventMap<this>>> =
     null!;
 
   private _location = new Object3D();
@@ -95,6 +96,10 @@ class EntityManager<
 
   set drawDistance(drawDistance: EntityDrawDistanceType) {
     this.data.dd = drawDistance;
+  }
+
+  get manager() {
+    return this.engine.entities[this.type];
   }
 
   constructor(entity: T, engine: EngineManager) {
