@@ -281,7 +281,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     // destroy children
     entity.children.forEach(entity => {
-      this.destroy(entity);
+      this.destroy(entity, report);
     });
 
     // destroy
