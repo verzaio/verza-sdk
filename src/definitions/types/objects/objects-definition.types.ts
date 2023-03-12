@@ -85,6 +85,8 @@ export type ObjectBoxType = ObjectBaseType<
 
     depthSegments?: number; // depthsegments
 
+    radius?: number; // border radius
+
     color?: string; // color
 
     material?: ObjectStandardMaterial;

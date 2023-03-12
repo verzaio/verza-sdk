@@ -188,10 +188,14 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
 
     // validate rot
-    if (props.scale) {
-      props.scale = Array.isArray(props.scale)
-        ? props.scale
-        : props.scale.toArray();
+    if (props.scale !== undefined) {
+      if (typeof props.scale === 'number') {
+        props.scale = [props.scale, props.scale, props.scale];
+      } else {
+        props.scale = Array.isArray(props.scale)
+          ? props.scale
+          : props.scale.toArray();
+      }
     }
 
     const {
@@ -205,6 +209,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       mass,
       scale,
       shadows,
+
       ...dataProps
     } = props;
 
@@ -223,15 +228,15 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       ...(scale && {s: scale}),
 
-      ...(collision && {c: collision}),
+      ...(collision !== undefined && {c: collision}),
 
-      ...(collider && {cc: collider}),
+      ...(collider !== undefined && {cc: collider}),
 
-      ...(mass && {m: mass}),
+      ...(mass !== undefined && {m: mass}),
 
       ...(drawDistance && {dd: drawDistance}),
 
-      ...(shadows && {ss: shadows}),
+      ...(shadows !== undefined && {ss: shadows}),
     };
 
     if (this.is(objectData.id!)) {
