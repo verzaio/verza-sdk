@@ -2,6 +2,7 @@ import React, {
   createContext,
   PropsWithChildren,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
@@ -34,16 +35,23 @@ export const EngineProvider = ({
     setEngine(engine);
 
     return () => {
-      engine.events.on('onSynced', onSynced);
+      engine.events.off('onSynced', onSynced);
       engine.destroy();
       setEngine(null!);
       setSynced(false);
     };
   }, []);
 
-  if (!synced || !engine) return null;
-
-  return (
-    <EngineContext.Provider value={engine}>{children}</EngineContext.Provider>
+  return useMemo(
+    () => (
+      <>
+        {synced && engine && (
+          <EngineContext.Provider value={engine}>
+            {children}
+          </EngineContext.Provider>
+        )}
+      </>
+    ),
+    [engine, synced],
   );
 };
