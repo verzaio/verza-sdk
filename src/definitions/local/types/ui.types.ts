@@ -1,10 +1,15 @@
 import {PointerEventType} from 'engine/types';
 
-import {ObjectEventMap} from '../types/events.types';
+export type UIPointerEvents =
+  | 'onPointerMove'
+  | 'onPointerDown'
+  | 'onPointerUp'
+  | 'onPointerEnter'
+  | 'onPointerLeave';
 
 export const POINTER_EVENTS_RELATION: Record<
   PointerEventType,
-  keyof ObjectEventMap
+  UIPointerEvents
 > = {
   pointermove: 'onPointerMove',
   pointerdown: 'onPointerDown',

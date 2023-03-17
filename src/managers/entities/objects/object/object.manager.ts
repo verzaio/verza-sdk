@@ -9,14 +9,17 @@ import {
 } from 'engine/definitions/types/objects/objects-definition.types';
 import {
   ObjectDataProps,
+  ObjectTransition,
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
 import {
+  EulerArray,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
@@ -141,6 +144,10 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.o;
   }
 
+  get collision() {
+    return this.data.c ?? 'static';
+  }
+
   constructor(entity: ObjectEntity, engine: EngineManager) {
     super(entity, engine);
 
@@ -221,7 +228,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     });
   }
 
-  setRotation(rotation: Quaternion | Euler | QuaternionArray | Vector3Array) {
+  setRotation(rotation: Quaternion | Euler | QuaternionArray | EulerArray) {
     this.updateRotation(rotation);
 
     this.updateChunkIndex();
@@ -622,6 +629,78 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
         player.id,
       );
     });
+  }
+
+  private _normalizeVectors(transition: ObjectTransition) {
+    if (transition.to) {
+      transition.to = toVector3Array(transition.to);
+    }
+
+    if (transition.from) {
+      transition.from = toVector3Array(transition.from);
+    }
+
+    if (transition.toRotation) {
+      transition.toRotation = toQuaternionArray(transition.toRotation);
+    }
+
+    if (transition.fromRotation) {
+      transition.fromRotation = toQuaternionArray(transition.fromRotation);
+    }
+  }
+
+  startTransitions(transitions: ObjectTransition[]) {
+    transitions.forEach(transition => {
+      this._normalizeVectors(transition);
+    });
+
+    this._messenger.emit('startObjectTransitions', [this.id, transitions]);
+  }
+
+  startTransition(transition: ObjectTransition) {
+    this._normalizeVectors(transition);
+
+    this._messenger.emit('startObjectTransition', [this.id, transition]);
+  }
+
+  clearTransitions() {
+    this._messenger.emit('stopObjectTransitions', [this.id]);
+  }
+
+  private _onTransitionStart = (id: number | string) => {
+    this.events.emit('onTransitionStart', id);
+  };
+
+  private _onTransitionEnd = (id: number | string) => {
+    this.events.emit('onTransitionEnd', id);
+  };
+
+  bindTransitionStart() {
+    this.engine.events.on(
+      `onObjectTransitionStartRaw_${this.id}`,
+      this._onTransitionStart,
+    );
+  }
+
+  unbindTransitionStart() {
+    this.engine.events.off(
+      `onObjectTransitionStartRaw_${this.id}`,
+      this._onTransitionStart,
+    );
+  }
+
+  bindTransitionEnd() {
+    this.engine.events.on(
+      `onObjectTransitionEndRaw_${this.id}`,
+      this._onTransitionEnd,
+    );
+  }
+
+  unbindTransitionEnd() {
+    this.engine.events.off(
+      `onObjectTransitionEndRaw_${this.id}`,
+      this._onTransitionEnd,
+    );
   }
 }
 

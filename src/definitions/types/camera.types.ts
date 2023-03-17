@@ -18,9 +18,11 @@ export type CameraTransition<T extends string = keyof typeof EASINGS> =
     lookAtFixed?: boolean;
     duration?: number;
     easing?: T;
+    cubicBezier?: [x1: number, y1: number, x2: number, y2: number];
   };
 
 export type CameraTransitionItem = CameraTransition & {
   startTime: number;
   originPosition: PerspectiveCamera;
+  easingFunction: (delta: number) => number;
 };
