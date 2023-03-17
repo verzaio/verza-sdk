@@ -1,12 +1,12 @@
 import React, {forwardRef, ReactNode} from 'react';
 
-import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import useObjectCreator from './hooks/useObjectCreator';
 import {ParentContext} from './hooks/useObjectParent';
 
-export type GroupProps = CreateObjectProps<'group'> & {
+export type GroupProps = ComponentObjectProps<'group'> & {
   id?: string;
 
   children?: ReactNode;

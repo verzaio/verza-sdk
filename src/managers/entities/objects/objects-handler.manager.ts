@@ -10,6 +10,19 @@ import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter
 
 import EntityEventsManager from '../entity/entity-events.manager';
 
+const findObject = async (
+  object: ObjectManager,
+  ids?: Set<string | number>,
+): Promise<ObjectManager | null> => {
+  if (!object || !ids) return null;
+
+  if (ids.has(object.id)) {
+    return object;
+  }
+
+  return findObject((await object.resolveParent())!, ids);
+};
+
 class ObjectsHandlerManager {
   private _objects: ObjectsManager;
 
@@ -112,18 +125,22 @@ class ObjectsHandlerManager {
       },
     );
 
-    const object = result.object?.entity;
+    const tempObject = result.object?.entity;
 
-    if (!object) return;
+    if (!tempObject) return;
 
     const ids = this._tracker.get(POINTER_EVENTS_RELATION[event.type]);
 
-    if (!ids?.has(object.id)) return;
+    if (!ids) return;
+
+    const object = await findObject(tempObject, ids);
+
+    if (!object) return;
 
     object.events.emit(POINTER_EVENTS_RELATION[event.type], {
       ...event,
 
-      object,
+      object: object,
       intersects: result,
     });
   };
@@ -145,11 +162,13 @@ class ObjectsHandlerManager {
         },
       );
 
-      const ids = this._tracker.get('onPointerMove');
+      const tempObject = result.object?.entity;
 
-      const object = result.object?.entity;
+      const object = !tempObject
+        ? tempObject
+        : await findObject(tempObject, this._tracker.get('onPointerMove'));
 
-      if (!object || !ids?.has(object.id)) {
+      if (!object) {
         this._enteredObjects.forEach(objectId => {
           this._objects.get(objectId)?.events.emit('onPointerLeave', {
             ...eventInfo,
