@@ -30,7 +30,7 @@ class ChatManager {
   sendMessageTo(player: PlayerManager | number, text: string) {
     const playerId = typeof player === 'number' ? player : player.id;
 
-    this._engine.api.emitAction('sendMessage', [text, playerId]);
+    this._engine.api.emitAction('sendMessage', [text, playerId], playerId);
   }
 }
 

@@ -9,20 +9,43 @@ class SkyManager {
     this._engine = engine;
   }
 
+  setTimeRepresentation(hours: number, minutes = 0, seconds = 0) {
+    this._engine.messenger.emit('setTimeRepresentation', [
+      hours,
+      minutes,
+      seconds,
+    ]);
+  }
+  setTime(seconds: number) {
+    this._engine.messenger.emit('setTime', [seconds]);
+  }
+
   setMoonPhase(phase: MoonPhases) {
     this._engine.messenger.emit('setMoonPhase', [phase]);
   }
 
-  setHemisphereLight(color: string, groundColor: string, intensity = 1) {
-    this._engine.messenger.emit('setHemisphereLight', [
-      color,
-      groundColor,
-      intensity,
-    ]);
+  setHemisphereLightColor(color: string) {
+    this._engine.messenger.emit('setHemisphereLightColor', [color]);
   }
 
-  setLight(color: string, intensity = 1) {
-    this._engine.messenger.emit('setLight', [color, intensity]);
+  setHemisphereLightGroundColor(color: string) {
+    this._engine.messenger.emit('setHemisphereLightGroundColor', [color]);
+  }
+
+  setHemisphereLightIntensity(intensity: number) {
+    this._engine.messenger.emit('setHemisphereLightIntensity', [intensity]);
+  }
+
+  setGlobalLightColor(color: string) {
+    this._engine.messenger.emit('setGlobalLightColor', [color]);
+  }
+
+  setGlobalLightIntensity(intensity: number) {
+    this._engine.messenger.emit('setGlobalLightIntensity', [intensity]);
+  }
+
+  setSkyManualMode(status: boolean) {
+    this._engine.messenger.emit('setSkyManualMode', [status]);
   }
 }
 
