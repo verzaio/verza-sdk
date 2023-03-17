@@ -4,6 +4,8 @@ import EngineManager from 'engine/managers/engine.manager';
 class MessengerEmitterManager {
   private _engine: EngineManager;
 
+  playerId: number | undefined = undefined;
+
   get events() {
     return this._engine.messenger.events;
   }
@@ -22,7 +24,11 @@ class MessengerEmitterManager {
       return;
     }
 
-    await this._engine.api.emitAction(eventName, args, playerId);
+    await this._engine.api.emitAction(
+      eventName,
+      args,
+      playerId ?? this.playerId,
+    );
   }
 
   async emitAsync<A extends keyof ScriptEventMap>(
@@ -34,7 +40,11 @@ class MessengerEmitterManager {
       return this._engine.messenger.emitAsync(eventName, args);
     }
 
-    return this._engine.api.emitActionAsync(eventName, args, playerId);
+    return this._engine.api.emitActionAsync(
+      eventName,
+      args,
+      playerId ?? this.playerId,
+    );
   }
 }
 

@@ -416,13 +416,14 @@ export type ScriptEventMap = {
 
   setTime: (time: number) => void;
 
-  setHemisphereLight: (
-    color: string,
-    groundColor: string,
-    intensity: number,
-  ) => void;
+  setHemisphereLightColor: (color: string) => void;
+  setHemisphereLightGroundColor: (color: string) => void;
+  setHemisphereLightIntensity: (intensity: number) => void;
 
-  setLight: (color: string, intensity: number) => void;
+  setGlobalLightColor: (color: string) => void;
+  setGlobalLightIntensity: (intensity: number) => void;
+
+  setSkyManualMode: (status: boolean) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
 } & {
