@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useRef} from 'react';
 
-import {POINTER_EVENTS_RELATION} from 'engine/definitions/local/constants/ui.types';
+import {POINTER_EVENTS_RELATION} from 'engine/definitions/local/types/ui.types';
 import {
   PointerEvent,
   PointerEventType,

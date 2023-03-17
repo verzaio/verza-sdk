@@ -21,6 +21,10 @@ export type ObjectEventMap<T extends ObjectType = ObjectType> = {
   onPointerEnter: (event: ObjectPointerEvent<T>) => void;
 
   onPointerLeave: (event: ObjectPointerEvent<T>) => void;
+
+  onTransitionEnd: (id: number | string) => void;
+
+  onTransitionStart: (id: number | string) => void;
 };
 
 export type ObjectEventMapList<T extends ObjectType = ObjectType> = Partial<

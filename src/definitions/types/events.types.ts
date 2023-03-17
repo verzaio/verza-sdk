@@ -24,10 +24,6 @@ export type EngineEventMap = {
 
 export type CameraEventMap = {
   onCameraModeChange: (mode: CameraModeType, instant?: boolean) => void;
-
-  onCameraTransitionStart: (id?: number | string) => void;
-
-  onCameraTransitionEnd: (id?: number | string) => void;
 };
 
 export type ChunkEventMap = {

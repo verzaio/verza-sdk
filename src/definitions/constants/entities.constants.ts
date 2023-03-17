@@ -31,7 +31,8 @@ export const ENTITIES_RENDERS: EntitiesRenders = {
 
 export const ENTITY_COLLISIONS: EntityCollisionType[] = [
   'static',
-  'kinematic',
+  'kinematicPosition',
+  'kinematicVelocity',
   'dynamic',
 ];
 

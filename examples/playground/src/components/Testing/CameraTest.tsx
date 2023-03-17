@@ -48,7 +48,7 @@ const CameraTest = () => {
       <button
         onClick={() => {
           player.camera.setMode('world');
-          player.camera.setTransitions([
+          player.camera.startTransitions([
             {
               to: [10, 10, 10],
               from: [10, 3, 0],
@@ -75,7 +75,7 @@ const CameraTest = () => {
       <button
         onClick={() => {
           player.camera.setMode('world');
-          player.camera.setTransition({
+          player.camera.startTransition({
             id: END_TRANSITION_ID,
             to: [10, 10, 10],
             from: [10, 3, 0],
@@ -94,7 +94,7 @@ const CameraTest = () => {
             lookAt: [10, 10, 0],
           });
 
-          player.camera.setTransitions([
+          player.camera.startTransitions([
             {
               id: END_TRANSITION_ID,
               to: [10, 30, -10],

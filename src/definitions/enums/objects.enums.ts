@@ -15,7 +15,8 @@ export enum ObjectSource {
 
 export enum EntityCollision {
   static = 'static',
-  kinematic = 'kinematic',
+  kinematicPosition = 'kinematicPosition',
+  kinematicVelocity = 'kinematicVelocity',
   dynamic = 'dynamic',
 }
 
