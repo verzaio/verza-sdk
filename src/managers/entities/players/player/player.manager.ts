@@ -95,6 +95,8 @@ class PlayerManager extends EntityManager<
 
     this.messenger = new MessengerEmitterManager(engine);
 
+    this.messenger.playerId = this.id;
+
     if (engine.isServer || this.isControlling) {
       this.camera = new PlayerCameraManager(this);
     }
