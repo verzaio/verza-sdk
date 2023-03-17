@@ -576,7 +576,7 @@ export interface ChunkPacketDto {
 }
 
 export interface ChunksDummyFiltersDto {
-  collision?: 'static' | 'kinematic' | 'dynamic';
+  collision?: 'static' | 'kinematicPosition' | 'kinematicVelocity' | 'dynamic';
   draw_distance?: 'low' | 'mid' | 'high';
   shadows?: boolean;
 }

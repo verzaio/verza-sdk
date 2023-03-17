@@ -18,6 +18,7 @@ import {
   ObjectDataProps,
   ObjectEditActionType,
   ObjectEditAxes,
+  ObjectTransition,
 } from './objects/objects.types';
 import {
   FileTransfer,
@@ -223,12 +224,12 @@ export type ScriptEventMap = {
     instant?: boolean,
   ) => void;
 
-  setCameraTransitions: (
+  startCameraTransitions: (
     playerId: number,
     transitions: CameraTransition<string>[],
   ) => void;
 
-  setCameraTransition: (
+  startCameraTransition: (
     playerId: number,
     transition: CameraTransition<string>,
   ) => void;
@@ -336,6 +337,18 @@ export type ScriptEventMap = {
 
   applyObjectTorqueImpulse: (objectId: string, vector: Vector3Array) => void;
 
+  startObjectTransition: (
+    objectId: string,
+    transition: ObjectTransition<string>,
+  ) => void;
+
+  startObjectTransitions: (
+    objectId: string,
+    transitions: ObjectTransition<string>[],
+  ) => void;
+
+  stopObjectTransitions: (objectId: string) => void;
+
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;
 
@@ -424,4 +437,10 @@ export type ScriptEventMap = {
   [key in `onObjectStreamInRaw_${string}`]: () => void;
 } & {
   [key in `onObjectStreamOutRaw_${string}`]: () => void;
+} & {
+  [key in `onObjectTransitionStartRaw_${string}`]: (
+    id: number | string,
+  ) => void;
+} & {
+  [key in `onObjectTransitionEndRaw_${string}`]: (id: number | string) => void;
 };

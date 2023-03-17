@@ -34,7 +34,6 @@ const bounceOut: EasingFunction = function (x) {
 
 const EASINGS = {
   linear: x => x,
-
   easeInQuad: function (x) {
     return x * x;
   },

@@ -1,10 +1,9 @@
-import {Vector3} from 'three';
-
 import {
   CameraModeType,
   CameraPosition,
   CameraTransition,
 } from 'engine/definitions/types/camera.types';
+import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import PlayerManager from './player.manager';
 
@@ -19,17 +18,15 @@ class PlayerCameraManager {
     this._player = player;
   }
 
-  private _normalizePosition(transition: CameraTransition) {
-    if (transition.to instanceof Vector3) {
-      transition.to = transition.to.toArray();
+  private _normalizeVectors(transition: CameraTransition) {
+    transition.to = toVector3Array(transition.to);
+
+    if (transition.from) {
+      transition.from = toVector3Array(transition.from);
     }
 
-    if (transition.from instanceof Vector3) {
-      transition.from = transition.from.toArray();
-    }
-
-    if (transition.lookAt instanceof Vector3) {
-      transition.lookAt = transition.lookAt.toArray();
+    if (transition.lookAt) {
+      transition.lookAt = toVector3Array(transition.lookAt);
     }
   }
 
@@ -41,25 +38,28 @@ class PlayerCameraManager {
     ]);
   }
 
-  setTransitions(transitions: CameraTransition[]) {
+  startTransitions(transitions: CameraTransition[]) {
     transitions.forEach(transition => {
-      this._normalizePosition(transition);
+      this._normalizeVectors(transition);
     });
 
-    this._messenger.emit('setCameraTransitions', [
+    this._messenger.emit('startCameraTransitions', [
       this._player.id,
       transitions,
     ]);
   }
 
-  setTransition(transition: CameraTransition) {
-    this._normalizePosition(transition);
+  startTransition(transition: CameraTransition) {
+    this._normalizeVectors(transition);
 
-    this._messenger.emit('setCameraTransition', [this._player.id, transition]);
+    this._messenger.emit('startCameraTransition', [
+      this._player.id,
+      transition,
+    ]);
   }
 
   setPosition(transition: CameraPosition) {
-    this._normalizePosition(transition);
+    this._normalizeVectors(transition);
 
     this._messenger.emit('setCameraPosition', [this._player.id, transition]);
   }

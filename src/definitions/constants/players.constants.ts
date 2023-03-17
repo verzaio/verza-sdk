@@ -14,7 +14,13 @@ export const CHARACTER_MASS = 80; // KG
 
 export const CHARACTER_HEIGHT = 1.76; // METERS
 
-export const CHARACTER_RADIUS = 0.24; // METERS
+export const CHARACTER_RADIUS = 0.25; // METERS
+
+export const CHARACTER_CAPSULE = {
+  top: 0.92,
+  height: 1.34,
+  radius: CHARACTER_RADIUS,
+};
 
 export const CHARACTER_BODY_NAME = 'Body';
 

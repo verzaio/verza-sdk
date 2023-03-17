@@ -9,6 +9,7 @@ import {
 } from 'engine/definitions/types/entities.types';
 import {EntityEventMap} from 'engine/definitions/types/events.types';
 import {
+  EulerArray,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
@@ -145,9 +146,7 @@ class EntityManager<
     }
   }
 
-  updateRotation(
-    rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
-  ) {
+  updateRotation(rotation: Quaternion | Euler | QuaternionArray | EulerArray) {
     if (Array.isArray(rotation)) {
       // Vector3Array
       if (rotation.length === 3) {

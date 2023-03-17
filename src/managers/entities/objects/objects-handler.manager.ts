@@ -1,5 +1,8 @@
-import {POINTER_EVENTS_RELATION} from 'engine/definitions/local/constants/ui.types';
 import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
+import {
+  POINTER_EVENTS_RELATION,
+  UIPointerEvents,
+} from 'engine/definitions/local/types/ui.types';
 import {PointerEvent} from 'engine/definitions/types/ui.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import ObjectsManager from 'engine/managers/entities/objects/objects.manager';
@@ -45,7 +48,10 @@ class ObjectsHandlerManager {
     });
 
     // watch events
-    this._objects.eventsToWatch = new Set([
+    this._objects.eventsToWatch = new Set<keyof ObjectEventMap>([
+      'onTransitionStart',
+      'onTransitionEnd',
+
       'onPointerMove',
       'onPointerEnter',
       'onPointerLeave',
@@ -54,9 +60,28 @@ class ObjectsHandlerManager {
       'onPointerUp',
     ]);
 
-    this._objects.watcher.on('onPointerMove', (object, subscribed) =>
-      this._onPointerOverEvent('onPointerMove', object, subscribed),
-    );
+    this._objects.watcher.on('onTransitionStart', (object, subscribed) => {
+      this._tracker.track(
+        object.events,
+        'onTransitionStart',
+        object.id,
+        subscribed,
+        () => object.bindTransitionStart(),
+        () => object.unbindTransitionStart(),
+      );
+    });
+
+    this._objects.watcher.on('onTransitionEnd', (object, subscribed) => {
+      this._tracker.track(
+        object.events,
+        'onTransitionEnd',
+        object.id,
+        subscribed,
+        () => object.bindTransitionEnd(),
+        () => object.unbindTransitionEnd(),
+      );
+    });
+
     this._objects.watcher.on('onPointerEnter', (object, subscribed) =>
       this._onPointerOverEvent('onPointerEnter', object, subscribed),
     );
@@ -212,7 +237,7 @@ class ObjectsHandlerManager {
   };
 
   private _onPointerEvent = (
-    eventName: keyof ObjectEventMap,
+    eventName: UIPointerEvents,
     object: ObjectManager,
     subscribed: boolean,
   ) => {
