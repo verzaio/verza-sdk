@@ -73,6 +73,8 @@ export type PlayerEventMap = {
   onStateAnimationChange: (anim: number) => void;
 
   onHeadMove: (euler: [number, number, number]) => void;
+
+  onClothesUpdate: () => void;
 };
 
 export type ObjectEventMap = {

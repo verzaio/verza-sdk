@@ -217,6 +217,10 @@ export interface CharacterShapekeyValueDto {
   value: number;
 }
 
+export interface CharacterClotheDto {
+  id: string;
+}
+
 export interface CharacterDto {
   id: string;
   user: UserProfileDto;
@@ -228,6 +232,7 @@ export interface CharacterDto {
   blush_color: string | null;
   eyeshadow_color: string | null;
   eyeliner_color: string | null;
+  clothes: CharacterClotheDto[] | null;
   status: 'active' | 'deleted';
   selected: boolean;
   /** @format date-time */
@@ -236,6 +241,7 @@ export interface CharacterDto {
 
 export interface CreateCharacterDto {
   gender: 'male' | 'female';
+  clothes?: CharacterClotheDto[];
 }
 
 export interface UpdateCharacterDto {
@@ -354,6 +360,7 @@ export interface UpdateCharacterDto {
     | '#b976b1'
     | '#d0b07e'
     | null;
+  clothes?: CharacterClotheDto[];
 }
 
 export interface BasicWorldDto {

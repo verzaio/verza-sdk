@@ -1,5 +1,6 @@
 import {
   INTERFACE_CHAT,
+  INTERFACE_CURSOR,
   INTERFACE_OPTIONS,
 } from 'engine/definitions/constants/ui.constants';
 import {
@@ -275,6 +276,11 @@ class UIManager {
     this._messenger.emit('addInterface', [tag]);
   }
 
+  removeInterface(tag: string) {
+    this.interfaces.delete(tag);
+    this._messenger.emit('removeInterface', [tag]);
+  }
+
   toggleInterface(tag: string) {
     if (this.hasInterface(tag)) {
       this.removeInterface(tag);
@@ -284,15 +290,24 @@ class UIManager {
     this.addInterface(tag);
   }
 
-  removeInterface(tag: string) {
-    this.interfaces.delete(tag);
-    this._messenger.emit('removeInterface', [tag]);
-  }
-
   hasInterface(tag: string) {
     return this.interfaces.has(tag);
   }
 
+  // cursor
+  toggleCursor() {
+    this.toggleInterface(INTERFACE_CURSOR);
+  }
+
+  showCursor() {
+    this.addInterface(INTERFACE_CURSOR);
+  }
+
+  hideCursor() {
+    this.removeInterface(INTERFACE_CURSOR);
+  }
+
+  // options
   isOptionsMenu() {
     return this.hasInterface(INTERFACE_OPTIONS);
   }

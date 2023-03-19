@@ -16,6 +16,14 @@ import UIManager from 'engine/managers/ui.manager';
 import RaycasterManager from 'engine/managers/world/raycaster.manager';
 import WorldManager from 'engine/managers/world/world.manager';
 
+export {
+  INTERFACE_CURSOR,
+  INTERFACE_SERVER,
+  INTERFACE_OPTIONS,
+  INTERFACE_CHAT,
+  INTERFACE_LOADING,
+} from './definitions/constants/ui.constants';
+
 export {CORE_ACTION_EDITOR} from './definitions/constants/commands.constants';
 
 export {createFileFromFileTransfer} from './utils/files.utils';
