@@ -163,6 +163,8 @@ export type ScriptEventMap = {
 
   setPlayerName: (playerId: number, name: string) => void;
 
+  setPlayerNametagColor: (playerId: number, color: string) => void;
+
   setPlayerDimension: (playerId: number, dimension: number) => void;
 
   addPlayerRole: (playerId: number, role: string) => void;

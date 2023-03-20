@@ -130,6 +130,10 @@ class PlayerManager extends EntityManager<
     this.messenger.emit('setPlayerName', [this.id, name]);
   }
 
+  setNametagColor(color: string) {
+    this.messenger.emit('setPlayerNametagColor', [this.id, color]);
+  }
+
   addRole(roleId: string) {
     this.messenger.emit('addPlayerRole', [this.id, roleId]);
   }
