@@ -466,6 +466,8 @@ export interface PlayerPacketDto {
   c?: CharacterDto;
   /** player state */
   s?: number;
+  /** surfing */
+  f?: number;
   /** position | Vector3Array */
   p?: number[];
   /** rotation | QuaternionArray */
@@ -493,6 +495,12 @@ export interface PlayerPacketUpdateDto {
    * @max 5
    */
   s?: number;
+  /**
+   * player surfing
+   * @min 0
+   * @max 1
+   */
+  f?: number;
   /** position | Vector3Array */
   p?: number[];
   /** rotation | QuaternionArray */
@@ -516,6 +524,12 @@ export interface PlayerPacketLocalUpdateDto {
    * @max 5
    */
   s?: number;
+  /**
+   * player surfing
+   * @min 0
+   * @max 1
+   */
+  f?: number;
   /** position | Vector3Array */
   p?: number[];
   /** rotation | QuaternionArray */

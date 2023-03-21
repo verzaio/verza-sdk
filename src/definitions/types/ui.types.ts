@@ -1,5 +1,5 @@
 export type OptionsMenuTabType =
-  | 'general'
+  | 'overview'
   | 'controls'
   | 'graphics'
   | 'audio'

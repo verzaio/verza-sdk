@@ -1,3 +1,4 @@
+import {PlayerPacketUpdateDto} from 'engine/generated/dtos.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import type {EntityType} from '../enums/entities.enums';
@@ -20,6 +21,8 @@ export type EngineEventMap = {
   onReady: () => void;
 
   onDestroy: () => void;
+
+  DEBUG_onPlayerPacket: (packet: PlayerPacketUpdateDto) => void;
 };
 
 export type CameraEventMap = {

@@ -129,6 +129,11 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
       this._updateState(player, PLAYER_STATE_PACKET_INDEX[packet.s]);
     }
 
+    // surfing
+    if (packet.f !== undefined && player.handle) {
+      player.handle.surfing = packet.f;
+    }
+
     // state animation
     if (packet.n !== undefined) {
       this._updateStateAnimIndex(player, packet.n);

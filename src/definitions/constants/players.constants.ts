@@ -49,6 +49,7 @@ export const PLAYER_STATE_PACKET_INDEX = Object.entries(
 export const PLAYER_STATE_PACKET_KEYS: (keyof PlayerPacketUpdateDto)[] = [
   'n',
   's',
+  'f',
   'p',
   'r',
   'h',

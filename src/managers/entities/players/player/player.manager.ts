@@ -76,8 +76,8 @@ class PlayerManager extends EntityManager<
     return this.handle?.state;
   }
 
-  get isControlling() {
-    return !!this.data?.controls;
+  get isController() {
+    return !!this.data?.controller;
   }
 
   get velocity() {
@@ -97,7 +97,7 @@ class PlayerManager extends EntityManager<
 
     this.messenger.playerId = this.id;
 
-    if (engine.isServer || this.isControlling) {
+    if (engine.isServer || this.isController) {
       this.camera = new PlayerCameraManager(this);
     }
 

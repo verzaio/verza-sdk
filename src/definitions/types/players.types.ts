@@ -16,11 +16,13 @@ export type PlayerDataProps = CreateEntityProps & {
 
   state?: PlayerState;
 
+  surfing?: number;
+
   stateAnimIndex?: number;
 
   velocity?: Vector3Array;
 
-  controls?: boolean;
+  controller?: boolean;
 
   character?: CharacterDto;
 
