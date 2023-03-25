@@ -2,7 +2,11 @@ import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
-import {ObjectEntity} from 'engine/definitions/types/entities.types';
+import {
+  EntityColliderType,
+  EntityCollisionType,
+  ObjectEntity,
+} from 'engine/definitions/types/entities.types';
 import {
   ObjectGroupType,
   PickObject,
@@ -144,8 +148,31 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.o;
   }
 
-  get collision() {
-    return this.data.c ?? 'static';
+  get collision(): EntityCollisionType | null {
+    // no collision for groups
+    if (
+      this.objectType === 'group' ||
+      this.objectType === 'line' ||
+      this.objectType === 'text'
+    ) {
+      return null;
+    }
+
+    // if not defined, then return default collision
+    // this should be removed (or not?)
+    if (this.data.c === undefined) {
+      return 'static';
+    }
+
+    return this.data.c;
+  }
+
+  get collider() {
+    return this.data.cc ?? null;
+  }
+
+  get mass() {
+    return this.data.m;
   }
 
   constructor(entity: ObjectEntity, engine: EngineManager) {
@@ -278,6 +305,24 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       // Vector3
       this.location.scale.copy(scale);
     }
+  }
+
+  setCollision(collision: EntityCollisionType | null) {
+    this.setData({
+      c: collision,
+    } as PickObject<OT>);
+  }
+
+  setCollider(collider: EntityColliderType | null) {
+    this.setData({
+      cc: collider,
+    } as PickObject<OT>);
+  }
+
+  setMass(mass: number) {
+    this.setData({
+      m: mass,
+    } as PickObject<OT>);
   }
 
   async setPositionFromWorldSpace(position: Vector3 | Vector3Array) {
