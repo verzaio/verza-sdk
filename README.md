@@ -1,6 +1,8 @@
-# verza-sdk
+# Verza SDK
 
-Install
+This repository contains the SDK for the Verza platform.
+
+## Installation
 
 ```bash
 npm install @verza/sdk
