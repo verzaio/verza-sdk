@@ -358,7 +358,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   async setRotationFromWorldSpace(
-    rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
+    rotation: Quaternion | Euler | QuaternionArray | EulerArray,
   ) {
     if (!this.parentId) {
       this.setRotation(rotation);
@@ -498,13 +498,13 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   async resolve(): Promise<ObjectManager | null> {
-    return this.engine.objects.resolveObject(this.id, true);
+    return this.engine.objects.resolve(this.id, true);
   }
 
   async resolveParent(forceUpdate?: boolean): Promise<ObjectManager | null> {
     if (!this.parentId) return null;
 
-    return this.engine.objects.resolveObject(this.parentId, forceUpdate);
+    return this.engine.objects.resolve(this.parentId, forceUpdate);
   }
 
   setVisible(visible: boolean) {

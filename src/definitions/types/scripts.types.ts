@@ -21,6 +21,7 @@ import {
   ObjectTransition,
 } from './objects/objects.types';
 import {
+  ColorType,
   FileTransfer,
   IndicatorId,
   IndicatorTitle,
@@ -73,7 +74,7 @@ export type ScriptEventMap = {
 
   sendMessage: (text: string, playerId?: number) => void;
 
-  onCommand: (command: string, player?: PlayerManager) => void;
+  onCommand: (command: string) => void;
 
   onCommandNotFound: (command: string) => void;
 
@@ -163,7 +164,7 @@ export type ScriptEventMap = {
 
   setPlayerName: (playerId: number, name: string) => void;
 
-  setPlayerNametagColor: (playerId: number, color: string) => void;
+  setPlayerNametagColor: (playerId: number, color: ColorType) => void;
 
   setPlayerDimension: (playerId: number, dimension: number) => void;
 
@@ -418,11 +419,11 @@ export type ScriptEventMap = {
 
   setTime: (time: number) => void;
 
-  setHemisphereLightColor: (color: string) => void;
-  setHemisphereLightGroundColor: (color: string) => void;
+  setHemisphereLightColor: (color: ColorType) => void;
+  setHemisphereLightGroundColor: (color: ColorType) => void;
   setHemisphereLightIntensity: (intensity: number) => void;
 
-  setGlobalLightColor: (color: string) => void;
+  setGlobalLightColor: (color: ColorType) => void;
   setGlobalLightIntensity: (intensity: number) => void;
 
   setSkyManualMode: (status: boolean) => void;

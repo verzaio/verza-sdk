@@ -6,6 +6,7 @@ import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
+import {ColorType} from 'engine/definitions/types/ui.types';
 import {
   QuaternionArray,
   Vector3Array,
@@ -47,6 +48,10 @@ class PlayerManager extends EntityManager<
     control: false,
   };
 
+  get isController() {
+    return !!this.data?.controller;
+  }
+
   get isMovingControl() {
     return (
       this.controls.forward ||
@@ -74,10 +79,6 @@ class PlayerManager extends EntityManager<
 
   get state() {
     return this.handle?.state;
-  }
-
-  get isController() {
-    return !!this.data?.controller;
   }
 
   get velocity() {
@@ -130,7 +131,7 @@ class PlayerManager extends EntityManager<
     this.messenger.emit('setPlayerName', [this.id, name]);
   }
 
-  setNametagColor(color: string) {
+  setNametagColor(color: ColorType) {
     this.messenger.emit('setPlayerNametagColor', [this.id, color]);
   }
 

@@ -186,14 +186,6 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     player.data.state = newState;
   }
 
-  sendMessageToAll(text: string) {
-    this.engine.chat.sendMessageToAll(text);
-  }
-
-  sendMessageTo(player: PlayerManager | number, text: string) {
-    this.engine.chat.sendMessageTo(player, text);
-  }
-
   forEachInChunk(
     chunkIndex: ChunkIndex,
     callback: (player: PlayerManager) => void,

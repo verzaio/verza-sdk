@@ -3,6 +3,7 @@ import {
   EntityCollisionType,
   EntityDrawDistanceType,
 } from '../entities.types';
+import {ColorType} from '../ui.types';
 import {QuaternionArray, Vector3Array} from '../world.types';
 import {ObjectStandardMaterial} from './objects-materials.types';
 import {ObjectType} from './objects.types';
@@ -87,7 +88,7 @@ export type ObjectBoxType = ObjectBaseType<
 
     radius?: number; // border radius
 
-    color?: string; // color
+    color?: ColorType; // color
 
     material?: ObjectStandardMaterial;
   }
@@ -102,7 +103,7 @@ export type ObjectSphereType = ObjectBaseType<
 
     widthSegments?: number; // depth
 
-    color?: string; // color
+    color?: ColorType; // color
 
     material?: ObjectStandardMaterial;
   }
@@ -113,7 +114,7 @@ export type ObjectLineType = ObjectBaseType<
   {
     points: Vector3Array[];
 
-    color?: string;
+    color?: ColorType;
   }
 >;
 
@@ -122,7 +123,7 @@ export type ObjectTextType = ObjectBaseType<
   {
     text: string;
 
-    color?: string;
+    color?: ColorType;
 
     fontSize?: number;
 
@@ -160,13 +161,13 @@ export type ObjectTextType = ObjectBaseType<
 
     outlineBlur?: string | number;
 
-    outlineColor?: string;
+    outlineColor?: ColorType;
 
     outlineOpacity?: number;
 
     strokeWidth?: string | number;
 
-    strokeColor?: string;
+    strokeColor?: ColorType;
 
     strokeOpacity?: number;
 

@@ -11,7 +11,7 @@ import {
   PointerEventType,
   SizeProps,
   ToolbarElement,
-  UIEventBase,
+  UIEvent,
 } from 'engine/definitions/types/ui.types';
 
 import ControllerManager from './controller.manager';
@@ -256,7 +256,7 @@ class UIManager {
 
   private _extractBaseEventProps(
     event: KeyboardEvent | PointerEvent,
-  ): Required<UIEventBase> {
+  ): Required<UIEvent> {
     return {
       altKey: event.altKey,
 

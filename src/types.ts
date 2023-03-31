@@ -29,8 +29,6 @@ export {
   Vector3Array,
   EulerArray,
   QuaternionArray,
-  WorldPosition,
-  WorldPositionRotation,
   IntersectsResult,
   RaycastOptions,
 } from 'engine/definitions/types/world.types';

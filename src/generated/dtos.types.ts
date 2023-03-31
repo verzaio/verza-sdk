@@ -505,7 +505,7 @@ export interface PlayerPacketUpdateDto {
   p?: number[];
   /** rotation | QuaternionArray */
   r?: number[];
-  /** head | Vector3Array */
+  /** head | Euler3Array */
   h?: number[];
   /** velocity | Vector3Array */
   v?: number[];
@@ -534,7 +534,7 @@ export interface PlayerPacketLocalUpdateDto {
   p?: number[];
   /** rotation | QuaternionArray */
   r?: number[];
-  /** head | Vector3Array */
+  /** head | Euler3Array */
   h?: number[];
   /** velocity | Vector3Array */
   v?: number[];

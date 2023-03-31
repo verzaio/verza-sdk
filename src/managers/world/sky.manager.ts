@@ -1,3 +1,4 @@
+import {ColorType} from 'engine/definitions/types/ui.types';
 import {MoonPhases} from 'engine/definitions/types/world.types';
 
 import EngineManager from '../engine.manager';
@@ -24,11 +25,11 @@ class SkyManager {
     this._engine.messenger.emit('setMoonPhase', [phase]);
   }
 
-  setHemisphereLightColor(color: string) {
+  setHemisphereLightColor(color: ColorType) {
     this._engine.messenger.emit('setHemisphereLightColor', [color]);
   }
 
-  setHemisphereLightGroundColor(color: string) {
+  setHemisphereLightGroundColor(color: ColorType) {
     this._engine.messenger.emit('setHemisphereLightGroundColor', [color]);
   }
 
@@ -36,7 +37,7 @@ class SkyManager {
     this._engine.messenger.emit('setHemisphereLightIntensity', [intensity]);
   }
 
-  setGlobalLightColor(color: string) {
+  setGlobalLightColor(color: ColorType) {
     this._engine.messenger.emit('setGlobalLightColor', [color]);
   }
 

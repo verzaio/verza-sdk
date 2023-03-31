@@ -57,7 +57,7 @@ class MethodsHandlerManager {
   methods: EventMap = {
     onObjectStreamInRaw: {
       listener: async ({data: [objectId]}) => {
-        const object = await this._engine.objects.resolveObject(objectId);
+        const object = await this._engine.objects.resolve(objectId);
 
         this._engine.events.emit('onObjectStreamIn', object);
       },
@@ -65,7 +65,7 @@ class MethodsHandlerManager {
 
     onObjectStreamOutRaw: {
       listener: async ({data: [objectId]}) => {
-        const object = await this._engine.objects.resolveObject(objectId);
+        const object = await this._engine.objects.resolve(objectId);
 
         this._engine.events.emit('onObjectStreamOut', object);
       },

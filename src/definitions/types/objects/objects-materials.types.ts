@@ -13,6 +13,7 @@ import {
   PixelFormat,
 } from 'three';
 
+import {ColorType} from '../ui.types';
 import {Vector2Array} from '../world.types';
 
 export type ObjectMaterial = {
@@ -124,7 +125,7 @@ export type ObjectStandardMaterial = ObjectMaterial & {
   /**
    * @default white
    */
-  color?: string;
+  color?: ColorType;
 
   /**
    * @default 1
@@ -164,7 +165,7 @@ export type ObjectStandardMaterial = ObjectMaterial & {
   /**
    * @default black
    */
-  emissive?: string;
+  emissive?: ColorType;
 
   /**
    * @default 1

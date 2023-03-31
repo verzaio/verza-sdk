@@ -58,10 +58,10 @@ class PlayerCameraManager {
     ]);
   }
 
-  setPosition(transition: CameraPosition) {
-    this._normalizeVectors(transition);
+  setPosition(position: CameraPosition) {
+    this._normalizeVectors(position);
 
-    this._messenger.emit('setCameraPosition', [this._player.id, transition]);
+    this._messenger.emit('setCameraPosition', [this._player.id, position]);
   }
 }
 

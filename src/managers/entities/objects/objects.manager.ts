@@ -111,7 +111,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   create<T extends ObjectType = ObjectType>(
     type: T,
-    props: CreateObjectProps<T>,
+    props: CreateObjectProps<T> = {},
   ) {
     return this._createFromType(type, props);
   }
@@ -156,7 +156,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   private _createFromType<T extends ObjectType = ObjectType>(
     type: T,
-    props: CreateObjectProps<T>,
+    props: CreateObjectProps<T> = {},
   ) {
     // validate id
     if (!props.id) {
@@ -340,7 +340,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     this._messenger.emit('setObjectEditAxes', [axes]);
   }
 
-  async resolveObject(
+  async resolve(
     objectId: string,
     forceUpdate?: boolean,
   ): Promise<ObjectManager> {

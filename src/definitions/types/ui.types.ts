@@ -1,3 +1,5 @@
+import {ColorKeyword, ColorModelString, HexColorString} from 'three';
+
 export type OptionsMenuTabType =
   | 'overview'
   | 'controls'
@@ -41,7 +43,7 @@ export type SizeProps<T extends string = SizePropValue> = {
 
 export type KeyEventType = 'keydown' | 'keyup';
 
-export type UIEventBase = {
+export type UIEvent = {
   altKey?: boolean;
 
   ctrlKey?: boolean;
@@ -59,7 +61,7 @@ export type KeyEvent = {
   code: string;
 
   key: string;
-} & UIEventBase;
+} & UIEvent;
 
 export type PointerEventType =
   | 'pointermove'
@@ -80,7 +82,7 @@ export type PointerEvent = {
   button: number;
 
   buttons: number;
-} & UIEventBase;
+} & UIEvent;
 
 export type ToolbarPosition = 'bottom' | 'right';
 
@@ -102,3 +104,9 @@ export type FileTransfer = {
   size: number;
   buffer: ArrayBuffer;
 };
+
+export type ColorType =
+  | ColorKeyword
+  | ColorModelString
+  | HexColorString
+  | number;
