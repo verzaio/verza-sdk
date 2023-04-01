@@ -135,12 +135,12 @@ class PlayerManager extends EntityManager<
     this.messenger.emit('setPlayerNametagColor', [this.id, color]);
   }
 
-  addRole(roleId: string) {
-    this.messenger.emit('addPlayerRole', [this.id, roleId]);
+  async addRole(roleId: string) {
+    await this.messenger.emitAsync('addPlayerRole', [this.id, roleId]);
   }
 
-  removeRole(roleId: string) {
-    this.messenger.emit('removePlayerRole', [this.id, roleId]);
+  async removeRole(roleId: string) {
+    await this.messenger.emitAsync('removePlayerRole', [this.id, roleId]);
   }
 
   setDimension(dimension: number) {

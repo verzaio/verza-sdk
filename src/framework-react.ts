@@ -1,6 +1,6 @@
 export {
   EngineProvider,
-  EngineProviderProps,
+  type EngineProviderProps,
 } from 'engine/frameworks/react/components/EngineProvider';
 
 export {useEngine} from 'engine/frameworks/react/hooks/useEngine';
@@ -39,17 +39,29 @@ export {useStreamedObject} from 'engine/frameworks/react/hooks/useStreamedObject
 
 export {
   Group,
-  GroupProps,
+  type GroupProps,
 } from 'engine/frameworks/react/components/objects/Group';
 export {
   Model,
-  ModelProps,
+  type ModelProps,
 } from 'engine/frameworks/react/components/objects/Model';
-export {Box, BoxProps} from 'engine/frameworks/react/components/objects/Box';
+export {
+  Box,
+  type BoxProps,
+} from 'engine/frameworks/react/components/objects/Box';
 export {
   Sphere,
-  SphereProps,
+  type SphereProps,
 } from 'engine/frameworks/react/components/objects/Sphere';
-export {Gltf, GltfProps} from 'engine/frameworks/react/components/objects/Gltf';
-export {Line, LineProps} from 'engine/frameworks/react/components/objects/Line';
-export {Text, TextProps} from 'engine/frameworks/react/components/objects/Text';
+export {
+  Gltf,
+  type GltfProps,
+} from 'engine/frameworks/react/components/objects/Gltf';
+export {
+  Line,
+  type LineProps,
+} from 'engine/frameworks/react/components/objects/Line';
+export {
+  Text,
+  type TextProps,
+} from 'engine/frameworks/react/components/objects/Text';

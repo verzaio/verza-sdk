@@ -120,6 +120,7 @@ class ObjectsHandlerManager {
     const result = await this._engine.world.raycaster.raycastScreenPoint(
       event.x,
       event.y,
+      null,
       {
         entityTypes: ['object'],
       },
@@ -157,6 +158,7 @@ class ObjectsHandlerManager {
       const result = await this._engine.world.raycaster.raycastScreenPoint(
         eventInfo.x,
         eventInfo.y,
+        null,
         {
           entityTypes: ['object'],
         },

@@ -1,3 +1,5 @@
+import {ColorType} from 'engine/definitions/types/ui.types';
+
 import EngineManager from '../engine.manager';
 import RaycasterManager from './raycaster.manager';
 import SkyManager from './sky.manager';
@@ -22,18 +24,6 @@ class WorldManager {
     }
   }
 
-  setTime(seconds: number) {
-    this._engine.messenger.emit('setTime', [seconds]);
-  }
-
-  setTimeRepresentation(hour: number, minute = 0, second = 0) {
-    this._engine.messenger.emit('setTimeRepresentation', [
-      hour,
-      minute,
-      second,
-    ]);
-  }
-
   bind() {
     this._messenger.events.on('onEntitySelectedRaw', ({data: [intersects]}) => {
       // emit
@@ -46,6 +36,38 @@ class WorldManager {
 
   setEntitySelector(status: boolean) {
     this._messenger.emit('setEntitySelector', [status]);
+  }
+
+  setTime(seconds: number) {
+    this._engine.messenger.emit('setTime', [seconds]);
+  }
+
+  setTimeRepresentation(hour: number, minute = 0, second = 0) {
+    this._engine.messenger.emit('setTimeRepresentation', [
+      hour,
+      minute,
+      second,
+    ]);
+  }
+
+  setHemisphereLightColor(color: ColorType) {
+    this._engine.messenger.emit('setHemisphereLightColor', [color]);
+  }
+
+  setHemisphereLightGroundColor(color: ColorType) {
+    this._engine.messenger.emit('setHemisphereLightGroundColor', [color]);
+  }
+
+  setHemisphereLightIntensity(intensity: number) {
+    this._engine.messenger.emit('setHemisphereLightIntensity', [intensity]);
+  }
+
+  setGlobalLightColor(color: ColorType) {
+    this._engine.messenger.emit('setGlobalLightColor', [color]);
+  }
+
+  setGlobalLightIntensity(intensity: number) {
+    this._engine.messenger.emit('setGlobalLightIntensity', [intensity]);
   }
 }
 

@@ -9,7 +9,9 @@ import AssetsManager from 'engine/managers/assets.manager';
 import CameraManager from 'engine/managers/camera.manager';
 import ChatManager from 'engine/managers/chat.manager';
 import ControllerManager from 'engine/managers/controller.manager';
-import EventsManager, {EventListenersMap} from 'engine/managers/events.manager';
+import EventsManager, {
+  type EventListenersMap,
+} from 'engine/managers/events.manager';
 import MessengerManager from 'engine/managers/messenger/messenger.manager';
 import NetworkManager from 'engine/managers/network.manager';
 import UIManager from 'engine/managers/ui.manager';
@@ -47,9 +49,9 @@ export {EngineManager} from 'engine/managers/engine.manager';
 
 export {Command, CommandParam} from 'engine/managers/commands/command.manager';
 
-export {EngineParams} from 'engine/definitions/local/types/engine.types';
+export type {EngineParams} from 'engine/definitions/local/types/engine.types';
 
-export {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
+export type {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
 
 export {THREE};
 

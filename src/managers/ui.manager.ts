@@ -2,6 +2,7 @@ import {
   INTERFACE_CHAT,
   INTERFACE_CURSOR,
   INTERFACE_OPTIONS,
+  INTERFACE_SERVER,
 } from 'engine/definitions/constants/ui.constants';
 import {
   FileTransfer,
@@ -9,7 +10,7 @@ import {
   IndicatorTitle,
   KeyEventType,
   PointerEventType,
-  SizeProps,
+  UISizeProps,
   ToolbarElement,
   UIEvent,
 } from 'engine/definitions/types/ui.types';
@@ -60,20 +61,6 @@ class UIManager {
 
   constructor(engine: EngineManager) {
     this._engine = engine;
-  }
-
-  setSize(props: SizeProps) {
-    this._messenger.emit('setSize', [props as SizeProps]);
-  }
-
-  show() {
-    this.visible = true;
-    this._messenger.emit('show');
-  }
-
-  hide() {
-    this.visible = false;
-    this._messenger.emit('hide');
   }
 
   bind() {
@@ -270,6 +257,21 @@ class UIManager {
     };
   }
 
+  /* base */
+  show() {
+    this.visible = true;
+    this._messenger.emit('show');
+  }
+
+  hide() {
+    this.visible = false;
+    this._messenger.emit('hide');
+  }
+
+  setSize(props: UISizeProps) {
+    this._messenger.emit('setSize', [props as UISizeProps]);
+  }
+
   /* interfaces */
   addInterface(tag: string) {
     this.interfaces.add(tag);
@@ -307,11 +309,6 @@ class UIManager {
     this.removeInterface(INTERFACE_CURSOR);
   }
 
-  // options
-  isOptionsMenu() {
-    return this.hasInterface(INTERFACE_OPTIONS);
-  }
-
   showIndicator(id: IndicatorId, title?: IndicatorTitle) {
     this._messenger.emit('showIndicator', [id, title]);
   }
@@ -327,6 +324,18 @@ class UIManager {
 
   removeToolbar(toolbarId: string) {
     this._messenger.emit('removeToolbar', [toolbarId]);
+  }
+
+  isSystemMenu() {
+    return this.isOptionsMenu() || this.isServerMenu();
+  }
+
+  isServerMenu() {
+    return this.hasInterface(INTERFACE_SERVER);
+  }
+
+  isOptionsMenu() {
+    return this.hasInterface(INTERFACE_OPTIONS);
   }
 
   destroy() {

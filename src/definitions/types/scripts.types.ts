@@ -27,7 +27,7 @@ import {
   IndicatorTitle,
   KeyEvent,
   PointerEvent,
-  SizeProps,
+  UISizeProps,
   ToolbarElement,
 } from './ui.types';
 import {
@@ -47,7 +47,7 @@ export type ScriptStatus =
 
 /* scripts */
 
-export type CustomEventData = {
+export type NetworkEventData = {
   [name: string]: any;
 };
 
@@ -133,7 +133,7 @@ export type ScriptEventMap = {
 
   onInputFocus: (status: boolean) => void;
 
-  setSize: (props: SizeProps<string>) => void;
+  setSize: (props: UISizeProps<string>) => void;
 
   show: () => void;
 
@@ -358,28 +358,28 @@ export type ScriptEventMap = {
   syncEncryptedPackets: (packets: EncryptedPacketsDto) => void;
 
   /* custom events */
-  emitToScripts: (event: string, data?: CustomEventData) => void;
+  emitToScripts: (event: string, data?: NetworkEventData) => void;
 
-  emitToServer: (event: string, data?: CustomEventData) => void;
+  emitToServer: (event: string, data?: NetworkEventData) => void;
 
-  emitToPlayers: (event: string, data?: CustomEventData) => void;
+  emitToPlayers: (event: string, data?: NetworkEventData) => void;
 
   emitToPlayer: (
     playerId: number,
     event: string,
-    data?: CustomEventData,
+    data?: NetworkEventData,
   ) => void;
 
   emitToPlayersWithRoles: (
     event: string,
     roles: string[],
-    data?: CustomEventData,
+    data?: NetworkEventData,
   ) => void;
 
   emitToPlayersWithAccess: (
     event: string,
     command: string,
-    data?: CustomEventData,
+    data?: NetworkEventData,
   ) => void;
 
   /* world */
@@ -391,6 +391,7 @@ export type ScriptEventMap = {
   raycastScreenPoint: (
     x: number,
     y: number,
+    maxDistance: number | null,
     options: RaycastOptions,
   ) => IntersectsResultRaw;
 
@@ -428,14 +429,14 @@ export type ScriptEventMap = {
 
   setSkyManualMode: (status: boolean) => void;
 } & {
-  [key in `onServerCustomEvent_${string}`]: (data?: CustomEventData) => void;
+  [key in `onServerCustomEvent_${string}`]: (data?: NetworkEventData) => void;
 } & {
   [key in `onPlayerCustomEvent_${string}`]: (
     player: number,
-    data?: CustomEventData,
+    data?: NetworkEventData,
   ) => void;
 } & {
-  [key in `onScriptCustomEvent_${string}`]: (data?: CustomEventData) => void;
+  [key in `onScriptCustomEvent_${string}`]: (data?: NetworkEventData) => void;
 } & {
   [key in `onObjectStreamInRaw_${string}`]: () => void;
 } & {

@@ -14,17 +14,17 @@ import PlayersManager from 'engine/managers/entities/players/players.manager';
 
 import MessengerEmitterManager from './managers/messenger/messenger-emitter.manager';
 
-export {
+export type {
   ScriptEventMap,
-  CustomEventData,
+  NetworkEventData,
 } from 'engine/definitions/types/scripts.types';
 
-export {
+export type {
   ObjectEditMode,
   ObjectEditActionType,
 } from 'engine/definitions/types/objects/objects.types';
 
-export {
+export type {
   Vector2Array,
   Vector3Array,
   EulerArray,
@@ -33,14 +33,15 @@ export {
   RaycastOptions,
 } from 'engine/definitions/types/world.types';
 
-export {
+export type {
+  ColorType,
   KeyEventType,
   KeyEvent,
   IndicatorId,
   IndicatorTitle,
   Indicator,
-  SizePropValue,
-  SizeProps,
+  UISizePropValue,
+  UISizeProps,
   ToolbarElement,
   ToolbarItem,
   ToolbarPosition,
@@ -49,16 +50,16 @@ export {
   FileTransfer,
 } from 'engine/definitions/types/ui.types';
 
-export {
+export type {
   ObjectMaterial,
   ObjectTextureType,
   ObjectTexture,
   ObjectStandardMaterial,
 } from 'engine/definitions/types/objects/objects-materials.types';
 
-export {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
+export type {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
 
-export {PlayerControls} from 'engine/definitions/types/controls.types';
+export type {PlayerControls} from 'engine/definitions/types/controls.types';
 
 export type {
   EntitiesManager,

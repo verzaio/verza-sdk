@@ -25,13 +25,13 @@ export type Indicator = {
   title: IndicatorTitle;
 };
 
-export type SizePropValue =
+export type UISizePropValue =
   | `${number}vh`
   | `${number}vw`
   | `${number}px`
   | `${number}%`;
 
-export type SizeProps<T extends string = SizePropValue> = {
+export type UISizeProps<T extends string = UISizePropValue> = {
   height: T;
   width: T;
   left?: T;
