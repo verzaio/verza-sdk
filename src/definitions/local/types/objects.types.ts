@@ -14,8 +14,10 @@ import {
 
 import {ObjectEventMapList} from './events.types';
 
-export type ComponentObjectProps<T extends ObjectType = ObjectType> =
-  ObjectEventMapList<T> & CreateObjectProps<T>;
+export type ComponentObjectProps<T extends ObjectType = ObjectType> = Omit<
+  ObjectEventMapList<T> & CreateObjectProps<T>,
+  'type'
+>;
 
 export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   id?: string;
