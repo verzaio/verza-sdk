@@ -19,18 +19,20 @@ import {Vector2Array} from '../world.types';
 export type ObjectMaterial = {
   /**
    * Blending destination. It's one of the blending mode constants defined in Three.js. Default OneMinusSrcAlphaFactor.
-   * @default OneMinusSrcAlphaFactor
+   * @default OneMinusSrcAlphaFactor {https://threejs.org/docs/#api/en/constants/Textures}
    */
   blendDst?: BlendingDstFactor;
 
   /**
    * The tranparency of the .blendDst. Default is null.
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/CustomBlendingEquation}
    * @default null
    */
   blendDstAlpha?: number | null;
 
   /**
    * Blending equation to use when applying blending. Default is AddEquation.
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/CustomBlendingEquation}
    * @default AddEquation
    */
   blendEquation?: BlendingEquation;
@@ -43,12 +45,14 @@ export type ObjectMaterial = {
 
   /**
    * Which blending to use when displaying objects with this material. Default is NormalBlending.
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/CustomBlendingEquation}
    * @default NormalBlending
    */
   blending?: Blending;
 
   /**
    * Blending source. It's one of the blending mode constants defined in Three.js. Default is SrcAlphaFactor.
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/CustomBlendingEquation}
    * @default SrcAlphaFactor
    */
   blendSrc?: BlendingSrcFactor | BlendingDstFactor;
@@ -67,6 +71,7 @@ export type ObjectMaterial = {
 
   /**
    * Which depth function to use. Default is LessEqualDepth. See the depth mode constants for all possible values.
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/CustomBlendingEquation}
    * @default LessEqualDepth
    */
   depthFunc?: DepthModes;
@@ -93,6 +98,7 @@ export type ObjectMaterial = {
   /**
    * Defines which of the face sides will be rendered - front, back or both.
    * Default is FrontSide. Other options are BackSide and DoubleSide.
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/CustomBlendingEquation}
    * @default FrontSide
    */
   side?: Side;
@@ -100,6 +106,7 @@ export type ObjectMaterial = {
   /**
    * Defines which of the face sides will cast shadows. Default is *null*.
    * If *null*, the value is opposite that of side, above.
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/CustomBlendingEquation}
    * @default null
    */
   shadowSide?: Side | null;
@@ -193,6 +200,7 @@ export type ObjectStandardMaterial = ObjectMaterial & {
   normalMap?: ObjectTextureType;
 
   /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default TangentSpaceNormalMap
    */
   normalMapType?: NormalMapTypes;
@@ -233,6 +241,7 @@ export type ObjectStandardMaterial = ObjectMaterial & {
   alphaMap?: ObjectTextureType;
 
   /**
+
    * @default null
    */
   envMap?: ObjectTextureType;
@@ -276,26 +285,31 @@ export type ObjectTexture = {
   source: string;
 
   /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default DEFAULT_MAPPING
    */
   mapping?: Mapping;
 
   /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default ClampToEdgeWrapping
    */
   wrapS?: Wrapping;
 
   /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default ClampToEdgeWrapping
    */
   wrapT?: Wrapping;
 
   /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default LinearFilter
    */
   magFilter?: TextureFilter;
 
   /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default LinearMipmapLinearFilter
    */
   minFilter?: TextureFilter;
@@ -306,6 +320,7 @@ export type ObjectTexture = {
   anisotropy?: number;
 
   /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default RGBAFormat
    */
   format?: PixelFormat;
@@ -336,6 +351,7 @@ export type ObjectTexture = {
   flipY?: boolean;
 
   /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default LinearEncoding
    */
   encoding?: TextureEncoding;
