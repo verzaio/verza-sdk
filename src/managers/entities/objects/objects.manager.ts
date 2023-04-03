@@ -204,11 +204,17 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       position,
       rotation,
       drawDistance,
+
+      scale,
+      shadows,
+
       collision,
       collider,
       mass,
-      scale,
-      shadows,
+      friction,
+      restitution,
+      enabledRotations,
+      enabledTranslations,
 
       ...dataProps
     } = props;
@@ -228,15 +234,23 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       ...(scale && {s: scale}),
 
+      ...(drawDistance && {dd: drawDistance}),
+
+      ...(shadows !== undefined && {ss: shadows}),
+
       ...(collision !== undefined && {c: collision}),
 
       ...(collider !== undefined && {cc: collider}),
 
       ...(mass !== undefined && {m: mass}),
 
-      ...(drawDistance && {dd: drawDistance}),
+      ...(friction !== undefined && {ff: friction}),
 
-      ...(shadows !== undefined && {ss: shadows}),
+      ...(restitution !== undefined && {rr: restitution}),
+
+      ...(enabledRotations !== undefined && {er: enabledRotations}),
+
+      ...(enabledTranslations !== undefined && {et: enabledTranslations}),
     };
 
     if (this.is(objectData.id!)) {

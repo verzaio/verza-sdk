@@ -4,7 +4,7 @@ import {
   EntityDrawDistanceType,
 } from '../entities.types';
 import {ColorType} from '../ui.types';
-import {QuaternionArray, Vector3Array} from '../world.types';
+import {Boolean3Array, QuaternionArray, Vector3Array} from '../world.types';
 import {ObjectStandardMaterial} from './objects-materials.types';
 import {ObjectType} from './objects.types';
 
@@ -42,6 +42,14 @@ export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
   cc?: EntityColliderType | null; // collider
 
   m?: number; // mass
+
+  ff?: number; // friction
+
+  rr?: number; // restitution
+
+  er?: Boolean3Array; // enabled rotations
+
+  et?: Boolean3Array; // enabled translations
 
   po?: boolean; // permanent object
 

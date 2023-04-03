@@ -105,6 +105,10 @@ class PlayerManager extends EntityManager<
     this.updateChunkIndex();
   }
 
+  hasRole(role: string): boolean {
+    return this.roles.includes(role);
+  }
+
   hasAccess(command: string): boolean {
     if (this.engine.api.isWebServer) {
       throw new Error('player.hasAccess is not available on WebServer');

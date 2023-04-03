@@ -6,6 +6,8 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import {EntityType} from '../enums/entities.enums';
 import {ObjectDataProps} from './objects/objects.types';
 
+export type Boolean3Array = [x: boolean, y: boolean, z: boolean];
+
 export type Vector2Array = [x: number, y: number];
 
 export type Vector3Array = [x: number, y: number, z: number];

@@ -8,6 +8,7 @@ import {
 import {PickObject} from 'engine/definitions/types/objects/objects-definition.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
 import {
+  Boolean3Array,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
@@ -41,6 +42,14 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   collider?: EntityColliderType | null;
 
   mass?: number;
+
+  friction?: number;
+
+  restitution?: number;
+
+  enabledRotations?: Boolean3Array;
+
+  enabledTranslations?: Boolean3Array;
 
   shadows?: boolean;
 } & PickObject<T>['o'];

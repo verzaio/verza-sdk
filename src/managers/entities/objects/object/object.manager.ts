@@ -17,6 +17,7 @@ import {
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
 import {
+  Boolean3Array,
   EulerArray,
   QuaternionArray,
   Vector3Array,
@@ -175,6 +176,22 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.m;
   }
 
+  get friction() {
+    return this.data.ff;
+  }
+
+  get restitution() {
+    return this.data.rr;
+  }
+
+  get enabledRotations() {
+    return this.data.er;
+  }
+
+  get enabledTranslations() {
+    return this.data.et;
+  }
+
   constructor(entity: ObjectEntity, engine: EngineManager) {
     super(entity, engine);
 
@@ -322,6 +339,30 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   setMass(mass: number) {
     this.setData({
       m: mass,
+    } as PickObject<OT>);
+  }
+
+  setFriction(friction: number) {
+    this.setData({
+      ff: friction,
+    } as PickObject<OT>);
+  }
+
+  setRestitution(restitution: number) {
+    this.setData({
+      rr: restitution,
+    } as PickObject<OT>);
+  }
+
+  setEnabledRotations(enabledRotations: Boolean3Array) {
+    this.setData({
+      er: enabledRotations,
+    } as PickObject<OT>);
+  }
+
+  setEnabledTranslations(enabledTranslations: Boolean3Array) {
+    this.setData({
+      et: enabledTranslations,
     } as PickObject<OT>);
   }
 
