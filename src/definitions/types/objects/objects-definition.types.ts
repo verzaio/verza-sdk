@@ -3,7 +3,8 @@ import {
   EntityCollisionType,
   EntityDrawDistanceType,
 } from '../entities.types';
-import {QuaternionArray, Vector3Array} from '../world.types';
+import {ColorType} from '../ui.types';
+import {Boolean3Array, QuaternionArray, Vector3Array} from '../world.types';
 import {ObjectStandardMaterial} from './objects-materials.types';
 import {ObjectType} from './objects.types';
 
@@ -41,6 +42,14 @@ export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
   cc?: EntityColliderType | null; // collider
 
   m?: number; // mass
+
+  ff?: number; // friction
+
+  rr?: number; // restitution
+
+  er?: Boolean3Array; // enabled rotations
+
+  et?: Boolean3Array; // enabled translations
 
   po?: boolean; // permanent object
 
@@ -87,7 +96,7 @@ export type ObjectBoxType = ObjectBaseType<
 
     radius?: number; // border radius
 
-    color?: string; // color
+    color?: ColorType; // color
 
     material?: ObjectStandardMaterial;
   }
@@ -102,7 +111,7 @@ export type ObjectSphereType = ObjectBaseType<
 
     widthSegments?: number; // depth
 
-    color?: string; // color
+    color?: ColorType; // color
 
     material?: ObjectStandardMaterial;
   }
@@ -113,7 +122,7 @@ export type ObjectLineType = ObjectBaseType<
   {
     points: Vector3Array[];
 
-    color?: string;
+    color?: ColorType;
   }
 >;
 
@@ -122,7 +131,7 @@ export type ObjectTextType = ObjectBaseType<
   {
     text: string;
 
-    color?: string;
+    color?: ColorType;
 
     fontSize?: number;
 
@@ -160,13 +169,13 @@ export type ObjectTextType = ObjectBaseType<
 
     outlineBlur?: string | number;
 
-    outlineColor?: string;
+    outlineColor?: ColorType;
 
     outlineOpacity?: number;
 
     strokeWidth?: string | number;
 
-    strokeColor?: string;
+    strokeColor?: ColorType;
 
     strokeOpacity?: number;
 

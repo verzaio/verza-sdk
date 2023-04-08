@@ -111,7 +111,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   create<T extends ObjectType = ObjectType>(
     type: T,
-    props: CreateObjectProps<T>,
+    props: CreateObjectProps<T> = {},
   ) {
     return this._createFromType(type, props);
   }
@@ -156,7 +156,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   private _createFromType<T extends ObjectType = ObjectType>(
     type: T,
-    props: CreateObjectProps<T>,
+    props: CreateObjectProps<T> = {},
   ) {
     // validate id
     if (!props.id) {
@@ -204,11 +204,17 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       position,
       rotation,
       drawDistance,
+
+      scale,
+      shadows,
+
       collision,
       collider,
       mass,
-      scale,
-      shadows,
+      friction,
+      restitution,
+      enabledRotations,
+      enabledTranslations,
 
       ...dataProps
     } = props;
@@ -228,15 +234,23 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       ...(scale && {s: scale}),
 
+      ...(drawDistance && {dd: drawDistance}),
+
+      ...(shadows !== undefined && {ss: shadows}),
+
       ...(collision !== undefined && {c: collision}),
 
       ...(collider !== undefined && {cc: collider}),
 
       ...(mass !== undefined && {m: mass}),
 
-      ...(drawDistance && {dd: drawDistance}),
+      ...(friction !== undefined && {ff: friction}),
 
-      ...(shadows !== undefined && {ss: shadows}),
+      ...(restitution !== undefined && {rr: restitution}),
+
+      ...(enabledRotations !== undefined && {er: enabledRotations}),
+
+      ...(enabledTranslations !== undefined && {et: enabledTranslations}),
     };
 
     if (this.is(objectData.id!)) {
@@ -340,7 +354,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     this._messenger.emit('setObjectEditAxes', [axes]);
   }
 
-  async resolveObject(
+  async resolve(
     objectId: string,
     forceUpdate?: boolean,
   ): Promise<ObjectManager> {

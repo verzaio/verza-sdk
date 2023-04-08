@@ -6,6 +6,7 @@ import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
+import {ColorType} from 'engine/definitions/types/ui.types';
 import {
   QuaternionArray,
   Vector3Array,
@@ -47,6 +48,10 @@ class PlayerManager extends EntityManager<
     control: false,
   };
 
+  get isController() {
+    return !!this.data?.controller;
+  }
+
   get isMovingControl() {
     return (
       this.controls.forward ||
@@ -76,10 +81,6 @@ class PlayerManager extends EntityManager<
     return this.handle?.state;
   }
 
-  get isControlling() {
-    return !!this.data?.controls;
-  }
-
   get velocity() {
     return this.handle.velocity;
   }
@@ -97,11 +98,15 @@ class PlayerManager extends EntityManager<
 
     this.messenger.playerId = this.id;
 
-    if (engine.isServer || this.isControlling) {
+    if (engine.isServer || this.isController) {
       this.camera = new PlayerCameraManager(this);
     }
 
     this.updateChunkIndex();
+  }
+
+  hasRole(role: string): boolean {
+    return this.roles.includes(role);
   }
 
   hasAccess(command: string): boolean {
@@ -130,12 +135,16 @@ class PlayerManager extends EntityManager<
     this.messenger.emit('setPlayerName', [this.id, name]);
   }
 
-  addRole(roleId: string) {
-    this.messenger.emit('addPlayerRole', [this.id, roleId]);
+  setNametagColor(color: ColorType) {
+    this.messenger.emit('setPlayerNametagColor', [this.id, color]);
   }
 
-  removeRole(roleId: string) {
-    this.messenger.emit('removePlayerRole', [this.id, roleId]);
+  async addRole(roleId: string) {
+    await this.messenger.emitAsync('addPlayerRole', [this.id, roleId]);
+  }
+
+  async removeRole(roleId: string) {
+    await this.messenger.emitAsync('removePlayerRole', [this.id, roleId]);
   }
 
   setDimension(dimension: number) {

@@ -20,7 +20,7 @@ export const CHARACTER_CAPSULE = {
   top: 0.92,
   height: 1.34,
   radius: CHARACTER_RADIUS,
-};
+} as const;
 
 export const CHARACTER_BODY_NAME = 'Body';
 
@@ -49,6 +49,7 @@ export const PLAYER_STATE_PACKET_INDEX = Object.entries(
 export const PLAYER_STATE_PACKET_KEYS: (keyof PlayerPacketUpdateDto)[] = [
   'n',
   's',
+  'f',
   'p',
   'r',
   'h',
@@ -60,18 +61,18 @@ export const PLAYER_CAMERA_CONFIGS: Record<
   PlayerCameraConfig
 > = {
   short: {
-    distance: 1, // 2.1
-    height: 1.6,
+    distance: 1,
+    height: 1.65,
     headPitch: -0.1,
   },
   normal: {
-    distance: 3.5,
-    height: 1.5,
+    distance: 3,
+    height: 1.65,
     headPitch: -0.1,
   },
   long: {
     distance: 4.8,
-    height: 2.5,
+    height: 1.65,
     headPitch: -0.1,
   },
 };

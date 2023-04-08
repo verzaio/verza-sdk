@@ -1,6 +1,8 @@
 import {
   INTERFACE_CHAT,
+  INTERFACE_CURSOR,
   INTERFACE_OPTIONS,
+  INTERFACE_SERVER,
 } from 'engine/definitions/constants/ui.constants';
 import {
   FileTransfer,
@@ -8,9 +10,9 @@ import {
   IndicatorTitle,
   KeyEventType,
   PointerEventType,
-  SizeProps,
+  UISizeProps,
   ToolbarElement,
-  UIEventBase,
+  UIEvent,
 } from 'engine/definitions/types/ui.types';
 
 import ControllerManager from './controller.manager';
@@ -59,20 +61,6 @@ class UIManager {
 
   constructor(engine: EngineManager) {
     this._engine = engine;
-  }
-
-  setSize(props: SizeProps) {
-    this._messenger.emit('setSize', [props as SizeProps]);
-  }
-
-  show() {
-    this.visible = true;
-    this._messenger.emit('show');
-  }
-
-  hide() {
-    this.visible = false;
-    this._messenger.emit('hide');
   }
 
   bind() {
@@ -255,7 +243,7 @@ class UIManager {
 
   private _extractBaseEventProps(
     event: KeyboardEvent | PointerEvent,
-  ): Required<UIEventBase> {
+  ): Required<UIEvent> {
     return {
       altKey: event.altKey,
 
@@ -269,10 +257,30 @@ class UIManager {
     };
   }
 
+  /* base */
+  show() {
+    this.visible = true;
+    this._messenger.emit('show');
+  }
+
+  hide() {
+    this.visible = false;
+    this._messenger.emit('hide');
+  }
+
+  setSize(props: UISizeProps) {
+    this._messenger.emit('setSize', [props as UISizeProps]);
+  }
+
   /* interfaces */
   addInterface(tag: string) {
     this.interfaces.add(tag);
     this._messenger.emit('addInterface', [tag]);
+  }
+
+  removeInterface(tag: string) {
+    this.interfaces.delete(tag);
+    this._messenger.emit('removeInterface', [tag]);
   }
 
   toggleInterface(tag: string) {
@@ -284,17 +292,21 @@ class UIManager {
     this.addInterface(tag);
   }
 
-  removeInterface(tag: string) {
-    this.interfaces.delete(tag);
-    this._messenger.emit('removeInterface', [tag]);
-  }
-
   hasInterface(tag: string) {
     return this.interfaces.has(tag);
   }
 
-  isOptionsMenu() {
-    return this.hasInterface(INTERFACE_OPTIONS);
+  // cursor
+  toggleCursor() {
+    this.toggleInterface(INTERFACE_CURSOR);
+  }
+
+  showCursor() {
+    this.addInterface(INTERFACE_CURSOR);
+  }
+
+  hideCursor() {
+    this.removeInterface(INTERFACE_CURSOR);
   }
 
   showIndicator(id: IndicatorId, title?: IndicatorTitle) {
@@ -312,6 +324,18 @@ class UIManager {
 
   removeToolbar(toolbarId: string) {
     this._messenger.emit('removeToolbar', [toolbarId]);
+  }
+
+  isSystemMenu() {
+    return this.isOptionsMenu() || this.isServerMenu();
+  }
+
+  isServerMenu() {
+    return this.hasInterface(INTERFACE_SERVER);
+  }
+
+  isOptionsMenu() {
+    return this.hasInterface(INTERFACE_OPTIONS);
   }
 
   destroy() {

@@ -9,10 +9,6 @@ class PlayerVoicechatManager {
     this._player = player;
   }
 
-  isConnected(player: PlayerManager) {
-    return this.connectedPlayers.has(player);
-  }
-
   addPlayer(player: PlayerManager) {
     this.connectedPlayers.add(player);
   }

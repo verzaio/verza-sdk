@@ -6,6 +6,8 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import {EntityType} from '../enums/entities.enums';
 import {ObjectDataProps} from './objects/objects.types';
 
+export type Boolean3Array = [x: boolean, y: boolean, z: boolean];
+
 export type Vector2Array = [x: number, y: number];
 
 export type Vector3Array = [x: number, y: number, z: number];
@@ -13,34 +15,6 @@ export type Vector3Array = [x: number, y: number, z: number];
 export type EulerArray = [x: number, y: number, z: number];
 
 export type QuaternionArray = [x: number, y: number, z: number, w: number];
-
-export type WorldPosition = [
-  x: number,
-
-  y: number,
-
-  z: number,
-
-  dimension: number,
-];
-
-export type WorldPositionRotation = [
-  x: number,
-
-  y: number,
-
-  z: number,
-
-  dimension: number,
-
-  rx: number,
-
-  ry: number,
-
-  rz: number,
-
-  rw?: number,
-];
 
 export type InteresectionData<T> = {
   distance: number;

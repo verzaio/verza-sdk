@@ -11,11 +11,9 @@ export const initWebServer = (engine: EngineManager) => {
 
       player.sendMessage(`Hey ${name} - ${age}! - sendMessage`);
 
-      engine.players.sendMessageToAll(
-        `Hey ${name} - ${age}! - sendMessageToAll`,
-      );
+      engine.chat.sendMessageToAll(`Hey ${name} - ${age}! - sendMessageToAll`);
 
-      engine.players.sendMessageTo(
+      engine.chat.sendMessageTo(
         player,
         `Hey ${name} - ${age}! - sendMessageToPlayer`,
       );

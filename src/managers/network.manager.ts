@@ -1,6 +1,6 @@
 import {MAX_CLIENT_OBJECT_SIZE} from 'engine/definitions/constants/networks.constants';
 import {PacketDestination} from 'engine/definitions/enums/networks.enums';
-import {CustomEventData} from 'engine/definitions/types/scripts.types';
+import {NetworkEventData} from 'engine/definitions/types/scripts.types';
 import {
   CommandConfigDto,
   EncryptedPacketsDto,
@@ -58,7 +58,7 @@ class NetworkManager {
     );
   }
 
-  onServerEvent(eventName: string, listener: (data: CustomEventData) => void) {
+  onServerEvent(eventName: string, listener: (data: NetworkEventData) => void) {
     if (this._isServer) {
       throw new Error(
         "You can't use network.onServerEvent server-side. If you're receving an event form the client use network.onPlayerEvent instead",
@@ -67,11 +67,11 @@ class NetworkManager {
 
     return this._engine.events.on(
       `onServerCustomEvent_${eventName}`,
-      listener as (data?: CustomEventData) => void,
+      listener as (data?: NetworkEventData) => void,
     );
   }
 
-  onScriptEvent(eventName: string, listener: (data: CustomEventData) => void) {
+  onScriptEvent(eventName: string, listener: (data: NetworkEventData) => void) {
     if (!this._isClient) {
       throw new Error(
         "You can't use network.onScriptEvent server-side. If you're receving an event form the client use network.onServerEvent or network.onPlayerEvent instead",
@@ -80,13 +80,13 @@ class NetworkManager {
 
     return this._engine.events.on(
       `onScriptCustomEvent_${eventName}`,
-      listener as (data?: CustomEventData) => void,
+      listener as (data?: NetworkEventData) => void,
     );
   }
 
   offServerEvent(
     eventName: string,
-    listener: (data?: CustomEventData) => void,
+    listener: (data?: NetworkEventData) => void,
   ) {
     return this._engine.events.off(
       `onServerCustomEvent_${eventName}`,
@@ -96,7 +96,7 @@ class NetworkManager {
 
   offScriptEvent(
     eventName: string,
-    listener: (data?: CustomEventData) => void,
+    listener: (data?: NetworkEventData) => void,
   ) {
     return this._engine.events.off(
       `onScriptCustomEvent_${eventName}`,
@@ -107,14 +107,14 @@ class NetworkManager {
   private _playerEvents = new Map<
     string,
     Map<
-      (player: PlayerManager, data?: CustomEventData) => void,
-      (playerId: number, data?: CustomEventData) => void
+      (player: PlayerManager, data?: NetworkEventData) => void,
+      (playerId: number, data?: NetworkEventData) => void
     >
   >();
 
   onPlayerEvent(
     eventName: string,
-    listener: (player: PlayerManager, data?: CustomEventData) => void,
+    listener: (player: PlayerManager, data?: NetworkEventData) => void,
   ) {
     const map = this._playerEvents.get(eventName) ?? new Map();
 
@@ -136,7 +136,7 @@ class NetworkManager {
 
   offPlayerEvent(
     eventName: string,
-    listener: (player: PlayerManager, data?: CustomEventData) => void,
+    listener: (player: PlayerManager, data?: NetworkEventData) => void,
   ) {
     const map = this._playerEvents.get(eventName);
     if (!map) return;
@@ -156,71 +156,10 @@ class NetworkManager {
   }
 
   // client & server
-  emitToServer(event: string, data?: CustomEventData) {
-    // check packet size limit
-    if (!this._checkPacketSize(data)) return;
-
-    // emit to web server
-    if (this._api.isWebServerAvailable) {
-      this._api.webServer.emitCustomPacket({
-        p: PacketDestination.Server, // PacketDestination
-
-        e: event, // event name
-
-        d: data, // data
-      });
-    }
-
-    // emit from server
-    this._api.emitAction('emitToServer', [event, data]);
-  }
-
-  emitToScripts(event: string, data?: CustomEventData) {
-    if (!this._isClient) {
-      console.debug(`[network] this.emitToScripts is only available on client`);
-      return;
-    }
-
-    // emit to scripts
-    this._messenger.emit('emitToScripts', [event, data]);
-  }
-
-  emitToPlayers(event: string, data?: CustomEventData) {
-    // check packet size limit
-    if (!this._checkPacketSize(data)) return;
-
-    // emit from server
-    this._api.emitAction('emitToPlayers', [event, data]);
-  }
-
-  emitToPlayersWithRoles(
-    event: string,
-    roles: string[],
-    data?: CustomEventData,
-  ) {
-    // check packet size limit
-    if (!this._checkPacketSize(data)) return;
-
-    // emit to server
-    this._api.emitAction('emitToPlayersWithRoles', [event, roles, data]);
-  }
-
-  emitToPlayersWithAccess(
-    event: string,
-    command: string,
-    data?: CustomEventData,
-  ) {
-    // check packet size limit
-    if (!this._checkPacketSize(data)) return;
-
-    // emit to server
-    this._api.emitAction('emitToPlayersWithAccess', [event, command, data]);
-  }
-
   emitToPlayer(
     player: PlayerManager | number,
     event: string,
-    data?: CustomEventData,
+    data?: NetworkEventData,
   ) {
     // check packet size limit
     if (!this._checkPacketSize(data)) return;
@@ -242,6 +181,67 @@ class NetworkManager {
 
     // send to server
     this._api.emitAction('emitToPlayer', [playerId, event, data]);
+  }
+
+  emitToPlayers(event: string, data?: NetworkEventData) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
+
+    // emit from server
+    this._api.emitAction('emitToPlayers', [event, data]);
+  }
+
+  emitToPlayersWithAccess(
+    event: string,
+    command: string,
+    data?: NetworkEventData,
+  ) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
+
+    // emit to server
+    this._api.emitAction('emitToPlayersWithAccess', [event, command, data]);
+  }
+
+  emitToPlayersWithRoles(
+    event: string,
+    roles: string[],
+    data?: NetworkEventData,
+  ) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
+
+    // emit to server
+    this._api.emitAction('emitToPlayersWithRoles', [event, roles, data]);
+  }
+
+  emitToServer(event: string, data?: NetworkEventData) {
+    // check packet size limit
+    if (!this._checkPacketSize(data)) return;
+
+    // emit to web server
+    if (this._api.isWebServerAvailable) {
+      this._api.webServer.emitCustomPacket({
+        p: PacketDestination.Server, // PacketDestination
+
+        e: event, // event name
+
+        d: data, // data
+      });
+    }
+
+    // emit from server
+    this._api.emitAction('emitToServer', [event, data]);
+  }
+
+  emitToScripts(event: string, data?: NetworkEventData) {
+    if (!this._isClient) {
+      console.debug(`[network] this.emitToScripts is only available on client`);
+      return;
+    }
+
+    // emit to scripts
+    this._messenger.emit('emitToScripts', [event, data]);
   }
 
   private _checkPacketSize(data: unknown) {

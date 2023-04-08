@@ -7,9 +7,9 @@ import {Command} from './command.manager';
 class CommandsManager {
   private _engine: EngineManager;
 
-  commands = new Map<string, Command>();
-
   private _binded = false;
+
+  commands = new Map<string, Command>();
 
   noAccessMessage = `{c5c5c5}You don't have access to`;
 
@@ -27,13 +27,13 @@ class CommandsManager {
       // if already synced
       if (this._engine.synced) {
         this.commands.forEach(command => {
-          this.registerForPlayers(command);
+          this._registerForPlayers(command);
         });
       } else {
         // if not, then listen for it
         this._engine.events.on('onSynced', () => {
           this.commands.forEach(command => {
-            this.registerForPlayers(command);
+            this._registerForPlayers(command);
           });
         });
       }
@@ -46,7 +46,7 @@ class CommandsManager {
         if (!this._engine.synced) return; // ignore if not synced
 
         this.commands.forEach(command => {
-          this.registerForPlayer(player, command);
+          this._registerForPlayer(player, command);
         });
       });
     }
@@ -75,7 +75,7 @@ class CommandsManager {
       const command = text.substring(1);
 
       // find command
-      const key = this.findByKey(command);
+      const key = this._findByKey(command);
 
       // call it if found
       if (key) {
@@ -99,7 +99,7 @@ class CommandsManager {
       } else {
         // emit command to web server if available
         if (this._engine.api.isWebServerAvailable) {
-          const packet = this.findCommandPacketByKey(command);
+          const packet = this._findCommandPacketByKey(command);
           this._engine.api.webServer.emitChatPacket(text, packet);
         }
       }
@@ -109,7 +109,7 @@ class CommandsManager {
     });
   }
 
-  findByKey(command: string) {
+  private _findByKey(command: string) {
     const cmd = command.toLowerCase();
 
     // check if is action
@@ -127,7 +127,7 @@ class CommandsManager {
     });
   }
 
-  findCommandPacketByKey(command: string) {
+  private _findCommandPacketByKey(command: string) {
     const cmd = command.toLowerCase();
 
     // check if is action
@@ -157,7 +157,7 @@ class CommandsManager {
     }
   }
 
-  registerForPlayers(command: Command) {
+  private _registerForPlayers(command: Command) {
     if (this._engine.destroyed) return;
 
     // client
@@ -184,7 +184,7 @@ class CommandsManager {
     }
   }
 
-  registerForPlayer(player: PlayerManager, command: Command) {
+  private _registerForPlayer(player: PlayerManager, command: Command) {
     if (this._engine.destroyed) return;
 
     // client
@@ -208,7 +208,7 @@ class CommandsManager {
     }
   }
 
-  unregisterForPlayers(command: Command) {
+  private _unregisterForPlayers(command: Command) {
     if (this._engine.destroyed) return;
 
     // if client
@@ -231,7 +231,7 @@ class CommandsManager {
     }
   }
 
-  unregisterForPlayer(player: PlayerManager, command: Command) {
+  private _unregisterForPlayer(player: PlayerManager, command: Command) {
     if (this._engine.destroyed) return;
 
     // client
@@ -264,7 +264,7 @@ class CommandsManager {
 
     // emit only if synced
     if (this._engine.synced) {
-      this.registerForPlayers(command);
+      this._registerForPlayers(command);
     }
   }
 
@@ -275,7 +275,7 @@ class CommandsManager {
 
     // emit only if synced
     if (this._engine.synced) {
-      this.unregisterForPlayers(command);
+      this._unregisterForPlayers(command);
     }
   }
 

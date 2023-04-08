@@ -217,6 +217,10 @@ export interface CharacterShapekeyValueDto {
   value: number;
 }
 
+export interface CharacterClotheDto {
+  id: string;
+}
+
 export interface CharacterDto {
   id: string;
   user: UserProfileDto;
@@ -228,6 +232,7 @@ export interface CharacterDto {
   blush_color: string | null;
   eyeshadow_color: string | null;
   eyeliner_color: string | null;
+  clothes: CharacterClotheDto[] | null;
   status: 'active' | 'deleted';
   selected: boolean;
   /** @format date-time */
@@ -236,6 +241,7 @@ export interface CharacterDto {
 
 export interface CreateCharacterDto {
   gender: 'male' | 'female';
+  clothes?: CharacterClotheDto[];
 }
 
 export interface UpdateCharacterDto {
@@ -354,6 +360,7 @@ export interface UpdateCharacterDto {
     | '#b976b1'
     | '#d0b07e'
     | null;
+  clothes?: CharacterClotheDto[];
 }
 
 export interface BasicWorldDto {
@@ -459,6 +466,8 @@ export interface PlayerPacketDto {
   c?: CharacterDto;
   /** player state */
   s?: number;
+  /** surfing */
+  f?: number;
   /** position | Vector3Array */
   p?: number[];
   /** rotation | QuaternionArray */
@@ -486,11 +495,17 @@ export interface PlayerPacketUpdateDto {
    * @max 5
    */
   s?: number;
+  /**
+   * player surfing
+   * @min 0
+   * @max 1
+   */
+  f?: number;
   /** position | Vector3Array */
   p?: number[];
   /** rotation | QuaternionArray */
   r?: number[];
-  /** head | Vector3Array */
+  /** head | Euler3Array */
   h?: number[];
   /** velocity | Vector3Array */
   v?: number[];
@@ -509,11 +524,17 @@ export interface PlayerPacketLocalUpdateDto {
    * @max 5
    */
   s?: number;
+  /**
+   * player surfing
+   * @min 0
+   * @max 1
+   */
+  f?: number;
   /** position | Vector3Array */
   p?: number[];
   /** rotation | QuaternionArray */
   r?: number[];
-  /** head | Vector3Array */
+  /** head | Euler3Array */
   h?: number[];
   /** velocity | Vector3Array */
   v?: number[];

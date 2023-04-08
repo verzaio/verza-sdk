@@ -14,6 +14,8 @@ class PlayerHandleManager extends EntityHandleManager<PlayerManager> {
 
   animations: PlayerAnimationsManager;
 
+  surfing = 0;
+
   onGround = false;
 
   private get _player() {

@@ -2,7 +2,11 @@ import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
-import {ObjectEntity} from 'engine/definitions/types/entities.types';
+import {
+  EntityColliderType,
+  EntityCollisionType,
+  ObjectEntity,
+} from 'engine/definitions/types/entities.types';
 import {
   ObjectGroupType,
   PickObject,
@@ -13,6 +17,7 @@ import {
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
 import {
+  Boolean3Array,
   EulerArray,
   QuaternionArray,
   Vector3Array,
@@ -144,8 +149,47 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.o;
   }
 
-  get collision() {
-    return this.data.c ?? 'static';
+  get collision(): EntityCollisionType | null {
+    // no collision for groups
+    if (
+      this.objectType === 'group' ||
+      this.objectType === 'line' ||
+      this.objectType === 'text'
+    ) {
+      return null;
+    }
+
+    // if not defined, then return default collision
+    // this should be removed (or not?)
+    if (this.data.c === undefined) {
+      return 'static';
+    }
+
+    return this.data.c;
+  }
+
+  get collider() {
+    return this.data.cc ?? null;
+  }
+
+  get mass() {
+    return this.data.m;
+  }
+
+  get friction() {
+    return this.data.ff;
+  }
+
+  get restitution() {
+    return this.data.rr;
+  }
+
+  get enabledRotations() {
+    return this.data.er;
+  }
+
+  get enabledTranslations() {
+    return this.data.et;
   }
 
   constructor(entity: ObjectEntity, engine: EngineManager) {
@@ -280,6 +324,48 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     }
   }
 
+  setCollision(collision: EntityCollisionType | null) {
+    this.setData({
+      c: collision,
+    } as PickObject<OT>);
+  }
+
+  setCollider(collider: EntityColliderType | null) {
+    this.setData({
+      cc: collider,
+    } as PickObject<OT>);
+  }
+
+  setMass(mass: number) {
+    this.setData({
+      m: mass,
+    } as PickObject<OT>);
+  }
+
+  setFriction(friction: number) {
+    this.setData({
+      ff: friction,
+    } as PickObject<OT>);
+  }
+
+  setRestitution(restitution: number) {
+    this.setData({
+      rr: restitution,
+    } as PickObject<OT>);
+  }
+
+  setEnabledRotations(enabledRotations: Boolean3Array) {
+    this.setData({
+      er: enabledRotations,
+    } as PickObject<OT>);
+  }
+
+  setEnabledTranslations(enabledTranslations: Boolean3Array) {
+    this.setData({
+      et: enabledTranslations,
+    } as PickObject<OT>);
+  }
+
   async setPositionFromWorldSpace(position: Vector3 | Vector3Array) {
     if (!this.parentId) {
       this.setPosition(position);
@@ -313,7 +399,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   async setRotationFromWorldSpace(
-    rotation: Quaternion | Euler | QuaternionArray | Vector3Array,
+    rotation: Quaternion | Euler | QuaternionArray | EulerArray,
   ) {
     if (!this.parentId) {
       this.setRotation(rotation);
@@ -453,13 +539,13 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   async resolve(): Promise<ObjectManager | null> {
-    return this.engine.objects.resolveObject(this.id, true);
+    return this.engine.objects.resolve(this.id, true);
   }
 
   async resolveParent(forceUpdate?: boolean): Promise<ObjectManager | null> {
     if (!this.parentId) return null;
 
-    return this.engine.objects.resolveObject(this.parentId, forceUpdate);
+    return this.engine.objects.resolve(this.parentId, forceUpdate);
   }
 
   setVisible(visible: boolean) {

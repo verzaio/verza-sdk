@@ -4,7 +4,9 @@ import {
   IntersectsResult,
   IntersectsResultRaw,
   RaycastOptions,
+  Vector3Array,
 } from 'engine/definitions/types/world.types';
+import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';
 
@@ -19,24 +21,18 @@ class RaycasterManager {
     this._engine = engine;
   }
 
-  async raycastScreenPoint(x: number, y: number, options: RaycastOptions = {}) {
-    const {
-      data: [intersects],
-    } = await this._messenger.emitAsync('raycastScreenPoint', [x, y, options]);
-
-    return this.parseIntersectsResult(intersects);
-  }
-
-  async raycastPoints(
-    from: Vector3,
-    to: Vector3,
+  async raycastScreenPoint(
+    x: number,
+    y: number,
+    far: number | null,
     options: RaycastOptions = {},
   ) {
     const {
       data: [intersects],
-    } = await this._messenger.emitAsync('raycastPoints', [
-      from.toArray(),
-      to.toArray(),
+    } = await this._messenger.emitAsync('raycastScreenPoint', [
+      x,
+      y,
+      far,
       options,
     ]);
 
@@ -44,17 +40,33 @@ class RaycasterManager {
   }
 
   async raycastPoint(
-    origin: Vector3,
-    dir: Vector3,
+    origin: Vector3 | Vector3Array,
+    dir: Vector3 | Vector3Array,
     far: number | null,
     options: RaycastOptions = {},
   ) {
     const {
       data: [intersects],
     } = await this._messenger.emitAsync('raycastPoint', [
-      origin.toArray(),
-      dir.toArray(),
+      toVector3Array(origin),
+      toVector3Array(dir),
       far,
+      options,
+    ]);
+
+    return this.parseIntersectsResult(intersects);
+  }
+
+  async raycastPoints(
+    from: Vector3 | Vector3Array,
+    to: Vector3 | Vector3Array,
+    options: RaycastOptions = {},
+  ) {
+    const {
+      data: [intersects],
+    } = await this._messenger.emitAsync('raycastPoints', [
+      toVector3Array(from),
+      toVector3Array(to),
       options,
     ]);
 
