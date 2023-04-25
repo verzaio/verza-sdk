@@ -1,6 +1,6 @@
 {
   "name": "@verza/sdk",
-  "version": "1.0.45",
+  "version": "1.0.46",
   "description": "Verza Client & Server SDK",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -32,7 +32,7 @@
     }
   },
   "scripts": {
-    "build": "rollup -c ./rollup.config.mjs && tsc-alias -p tsconfig.json",
+    "build": "yarn ts-check && rollup -c ./rollup.config.mjs && tsc-alias -p tsconfig.json",
     "lint": "eslint ./src/ --ext .ts,.tsx",
     "lint:fix": "eslint ./src/ --ext .ts,.tsx --fix",
     "ts-check": "tsc --pretty --noEmit",
@@ -64,7 +64,7 @@
     "events": "^3.3.0",
     "socket.io-client": "^4.5.4",
     "socket.io-msgpack-parser": "^3.0.2",
-    "three": "^0.151.0",
+    "three": "^0.151.3",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "uuid": "^9.0.0",
@@ -87,7 +87,7 @@
     "@types/node": "^18.11.18",
     "@types/react": ">=18.0",
     "@types/react-dom": ">=18.0",
-    "@types/three": "^0.150",
+    "@types/three": "^0.150.2",
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
