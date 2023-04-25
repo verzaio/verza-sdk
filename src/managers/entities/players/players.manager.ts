@@ -62,14 +62,16 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
         this._messenger.events.on(
           'onControlChange',
           ({data: [key, newState]}) => {
-            this.engine.localPlayer.controls[key] = newState;
+            if (this.engine.localPlayer) {
+              this.engine.localPlayer.controls[key] = newState;
+            }
           },
         );
       }
     }
 
     this._messenger.events.on('setPlayerName', ({data: [playerId, name]}) => {
-      this.engine.players.get(playerId).data.name = name;
+      this.engine.players.get(playerId)?.updateName(name);
     });
 
     this._messenger.events.on(

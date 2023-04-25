@@ -164,8 +164,8 @@ export interface CharacterShapekeyDto {
 
 export interface CharacterConfigDto {
   shapekeys: CharacterShapekeyDto[];
-  eyes_colors: string[];
   skin_colors: string[];
+  eyes_colors: string[];
   lipstick_colors: string[];
   blush_colors: string[];
   eyeshadow_colors: string[];
@@ -226,6 +226,7 @@ export interface CharacterDto {
   user: UserProfileDto;
   gender: 'male' | 'female';
   shapekeys: CharacterShapekeyValueDto[] | null;
+  skin_index: number | null;
   skin_color: string | null;
   eyes_color: string | null;
   lipstick_color: string | null;
@@ -248,9 +249,15 @@ export interface UpdateCharacterDto {
   selected?: boolean;
   gender?: 'male' | 'female';
   shapekeys?: CharacterShapekeyValueDto[];
+  /**
+   * @min 0
+   * @max 9
+   */
+  skin_index?: number | null;
   eyes_color?:
     | '#ffffff'
     | '#d3520d'
+    | '#c45435'
     | '#a53d07'
     | '#8e3200'
     | '#7eba8b'
@@ -277,6 +284,7 @@ export interface UpdateCharacterDto {
     | '#9a8080'
     | '#866f6f'
     | '#826a6a'
+    | '#ffffff'
     | null;
   lipstick_color?:
     | '#ffaeae'
@@ -310,6 +318,7 @@ export interface UpdateCharacterDto {
     | '#9a8080'
     | '#866f6f'
     | '#826a6a'
+    | '#ffffff'
     | '#ff0000'
     | '#ff00c2'
     | '#fd8656'

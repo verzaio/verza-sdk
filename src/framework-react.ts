@@ -22,7 +22,6 @@ export {useCursorLock} from 'engine/frameworks/react/hooks/useCursorLock';
 export {useInterfaces} from 'engine/frameworks/react/hooks/useInterfaces';
 export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
 export {useRaycaster} from 'engine/frameworks/react/hooks/useRaycaster';
-export {useSky} from 'engine/frameworks/react/hooks/useSky';
 export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
 
 export {useLocalPlayerId} from 'engine/frameworks/react/hooks/useLocalPlayerId';

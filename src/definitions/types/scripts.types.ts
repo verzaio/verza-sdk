@@ -36,7 +36,11 @@ import {
   MoonPhases,
   QuaternionArray,
   RaycastOptions,
+  SkyboxProps,
+  TimeMode,
+  Timezone,
   Vector3Array,
+  WeatherType,
 } from './world.types';
 
 export type ScriptStatus =
@@ -420,12 +424,24 @@ export type ScriptEventMap = {
 
   setTime: (time: number) => void;
 
+  setTimeMode: (timeMode: TimeMode) => void;
+
+  setTimeCycleDuration: (timeCycleDuration: number) => void;
+
+  setTimezone: (timezone: Timezone) => void;
+
+  setWeather: (weather: WeatherType) => void;
+
+  setInteriorMode: (status: boolean) => void;
+
   setHemisphereLightColor: (color: ColorType) => void;
   setHemisphereLightGroundColor: (color: ColorType) => void;
   setHemisphereLightIntensity: (intensity: number) => void;
 
   setGlobalLightColor: (color: ColorType) => void;
   setGlobalLightIntensity: (intensity: number) => void;
+
+  setSkybox: (skybox: SkyboxProps | null) => void;
 
   setSkyManualMode: (status: boolean) => void;
 } & {
