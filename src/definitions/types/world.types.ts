@@ -1,8 +1,7 @@
-import {Color} from 'three';
-
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
+import {TIMEZONES_LIST} from '../constants/timezones.constants';
 import {EntityType} from '../enums/entities.enums';
 import {ObjectDataProps} from './objects/objects.types';
 
@@ -53,15 +52,6 @@ export type RaycastOptions = {
   excludeObjects?: string[];
 };
 
-export type DayPresets = 'sunrise' | 'day' | 'sunset' | 'night';
-
-export type DayPresetInfo = {
-  groundColor: Color;
-  color: Color;
-  lightColor: Color;
-  intensity: number;
-};
-
 export type MoonPhases =
   | 'NEW_MOON'
   | 'WAXING_CRESCENT'
@@ -71,3 +61,18 @@ export type MoonPhases =
   | 'WANING_GIBBOUS'
   | 'LAST_QUARTER'
   | 'WANING_CRESCENT';
+
+export type SkyboxProps = {
+  right: string;
+  left: string;
+  top: string;
+  bottom: string;
+  front: string;
+  back: string;
+};
+
+export type Timezone = (typeof TIMEZONES_LIST)[number];
+
+export type TimeMode = 'fixed' | 'cycle' | 'timezone';
+
+export type WeatherType = 'clear' | 'neutral' | 'cloudy';
