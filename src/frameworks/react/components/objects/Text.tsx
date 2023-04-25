@@ -27,4 +27,4 @@ export const Text = forwardRef<ObjectManager, TextProps>(
   },
 );
 
-Text.displayName = 'Box';
+Text.displayName = 'Text';

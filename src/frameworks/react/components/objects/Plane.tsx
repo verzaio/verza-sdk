@@ -5,12 +5,12 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 
 import useObjectCreator from './hooks/useObjectCreator';
 
-export type SphereProps = ComponentObjectProps<'sphere'>;
+export type PlaneProps = ComponentObjectProps<'plane'>;
 
-export const Sphere = forwardRef<ObjectManager, SphereProps>((props, ref) => {
-  useObjectCreator('sphere', props, ref);
+export const Plane = forwardRef<ObjectManager, PlaneProps>((props, ref) => {
+  useObjectCreator('plane', props, ref);
 
   return null;
 });
 
-Sphere.displayName = 'Sphere';
+Plane.displayName = 'Plane';

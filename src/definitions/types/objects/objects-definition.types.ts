@@ -96,7 +96,7 @@ export type ObjectBoxType = ObjectBaseType<
 
     radius?: number; // border radius
 
-    color?: ColorType; // color
+    color?: ColorType;
 
     material?: ObjectStandardMaterial;
   }
@@ -105,13 +105,183 @@ export type ObjectBoxType = ObjectBaseType<
 export type ObjectSphereType = ObjectBaseType<
   'sphere',
   {
-    radius?: number; // radius
+    radius?: number;
 
-    heightSegments?: number; // height
+    heightSegments?: number;
 
-    widthSegments?: number; // depth
+    widthSegments?: number;
 
-    color?: ColorType; // color
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectCapsuleType = ObjectBaseType<
+  'capsule',
+  {
+    radius?: number;
+
+    length?: number;
+
+    capSegments?: number;
+
+    radialSegments?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectCylinderType = ObjectBaseType<
+  'cylinder',
+  {
+    radiusTop?: number;
+
+    radiusBottom?: number;
+
+    height?: number;
+
+    heightSegments?: number;
+
+    radialSegments?: number;
+
+    openEnded?: boolean;
+
+    thetaStart?: number;
+
+    thetaLength?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectCircleType = ObjectBaseType<
+  'circle',
+  {
+    radius?: number;
+
+    segments?: number;
+
+    thetaStart?: number;
+
+    thetaLength?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectConeType = ObjectBaseType<
+  'cone',
+  {
+    radius?: number;
+
+    height?: number;
+
+    radialSegments?: number;
+
+    heightSegments?: number;
+
+    openEnded?: boolean;
+
+    thetaStart?: number;
+
+    thetaLength?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectTorusType = ObjectBaseType<
+  'torus',
+  {
+    radius?: number;
+
+    tube?: number;
+
+    radialSegments?: number;
+
+    tubularSegments?: number;
+
+    arc?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectPlaneType = ObjectBaseType<
+  'plane',
+  {
+    width?: number;
+
+    height?: number;
+
+    widthSegments?: number;
+
+    heightSegments?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectTetrahedronType = ObjectBaseType<
+  'tetrahedron',
+  {
+    radius?: number;
+
+    detail?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectDodecahedronType = ObjectBaseType<
+  'dodecahedron',
+  {
+    radius?: number;
+
+    detail?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectOctahedronType = ObjectBaseType<
+  'octahedron',
+  {
+    radius?: number;
+
+    detail?: number;
+
+    color?: ColorType;
+
+    material?: ObjectStandardMaterial;
+  }
+>;
+
+export type ObjectIcosahedronType = ObjectBaseType<
+  'icosahedron',
+  {
+    radius?: number;
+
+    detail?: number;
+
+    color?: ColorType;
 
     material?: ObjectStandardMaterial;
   }
@@ -191,6 +361,26 @@ export type ObjectTypes = {
   box: ObjectBoxType;
 
   sphere: ObjectSphereType;
+
+  capsule: ObjectCapsuleType;
+
+  cylinder: ObjectCylinderType;
+
+  circle: ObjectCircleType;
+
+  cone: ObjectConeType;
+
+  torus: ObjectTorusType;
+
+  plane: ObjectPlaneType;
+
+  tetrahedron: ObjectTetrahedronType;
+
+  dodecahedron: ObjectDodecahedronType;
+
+  octahedron: ObjectOctahedronType;
+
+  icosahedron: ObjectIcosahedronType;
 
   line: ObjectLineType;
 

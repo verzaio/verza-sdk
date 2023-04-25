@@ -53,6 +53,46 @@ export {
   type SphereProps,
 } from 'engine/frameworks/react/components/objects/Sphere';
 export {
+  Capsule,
+  type CapsuleProps,
+} from 'engine/frameworks/react/components/objects/Capsule';
+export {
+  Cylinder,
+  type CylinderProps,
+} from 'engine/frameworks/react/components/objects/Cylinder';
+export {
+  Cone,
+  type ConeProps,
+} from 'engine/frameworks/react/components/objects/Cone';
+export {
+  Torus,
+  type TorusProps,
+} from 'engine/frameworks/react/components/objects/Torus';
+export {
+  Plane,
+  type PlaneProps,
+} from 'engine/frameworks/react/components/objects/Plane';
+export {
+  Circle,
+  type CircleProps,
+} from 'engine/frameworks/react/components/objects/Circle';
+export {
+  Tetrahedron,
+  type TetrahedronProps,
+} from 'engine/frameworks/react/components/objects/Tetrahedron';
+export {
+  Octahedron,
+  type OctahedronProps,
+} from 'engine/frameworks/react/components/objects/Octahedron';
+export {
+  Dodecahedron,
+  type DodecahedronProps,
+} from 'engine/frameworks/react/components/objects/Dodecahedron';
+export {
+  Icosahedron,
+  type IcosahedronProps,
+} from 'engine/frameworks/react/components/objects/Icosahedron';
+export {
   Gltf,
   type GltfProps,
 } from 'engine/frameworks/react/components/objects/Gltf';
