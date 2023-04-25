@@ -234,7 +234,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       ...(scale && {s: scale}),
 
-      ...(drawDistance && {dd: drawDistance}),
+      ...(drawDistance !== undefined && {dd: drawDistance}),
 
       ...(shadows !== undefined && {ss: shadows}),
 

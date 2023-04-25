@@ -26,6 +26,7 @@ export type IntersectsResultRaw = {
   hit?: {
     distance: number;
     point: Vector3Array;
+    normal: Vector3Array;
     faceIndex?: number;
   };
 
@@ -45,11 +46,13 @@ export type IntersectsResult = {
 };
 
 export type RaycastOptions = {
-  entityTypes?: (keyof typeof EntityType)[];
+  filterEntityTypes?: (keyof typeof EntityType)[];
 
-  excludePlayers?: number[];
+  excludePlayerIds?: number[];
 
-  excludeObjects?: string[];
+  excludeObjectIds?: string[];
+
+  collidableOnly?: boolean;
 };
 
 export type MoonPhases =

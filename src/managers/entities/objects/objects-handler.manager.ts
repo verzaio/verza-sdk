@@ -122,7 +122,7 @@ class ObjectsHandlerManager {
       event.y,
       null,
       {
-        entityTypes: ['object'],
+        filterEntityTypes: ['object'],
       },
     );
 
@@ -160,7 +160,7 @@ class ObjectsHandlerManager {
         eventInfo.y,
         null,
         {
-          entityTypes: ['object'],
+          filterEntityTypes: ['object'],
         },
       );
 

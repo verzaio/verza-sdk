@@ -1,15 +1,15 @@
 import {EntityDrawDistanceType} from '../types/entities.types';
 
-export const STREAMER_CHUNK_SIZE = 256;
+export const STREAMER_CHUNK_SIZE = 1024;
 
-export const STREAMER_LOW_DRAW_DISTANCE = 16;
+export const STREAMER_LOW_DRAW_DISTANCE = 64;
 
 export const STREAMER_CHUNK_DRAW_DISTANCES: Record<
   EntityDrawDistanceType,
   number
 > = {
   low: 1,
-  mid: 4,
+  mid: 8,
   high: 16,
 };
 

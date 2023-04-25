@@ -25,7 +25,7 @@ export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
 
   o: ObjectDataBase & D; // object data
 
-  dd?: EntityDrawDistanceType;
+  dd?: EntityDrawDistanceType | null;
 
   p?: Vector3Array; // position
 
@@ -228,6 +228,8 @@ export type ObjectPlaneType = ObjectBaseType<
     widthSegments?: number;
 
     heightSegments?: number;
+
+    surface?: boolean;
 
     color?: ColorType;
 
