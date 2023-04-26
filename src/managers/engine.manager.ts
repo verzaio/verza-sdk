@@ -284,6 +284,15 @@ export class EngineManager {
   setForwardMessages(status: boolean) {
     this.api.emitAction('setForwardMessages', [status]);
   }
+
+  /* misc */
+  requestResourcesCheck(freeze: boolean) {
+    return this.messenger.emit('requestResourcesCheck', [freeze]);
+  }
+
+  areResourcesReady() {
+    return this.messenger.emitAsync('areResourcesReady');
+  }
 }
 
 export class EngineEvents<

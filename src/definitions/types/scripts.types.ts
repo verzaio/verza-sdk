@@ -55,7 +55,6 @@ export type NetworkEventData = {
   [name: string]: any;
 };
 
-//export type Pointer
 export type ScriptEventMap = {
   /* messenger */
   register: (eventName: string) => void;
@@ -424,6 +423,8 @@ export type ScriptEventMap = {
 
   setTime: (time: number) => void;
 
+  getTime: () => number;
+
   setTimeMode: (timeMode: TimeMode) => void;
 
   setTimeCycleDuration: (timeCycleDuration: number) => void;
@@ -444,6 +445,12 @@ export type ScriptEventMap = {
   setSkybox: (skybox: SkyboxProps | null) => void;
 
   setSkyManualMode: (status: boolean) => void;
+
+  onResourcesReady: () => void;
+
+  requestResourcesCheck: (freeze: boolean) => void;
+
+  areResourcesReady: () => boolean;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: NetworkEventData) => void;
 } & {
