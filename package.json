@@ -64,7 +64,7 @@
     "events": "^3.3.0",
     "socket.io-client": "^4.5.4",
     "socket.io-msgpack-parser": "^3.0.2",
-    "three": "^0.151.3",
+    "three": "^0.152.0",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "uuid": "^9.0.0",

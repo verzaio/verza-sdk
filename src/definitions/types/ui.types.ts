@@ -27,7 +27,9 @@ export type UISizePropValue =
   | `${number}vh`
   | `${number}vw`
   | `${number}px`
-  | `${number}%`;
+  | `${number}%`
+  | 'auto'
+  | 'none';
 
 export type UISizeProps<T extends string = UISizePropValue> = {
   height: T;

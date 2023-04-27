@@ -234,6 +234,7 @@ export interface CharacterDto {
   eyeshadow_color: string | null;
   eyeliner_color: string | null;
   clothes: CharacterClotheDto[] | null;
+  image_url: string | null;
   status: 'active' | 'deleted';
   selected: boolean;
   /** @format date-time */
@@ -246,6 +247,8 @@ export interface CreateCharacterDto {
 }
 
 export interface UpdateCharacterDto {
+  /** @format binary */
+  image?: File;
   selected?: boolean;
   gender?: 'male' | 'female';
   shapekeys?: CharacterShapekeyValueDto[];

@@ -6,11 +6,11 @@ import {
   Blending,
   BlendingEquation,
   NormalMapTypes,
-  TextureEncoding,
   Mapping,
   Wrapping,
   TextureFilter,
   PixelFormat,
+  ColorSpace,
 } from 'three';
 
 import {ColorType} from '../ui.types';
@@ -352,7 +352,7 @@ export type ObjectTexture = {
 
   /**
    * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default LinearEncoding
+   * @default LinearSRGBColorSpace
    */
-  encoding?: TextureEncoding;
+  colorSpace?: ColorSpace;
 };
