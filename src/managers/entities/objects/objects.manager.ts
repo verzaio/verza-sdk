@@ -207,6 +207,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       scale,
       shadows,
+      renderOrder,
 
       collision,
       collider,
@@ -237,6 +238,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       ...(drawDistance !== undefined && {dd: drawDistance}),
 
       ...(shadows !== undefined && {ss: shadows}),
+
+      ...(renderOrder !== undefined && {ro: renderOrder}),
 
       ...(collision !== undefined && {c: collision}),
 

@@ -29,6 +29,7 @@ import {
   PointerEvent,
   UISizeProps,
   ToolbarElement,
+  MainToolbarItem,
 } from './ui.types';
 import {
   IntersectsResult,
@@ -125,6 +126,10 @@ export type ScriptEventMap = {
   showIndicator: (id: IndicatorId, title?: IndicatorTitle) => void;
 
   hideIndicator: (id: IndicatorId) => void;
+
+  addMainToolbarItem: (item: MainToolbarItem) => void;
+
+  removeMainToolbarItem: (id: string) => void;
 
   addToolbar: (toolbar: ToolbarElement) => void;
 

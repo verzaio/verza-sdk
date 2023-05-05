@@ -14,6 +14,7 @@ export {useCamera} from 'engine/frameworks/react/hooks/useCamera';
 export {useAssets} from 'engine/frameworks/react/hooks/useAssets';
 export {useChat} from 'engine/frameworks/react/hooks/useChat';
 export {useCommand} from 'engine/frameworks/react/hooks/useCommand';
+export {useMainToolbarItem} from 'engine/frameworks/react/hooks/useMainToolbarItem';
 export {useToolbar} from 'engine/frameworks/react/hooks/useToolbar';
 export {useToolbarItemPress} from 'engine/frameworks/react/hooks/useToolbarItemPress';
 export {useWorld} from 'engine/frameworks/react/hooks/useWorld';

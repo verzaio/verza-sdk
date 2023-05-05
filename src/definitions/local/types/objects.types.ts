@@ -52,4 +52,6 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   enabledTranslations?: Boolean3Array;
 
   shadows?: boolean;
+
+  renderOrder?: number;
 } & PickObject<T>['o'];

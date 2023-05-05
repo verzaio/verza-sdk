@@ -53,7 +53,9 @@ export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
 
   po?: boolean; // permanent object
 
-  ro?: boolean; // remote object
+  ro?: number; // render order
+
+  rm?: boolean; // remote object
 };
 
 export type ObjectGroupType = ObjectBaseType<

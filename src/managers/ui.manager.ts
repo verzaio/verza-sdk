@@ -13,6 +13,7 @@ import {
   UISizeProps,
   ToolbarElement,
   UIEvent,
+  MainToolbarItem,
 } from 'engine/definitions/types/ui.types';
 
 import ControllerManager from './controller.manager';
@@ -297,6 +298,10 @@ class UIManager {
   }
 
   // cursor
+  isCursorShown() {
+    return this.hasInterface(INTERFACE_CURSOR);
+  }
+
   toggleCursor() {
     this.toggleInterface(INTERFACE_CURSOR);
   }
@@ -315,6 +320,14 @@ class UIManager {
 
   hideIndicator(id: IndicatorId) {
     this._messenger.emit('hideIndicator', [id]);
+  }
+
+  addMainToolbarItem(item: MainToolbarItem) {
+    this._messenger.emit('addMainToolbarItem', [item]);
+  }
+
+  removeMainToolbarItem(itemId: string) {
+    this._messenger.emit('removeMainToolbarItem', [itemId]);
   }
 
   addToolbar(toolbar: ToolbarElement) {

@@ -86,6 +86,12 @@ export type PointerEvent = {
 
 export type ToolbarPosition = 'bottom' | 'right';
 
+export type MainToolbarItem = {
+  id: string;
+  name?: string;
+  key?: string | string[];
+};
+
 export type ToolbarItem = {
   id?: string;
   name?: string;
