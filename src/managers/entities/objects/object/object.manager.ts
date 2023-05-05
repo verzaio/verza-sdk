@@ -125,7 +125,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       return this.parent.remote;
     }
 
-    return !!this.data.ro;
+    return !!this.data.rm;
   }
 
   set remote(remote: boolean) {

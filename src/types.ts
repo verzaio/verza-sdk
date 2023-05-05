@@ -42,6 +42,7 @@ export type {
   Indicator,
   UISizePropValue,
   UISizeProps,
+  MainToolbarItem,
   ToolbarElement,
   ToolbarItem,
   ToolbarPosition,

@@ -71,6 +71,10 @@ class WorldManager {
     this._engine.messenger.emit('setTime', [seconds]);
   }
 
+  getTime() {
+    return this._engine.messenger.emitAsync('getTime');
+  }
+
   setTimeRepresentation(hour: number, minute = 0, second = 0) {
     this._engine.messenger.emit('setTimeRepresentation', [
       hour,

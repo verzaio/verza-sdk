@@ -5,12 +5,12 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 
 import useObjectCreator from './hooks/useObjectCreator';
 
-export type SphereProps = ComponentObjectProps<'sphere'>;
+export type CircleProps = ComponentObjectProps<'circle'>;
 
-export const Sphere = forwardRef<ObjectManager, SphereProps>((props, ref) => {
-  useObjectCreator('sphere', props, ref);
+export const Circle = forwardRef<ObjectManager, CircleProps>((props, ref) => {
+  useObjectCreator('circle', props, ref);
 
   return null;
 });
 
-Sphere.displayName = 'Sphere';
+Circle.displayName = 'Circle';

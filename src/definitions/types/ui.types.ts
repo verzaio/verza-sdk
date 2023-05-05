@@ -27,7 +27,9 @@ export type UISizePropValue =
   | `${number}vh`
   | `${number}vw`
   | `${number}px`
-  | `${number}%`;
+  | `${number}%`
+  | 'auto'
+  | 'none';
 
 export type UISizeProps<T extends string = UISizePropValue> = {
   height: T;
@@ -83,6 +85,12 @@ export type PointerEvent = {
 } & UIEvent;
 
 export type ToolbarPosition = 'bottom' | 'right';
+
+export type MainToolbarItem = {
+  id: string;
+  name?: string;
+  key?: string | string[];
+};
 
 export type ToolbarItem = {
   id?: string;

@@ -33,7 +33,7 @@ export type CreateEntityProps = {
 
   d?: number; // dimension
 
-  dd?: EntityDrawDistanceType; // draw distance
+  dd?: EntityDrawDistanceType | null; // draw distance
 };
 
 export type EntityItem<

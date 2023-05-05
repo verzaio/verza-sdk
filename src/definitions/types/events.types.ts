@@ -107,3 +107,7 @@ export type UIEventMap = {
 
   onToolbarItemPress: (id: string, toolbarId: string) => void;
 };
+
+export type ScriptsEventMap = {
+  onLoaded: () => void;
+};

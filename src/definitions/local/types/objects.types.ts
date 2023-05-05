@@ -33,7 +33,7 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
 
   scale?: Vector3 | Vector3Array | number;
 
-  drawDistance?: EntityDrawDistanceType;
+  drawDistance?: EntityDrawDistanceType | null;
 
   dimension?: number;
 
@@ -52,4 +52,6 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   enabledTranslations?: Boolean3Array;
 
   shadows?: boolean;
+
+  renderOrder?: number;
 } & PickObject<T>['o'];
