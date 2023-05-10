@@ -1,5 +1,3 @@
-import {GLTF} from 'three-stdlib';
-
 import EntitiesManager from 'engine/managers/entities/entities.manager';
 import EntityHandleManager from 'engine/managers/entities/entity/entity-handle.manager';
 import EntityStreamManager from 'engine/managers/entities/entity/entity-stream.manager';
@@ -14,6 +12,10 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import PlayersManager from 'engine/managers/entities/players/players.manager';
 
 import MessengerEmitterManager from './managers/messenger/messenger-emitter.manager';
+
+export type {EngineParams} from 'engine/definitions/local/types/engine.types';
+
+export type {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
 
 export type {
   ScriptEventMap,
@@ -209,11 +211,3 @@ export {
   RGIntegerFormat,
   RGBAIntegerFormat,
 } from 'three';
-
-export type {GLTF};
-
-declare module 'three-stdlib' {
-  export interface GLTFLoader {
-    parseAsync(data: ArrayBuffer | string, path: string): Promise<GLTF>;
-  }
-}

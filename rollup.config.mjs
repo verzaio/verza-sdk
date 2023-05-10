@@ -28,6 +28,23 @@ const builds = [
   },
 
   {
+    input: 'src/utils.ts',
+    plugins,
+    external,
+    output: [
+      {
+        format: 'esm',
+        file: 'dist/utils.esm.js',
+      },
+
+      {
+        format: 'cjs',
+        file: 'dist/utils.cjs.js',
+      },
+    ],
+  },
+
+  {
     input: 'src/framework-react.ts',
     plugins,
     external,

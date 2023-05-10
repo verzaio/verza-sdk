@@ -1,9 +1,5 @@
 export * from './types';
 
-import * as THREE from 'three';
-
-import {v4} from 'uuid';
-
 import ApiManager from 'engine/managers/api/api.manager';
 import AssetsManager from 'engine/managers/assets.manager';
 import CameraManager from 'engine/managers/camera.manager';
@@ -55,16 +51,6 @@ export {EngineManager} from 'engine/managers/engine.manager';
 
 export {Command, CommandParam} from 'engine/managers/commands/command.manager';
 
-export type {EngineParams} from 'engine/definitions/local/types/engine.types';
-
-export type {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
-
-export {THREE};
-
-export {z} from 'zod';
-
-export {v4 as uuid};
-
 export {
   Object3D,
   Vector2,
@@ -76,7 +62,4 @@ export {
   Box3,
   Quaternion,
   Euler,
-  MathUtils,
 } from 'three';
-
-export {GLTFLoader} from 'three-stdlib';
