@@ -5,25 +5,23 @@ import {
   PlayerDataProps,
   PlayerState,
 } from 'engine/definitions/types/players.types';
-import {
-  QuaternionArray,
-  Vector3Array,
-} from 'engine/definitions/types/world.types';
 import {PlayerPacketDto} from 'engine/generated/dtos.types';
+import {QuaternionArray, Vector3Array} from 'engine/types';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
 import PlayerManager from './player/player.manager';
+import PlayersHandlerManager from './players-handler.manager';
 
 class PlayersManager extends EntitiesManager<PlayerManager> {
-  private _loadBinded = false;
+  private _binded = false;
 
-  private get _messenger() {
-    return this.engine.messenger;
-  }
+  private _handler: PlayersHandlerManager;
 
   constructor(engine: EngineManager) {
     super(EntityType.player, engine);
+
+    this._handler = new PlayersHandlerManager(this);
   }
 
   create(id: number, data?: PlayerDataProps) {
@@ -31,83 +29,10 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
   }
 
   load() {
-    if (this._loadBinded) return;
+    if (this._binded) return;
+    this._binded = true;
 
-    this._loadBinded = true;
-
-    // client side updates
-    if (this.engine.isClient) {
-      // updates
-      if (
-        this.engine.syncPlayerUpdates ||
-        this.engine.syncPlayerUpdatesPriority
-      ) {
-        this._messenger.events.on(
-          'onPlayerUpdate',
-          ({data: [playerId, packet]}) => {
-            this.handlePacket(playerId, packet as PlayerPacketDto);
-          },
-        );
-      }
-
-      // updates (priority)
-      if (this.engine.syncPlayerUpdatesPriority) {
-        this._messenger.events.on('OPU', ({data: [playerId, packet]}) => {
-          this.handlePacket(playerId, packet as PlayerPacketDto);
-        });
-      }
-
-      // controls
-      if (this.engine.syncPlayerControls) {
-        this._messenger.events.on(
-          'onControlChange',
-          ({data: [key, newState]}) => {
-            if (this.engine.localPlayer) {
-              this.engine.localPlayer.controls[key] = newState;
-            }
-          },
-        );
-      }
-    }
-
-    this._messenger.events.on('setPlayerName', ({data: [playerId, name]}) => {
-      this.engine.players.get(playerId)?.updateName(name);
-    });
-
-    this._messenger.events.on(
-      'onPlayerCreate',
-      ({data: [playerId, data, streamed]}) => {
-        const player = this.engine.players.create(playerId, data);
-
-        // stream
-        if (streamed) {
-          this.engine.players.streamIn(player);
-        }
-      },
-    );
-
-    this._messenger.events.on('onPlayerDestroy', ({data: [playerId]}) => {
-      this.engine.players.destroy(this.engine.players.get(playerId));
-    });
-
-    this._messenger.events.on(
-      'onPlayerStreamIn',
-      ({data: [playerId, data]}) => {
-        this.engine.players.streamIn(this.engine.players.get(playerId), data);
-      },
-    );
-
-    this._messenger.events.on('onPlayerStreamOut', ({data: [playerId]}) => {
-      this.engine.players.streamOut(this.engine.players.get(playerId));
-    });
-  }
-
-  unload() {
-    this._loadBinded = false;
-
-    // remove all events
-    this.events.removeAllListeners();
-    this.watcher.removeAllListeners();
+    this._handler.bind();
   }
 
   handlePacket(playerId: number, packet: PlayerPacketDto) {
@@ -172,13 +97,16 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     if (packet.h) {
       player.events.emit('onHeadMove', packet.h as Vector3Array);
     }
+
+    // emit on update
+    player.events.emit('onUpdate');
   }
 
   private _updateStateAnimIndex(player: PlayerManager, stateAnimIndex: number) {
-    if (!player.handle.animations) return;
+    if (!player.handle) return;
 
     // sync state
-    player.handle.animations.stateAnimIndex = stateAnimIndex;
+    player.handle.stateAnimIndex = stateAnimIndex;
   }
 
   private _updateState(player: PlayerManager, newState: PlayerState) {
@@ -186,6 +114,13 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
 
     // sync state
     player.data.state = newState;
+  }
+
+  unload() {
+    if (!this._binded) return;
+    this._binded = false;
+
+    this._handler.unbind();
   }
 
   forEachInChunk(

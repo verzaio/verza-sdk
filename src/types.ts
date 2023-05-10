@@ -5,7 +5,6 @@ import EntityManager from 'engine/managers/entities/entity/entity.manager';
 import ObjectHandleManager from 'engine/managers/entities/objects/object/object-handle.manager';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import ObjectsManager from 'engine/managers/entities/objects/objects.manager';
-import PlayerAnimationsManager from 'engine/managers/entities/players/player/player-animations.manager';
 import PlayerCameraManager from 'engine/managers/entities/players/player/player-camera.manager';
 import PlayerHandleManager from 'engine/managers/entities/players/player/player-handle.manager';
 import PlayerVoicechatManager from 'engine/managers/entities/players/player/player-voicechat.manager';
@@ -14,10 +13,29 @@ import PlayersManager from 'engine/managers/entities/players/players.manager';
 
 import MessengerEmitterManager from './managers/messenger/messenger-emitter.manager';
 
+export type {EngineParams} from 'engine/definitions/local/types/engine.types';
+
+export type {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
+
 export type {
   ScriptEventMap,
   NetworkEventData,
 } from 'engine/definitions/types/scripts.types';
+
+export type {
+  AnimationLoop,
+  AnimationInfo,
+  AnimationOptions,
+  AnimationEventType,
+  AnimationEvent,
+} from 'engine/definitions/types/animations.types';
+
+export type {
+  ClotheCategory,
+  SkinMaskItem,
+  ClotheItem,
+  PlayerClotheItem,
+} from 'engine/definitions/types/clothes.types';
 
 export type {
   ObjectEditMode,
@@ -78,7 +96,6 @@ export type {
   PlayerHandleManager,
   PlayerVoicechatManager,
   PlayerCameraManager,
-  PlayerAnimationsManager,
 };
 
 // custom blending destination factors

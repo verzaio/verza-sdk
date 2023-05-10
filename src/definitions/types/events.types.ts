@@ -2,6 +2,7 @@ import {PlayerPacketUpdateDto} from 'engine/generated/dtos.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import type {EntityType} from '../enums/entities.enums';
+import {AnimationEvent} from './animations.types';
 import {CameraModeType} from './camera.types';
 import {ChunkIndex} from './chunks.types';
 import {PlayerControls} from './controls.types';
@@ -78,6 +79,10 @@ export type PlayerEventMap = {
   onHeadMove: (euler: [number, number, number]) => void;
 
   onClothesUpdate: () => void;
+
+  onAnimation: (event: AnimationEvent) => void;
+
+  onUpdate: () => void;
 };
 
 export type ObjectEventMap = {

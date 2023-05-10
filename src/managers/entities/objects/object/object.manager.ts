@@ -761,28 +761,28 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.events.emit('onTransitionEnd', id);
   };
 
-  bindTransitionStart() {
+  bindOnTransitionStart() {
     this.engine.events.on(
       `onObjectTransitionStartRaw_${this.id}`,
       this._onTransitionStart,
     );
   }
 
-  unbindTransitionStart() {
+  unbindOnTransitionStart() {
     this.engine.events.off(
       `onObjectTransitionStartRaw_${this.id}`,
       this._onTransitionStart,
     );
   }
 
-  bindTransitionEnd() {
+  bindOnTransitionEnd() {
     this.engine.events.on(
       `onObjectTransitionEndRaw_${this.id}`,
       this._onTransitionEnd,
     );
   }
 
-  unbindTransitionEnd() {
+  unbindOnTransitionEnd() {
     this.engine.events.off(
       `onObjectTransitionEndRaw_${this.id}`,
       this._onTransitionEnd,

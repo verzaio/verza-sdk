@@ -14,6 +14,8 @@ import {
   ToolbarElement,
   UIEvent,
   MainToolbarItem,
+  DragEventType,
+  DragEvent as DragEventBase,
 } from 'engine/definitions/types/ui.types';
 
 import ControllerManager from './controller.manager';
@@ -125,42 +127,58 @@ class UIManager {
   private _onDragEvent = (event: DragEvent) => {
     event.preventDefault();
 
-    switch (event.type) {
-      case 'dragenter': {
-        this._emitDragEvent('onDragEnter');
-        break;
-      }
-      case 'dragleave': {
-        this._emitDragEvent('onDragLeave');
-        break;
-      }
-      case 'dragover': {
-        this._emitDragEvent('onDragOver');
-        break;
-      }
-    }
+    this._emitDragEvent({
+      type: event.type as DragEventType,
+
+      x: event.clientX,
+
+      y: event.clientY,
+
+      button: event.button,
+
+      buttons: event.buttons,
+
+      source: this._engine.id,
+    });
   };
 
   private _onDragDrop = async (event: DragEvent) => {
     event.preventDefault();
 
-    const files = event.dataTransfer?.files;
-    if (!files?.length) return;
+    const fileList = event.dataTransfer?.files;
+    if (!fileList?.length) return;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files.item(i);
+    const files: FileTransfer[] = [];
+
+    for (let i = 0; i < fileList.length; i++) {
+      const file = fileList.item(i);
 
       if (!file) continue;
 
       const buffer = await file.arrayBuffer();
 
-      this._emitDragDrop({
+      files.push({
         name: file.name,
         type: file.type,
         size: file.size,
         buffer,
       });
     }
+
+    this._emitDragDrop(
+      {
+        type: event.type as DragEventType,
+
+        x: event.clientX,
+
+        y: event.clientY,
+
+        button: event.button,
+
+        buttons: event.buttons,
+      },
+      files,
+    );
   };
 
   private _isFocusElement() {
@@ -207,6 +225,8 @@ class UIManager {
 
         buttons: event.buttons,
 
+        source: this._engine.id,
+
         ...this._extractBaseEventProps(event),
       },
     ]);
@@ -229,17 +249,16 @@ class UIManager {
     ]);
   };
 
-  private _emitDragEvent(event: 'onDragLeave' | 'onDragEnter' | 'onDragOver') {
-    this._messenger.emit(event);
+  private _emitDragEvent(event: DragEventBase) {
+    this._messenger.emit('onDragEvent', [event]);
   }
 
-  private _emitDragDrop(file?: FileTransfer) {
-    if (!file) {
-      this._messenger.emit('onDrop');
-      return;
-    }
-
-    this._messenger.emit('onDrop', [file], [file.buffer]);
+  private _emitDragDrop(event: DragEventBase, files: FileTransfer[]) {
+    this._messenger.emit(
+      'onDrop',
+      [event, files],
+      files.map(e => e.buffer),
+    );
   }
 
   private _extractBaseEventProps(
@@ -260,11 +279,15 @@ class UIManager {
 
   /* base */
   show() {
+    if (this.visible) return;
+
     this.visible = true;
     this._messenger.emit('show');
   }
 
   hide() {
+    if (!this.visible) return;
+
     this.visible = false;
     this._messenger.emit('hide');
   }

@@ -1,5 +1,4 @@
 // rollup.config.js
-//import commonjs from '@rollup/plugin-commonjs';
 import commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
@@ -24,6 +23,23 @@ const builds = [
       {
         format: 'cjs',
         file: 'dist/index.cjs.js',
+      },
+    ],
+  },
+
+  {
+    input: 'src/utils.ts',
+    plugins,
+    external,
+    output: [
+      {
+        format: 'esm',
+        file: 'dist/utils.esm.js',
+      },
+
+      {
+        format: 'cjs',
+        file: 'dist/utils.cjs.js',
       },
     ],
   },

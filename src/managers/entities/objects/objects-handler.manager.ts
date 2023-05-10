@@ -6,9 +6,8 @@ import {
 import {PointerEvent} from 'engine/definitions/types/ui.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import ObjectsManager from 'engine/managers/entities/objects/objects.manager';
+import SubscriberTracker from 'engine/managers/entities/utils/SubscriberTracker';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
-
-import EntityEventsManager from '../entity/entity-events.manager';
 
 const findObject = async (
   object: ObjectManager,
@@ -60,54 +59,56 @@ class ObjectsHandlerManager {
       }
     });
 
-    // watch events
-    this._objects.eventsToWatch = new Set<keyof ObjectEventMap>([
-      'onTransitionStart',
-      'onTransitionEnd',
-
-      'onPointerMove',
-      'onPointerEnter',
-      'onPointerLeave',
-
-      'onPointerDown',
-      'onPointerUp',
-    ]);
-
-    this._objects.watcher.on('onTransitionStart', (object, subscribed) => {
-      this._tracker.track(
-        object.events,
+    if (this._engine.isClient) {
+      // watch events
+      this._objects.eventsToWatch = new Set([
         'onTransitionStart',
-        object.id,
-        subscribed,
-        () => object.bindTransitionStart(),
-        () => object.unbindTransitionStart(),
-      );
-    });
-
-    this._objects.watcher.on('onTransitionEnd', (object, subscribed) => {
-      this._tracker.track(
-        object.events,
         'onTransitionEnd',
-        object.id,
-        subscribed,
-        () => object.bindTransitionEnd(),
-        () => object.unbindTransitionEnd(),
+
+        'onPointerMove',
+        'onPointerEnter',
+        'onPointerLeave',
+
+        'onPointerDown',
+        'onPointerUp',
+      ]);
+
+      this._objects.watcher.on('onTransitionStart', (object, subscribed) => {
+        this._tracker.track(
+          !!object.events.listenerCount('onTransitionStart'),
+          'onTransitionStart',
+          object.id,
+          subscribed,
+          () => object.bindOnTransitionStart(),
+          () => object.unbindOnTransitionStart(),
+        );
+      });
+
+      this._objects.watcher.on('onTransitionEnd', (object, subscribed) => {
+        this._tracker.track(
+          !!object.events.listenerCount('onTransitionStart'),
+          'onTransitionEnd',
+          object.id,
+          subscribed,
+          () => object.bindOnTransitionEnd(),
+          () => object.unbindOnTransitionEnd(),
+        );
+      });
+
+      this._objects.watcher.on('onPointerEnter', (object, subscribed) =>
+        this._onPointerOverEvent('onPointerEnter', object, subscribed),
       );
-    });
+      this._objects.watcher.on('onPointerLeave', (object, subscribed) =>
+        this._onPointerOverEvent('onPointerLeave', object, subscribed),
+      );
 
-    this._objects.watcher.on('onPointerEnter', (object, subscribed) =>
-      this._onPointerOverEvent('onPointerEnter', object, subscribed),
-    );
-    this._objects.watcher.on('onPointerLeave', (object, subscribed) =>
-      this._onPointerOverEvent('onPointerLeave', object, subscribed),
-    );
-
-    this._objects.watcher.on('onPointerDown', (object, subscribed) =>
-      this._onPointerEvent('onPointerDown', object, subscribed),
-    );
-    this._objects.watcher.on('onPointerUp', (object, subscribed) =>
-      this._onPointerEvent('onPointerUp', object, subscribed),
-    );
+      this._objects.watcher.on('onPointerDown', (object, subscribed) =>
+        this._onPointerEvent('onPointerDown', object, subscribed),
+      );
+      this._objects.watcher.on('onPointerUp', (object, subscribed) =>
+        this._onPointerEvent('onPointerUp', object, subscribed),
+      );
+    }
   }
 
   unbind() {
@@ -237,7 +238,7 @@ class ObjectsHandlerManager {
     subscribed: boolean,
   ) => {
     this._tracker.track(
-      object.events,
+      !!object.events.listenerCount(eventName), // we checks for any related events count
       'onPointerMove',
       object.id,
       subscribed,
@@ -253,7 +254,6 @@ class ObjectsHandlerManager {
         // clear entered objects
         this._enteredObjects.clear();
       },
-      !!object.events.listenerCount(eventName),
     );
   };
 
@@ -263,69 +263,14 @@ class ObjectsHandlerManager {
     subscribed: boolean,
   ) => {
     this._tracker.track(
-      object.events,
+      !!object.events.listenerCount(eventName),
       eventName,
       object.id,
       subscribed,
-      () => {
-        this._engine.events.on(eventName, this._onPointerEventHandle);
-      },
-      () => {
-        this._engine.events.off(eventName, this._onPointerEventHandle);
-      },
+      () => this._engine.events.on(eventName, this._onPointerEventHandle),
+      () => this._engine.events.off(eventName, this._onPointerEventHandle),
     );
   };
-}
-
-class SubscriberTracker<
-  T extends EntityEventsManager,
-  Events extends Parameters<T['on']>[0] = Parameters<T['on']>[0],
-> {
-  private _ids = new Map<Events, Set<string | number>>();
-
-  get(name: Events) {
-    return this._ids.get(name);
-  }
-
-  track(
-    events: T,
-    eventName: Events,
-    id: string | number,
-    status: boolean,
-    onAdd?: () => void,
-    onRemove?: () => void,
-    hasEvents?: boolean,
-  ) {
-    if (status) {
-      if (!this._ids.has(eventName)) {
-        onAdd?.();
-      }
-
-      this._ids.set(
-        eventName,
-        this._ids.get(eventName)?.add(id) ?? new Set([id]),
-      );
-    } else {
-      hasEvents = hasEvents ?? !!events.listenerCount(eventName);
-
-      if (!hasEvents) {
-        const ids = this._ids.get(eventName);
-
-        if (ids) {
-          ids.delete(id);
-
-          if (!ids.size) {
-            this._ids.delete(eventName);
-            onRemove?.();
-          }
-
-          return;
-        }
-
-        onRemove?.();
-      }
-    }
-  }
 }
 
 export default ObjectsHandlerManager;

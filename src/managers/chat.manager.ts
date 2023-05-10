@@ -6,10 +6,6 @@ import PlayerManager from './entities/players/player/player.manager';
 class ChatManager {
   private _engine: EngineManager;
 
-  private get _messenger() {
-    return this._engine.messenger;
-  }
-
   constructor(engine: EngineManager) {
     this._engine = engine;
   }

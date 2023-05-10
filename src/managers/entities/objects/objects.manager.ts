@@ -33,7 +33,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return this.controller.data.editingObject;
   }
 
-  private _loadBinded = false;
+  private _binded = false;
 
   private _messenger: MessengerEmitterManager;
 
@@ -48,15 +48,15 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   bind() {
-    if (this._loadBinded) return;
-    this._loadBinded = true;
+    if (this._binded) return;
+    this._binded = true;
 
     this._handler.bind();
   }
 
   unload() {
-    if (!this._loadBinded) return;
-    this._loadBinded = false;
+    if (!this._binded) return;
+    this._binded = false;
 
     this._handler.unbind();
   }
