@@ -12,8 +12,6 @@ export type EngineParams = {
   /* client side only */
   syncPlayers?: boolean;
 
-  syncPlayerUpdatesPriority?: boolean;
-
   syncPlayerUpdates?: boolean;
 
   syncPlayerControls?: boolean;

@@ -47,8 +47,16 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
   connected = false;
 
+  isReciever = false;
+
+  isSender = false;
+
   constructor(type: MessengerType, id?: string) {
     this.type = type;
+
+    this.isReciever = type === 'receiver';
+
+    this.isSender = type === 'sender';
 
     this.events = new MessengerEvents(this as any);
 
@@ -67,13 +75,13 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
   }
 
   connect(windowToConnect: Window) {
-    if (this.type !== 'sender') {
+    if (this.isReciever) {
       console.log(`[messenger:${this.type}] only senders can connect`);
       return;
     }
 
     // create message channel if sender
-    if (this.type === 'sender') {
+    if (this.isSender) {
       this.channel = new MessageChannel();
       this.port = this.channel.port1;
       this.port.onmessage = this._onMessage;
@@ -92,7 +100,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
   }
 
   accept(port: MessagePort) {
-    if (this.type !== 'receiver') {
+    if (this.isSender) {
       console.log(`[messenger:${this.type}] only receivers can accept`);
       return;
     }
@@ -150,7 +158,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     //console.log(`_onHandshake:${this.type}`, message.data);
 
     if (message.data?.id !== this.id) {
-      if (this.type !== 'receiver') {
+      if (this.isSender) {
         console.debug(
           `[messenger:${this.type}] sender id mismatch "${this.id}" != "${message.data?.id}"`,
         );
@@ -169,7 +177,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     }
 
     // receiver
-    if (this.type === 'receiver' && message.data.action === ACTION_CONNECT) {
+    if (this.isReciever && message.data.action === ACTION_CONNECT) {
       //console.debug(`ACTION_CONNECT:${this.id.split('-')[0]}`);
 
       if (!message.ports.length) {
@@ -188,7 +196,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     }
 
     // sender
-    if (this.type === 'sender' && message.data.action === ACTION_ACCEPT) {
+    if (this.isSender && message.data.action === ACTION_ACCEPT) {
       //console.debug(`ACTION_ACCEPT:${this.id.split('-')[0]}`);
 
       // emit connected
@@ -230,7 +238,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
         const validator = this.validators[eventName] ?? {};
 
         // validate data only for receiver
-        if (this.type === 'receiver') {
+        if (this.isReciever) {
           Object.assign(
             message.data,
             validator?.parser?.parse(message.data) ?? {},
@@ -337,12 +345,12 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     transfer?: Array<Transferable | OffscreenCanvas>,
     forcedEmit?: boolean,
   ) {
-    if (!this.port) return;
-
-    if (this.type !== 'sender' && !forcedEmit && !this.canEmit(eventName)) {
+    if (this.isReciever && !this.canEmit(eventName) && !forcedEmit) {
       //console.log('not emitting, not registered!', eventName, this.type);
       return;
     }
+
+    if (!this.port) return;
 
     if (transfer) {
       this.port.postMessage(

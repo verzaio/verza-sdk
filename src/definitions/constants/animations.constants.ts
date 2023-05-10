@@ -1,3 +1,12 @@
+import {
+  AnimationActionLoopStyles,
+  LoopOnce,
+  LoopPingPong,
+  LoopRepeat,
+} from 'three';
+
+import {AnimationLoop} from '../types/animations.types';
+
 export const ANIM_GROUP_IDLE = 0;
 
 export const ANIM_GROUP_WALKING = 1;
@@ -47,3 +56,10 @@ export const ANIMATIONS_INDEX = Object.entries(ANIMATIONS).reduce(
   },
   {} as Record<number, keyof typeof ANIMATIONS>,
 );
+
+export const ANIMATION_LOOP: Record<AnimationLoop, AnimationActionLoopStyles> =
+  {
+    once: LoopOnce,
+    repeat: LoopRepeat,
+    pingpong: LoopPingPong,
+  };

@@ -154,24 +154,6 @@ export interface CreateAssetDto {
   asset_file: File;
 }
 
-export interface CharacterShapekeyDto {
-  id: string;
-  name: string;
-  min: number;
-  max: number;
-  nonEditable?: boolean;
-}
-
-export interface CharacterConfigDto {
-  shapekeys: CharacterShapekeyDto[];
-  skin_colors: string[];
-  eyes_colors: string[];
-  lipstick_colors: string[];
-  blush_colors: string[];
-  eyeshadow_colors: string[];
-  eyeliner_colors: string[];
-}
-
 export interface CharacterShapekeyValueDto {
   name:
     | 'asian'
@@ -211,8 +193,8 @@ export interface CharacterShapekeyValueDto {
     | '{mouth}_lip_offset'
     | '{mouth}_lip_height';
   /**
-   * @min -1
-   * @max 1
+   * @min -2
+   * @max 2
    */
   value: number;
 }
@@ -233,6 +215,9 @@ export interface CharacterDto {
   blush_color: string | null;
   eyeshadow_color: string | null;
   eyeliner_color: string | null;
+  eyebrows_style: number | null;
+  eyebrows_color: string | null;
+  eyebrows_opacity: number | null;
   clothes: CharacterClotheDto[] | null;
   image_url: string | null;
   status: 'active' | 'deleted';
@@ -372,6 +357,36 @@ export interface UpdateCharacterDto {
     | '#b976b1'
     | '#d0b07e'
     | null;
+  /**
+   * @min 0
+   * @max 6
+   */
+  eyebrows_style?: number | null;
+  eyebrows_color?:
+    | '#000000'
+    | '#d3520d'
+    | '#c45435'
+    | '#a53d07'
+    | '#8e3200'
+    | '#7eba8b'
+    | '#41ba5b'
+    | '#1a9935'
+    | '#039623'
+    | '#2f857d'
+    | '#4eb6ac'
+    | '#7db3c7'
+    | '#509dba'
+    | '#177b9f'
+    | '#ff9b2d'
+    | '#ffbb2e'
+    | '#e0afaf'
+    | '#aca4a4'
+    | null;
+  /**
+   * @min 0
+   * @max 100
+   */
+  eyebrows_opacity?: number | null;
   clothes?: CharacterClotheDto[];
 }
 
@@ -498,7 +513,7 @@ export interface PlayerPacketUpdateDto {
   /**
    * state animation
    * @min 0
-   * @max 100000
+   * @max 1000000000
    */
   n?: number;
   /**
@@ -527,7 +542,7 @@ export interface PlayerPacketLocalUpdateDto {
   /**
    * state animation
    * @min 0
-   * @max 100000
+   * @max 1000000000
    */
   n?: number;
   /**
@@ -585,8 +600,10 @@ export interface ObjectDataDto {
   ss?: boolean;
   /** permanent object */
   po?: boolean;
+  /** render order */
+  ro?: number;
   /** remote object */
-  ro?: boolean;
+  rm?: boolean;
 }
 
 export interface ObjectDto {

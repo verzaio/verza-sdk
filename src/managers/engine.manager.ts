@@ -1,3 +1,4 @@
+import {v4} from 'uuid';
 import {z} from 'zod';
 
 import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
@@ -9,10 +10,12 @@ import {EventKey} from 'engine/definitions/types/events.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import {isValidEnv} from 'engine/utils/misc.utils';
 
+import AnimationsManager from './animations.manager';
 import ApiManager from './api/api.manager';
 import AssetsManager from './assets.manager';
 import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
+import ClothesManager from './clothes.manager';
 import CommandsManager from './commands/commands.manager';
 import ControllerManager from './controller.manager';
 import EntityEventsManager from './entities/entity/entity-events.manager';
@@ -26,6 +29,7 @@ import MethodsHandlerManager, {
 } from './messenger/methods-handler.manager';
 import NetworkManager from './network.manager';
 import UIManager from './ui.manager';
+import UtilsManager from './utils.manager';
 import WorldManager from './world/world.manager';
 
 export class EngineManager {
@@ -39,6 +43,8 @@ export class EngineManager {
 
   chat: ChatManager;
 
+  utils: UtilsManager;
+
   commands: CommandsManager;
 
   camera: CameraManager = null!;
@@ -46,6 +52,10 @@ export class EngineManager {
   streamer: StreamerManager = null!;
 
   world: WorldManager;
+
+  clothes: ClothesManager;
+
+  animations: AnimationsManager;
 
   assets: AssetsManager = null!;
 
@@ -81,6 +91,12 @@ export class EngineManager {
 
   private _binded = false;
 
+  private _localId = v4();
+
+  get id() {
+    return this.messenger.id ?? this._localId;
+  }
+
   get name() {
     return (
       this.params.name ??
@@ -90,10 +106,6 @@ export class EngineManager {
 
   get syncPlayers() {
     return this.params.syncPlayers ?? true;
-  }
-
-  get syncPlayerUpdatesPriority() {
-    return this.params.syncPlayerUpdatesPriority ?? false;
   }
 
   get syncPlayerUpdates() {
@@ -160,7 +172,13 @@ export class EngineManager {
 
     this.world = new WorldManager(this);
 
+    this.clothes = new ClothesManager(this);
+
+    this.animations = new AnimationsManager(this);
+
     this.methodsHandler = new MethodsHandlerManager(this);
+
+    this.utils = new UtilsManager(this);
 
     // only for client
     if (this.isClient) {

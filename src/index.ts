@@ -28,7 +28,12 @@ export {
 
 export {CORE_ACTION_EDITOR} from './definitions/constants/commands.constants';
 
-export {createFileFromFileTransfer} from './utils/files.utils';
+export {
+  createFileFromFileTransfer,
+  createBlobFileFromFileTransfer,
+  createURLFromFileTransfer,
+  fileToDataUrl,
+} from './utils/files.utils';
 
 export {
   EventsManager,
@@ -61,10 +66,11 @@ export {v4 as uuid};
 
 export {
   Object3D,
-  Vector3,
   Vector2,
+  Vector3,
   Vector4,
   Matrix3,
+  Matrix4,
   Box2,
   Box3,
   Quaternion,

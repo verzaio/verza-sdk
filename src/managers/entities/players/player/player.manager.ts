@@ -2,7 +2,12 @@ import {Euler, Quaternion, Vector3} from 'three';
 import {MathUtils} from 'three';
 
 import {STREAMER_CHUNK_SIZE} from 'engine/definitions/constants/streamer.constants';
+import {
+  AnimationEvent,
+  AnimationOptions,
+} from 'engine/definitions/types/animations.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
+import {PlayerClotheItem} from 'engine/definitions/types/clothes.types';
 import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
@@ -11,11 +16,16 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
+import {
+  PlayerPacketDto,
+  PlayerPacketUpdateDto,
+} from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';
+import PlayersManager from '../players.manager';
 import PlayerCameraManager from './player-camera.manager';
 import type PlayerHandleManager from './player-handle.manager';
 import PlayerVoicechatManager from './player-voicechat.manager';
@@ -298,6 +308,59 @@ class PlayerManager extends EntityManager<
       }
     }
   }
+
+  addClothes(
+    clotheItems: PlayerClotheItem | PlayerClotheItem[],
+    replace = false,
+  ) {
+    this.messenger.emit('addPlayerClothes', [
+      this.id,
+      Array.isArray(clotheItems) ? clotheItems : [clotheItems],
+      replace,
+    ]);
+  }
+
+  removeClothes(clotheIds: string | string[]) {
+    this.messenger.emit('removePlayerClothes', [
+      this.id,
+      Array.isArray(clotheIds) ? clotheIds : [clotheIds],
+    ]);
+  }
+
+  playAnimation(animId: string, options: AnimationOptions) {
+    this.messenger.emit('playPlayerAnimation', [this.id, animId, options]);
+  }
+
+  stopAnimation(animId: string, fadeOutDuration = 0) {
+    this.messenger.emit('stopPlayerAnimation', [
+      this.id,
+      animId,
+      fadeOutDuration,
+    ]);
+  }
+
+  stopAnimations(fadeOutDuration = 0) {
+    this.messenger.emit('stopPlayerAnimations', [this.id, fadeOutDuration]);
+  }
+
+  pauseAnimation(animId: string) {
+    this.messenger.emit('pausePlayerAnimation', [this.id, animId]);
+  }
+
+  resumeAnimation(animId: string) {
+    this.messenger.emit('resumePlayerAnimation', [this.id, animId]);
+  }
+
+  _onAnimation = (event: AnimationEvent) => {
+    this.events.emit('onAnimation', event);
+  };
+
+  _onUpdate = (packet: PlayerPacketDto | PlayerPacketUpdateDto) => {
+    (this.manager as PlayersManager).handlePacket(
+      this.id,
+      packet as PlayerPacketDto,
+    );
+  };
 }
 
 export default PlayerManager;

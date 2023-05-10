@@ -8,8 +8,14 @@ import {
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
+import {
+  AnimationEvent,
+  AnimationInfo,
+  AnimationOptions,
+} from './animations.types';
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {ChunkData, ChunkIndex} from './chunks.types';
+import {ClotheItem, PlayerClotheItem, SkinMaskItem} from './clothes.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
 import {ObjectTypes} from './objects/objects-definition.types';
@@ -30,6 +36,7 @@ import {
   UISizeProps,
   ToolbarElement,
   MainToolbarItem,
+  DragEvent,
 } from './ui.types';
 import {
   IntersectsResult,
@@ -111,13 +118,15 @@ export type ScriptEventMap = {
 
   onKeyUp: (event: KeyEvent) => void;
 
-  onDragLeave: () => void;
+  onDragEvent: (event: DragEvent) => void;
 
-  onDragEnter: () => void;
+  onDragLeave: (event: DragEvent) => void;
 
-  onDragOver: () => void;
+  onDragEnter: (event: DragEvent) => void;
 
-  onDrop: (file?: FileTransfer) => void;
+  onDragOver: (event: DragEvent) => void;
+
+  onDrop: (event: DragEvent, files: FileTransfer[]) => void;
 
   addInterface: (tag: string) => void;
 
@@ -147,12 +156,53 @@ export type ScriptEventMap = {
 
   hide: () => void;
 
-  /* players */
-  OPU: (
-    entityId: number,
-    update: PlayerPacketDto | PlayerPacketUpdateDto,
+  /* clothing */
+  addSkinMask: (mask: SkinMaskItem) => void;
+
+  removeSkinMask: (id: string) => void;
+
+  addClothe: (item: ClotheItem) => void;
+
+  removeClothe: (clotheId: string) => void;
+
+  addPlayerClothes: (
+    playerId: number,
+    clotheItems: PlayerClotheItem[],
+    replace: boolean,
   ) => void;
 
+  getPlayerClothes: (playerId: number) => PlayerClotheItem[];
+
+  removePlayerClothes: (playerId: number, clotheIds: string[]) => void;
+
+  /* animations */
+  addAnimations: (url: string) => AnimationInfo[];
+
+  getAnimation: (id: string) => AnimationInfo;
+
+  removeAnimation: (id: string) => void;
+
+  getAnimations: () => AnimationInfo[];
+
+  playPlayerAnimation: (
+    playerId: number,
+    animId: string,
+    options: AnimationOptions,
+  ) => void;
+
+  pausePlayerAnimation: (playerId: number, animId: string) => void;
+
+  resumePlayerAnimation: (playerId: number, animId: string) => void;
+
+  stopPlayerAnimation: (
+    playerId: number,
+    animId: string,
+    fadeOutDuration: number,
+  ) => void;
+
+  stopPlayerAnimations: (playerId: number, fadeOutDuration: number) => void;
+
+  /* players */
   onPlayerUpdate: (
     entityId: number,
     update: PlayerPacketDto | PlayerPacketUpdateDto,
@@ -475,4 +525,10 @@ export type ScriptEventMap = {
   ) => void;
 } & {
   [key in `onObjectTransitionEndRaw_${string}`]: (id: number | string) => void;
+} & {
+  [key in `onPlayerAnimation_${string}`]: (event: AnimationEvent) => void;
+} & {
+  [key in `OPU_${number}`]: (
+    update: PlayerPacketDto | PlayerPacketUpdateDto,
+  ) => void;
 };

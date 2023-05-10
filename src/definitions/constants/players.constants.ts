@@ -22,6 +22,8 @@ export const CHARACTER_CAPSULE = {
   radius: CHARACTER_RADIUS,
 } as const;
 
+export const CHARACTER_CHARACTER_NAME = 'Character';
+
 export const CHARACTER_BODY_NAME = 'Body';
 
 export const CHARACTER_EYES_NAME = 'Eyes';

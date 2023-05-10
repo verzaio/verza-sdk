@@ -82,6 +82,24 @@ export type PointerEvent = {
   button: number;
 
   buttons: number;
+
+  source?: string;
+} & UIEvent;
+
+export type DragEventType = 'dragover' | 'dragenter' | 'dragleave' | 'drop';
+
+export type DragEvent = {
+  type: DragEventType;
+
+  x: number;
+
+  y: number;
+
+  button: number;
+
+  buttons: number;
+
+  source?: string;
 } & UIEvent;
 
 export type ToolbarPosition = 'bottom' | 'right';

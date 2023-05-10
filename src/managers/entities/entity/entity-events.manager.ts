@@ -7,6 +7,10 @@ class EntityEventsManager<
 > extends EventsManager<T> {
   private _entity: EntityManager;
 
+  private get _eventsToWatch() {
+    return this._entity.manager.eventsToWatch;
+  }
+
   constructor(entity: EntityManager) {
     super();
 
@@ -16,7 +20,7 @@ class EntityEventsManager<
   on<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
     super.on(eventName, listener);
 
-    if (this._entity.manager.eventsToWatch.has(eventName as any)) {
+    if (this._eventsToWatch.has(eventName as any)) {
       (this._entity.manager.watcher.emit as any)(eventName, this._entity, true);
     }
 
@@ -24,7 +28,7 @@ class EntityEventsManager<
   }
 
   off<A extends keyof T>(eventName: A, listener: T[A]) {
-    if (this._entity.manager.eventsToWatch.has(eventName as any)) {
+    if (this._eventsToWatch.has(eventName as any)) {
       const count = this.listenerCount(eventName as string);
 
       super.off(eventName, listener);
@@ -48,13 +52,13 @@ class EntityEventsManager<
   }
 
   removeAllListeners(): void {
-    if (this._entity.manager.eventsToWatch.size) {
+    if (this._eventsToWatch.size) {
       const eventNames = this.getEmitter().eventNames();
 
       super.removeAllListeners();
 
       eventNames.forEach(eventName => {
-        if (this._entity.manager.eventsToWatch.has(eventName as any)) {
+        if (this._eventsToWatch.has(eventName as any)) {
           (this._entity.manager.watcher.emit as any)(
             eventName,
             this._entity,
