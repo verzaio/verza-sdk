@@ -1,3 +1,5 @@
+import {GLTF} from 'three-stdlib';
+
 import EntitiesManager from 'engine/managers/entities/entities.manager';
 import EntityHandleManager from 'engine/managers/entities/entity/entity-handle.manager';
 import EntityStreamManager from 'engine/managers/entities/entity/entity-stream.manager';
@@ -208,5 +210,10 @@ export {
   RGBAIntegerFormat,
 } from 'three';
 
-// loaders
-export {GLTFLoader, GLTF} from 'three/examples/jsm/loaders/GLTFLoader';
+export type {GLTF};
+
+declare module 'three-stdlib' {
+  export interface GLTFLoader {
+    parseAsync(data: ArrayBuffer | string, path: string): Promise<GLTF>;
+  }
+}

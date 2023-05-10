@@ -32,6 +32,7 @@ export {
   createFileFromFileTransfer,
   createBlobFileFromFileTransfer,
   createURLFromFileTransfer,
+  createFileTransferFromFile,
   fileToDataUrl,
 } from './utils/files.utils';
 
@@ -77,3 +78,5 @@ export {
   Euler,
   MathUtils,
 } from 'three';
+
+export {GLTFLoader} from 'three-stdlib';

@@ -1,9 +1,9 @@
-import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import {DRACOLoader, GLTFLoader} from 'three-stdlib';
 
 import {DRACO_URL} from 'engine/definitions/local/constants/engine.constants';
 
 import EngineManager from './engine.manager';
+
 class UtilsManager {
   private _engine: EngineManager;
 
