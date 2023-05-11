@@ -1,8 +1,10 @@
-# Verza SDK
+<p align="center">
+  <img width="150" src="https://docs.verza.io/img/logo.svg" alt="Verza">
 
-This repository contains the SDK for the Verza platform.
+  <p align="center">SDK for the <a href="https://verza.io" target="_blank">verza.io</a> platform.</p>
+</p>
 
-Check out the [documentation here](https://docs.verza.io/sdk/).
+Check out the [documentation here](https://docs.verza.io/getting-started/verza-sdk).
 
 ## Installation
 
