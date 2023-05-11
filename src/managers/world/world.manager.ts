@@ -100,7 +100,7 @@ class WorldManager {
     this._engine.messenger.emit('setWeather', [weather]);
   }
 
-  setSkybox(skybox: SkyboxProps | null) {
+  setSkybox(skybox: SkyboxProps | string | null) {
     this._engine.messenger.emit('setSkybox', [skybox]);
   }
 

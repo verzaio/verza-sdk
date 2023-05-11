@@ -11,7 +11,14 @@ export {v4 as uuid};
 
 export {MathUtils} from 'three';
 
-export {GLTFLoader} from 'three-stdlib';
+export {
+  GLTFLoader,
+  GLTFExporter,
+  FBXLoader,
+  SkeletonUtils,
+  SceneUtils,
+  GeometryUtils,
+} from 'three-stdlib';
 
 export type {GLTF};
 

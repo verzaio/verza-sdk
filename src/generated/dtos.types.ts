@@ -362,26 +362,7 @@ export interface UpdateCharacterDto {
    * @max 6
    */
   eyebrows_style?: number | null;
-  eyebrows_color?:
-    | '#000000'
-    | '#d3520d'
-    | '#c45435'
-    | '#a53d07'
-    | '#8e3200'
-    | '#7eba8b'
-    | '#41ba5b'
-    | '#1a9935'
-    | '#039623'
-    | '#2f857d'
-    | '#4eb6ac'
-    | '#7db3c7'
-    | '#509dba'
-    | '#177b9f'
-    | '#ff9b2d'
-    | '#ffbb2e'
-    | '#e0afaf'
-    | '#aca4a4'
-    | null;
+  eyebrows_color?: '#292A2C' | '#5D513A' | '#aba8a1' | '#f2be00' | '#4ef800' | '#ff0dfb' | null;
   /**
    * @min 0
    * @max 100
