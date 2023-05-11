@@ -497,7 +497,7 @@ export type ScriptEventMap = {
   setGlobalLightColor: (color: ColorType) => void;
   setGlobalLightIntensity: (intensity: number) => void;
 
-  setSkybox: (skybox: SkyboxProps | null) => void;
+  setSkybox: (skybox: SkyboxProps | string | null) => void;
 
   setSkyManualMode: (status: boolean) => void;
 
