@@ -18,18 +18,23 @@ import {
   DragEvent as DragEventBase,
 } from 'engine/definitions/types/ui.types';
 
-import ControllerManager from './controller.manager';
+import {createControllerManager} from './controller.manager';
 import EngineManager from './engine.manager';
 
 class UIManager {
   visible = false;
+
+  private _sizeProps: UISizeProps = {
+    height: '100%',
+    width: '100%',
+  };
 
   private _engine: EngineManager;
 
   private _activeInput = false;
 
   /* controller */
-  controller = new ControllerManager({
+  controller = createControllerManager({
     interfaces: new Set<string>(),
 
     cursorLock: false,
@@ -37,11 +42,11 @@ class UIManager {
 
   /* getters */
   get interfaces() {
-    return this.controller.get('interfaces');
+    return this.controller.interfaces;
   }
 
   get cursorLock() {
-    return this.controller.get('cursorLock');
+    return this.controller.cursorLock;
   }
 
   get isActiveInput() {
@@ -107,20 +112,20 @@ class UIManager {
 
     this._messenger.events.on('addInterface', ({data: [tag]}) => {
       this.interfaces.add(tag);
-      this.controller.set('interfaces', new Set(this.interfaces));
+      this.controller.interfaces = new Set(this.interfaces);
     });
 
     this._messenger.events.on('removeInterface', ({data: [tag]}) => {
       this.interfaces.delete(tag);
-      this.controller.set('interfaces', new Set(this.interfaces));
+      this.controller.interfaces = new Set(this.interfaces);
     });
 
     this._messenger.events.on('onCursorLock', ({data: [status]}) => {
-      this.controller.set('cursorLock', status);
+      this.controller.cursorLock = status;
     });
 
     this._messenger.events.on('onCursorLock', ({data: [status]}) => {
-      this.controller.set('cursorLock', status);
+      this.controller.cursorLock = status;
     });
   }
 
@@ -292,8 +297,10 @@ class UIManager {
     this._messenger.emit('hide');
   }
 
-  setSize(props: UISizeProps) {
-    this._messenger.emit('setSize', [props as UISizeProps]);
+  setProps(props: Partial<UISizeProps>) {
+    Object.assign(this._sizeProps, props);
+
+    this._messenger.emit('setSize', [this._sizeProps]);
   }
 
   /* interfaces */

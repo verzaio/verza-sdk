@@ -13,6 +13,7 @@ import {
 } from 'engine/definitions/types/objects/objects-definition.types';
 import {
   ObjectDataProps,
+  ObjectHighlightOptions,
   ObjectTransition,
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
@@ -552,6 +553,14 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.engine.objects.emitHandler(this, player => {
       this._messenger.emit('setObjectVisible', [this.id, visible], player.id);
     });
+  }
+
+  enableHighlight(options: ObjectHighlightOptions = {}) {
+    this._messenger.emit('enableObjectHighlight', [this.id, options]);
+  }
+
+  disableHighlight() {
+    this._messenger.emit('disableObjectHighlight', [this.id]);
   }
 
   setProps<D extends PickObject<OT>['o'] = PickObject<OT>['o']>(

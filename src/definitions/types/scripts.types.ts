@@ -24,6 +24,7 @@ import {
   ObjectDataProps,
   ObjectEditActionType,
   ObjectEditAxes,
+  ObjectHighlightOptions,
   ObjectTransition,
 } from './objects/objects.types';
 import {
@@ -39,7 +40,6 @@ import {
   DragEvent,
 } from './ui.types';
 import {
-  IntersectsResult,
   IntersectsResultRaw,
   MoonPhases,
   QuaternionArray,
@@ -384,6 +384,13 @@ export type ScriptEventMap = {
     rotation: QuaternionArray | Vector3Array,
   ) => void;
 
+  enableObjectHighlight: (
+    objectId: string,
+    options: ObjectHighlightOptions,
+  ) => void;
+
+  disableObjectHighlight: (objectId: string) => void;
+
   getObjectBoundingBox: (objectId: string) => ObjectBoundingBox;
 
   getObjectWorldBoundingBox: (objectId: string) => ObjectBoundingBox;
@@ -441,11 +448,6 @@ export type ScriptEventMap = {
   ) => void;
 
   /* world */
-  setEntitySelector: (status: boolean) => void;
-
-  onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
-  onEntitySelected: (intersects: IntersectsResult) => void;
-
   raycastScreenPoint: (
     x: number,
     y: number,

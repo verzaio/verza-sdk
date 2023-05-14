@@ -15,7 +15,7 @@ import {
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
 import {QuaternionArray} from 'engine/definitions/types/world.types';
-import ControllerManager from 'engine/managers/controller.manager';
+import {createControllerManager} from 'engine/managers/controller.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 
 import EngineManager from '../../engine.manager';
@@ -25,12 +25,12 @@ import ObjectManager from './object/object.manager';
 import ObjectsHandlerManager from './objects-handler.manager';
 
 class ObjectsManager extends EntitiesManager<ObjectManager> {
-  controller = new ControllerManager({
+  controller = createControllerManager({
     editingObject: null! as ObjectManager,
   });
 
   get editingObject() {
-    return this.controller.data.editingObject;
+    return this.controller.editingObject;
   }
 
   private _binded = false;
@@ -331,14 +331,14 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     this._messenger.emit('editObject', [object.id]);
 
-    this.controller.set('editingObject', object);
+    this.controller.editingObject = object;
   }
 
   cancelEdit() {
     this._CHECK_FOR_CLIENT();
 
     this._messenger.emit('cancelObjectEdit');
-    this.controller.set('editingObject', null!);
+    this.controller.editingObject = null!;
   }
 
   setEditSnaps(

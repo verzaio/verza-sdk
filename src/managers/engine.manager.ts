@@ -17,7 +17,7 @@ import CameraManager from './camera.manager';
 import ChatManager from './chat.manager';
 import ClothesManager from './clothes.manager';
 import CommandsManager from './commands/commands.manager';
-import ControllerManager from './controller.manager';
+import {createControllerManager} from './controller.manager';
 import EntityEventsManager from './entities/entity/entity-events.manager';
 import ObjectsManager from './entities/objects/objects.manager';
 import PlayersManager from './entities/players/players.manager';
@@ -69,7 +69,7 @@ export class EngineManager {
 
   params: EngineParams = {};
 
-  controller = new ControllerManager({
+  controller = createControllerManager({
     connected: false,
 
     synced: false,
@@ -121,19 +121,19 @@ export class EngineManager {
   }
 
   get synced() {
-    return this.controller.data.synced;
+    return this.controller.synced;
   }
 
   get connected() {
-    return this.controller.data.connected;
+    return this.controller.connected;
   }
 
   get localPlayerId() {
-    return this.controller.data.playerId;
+    return this.controller.playerId;
   }
 
   set localPlayerId(playerId: number) {
-    this.controller.set('playerId', playerId);
+    this.controller.playerId = playerId;
   }
 
   get localPlayer() {
@@ -245,16 +245,16 @@ export class EngineManager {
 
     // events
     this.messenger.events.on('onConnect', () => {
-      this.controller.set('connected', true);
+      this.controller.connected = true;
     });
 
     this.messenger.events.on('onDisconnect', () => {
-      this.controller.set('connected', false);
+      this.controller.connected = false;
     });
 
     // events
     this.messenger.events.on('onSynced', () => {
-      this.controller.set('synced', true);
+      this.controller.synced = true;
     });
 
     // binds
@@ -275,9 +275,9 @@ export class EngineManager {
 
     this.destroyed = true;
 
-    this.controller.set('connected', false);
+    this.controller.connected = false;
 
-    this.controller.set('synced', false);
+    this.controller.synced = false;
 
     // destroy
     this.api.destroy();

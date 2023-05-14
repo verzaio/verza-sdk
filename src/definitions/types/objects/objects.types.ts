@@ -4,6 +4,7 @@ import EASINGS from 'engine/definitions/constants/easings.constants';
 
 import {ObjectType as ObjectTypeEnum} from '../../enums/objects.enums';
 import {CreateEntityProps} from '../entities.types';
+import {ColorType} from '../ui.types';
 import {EulerArray, QuaternionArray, Vector3Array} from '../world.types';
 import {ObjectBaseType} from './objects-definition.types';
 
@@ -60,4 +61,11 @@ export type ObjectTransitionItem = ObjectTransition & {
   originPosition: Object3D;
   finalPosition: Object3D;
   easingFunction: (delta: number) => number;
+};
+
+export type ObjectHighlightType = 'box';
+
+export type ObjectHighlightOptions = {
+  type?: ObjectHighlightType;
+  color?: ColorType;
 };

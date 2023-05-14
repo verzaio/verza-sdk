@@ -3,7 +3,8 @@ export type OptionsMenuTabType =
   | 'controls'
   | 'graphics'
   | 'audio'
-  | 'chat';
+  | 'chat'
+  | 'advanced';
 
 export type ServerMenuTabType =
   | 'general'

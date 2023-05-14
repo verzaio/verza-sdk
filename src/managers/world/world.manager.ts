@@ -28,17 +28,7 @@ class WorldManager {
   }
 
   bind() {
-    this._messenger.events.on('onEntitySelectedRaw', ({data: [intersects]}) => {
-      // emit
-      this._engine.events.emit(
-        'onEntitySelected',
-        this.raycaster.parseIntersectsResult(intersects),
-      );
-    });
-  }
-
-  setEntitySelector(status: boolean) {
-    this._messenger.emit('setEntitySelector', [status]);
+    //
   }
 
   /* light */

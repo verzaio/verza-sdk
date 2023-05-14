@@ -76,7 +76,7 @@ class WebsocketServerManager {
   }
 
   async _cleanup() {
-    // mark as not synced
+    // mark as not synced, set via data to prevent event from firing
     this._engine.controller.data.synced = false;
 
     // clear entities

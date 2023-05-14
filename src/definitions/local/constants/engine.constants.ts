@@ -11,5 +11,4 @@ export const LocalEngineEvents: (keyof ScriptEventMap)[] = [
   'onObjectStreamIn',
   'onObjectStreamOut',
   'onObjectEdit',
-  'onEntitySelected',
 ];
