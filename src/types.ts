@@ -38,6 +38,7 @@ export type {
 } from 'engine/definitions/types/clothes.types';
 
 export type {
+  ObjectType,
   ObjectEditMode,
   ObjectEditActionType,
 } from 'engine/definitions/types/objects/objects.types';
@@ -97,6 +98,12 @@ export type {
   PlayerVoicechatManager,
   PlayerCameraManager,
 };
+
+export {
+  EntityDrawDistanceType,
+  EntityCollisionType,
+  EntityColliderType,
+} from './definitions/types/entities.types';
 
 // custom blending destination factors
 export {

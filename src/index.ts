@@ -17,6 +17,11 @@ import RaycasterManager from 'engine/managers/world/raycaster.manager';
 import WorldManager from 'engine/managers/world/world.manager';
 
 export {
+  EntityCollision,
+  EntityCollider,
+} from './definitions/enums/objects.enums';
+
+export {
   INTERFACE_CURSOR,
   INTERFACE_SERVER,
   INTERFACE_OPTIONS,

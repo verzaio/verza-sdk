@@ -38,6 +38,7 @@ import {
   ToolbarElement,
   MainToolbarItem,
   DragEvent,
+  UIComponentType,
 } from './ui.types';
 import {
   IntersectsResultRaw,
@@ -127,6 +128,16 @@ export type ScriptEventMap = {
   onDragOver: (event: DragEvent) => void;
 
   onDrop: (event: DragEvent, files: FileTransfer[]) => void;
+
+  openUrl: (tag: string) => void;
+
+  isUIComponent: (type: UIComponentType) => boolean;
+
+  toggleUIComponent: (type: UIComponentType) => void;
+
+  showUIComponent: (type: UIComponentType) => void;
+
+  hideUIComponent: (type: UIComponentType) => void;
 
   addInterface: (tag: string) => void;
 

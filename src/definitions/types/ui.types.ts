@@ -292,3 +292,9 @@ export type ColorType =
   | ColorModelString
   | HexColorString
   | number;
+
+export type UIComponentType =
+  | 'chat'
+  | 'toolbar_right'
+  | 'toolbar_bottom'
+  | 'voicechat';

@@ -30,6 +30,8 @@ import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
 
+type BoxProps = ObjectManager<'box'>['props'];
+
 const _TEMP_POS = new Vector3();
 const _TEMP_POS2 = new Vector3();
 const _TEMP_POS3 = new Vector3();
@@ -579,6 +581,13 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       o: {
         ...this.data.o,
         ...data.o,
+
+        ...((data.o as BoxProps)?.material && {
+          material: {
+            ...(this.data.o as BoxProps).material,
+            ...(data.o as BoxProps)?.material,
+          },
+        }),
 
         ...(data.o?.userData && {
           userData: {

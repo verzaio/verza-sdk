@@ -16,6 +16,7 @@ import {
   MainToolbarItem,
   DragEventType,
   DragEvent as DragEventBase,
+  UIComponentType,
 } from 'engine/definitions/types/ui.types';
 
 import {createControllerManager} from './controller.manager';
@@ -71,11 +72,18 @@ class UIManager {
     this._engine = engine;
   }
 
+  private _isFocusElement() {
+    const isElementFocused =
+      ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '') &&
+      (document.activeElement as HTMLInputElement).selectionStart !== null;
+
+    return isElementFocused;
+  }
+
   bind() {
     document.body.addEventListener('focusin', this._onInputFocus, {
       passive: false,
     });
-
     document.body.addEventListener('focusout', this._onInputFocus, {
       passive: false,
     });
@@ -185,12 +193,6 @@ class UIManager {
       files,
     );
   };
-
-  private _isFocusElement() {
-    return ['INPUT', 'TEXTAREA'].includes(
-      document.activeElement?.tagName ?? '',
-    );
-  }
 
   private _lastFocusState = false;
   private _onInputFocus = () => {
@@ -344,6 +346,26 @@ class UIManager {
     this.removeInterface(INTERFACE_CURSOR);
   }
 
+  async isComponent(component: UIComponentType) {
+    const {
+      data: [result],
+    } = await this._messenger.emitAsync('isUIComponent', [component]);
+
+    return result;
+  }
+
+  toggleComponent(component: UIComponentType) {
+    this._messenger.emit('toggleUIComponent', [component]);
+  }
+
+  showComponent(component: UIComponentType) {
+    this._messenger.emit('showUIComponent', [component]);
+  }
+
+  hideComponent(component: UIComponentType) {
+    this._messenger.emit('hideUIComponent', [component]);
+  }
+
   showIndicator(id: IndicatorId, title?: IndicatorTitle) {
     this._messenger.emit('showIndicator', [id, title]);
   }
@@ -379,6 +401,10 @@ class UIManager {
 
   isOptionsMenu() {
     return this.hasInterface(INTERFACE_OPTIONS);
+  }
+
+  openUrl(url: string) {
+    this._messenger.emit('openUrl', [url]);
   }
 
   destroy() {
