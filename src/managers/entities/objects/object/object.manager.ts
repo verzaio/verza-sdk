@@ -152,23 +152,20 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.o;
   }
 
+  get hasCollision() {
+    return (
+      this.objectType !== 'group' &&
+      this.objectType !== 'line' &&
+      this.objectType !== 'text'
+    );
+  }
+
   get collision(): EntityCollisionType | null {
-    // no collision for groups
-    if (
-      this.objectType === 'group' ||
-      this.objectType === 'line' ||
-      this.objectType === 'text'
-    ) {
+    if (!this.hasCollision) {
       return null;
     }
 
-    // if not defined, then return default collision
-    // this should be removed (or not?)
-    if (this.data.c === undefined) {
-      return 'static';
-    }
-
-    return this.data.c;
+    return this.data.c ?? null;
   }
 
   get collider() {

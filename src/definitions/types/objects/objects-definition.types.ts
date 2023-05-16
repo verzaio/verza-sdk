@@ -303,7 +303,7 @@ export type ObjectLineType = ObjectBaseType<
 export type ObjectTextType = ObjectBaseType<
   'text',
   {
-    text: string;
+    text?: string;
 
     color?: ColorType;
 
@@ -317,7 +317,7 @@ export type ObjectTextType = ObjectBaseType<
 
     textAlign?: 'center' | 'left' | 'right' | 'justify';
 
-    font?: string;
+    font?: string | null;
 
     anchorX?: number | 'center' | 'left' | 'right';
 
