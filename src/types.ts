@@ -43,6 +43,8 @@ export type {
   ObjectEditActionType,
 } from 'engine/definitions/types/objects/objects.types';
 
+export {PickObject} from 'engine/definitions/types/objects/objects-definition.types';
+
 export type {
   Vector2Array,
   Vector3Array,
