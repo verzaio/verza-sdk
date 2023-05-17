@@ -5,7 +5,7 @@ import {
 } from '../entities.types';
 import {ColorType} from '../ui.types';
 import {Boolean3Array, QuaternionArray, Vector3Array} from '../world.types';
-import {ObjectStandardMaterial} from './objects-materials.types';
+import {ObjectMaterialMix} from './objects-materials.types';
 import {ObjectType} from './objects.types';
 
 export type PickObject<T extends ObjectType> = ObjectTypes[T];
@@ -100,7 +100,7 @@ export type ObjectBoxType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -115,7 +115,7 @@ export type ObjectSphereType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -132,7 +132,7 @@ export type ObjectCapsuleType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -157,7 +157,7 @@ export type ObjectCylinderType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -174,7 +174,7 @@ export type ObjectCircleType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -197,7 +197,7 @@ export type ObjectConeType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -216,7 +216,7 @@ export type ObjectTorusType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -235,7 +235,7 @@ export type ObjectPlaneType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -248,7 +248,7 @@ export type ObjectTetrahedronType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -261,7 +261,7 @@ export type ObjectDodecahedronType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -274,7 +274,7 @@ export type ObjectOctahedronType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -287,7 +287,7 @@ export type ObjectIcosahedronType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 

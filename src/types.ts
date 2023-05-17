@@ -73,10 +73,17 @@ export type {
 } from 'engine/definitions/types/ui.types';
 
 export type {
-  ObjectMaterial,
+  ObjectMaterialType,
   ObjectTextureType,
   ObjectTexture,
-  ObjectStandardMaterial,
+  ObjectMaterialMix,
+  ObjectMaterial,
+  ObjectMaterialSharedProps,
+  ObjectMaterialStandard,
+  ObjectMaterialPhysical,
+  ObjectMaterialBasic,
+  ObjectMaterialNormal,
+  ObjectMaterialDepth,
 } from 'engine/definitions/types/objects/objects-materials.types';
 
 export type {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
@@ -219,4 +226,12 @@ export {
   RGFormat,
   RGIntegerFormat,
   RGBAIntegerFormat,
+} from 'three';
+
+// Combine
+export {
+  type Combine,
+  MultiplyOperation,
+  MixOperation,
+  AddOperation,
 } from 'three';
