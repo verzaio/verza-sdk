@@ -1,5 +1,6 @@
 import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
+import {MATERIAL_MAPS} from 'engine/definitions/constants/materials.constants';
 import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
@@ -10,6 +11,7 @@ import {
 import {
   ObjectGroupType,
   PickObject,
+  PickObjectProps,
 } from 'engine/definitions/types/objects/objects-definition.types';
 import {
   ObjectDataProps,
@@ -25,6 +27,7 @@ import {
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import {ObjectTexture} from 'engine/types';
 import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EntityManager from '../../entity/entity.manager';
@@ -152,7 +155,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.o;
   }
 
-  get hasCollision() {
+  get supportsCollision() {
     return (
       this.objectType !== 'group' &&
       this.objectType !== 'line' &&
@@ -161,7 +164,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   get collision(): EntityCollisionType | null {
-    if (!this.hasCollision) {
+    if (!this.supportsCollision) {
       return null;
     }
 
@@ -562,7 +565,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this._messenger.emit('disableObjectHighlight', [this.id]);
   }
 
-  setProps<D extends PickObject<OT>['o'] = PickObject<OT>['o']>(
+  setProps<D extends PickObjectProps<OT> = PickObjectProps<OT>>(
     props: Partial<D>,
   ) {
     this.setData({o: props} as unknown as PickObject<OT>);
@@ -571,29 +574,51 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   setData<D extends PickObject<OT> = PickObject<OT>>(
     data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>,
   ) {
-    this.data = {
-      ...this.data,
-      ...data,
+    const {o: props, ...rest} = data;
+    Object.assign(this.data, rest);
 
-      o: {
-        ...this.data.o,
-        ...data.o,
+    // update props
+    if (props) {
+      const {material, userData, ...rest} = props as BoxProps;
+      Object.assign(this.data.o as BoxProps, rest);
 
-        ...((data.o as BoxProps)?.material && {
-          material: {
-            ...(this.data.o as BoxProps).material,
-            ...(data.o as BoxProps)?.material,
-          },
-        }),
+      // material
+      if (material) {
+        if (!(this.data.o as BoxProps).material) {
+          (this.data.o as BoxProps).material = {};
+        }
 
-        ...(data.o?.userData && {
-          userData: {
-            ...this.data.o.userData,
-            ...data.o?.userData,
-          },
-        }),
-      },
-    };
+        // check maps
+        Object.entries(material).forEach(([key, value]) => {
+          if (!MATERIAL_MAPS.has(key)) return;
+
+          if (value === null || typeof value !== 'object') return;
+
+          delete (this.data.o as BoxProps).material![key as 'map'];
+
+          if (!(this.data.o as BoxProps).material![key as 'map']) {
+            (this.data.o as BoxProps).material![key as 'map'] =
+              {} as ObjectTexture;
+          }
+
+          Object.assign(
+            (this.data.o as BoxProps).material![key as 'map'] as ObjectTexture,
+            value,
+          );
+        });
+
+        Object.assign((this.data.o as BoxProps).material as BoxProps, material);
+      }
+
+      // user data
+      if (userData) {
+        if (!this.data.o.userData) {
+          this.data.o.userData = {};
+        }
+
+        Object.assign(this.data.o.userData, userData);
+      }
+    }
 
     this.engine.objects.emitHandler(this, player => {
       this._messenger.emit(
@@ -636,9 +661,6 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   async waitForStream(): Promise<void> {
-    const streamed = await this.isStreamed();
-    if (streamed) return;
-
     return new Promise(resolve => {
       const onStreamIn = this.engine.messenger.events.on(
         `onObjectStreamInRaw_${this.id}`,
@@ -651,6 +673,17 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
           resolve();
         },
       );
+
+      this.isStreamed().then(isStreamed => {
+        if (isStreamed) {
+          resolve();
+
+          this.engine.messenger.events.off(
+            `onObjectStreamInRaw_${this.id}`,
+            onStreamIn,
+          );
+        }
+      });
     });
   }
 

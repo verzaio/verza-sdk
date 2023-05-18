@@ -43,7 +43,10 @@ export type {
   ObjectEditActionType,
 } from 'engine/definitions/types/objects/objects.types';
 
-export {PickObject} from 'engine/definitions/types/objects/objects-definition.types';
+export {
+  PickObject,
+  PickObjectProps,
+} from 'engine/definitions/types/objects/objects-definition.types';
 
 export type {
   Vector2Array,
@@ -200,16 +203,14 @@ export {
 // Filters
 export {
   type TextureFilter,
+  type MagnificationTextureFilter,
+  type MinificationTextureFilter,
   NearestFilter,
   NearestMipmapNearestFilter,
-  NearestMipMapNearestFilter,
   NearestMipmapLinearFilter,
-  NearestMipMapLinearFilter,
   LinearFilter,
   LinearMipmapNearestFilter,
-  LinearMipMapNearestFilter,
   LinearMipmapLinearFilter,
-  LinearMipMapLinearFilter,
 } from 'three';
 
 // Pixel formats
@@ -234,4 +235,13 @@ export {
   MultiplyOperation,
   MixOperation,
   AddOperation,
+} from 'three';
+
+// ColorSpace
+export {
+  type ColorSpace,
+  NoColorSpace,
+  SRGBColorSpace,
+  LinearSRGBColorSpace,
+  DisplayP3ColorSpace,
 } from 'three';

@@ -8,10 +8,11 @@ import {
   NormalMapTypes,
   Mapping,
   Wrapping,
-  TextureFilter,
   PixelFormat,
   ColorSpace,
   Combine,
+  MagnificationTextureFilter,
+  MinificationTextureFilter,
 } from 'three';
 
 import {ColorType} from '../ui.types';
@@ -28,7 +29,7 @@ export type ObjectTexture = {
   /**
    * Asset URL or Asset ID
    */
-  source: string;
+  source?: string | null;
 
   /**
    * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
@@ -52,13 +53,13 @@ export type ObjectTexture = {
    * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default LinearFilter
    */
-  magFilter?: TextureFilter;
+  magFilter?: MagnificationTextureFilter;
 
   /**
    * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
    * @default LinearMipmapLinearFilter
    */
-  minFilter?: TextureFilter;
+  minFilter?: MinificationTextureFilter;
 
   /**
    * @default 1

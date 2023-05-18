@@ -41,3 +41,15 @@ export const fileToDataUrl = async (file: File): Promise<string> => {
     };
   });
 };
+
+export const imageToFileTransfer = async (
+  url: string,
+): Promise<FileTransfer> => {
+  url;
+
+  /* const file = await Image(url);
+
+  console.log(file); */
+
+  return null!;
+};
