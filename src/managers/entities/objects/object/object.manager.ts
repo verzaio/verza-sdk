@@ -590,11 +590,12 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
 
         // check maps
         Object.entries(material).forEach(([key, value]) => {
+          if (value === null || typeof value !== 'object') {
+            (this.data.o as any).material[key] = value;
+            return;
+          }
+
           if (!MATERIAL_MAPS.has(key)) return;
-
-          if (value === null || typeof value !== 'object') return;
-
-          delete (this.data.o as BoxProps).material![key as 'map'];
 
           if (!(this.data.o as BoxProps).material![key as 'map']) {
             (this.data.o as BoxProps).material![key as 'map'] =
@@ -606,8 +607,6 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
             value,
           );
         });
-
-        Object.assign((this.data.o as BoxProps).material as BoxProps, material);
       }
 
       // user data
