@@ -43,7 +43,7 @@ export type {
   ObjectEditActionType,
 } from 'engine/definitions/types/objects/objects.types';
 
-export {
+export type {
   PickObject,
   PickObjectProps,
 } from 'engine/definitions/types/objects/objects-definition.types';
@@ -111,7 +111,7 @@ export type {
   PlayerCameraManager,
 };
 
-export {
+export type {
   EntityDrawDistanceType,
   EntityCollisionType,
   EntityColliderType,
