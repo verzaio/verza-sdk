@@ -67,6 +67,26 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   get worldLocation() {
+    if (!this._worldLocation) {
+      this._worldLocation = new Object3D();
+    }
+
+    if (this.parent) {
+      this.location.getWorldPosition(this._worldLocation.position);
+      this.location.getWorldQuaternion(this._worldLocation.quaternion);
+    } else {
+      this._worldLocation.position.copy(this.location.position);
+      this._worldLocation.quaternion.copy(this.location.quaternion);
+    }
+
+    // scale
+    this._worldLocation.scale.copy(this.location.scale);
+
+    return this._worldLocation;
+  }
+
+  // TODO: Improve API design to avoid this
+  get worldLocationAsync() {
     return (async () => {
       if (!this._worldLocation) {
         this._worldLocation = new Object3D();
@@ -590,12 +610,14 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
 
         // check maps
         Object.entries(material).forEach(([key, value]) => {
-          if (value === null || typeof value !== 'object') {
+          if (
+            !MATERIAL_MAPS.has(key as 'map') ||
+            value === null ||
+            typeof value !== 'object'
+          ) {
             (this.data.o as any).material[key] = value;
             return;
           }
-
-          if (!MATERIAL_MAPS.has(key)) return;
 
           if (!(this.data.o as BoxProps).material![key as 'map']) {
             (this.data.o as BoxProps).material![key as 'map'] =

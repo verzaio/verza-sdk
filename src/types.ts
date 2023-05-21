@@ -213,6 +213,22 @@ export {
   LinearMipmapLinearFilter,
 } from 'three';
 
+// Texture Data types
+export {
+  type TextureDataType,
+  UnsignedByteType,
+  ByteType,
+  ShortType,
+  UnsignedShortType,
+  IntType,
+  UnsignedIntType,
+  FloatType,
+  HalfFloatType,
+  UnsignedShort4444Type,
+  UnsignedShort5551Type,
+  UnsignedInt248Type,
+} from 'three';
+
 // Pixel formats
 export {
   type PixelFormat,

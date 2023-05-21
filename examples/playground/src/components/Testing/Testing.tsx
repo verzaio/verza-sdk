@@ -14,7 +14,7 @@ const Testing = () => {
   const engine = useEngine();
 
   useEffect(() => {
-    engine.ui.setSize({
+    engine.ui.setProps({
       height: '700px',
       width: '150px',
       top: '5vw',

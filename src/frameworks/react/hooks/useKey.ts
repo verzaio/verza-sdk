@@ -23,6 +23,9 @@ export const useKey = (
 ) => {
   const engine = useEngine();
 
+  const keysRef = useRef(key);
+  keysRef.current = key;
+
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
 
@@ -35,9 +38,11 @@ export const useKey = (
   );
 
   useEffect(() => {
-    const keys = Array.isArray(key) ? key : [key];
-
     const onKeyPress = engine.events.on(eventType, (event: KeyEvent) => {
+      const keys = Array.isArray(keysRef.current)
+        ? keysRef.current
+        : [keysRef.current];
+
       // check matches
       if (!keys.includes(event.code)) return;
 
@@ -57,5 +62,5 @@ export const useKey = (
     return () => {
       engine.events.off(eventType, onKeyPress);
     };
-  }, [engine, key, eventType]);
+  }, [engine, eventType]);
 };

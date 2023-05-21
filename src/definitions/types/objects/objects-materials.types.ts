@@ -13,6 +13,8 @@ import {
   Combine,
   MagnificationTextureFilter,
   MinificationTextureFilter,
+  TextureDataType,
+  MeshStandardMaterial,
 } from 'three';
 
 import {ColorType} from '../ui.types';
@@ -30,6 +32,23 @@ export type ObjectTexture = {
    * Asset URL or Asset ID
    */
   source?: string | null;
+
+  /**
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/Textures}
+   * @defaultValue UnsignedByteType
+   */
+  type?: TextureDataType;
+
+  /**
+   * @defaultValue `false`
+   */
+  premultiplyAlpha?: boolean;
+
+  /**
+   * @see {@link http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml}
+   * @defaultValue `4`
+   */
+  unpackAlignment?: number;
 
   /**
    * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
@@ -216,11 +235,18 @@ export type ObjectMaterial = {
   transparent?: boolean;
 
   /**
+   * Sets the alpha value to be used when running an alpha test. Default is 0.
+   * @default 0
+   */
+  alphaTest?: number;
+
+  /**
    * Defines whether vertex coloring is used. Default is false.
    * @default false
    */
   vertexColors?: boolean;
 };
+MeshStandardMaterial;
 
 export type ObjectMaterialSharedProps = {
   /**
@@ -387,7 +413,7 @@ export type ObjectMaterialPhysical = ObjectMaterialStandard & {
   clearcoatRoughnessMap?: ObjectTextureType;
 
   /**
-   * @default new Array(0, 0)
+   * @default new Array(1, 1)
    */
   clearcoatNormalScale?: Vector2Array;
 

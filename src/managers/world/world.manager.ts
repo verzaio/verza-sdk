@@ -66,10 +66,8 @@ class WorldManager {
   }
 
   setTimeRepresentation(hour: number, minute = 0, second = 0) {
-    this._engine.messenger.emit('setTimeRepresentation', [
-      hour,
-      minute,
-      second,
+    this._engine.messenger.emit('setTime', [
+      Math.max(0, Math.min(hour * 3600 + minute * 60 + second, 86400)),
     ]);
   }
 

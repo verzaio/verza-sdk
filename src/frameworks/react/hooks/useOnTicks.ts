@@ -1,25 +1,29 @@
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 
-// handle player updates
 export const useOnTicks = (
   handler: () => Promise<void> | void,
   ticks: number,
 ) => {
+  const handleRef = useRef(handler);
+  handleRef.current = handler;
+
   useEffect(() => {
-    let intervalId: ReturnType<typeof setTimeout> = null!;
+    const ticksTime = 1000 / ticks;
 
-    const check = () => {
-      handler?.();
+    let timeoutId: ReturnType<typeof setTimeout> = null!;
 
-      intervalId = setTimeout(check, 1000 / ticks);
+    const check = async () => {
+      await handleRef.current();
+
+      timeoutId = setTimeout(check, ticksTime);
     };
 
     check();
 
     return () => {
-      if (intervalId) {
-        clearTimeout(intervalId);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
     };
-  }, [handler, ticks]);
+  }, [ticks]);
 };

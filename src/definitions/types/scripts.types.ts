@@ -487,8 +487,6 @@ export type ScriptEventMap = {
   /* sky */
   setMoonPhase: (phase: MoonPhases) => void;
 
-  setTimeRepresentation: (hour: number, minute: number, second: number) => void;
-
   setTime: (time: number) => void;
 
   getTime: () => number;
