@@ -1,5 +1,6 @@
 import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
+import {MATERIAL_MAPS} from 'engine/definitions/constants/materials.constants';
 import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
@@ -10,9 +11,11 @@ import {
 import {
   ObjectGroupType,
   PickObject,
+  PickObjectProps,
 } from 'engine/definitions/types/objects/objects-definition.types';
 import {
   ObjectDataProps,
+  ObjectHighlightOptions,
   ObjectTransition,
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
@@ -24,10 +27,13 @@ import {
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import {ObjectTexture} from 'engine/types';
 import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EntityManager from '../../entity/entity.manager';
 import ObjectHandleManager from './object-handle.manager';
+
+type BoxProps = ObjectManager<'box'>['props'];
 
 const _TEMP_POS = new Vector3();
 const _TEMP_POS2 = new Vector3();
@@ -49,8 +55,6 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
 
   boundingBox: Box3 = null!;
 
-  isController = false;
-
   private _messenger: MessengerEmitterManager;
 
   private _worldLocation: Object3D = null!;
@@ -61,6 +65,26 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   get worldLocation() {
+    if (!this._worldLocation) {
+      this._worldLocation = new Object3D();
+    }
+
+    if (this.parent) {
+      this.location.getWorldPosition(this._worldLocation.position);
+      this.location.getWorldQuaternion(this._worldLocation.quaternion);
+    } else {
+      this._worldLocation.position.copy(this.location.position);
+      this._worldLocation.quaternion.copy(this.location.quaternion);
+    }
+
+    // scale
+    this._worldLocation.scale.copy(this.location.scale);
+
+    return this._worldLocation;
+  }
+
+  // TODO: Improve API design to avoid this
+  get worldLocationAsync() {
     return (async () => {
       if (!this._worldLocation) {
         this._worldLocation = new Object3D();
@@ -149,23 +173,32 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.o;
   }
 
+  get supportsShadows() {
+    return (
+      this.objectType !== 'group' &&
+      this.objectType !== 'line' &&
+      this.objectType !== 'text'
+    );
+  }
+
+  get shadows() {
+    return this.data.ss ?? this.supportsShadows;
+  }
+
+  get supportsCollision() {
+    return (
+      this.objectType !== 'group' &&
+      this.objectType !== 'line' &&
+      this.objectType !== 'text'
+    );
+  }
+
   get collision(): EntityCollisionType | null {
-    // no collision for groups
-    if (
-      this.objectType === 'group' ||
-      this.objectType === 'line' ||
-      this.objectType === 'text'
-    ) {
+    if (!this.supportsCollision) {
       return null;
     }
 
-    // if not defined, then return default collision
-    // this should be removed (or not?)
-    if (this.data.c === undefined) {
-      return 'static';
-    }
-
-    return this.data.c;
+    return this.data.c ?? null;
   }
 
   get collider() {
@@ -322,6 +355,12 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       // Vector3
       this.location.scale.copy(scale);
     }
+  }
+
+  setShadows(status: boolean) {
+    this.setData({
+      ss: status,
+    } as PickObject<OT>);
   }
 
   setCollision(collision: EntityCollisionType | null) {
@@ -554,31 +593,77 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     });
   }
 
-  setProps<D extends PickObject<OT>['o'] = PickObject<OT>['o']>(
+  enableHighlight(options: ObjectHighlightOptions = {}) {
+    this._messenger.emit('enableObjectHighlight', [this.id, options]);
+  }
+
+  disableHighlight() {
+    this._messenger.emit('disableObjectHighlight', [this.id]);
+  }
+
+  setProps<D extends PickObjectProps<OT> = PickObjectProps<OT>>(
     props: Partial<D>,
+    partial = true,
   ) {
-    this.setData({o: props} as unknown as PickObject<OT>);
+    this.setData({o: props, partial} as unknown as PickObject<OT>);
   }
 
   setData<D extends PickObject<OT> = PickObject<OT>>(
     data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>,
+    partial = true,
   ) {
-    this.data = {
-      ...this.data,
-      ...data,
+    const {o: props, ...rest} = data;
+    Object.assign(this.data, rest);
 
-      o: {
-        ...this.data.o,
-        ...data.o,
+    // update props
+    if (props) {
+      if (!partial) {
+        Object.assign(this.data.o, props);
+      } else {
+        const {material, userData, ...rest} = props as BoxProps;
+        Object.assign(this.data.o as BoxProps, rest);
 
-        ...(data.o?.userData && {
-          userData: {
-            ...this.data.o.userData,
-            ...data.o?.userData,
-          },
-        }),
-      },
-    };
+        // material
+        if (material) {
+          if (!(this.data.o as BoxProps).material) {
+            (this.data.o as BoxProps).material = {};
+          }
+
+          // check maps
+          Object.entries(material).forEach(([key, value]) => {
+            if (
+              !MATERIAL_MAPS.has(key as 'map') ||
+              value === null ||
+              typeof value !== 'object'
+            ) {
+              (this.data.o as any).material[key] = value;
+              return;
+            }
+
+            if (!(this.data.o as BoxProps).material![key as 'map']) {
+              (this.data.o as BoxProps).material![key as 'map'] =
+                {} as ObjectTexture;
+            }
+
+            Object.assign(
+              (this.data.o as BoxProps).material![
+                key as 'map'
+              ] as ObjectTexture,
+              value,
+            );
+          });
+        }
+
+        // user data
+        if (userData) {
+          if (!this.data.o.userData) {
+            this.data.o.userData = {};
+          }
+
+          Object.assign(this.data.o.userData, userData);
+        }
+      }
+    }
 
     this.engine.objects.emitHandler(this, player => {
       this._messenger.emit(
@@ -588,6 +673,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
           {
             [this.objectType]: data,
           },
+          partial,
         ],
         player.id,
       );
@@ -621,9 +707,6 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   async waitForStream(): Promise<void> {
-    const streamed = await this.isStreamed();
-    if (streamed) return;
-
     return new Promise(resolve => {
       const onStreamIn = this.engine.messenger.events.on(
         `onObjectStreamInRaw_${this.id}`,
@@ -636,6 +719,17 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
           resolve();
         },
       );
+
+      this.isStreamed().then(isStreamed => {
+        if (isStreamed) {
+          resolve();
+
+          this.engine.messenger.events.off(
+            `onObjectStreamInRaw_${this.id}`,
+            onStreamIn,
+          );
+        }
+      });
     });
   }
 

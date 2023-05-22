@@ -65,17 +65,33 @@ export type MoonPhases =
   | 'LAST_QUARTER'
   | 'WANING_CRESCENT';
 
-export type SkyboxProps = {
-  right: string;
-  left: string;
-  top: string;
-  bottom: string;
-  front: string;
-  back: string;
-};
+export type SkyboxProps =
+  | {
+      right: string;
+      left: string;
+      top: string;
+      bottom: string;
+      front: string;
+      back: string;
+    }
+  | {
+      px: string;
+      nx: string;
+      py: string;
+      ny: string;
+      pz: string;
+      nz: string;
+    };
 
 export type Timezone = (typeof TIMEZONES_LIST)[number];
 
 export type TimeMode = 'fixed' | 'cycle' | 'timezone';
 
 export type WeatherType = 'clear' | 'neutral' | 'cloudy';
+
+export type ViewportRender =
+  | 'render'
+  | 'solid'
+  | 'wireframe'
+  | 'wireframe-normal'
+  | 'normal';

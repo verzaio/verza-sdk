@@ -4,6 +4,7 @@ import {
   SkyboxProps,
   TimeMode,
   Timezone,
+  ViewportRender,
   WeatherType,
 } from 'engine/definitions/types/world.types';
 
@@ -28,17 +29,7 @@ class WorldManager {
   }
 
   bind() {
-    this._messenger.events.on('onEntitySelectedRaw', ({data: [intersects]}) => {
-      // emit
-      this._engine.events.emit(
-        'onEntitySelected',
-        this.raycaster.parseIntersectsResult(intersects),
-      );
-    });
-  }
-
-  setEntitySelector(status: boolean) {
-    this._messenger.emit('setEntitySelector', [status]);
+    //
   }
 
   /* light */
@@ -76,10 +67,8 @@ class WorldManager {
   }
 
   setTimeRepresentation(hour: number, minute = 0, second = 0) {
-    this._engine.messenger.emit('setTimeRepresentation', [
-      hour,
-      minute,
-      second,
+    this._engine.messenger.emit('setTime', [
+      Math.max(0, Math.min(hour * 3600 + minute * 60 + second, 86400)),
     ]);
   }
 
@@ -110,6 +99,10 @@ class WorldManager {
 
   setSkyManualMode(status: boolean) {
     this._engine.messenger.emit('setSkyManualMode', [status]);
+  }
+
+  setViewportRender(type: ViewportRender) {
+    this._engine.messenger.emit('setViewportRender', [type]);
   }
 }
 

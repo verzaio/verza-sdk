@@ -8,18 +8,133 @@ import {
   NormalMapTypes,
   Mapping,
   Wrapping,
-  TextureFilter,
   PixelFormat,
   ColorSpace,
+  Combine,
+  MagnificationTextureFilter,
+  MinificationTextureFilter,
+  TextureDataType,
+  MeshStandardMaterial,
 } from 'three';
 
 import {ColorType} from '../ui.types';
 import {Vector2Array} from '../world.types';
 
+export type ObjectMaterialType =
+  | 'standard'
+  | 'physical'
+  | 'basic'
+  | 'normal'
+  | 'depth';
+
+export type ObjectTexture = {
+  /**
+   * Asset URL or Asset ID
+   */
+  source?: string | null;
+
+  /**
+   * @see {@link https://threejs.org/docs/index.html#api/en/constants/Textures}
+   * @defaultValue UnsignedByteType
+   */
+  type?: TextureDataType;
+
+  /**
+   * @defaultValue `false`
+   */
+  premultiplyAlpha?: boolean;
+
+  /**
+   * @see {@link http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml}
+   * @defaultValue `4`
+   */
+  unpackAlignment?: number;
+
+  /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+   * @default DEFAULT_MAPPING
+   */
+  mapping?: Mapping;
+
+  /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+   * @default ClampToEdgeWrapping
+   */
+  wrapS?: Wrapping;
+
+  /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+   * @default ClampToEdgeWrapping
+   */
+  wrapT?: Wrapping;
+
+  /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+   * @default LinearFilter
+   */
+  magFilter?: MagnificationTextureFilter;
+
+  /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+   * @default LinearMipmapLinearFilter
+   */
+  minFilter?: MinificationTextureFilter;
+
+  /**
+   * @default 1
+   */
+  anisotropy?: number;
+
+  /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+   * @default RGBAFormat
+   */
+  format?: PixelFormat;
+
+  /**
+   * @default new Array(0, 0)
+   */
+  offset?: Vector2Array;
+
+  /**
+   * @default new Array(1, 1)
+   */
+  repeat?: Vector2Array;
+
+  /**
+   * @default new Array( 0, 0 )
+   */
+  center?: Vector2Array;
+
+  /**
+   * @default 0
+   */
+  rotation?: number;
+
+  /**
+   * @default true
+   */
+  flipY?: boolean;
+
+  /**
+   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+   * @default LinearSRGBColorSpace
+   */
+  colorSpace?: ColorSpace;
+};
+
+export type ObjectTextureType = ObjectTexture | string | null;
+
 export type ObjectMaterial = {
   /**
+   * @default standard
+   */
+  type?: ObjectMaterialType;
+
+  /**
    * Blending destination. It's one of the blending mode constants defined in Three.js. Default OneMinusSrcAlphaFactor.
-   * @default OneMinusSrcAlphaFactor {https://threejs.org/docs/#api/en/constants/Textures}
+   * * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+   * @default OneMinusSrcAlphaFactor
    */
   blendDst?: BlendingDstFactor;
 
@@ -120,34 +235,30 @@ export type ObjectMaterial = {
   transparent?: boolean;
 
   /**
+   * Sets the alpha value to be used when running an alpha test. Default is 0.
+   * @default 0
+   */
+  alphaTest?: number;
+
+  /**
    * Defines whether vertex coloring is used. Default is false.
    * @default false
    */
   vertexColors?: boolean;
 };
+MeshStandardMaterial;
 
-export type ObjectTextureType = ObjectTexture | string | null;
-
-export type ObjectStandardMaterial = ObjectMaterial & {
+export type ObjectMaterialSharedProps = {
   /**
    * @default white
    */
   color?: ColorType;
 
   /**
-   * @default 1
+   * Whether the material is affected by fog. Default is true.
+   * @default true
    */
-  roughness?: number;
-
-  /**
-   * @default 0
-   */
-  metalness?: number;
-
-  /**
-   * @default null
-   */
-  map?: ObjectTextureType;
+  fog?: boolean;
 
   /**
    * @default null
@@ -170,189 +281,306 @@ export type ObjectStandardMaterial = ObjectMaterial & {
   aoMapIntensity?: number;
 
   /**
-   * @default black
-   */
-  emissive?: ColorType;
-
-  /**
-   * @default 1
-   */
-  emissiveIntensity?: number;
-
-  /**
-   * @default null
-   */
-  emissiveMap?: ObjectTextureType;
-
-  /**
-   * @default null
-   */
-  bumpMap?: ObjectTextureType;
-
-  /**
-   * @default 1
-   */
-  bumpScale?: number;
-
-  /**
-   * @default null
-   */
-  normalMap?: ObjectTextureType;
-
-  /**
-   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default TangentSpaceNormalMap
-   */
-  normalMapType?: NormalMapTypes;
-
-  /**
-   * @default new Array( 1, 1 )
-   */
-  normalScale?: Vector2Array;
-
-  /**
-   * @default null
-   */
-  displacementMap?: ObjectTextureType;
-
-  /**
-   * @default 1
-   */
-  displacementScale?: number;
-
-  /**
-   * @default 0
-   */
-  displacementBias?: number;
-
-  /**
-   * @default null
-   */
-  roughnessMap?: ObjectTextureType;
-
-  /**
-   * @default null
-   */
-  metalnessMap?: ObjectTextureType;
-
-  /**
    * @default null
    */
   alphaMap?: ObjectTextureType;
 
   /**
-
-   * @default null
-   */
-  envMap?: ObjectTextureType;
-
-  /**
-   * @default 1
-   */
-  envMapIntensity?: number;
-
-  /**
    * @default false
    */
   wireframe?: boolean;
-
-  /**
-   * @default 1
-   */
-  wireframeLinewidth?: number;
-
-  /**
-   * @default 'round'
-   */
-  wireframeLinecap?: 'butt' | 'round' | 'square';
-
-  /**
-   * @default 'round'
-   */
-  wireframeLinejoin?: 'round' | 'bevel' | 'miter';
-
-  /**
-   * Define whether the material is rendered with flat shading. Default is false.
-   * @default false
-   */
-  flatShading?: boolean;
 };
 
-export type ObjectTexture = {
+export type ObjectMaterialStandard = ObjectMaterial &
+  ObjectMaterialSharedProps & {
+    /**
+     * @default 1
+     */
+    roughness?: number;
+
+    /**
+     * @default 0
+     */
+    metalness?: number;
+
+    /**
+     * @default null
+     */
+    map?: ObjectTextureType;
+
+    /**
+     * @default black
+     */
+    emissive?: ColorType;
+
+    /**
+     * @default 1
+     */
+    emissiveIntensity?: number;
+
+    /**
+     * @default null
+     */
+    emissiveMap?: ObjectTextureType;
+
+    /**
+     * @default null
+     */
+    bumpMap?: ObjectTextureType;
+
+    /**
+     * @default 1
+     */
+    bumpScale?: number;
+
+    /**
+     * @default null
+     */
+    normalMap?: ObjectTextureType;
+
+    /**
+     * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+     * @default TangentSpaceNormalMap
+     */
+    normalMapType?: NormalMapTypes;
+
+    /**
+     * @default new Array( 1, 1 )
+     */
+    normalScale?: Vector2Array;
+
+    /**
+     * @default null
+     */
+    displacementMap?: ObjectTextureType;
+
+    /**
+     * @default 1
+     */
+    displacementScale?: number;
+
+    /**
+     * @default 0
+     */
+    displacementBias?: number;
+
+    /**
+     * @default null
+     */
+    roughnessMap?: ObjectTextureType;
+
+    /**
+     * @default null
+     */
+    metalnessMap?: ObjectTextureType;
+
+    /**
+     * @default null
+     */
+    envMap?: ObjectTextureType;
+
+    /**
+     * @default 1
+     */
+    envMapIntensity?: number;
+
+    /**
+     * Define whether the material is rendered with flat shading. Default is false.
+     * @default false
+     */
+    flatShading?: boolean;
+  };
+
+export type ObjectMaterialPhysical = ObjectMaterialStandard & {
   /**
-   * Asset URL or Asset ID
+   * @default 0
    */
-  source: string;
+  clearcoat?: number;
 
   /**
-   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default DEFAULT_MAPPING
+   * @default null
    */
-  mapping?: Mapping;
-
-  /**
-   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default ClampToEdgeWrapping
-   */
-  wrapS?: Wrapping;
-
-  /**
-   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default ClampToEdgeWrapping
-   */
-  wrapT?: Wrapping;
-
-  /**
-   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default LinearFilter
-   */
-  magFilter?: TextureFilter;
-
-  /**
-   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default LinearMipmapLinearFilter
-   */
-  minFilter?: TextureFilter;
-
-  /**
-   * @default 1
-   */
-  anisotropy?: number;
-
-  /**
-   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default RGBAFormat
-   */
-  format?: PixelFormat;
-
-  /**
-   * @default new Array(0, 0)
-   */
-  offset?: Vector2Array;
-
-  /**
-   * @default new Array(1, 1)
-   */
-  repeat?: Vector2Array;
-
-  /**
-   * @default new Array( 0, 0 )
-   */
-  center?: Vector2Array;
+  clearcoatMap?: ObjectTextureType;
 
   /**
    * @default 0
    */
-  rotation?: number;
+  clearcoatRoughness?: number;
 
   /**
-   * @default true
+   * @default null
    */
-  flipY?: boolean;
+  clearcoatRoughnessMap?: ObjectTextureType;
 
   /**
-   * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
-   * @default LinearSRGBColorSpace
+   * @default new Array(1, 1)
    */
-  colorSpace?: ColorSpace;
+  clearcoatNormalScale?: Vector2Array;
+
+  /**
+   * @default null
+   */
+  clearcoatNormalMap?: ObjectTextureType;
+
+  /**
+   * @default 0.5
+   */
+  reflectivity?: number;
+
+  /**
+   * @default 1.5
+   */
+  ior?: number;
+
+  /**
+   * @default 0.0
+   */
+  sheen?: number;
+
+  /**
+   * @default 0x000000
+   */
+  sheenColor?: ColorType;
+
+  /**
+   * @default null
+   */
+  sheenColorMap?: ObjectTextureType;
+
+  /**
+   * @default 1.0
+   */
+  sheenRoughness?: number;
+
+  /**
+   * @default null
+   */
+  sheenRoughnessMap?: ObjectTextureType;
+
+  /**
+   * @default 0
+   */
+  transmission?: number;
+
+  /**
+   * @default null
+   */
+  transmissionMap?: ObjectTextureType;
+
+  /**
+   * @default 0.01
+   */
+  thickness?: number;
+
+  /**
+   * @default null
+   */
+  thicknessMap?: ObjectTextureType;
+
+  /**
+   * @default 0.0
+   */
+  attenuationDistance?: number;
+
+  /**
+   * @default white
+   */
+  attenuationColor?: ColorType;
+
+  /**
+   * @default 1.0
+   */
+  specularIntensity?: number;
+
+  /**
+   * @default white
+   */
+  specularColor?: ColorType;
+
+  /**
+   * @default null
+   */
+  specularIntensityMap?: ObjectTextureType;
+
+  /**
+   * @default null
+   */
+  specularColorMap?: ObjectTextureType;
+
+  /**
+   * @default null
+   */
+  iridescenceMap?: ObjectTextureType;
+
+  /**
+   * @default 1.3
+   */
+  iridescenceIOR?: number;
+
+  /**
+   * @default 0
+   */
+  iridescence?: number;
+
+  /**
+   * @default [100, 400]
+   */
+  iridescenceThicknessRange?: Vector2Array;
+
+  /**
+   * @default null
+   */
+  iridescenceThicknessMap?: ObjectTextureType;
 };
+
+export type ObjectMaterialBasic = ObjectMaterial &
+  ObjectMaterialSharedProps & {
+    /**
+     * @default null
+     */
+    map?: ObjectTextureType;
+
+    /**
+     * @default null
+     */
+    envMap?: ObjectTextureType;
+
+    /**
+     * @default null
+     */
+    specularMap?: ObjectTextureType;
+
+    /**
+     * @see {@link https://threejs.org/docs/#api/en/constants/Textures}
+     * @default MultiplyOperation
+     */
+    combine?: Combine;
+
+    /**
+     * @default 1
+     */
+    reflectivity?: number;
+
+    /**
+     * @default 0.98
+     */
+    refractionRatio?: number;
+  };
+
+export type ObjectMaterialNormal = ObjectMaterial & {
+  wireframe?: boolean;
+
+  flatShading?: boolean;
+};
+
+export type ObjectMaterialDepth = ObjectMaterial & {
+  wireframe?: boolean;
+
+  alphaMap?: ObjectTextureType;
+};
+
+export type ObjectMaterialMix = ObjectMaterialStandard &
+  ObjectMaterialPhysical &
+  ObjectMaterialBasic &
+  ObjectMaterialNormal &
+  ObjectMaterialDepth;

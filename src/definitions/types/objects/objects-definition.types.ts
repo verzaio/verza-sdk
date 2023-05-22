@@ -5,10 +5,12 @@ import {
 } from '../entities.types';
 import {ColorType} from '../ui.types';
 import {Boolean3Array, QuaternionArray, Vector3Array} from '../world.types';
-import {ObjectStandardMaterial} from './objects-materials.types';
+import {ObjectMaterialMix} from './objects-materials.types';
 import {ObjectType} from './objects.types';
 
 export type PickObject<T extends ObjectType> = ObjectTypes[T];
+
+export type PickObjectProps<T extends ObjectType> = PickObject<T>['o'];
 
 export type ObjectDataBase = {
   userData?: {
@@ -58,6 +60,12 @@ export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
   rm?: boolean; // remote object
 };
 
+export type ObjectMaterialProps = {
+  color?: ColorType;
+
+  material?: ObjectMaterialMix;
+};
+
 export type ObjectGroupType = ObjectBaseType<
   'group',
   {
@@ -68,7 +76,7 @@ export type ObjectGroupType = ObjectBaseType<
 export type ObjectModelType = ObjectBaseType<
   'model',
   {
-    model: string; // model id
+    model?: string; // model id
 
     data?: unknown; // data
   }
@@ -77,7 +85,7 @@ export type ObjectModelType = ObjectBaseType<
 export type ObjectGltfType = ObjectBaseType<
   'gltf',
   {
-    u: string;
+    u?: string;
   }
 >;
 
@@ -97,11 +105,7 @@ export type ObjectBoxType = ObjectBaseType<
     depthSegments?: number; // depthsegments
 
     radius?: number; // border radius
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectSphereType = ObjectBaseType<
@@ -112,11 +116,7 @@ export type ObjectSphereType = ObjectBaseType<
     heightSegments?: number;
 
     widthSegments?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectCapsuleType = ObjectBaseType<
@@ -129,11 +129,7 @@ export type ObjectCapsuleType = ObjectBaseType<
     capSegments?: number;
 
     radialSegments?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectCylinderType = ObjectBaseType<
@@ -154,11 +150,7 @@ export type ObjectCylinderType = ObjectBaseType<
     thetaStart?: number;
 
     thetaLength?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectCircleType = ObjectBaseType<
@@ -171,11 +163,7 @@ export type ObjectCircleType = ObjectBaseType<
     thetaStart?: number;
 
     thetaLength?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectConeType = ObjectBaseType<
@@ -194,11 +182,7 @@ export type ObjectConeType = ObjectBaseType<
     thetaStart?: number;
 
     thetaLength?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectTorusType = ObjectBaseType<
@@ -213,11 +197,7 @@ export type ObjectTorusType = ObjectBaseType<
     tubularSegments?: number;
 
     arc?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectPlaneType = ObjectBaseType<
@@ -232,11 +212,7 @@ export type ObjectPlaneType = ObjectBaseType<
     heightSegments?: number;
 
     surface?: boolean;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectTetrahedronType = ObjectBaseType<
@@ -248,7 +224,7 @@ export type ObjectTetrahedronType = ObjectBaseType<
 
     color?: ColorType;
 
-    material?: ObjectStandardMaterial;
+    material?: ObjectMaterialMix;
   }
 >;
 
@@ -258,11 +234,7 @@ export type ObjectDodecahedronType = ObjectBaseType<
     radius?: number;
 
     detail?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectOctahedronType = ObjectBaseType<
@@ -271,11 +243,7 @@ export type ObjectOctahedronType = ObjectBaseType<
     radius?: number;
 
     detail?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectIcosahedronType = ObjectBaseType<
@@ -284,17 +252,13 @@ export type ObjectIcosahedronType = ObjectBaseType<
     radius?: number;
 
     detail?: number;
-
-    color?: ColorType;
-
-    material?: ObjectStandardMaterial;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectLineType = ObjectBaseType<
   'line',
   {
-    points: Vector3Array[];
+    points?: Vector3Array[];
 
     color?: ColorType;
   }
@@ -303,7 +267,7 @@ export type ObjectLineType = ObjectBaseType<
 export type ObjectTextType = ObjectBaseType<
   'text',
   {
-    text: string;
+    text?: string;
 
     color?: ColorType;
 
@@ -317,7 +281,7 @@ export type ObjectTextType = ObjectBaseType<
 
     textAlign?: 'center' | 'left' | 'right' | 'justify';
 
-    font?: string;
+    font?: string | null;
 
     anchorX?: number | 'center' | 'left' | 'right';
 

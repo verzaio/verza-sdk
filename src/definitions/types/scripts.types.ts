@@ -24,6 +24,8 @@ import {
   ObjectDataProps,
   ObjectEditActionType,
   ObjectEditAxes,
+  ObjectEditTransform,
+  ObjectHighlightOptions,
   ObjectTransition,
 } from './objects/objects.types';
 import {
@@ -37,9 +39,9 @@ import {
   ToolbarElement,
   MainToolbarItem,
   DragEvent,
+  UIComponentType,
 } from './ui.types';
 import {
-  IntersectsResult,
   IntersectsResultRaw,
   MoonPhases,
   QuaternionArray,
@@ -48,6 +50,7 @@ import {
   TimeMode,
   Timezone,
   Vector3Array,
+  ViewportRender,
   WeatherType,
 } from './world.types';
 
@@ -127,6 +130,16 @@ export type ScriptEventMap = {
   onDragOver: (event: DragEvent) => void;
 
   onDrop: (event: DragEvent, files: FileTransfer[]) => void;
+
+  openUrl: (tag: string) => void;
+
+  isUIComponent: (type: UIComponentType) => boolean;
+
+  toggleUIComponent: (type: UIComponentType) => void;
+
+  showUIComponent: (type: UIComponentType) => void;
+
+  hideUIComponent: (type: UIComponentType) => void;
 
   addInterface: (tag: string) => void;
 
@@ -335,7 +348,11 @@ export type ScriptEventMap = {
 
   editObject: (objectId: string) => void;
 
-  setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
+  setObjectData: (
+    objectId: string,
+    data: Partial<ObjectTypes>,
+    partial: boolean,
+  ) => void;
 
   setObjectVisible: (objectId: string, visible: boolean) => void;
 
@@ -362,8 +379,14 @@ export type ScriptEventMap = {
   onObjectEditRaw: (
     object: ObjectDataProps,
     type: ObjectEditActionType,
+    transform: ObjectEditTransform,
   ) => void;
-  onObjectEdit: (object: ObjectManager, type: ObjectEditActionType) => void;
+
+  onObjectEdit: (
+    object: ObjectManager,
+    type: ObjectEditActionType,
+    transform: ObjectEditTransform,
+  ) => void;
 
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
 
@@ -383,6 +406,13 @@ export type ScriptEventMap = {
     objectId: string,
     rotation: QuaternionArray | Vector3Array,
   ) => void;
+
+  enableObjectHighlight: (
+    objectId: string,
+    options: ObjectHighlightOptions,
+  ) => void;
+
+  disableObjectHighlight: (objectId: string) => void;
 
   getObjectBoundingBox: (objectId: string) => ObjectBoundingBox;
 
@@ -441,11 +471,6 @@ export type ScriptEventMap = {
   ) => void;
 
   /* world */
-  setEntitySelector: (status: boolean) => void;
-
-  onEntitySelectedRaw: (intersects: IntersectsResultRaw) => void;
-  onEntitySelected: (intersects: IntersectsResult) => void;
-
   raycastScreenPoint: (
     x: number,
     y: number,
@@ -474,8 +499,6 @@ export type ScriptEventMap = {
   /* sky */
   setMoonPhase: (phase: MoonPhases) => void;
 
-  setTimeRepresentation: (hour: number, minute: number, second: number) => void;
-
   setTime: (time: number) => void;
 
   getTime: () => number;
@@ -487,6 +510,8 @@ export type ScriptEventMap = {
   setTimezone: (timezone: Timezone) => void;
 
   setWeather: (weather: WeatherType) => void;
+
+  setViewportRender: (type: ViewportRender) => void;
 
   setInteriorMode: (status: boolean) => void;
 

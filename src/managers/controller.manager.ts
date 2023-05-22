@@ -15,20 +15,27 @@ class ControllerManager<Data extends DataBase = DataBase> {
 
   constructor(data: Data) {
     this.data = data;
-  }
 
-  set<T extends keyof Data, V extends Data[T]>(name: T, value: V) {
-    this.data[name] = value;
+    Object.keys(data).forEach(name => {
+      Object.defineProperty(this, name, {
+        get() {
+          return this.data[name];
+        },
 
-    // too recursive, TS give me a break
-    (this.events.emit as any)(name, value);
+        set(value: unknown) {
+          this.data[name] = value;
 
-    return value;
-  }
-
-  get<T extends keyof Data>(name: T): Data[T] {
-    return this.data[name];
+          this.events.emit(name, value);
+        },
+      });
+    });
   }
 }
+
+export const createControllerManager = <Data extends DataBase = DataBase>(
+  data: Data,
+) => {
+  return new ControllerManager<Data>(data) as ControllerManager<Data> & Data;
+};
 
 export default ControllerManager;

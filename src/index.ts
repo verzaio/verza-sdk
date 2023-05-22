@@ -4,7 +4,9 @@ import ApiManager from 'engine/managers/api/api.manager';
 import AssetsManager from 'engine/managers/assets.manager';
 import CameraManager from 'engine/managers/camera.manager';
 import ChatManager from 'engine/managers/chat.manager';
-import ControllerManager from 'engine/managers/controller.manager';
+import ControllerManager, {
+  createControllerManager,
+} from 'engine/managers/controller.manager';
 import EventsManager, {
   type EventListenersMap,
 } from 'engine/managers/events.manager';
@@ -13,6 +15,11 @@ import NetworkManager from 'engine/managers/network.manager';
 import UIManager from 'engine/managers/ui.manager';
 import RaycasterManager from 'engine/managers/world/raycaster.manager';
 import WorldManager from 'engine/managers/world/world.manager';
+
+export {
+  EntityCollision,
+  EntityCollider,
+} from './definitions/enums/objects.enums';
 
 export {
   INTERFACE_CURSOR,
@@ -36,6 +43,7 @@ export {
   EventsManager,
   EventListenersMap,
   ControllerManager,
+  createControllerManager,
   MessengerManager,
   ApiManager,
   AssetsManager,

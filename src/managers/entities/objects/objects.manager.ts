@@ -15,7 +15,6 @@ import {
   ObjectType,
 } from 'engine/definitions/types/objects/objects.types';
 import {QuaternionArray} from 'engine/definitions/types/world.types';
-import ControllerManager from 'engine/managers/controller.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 
 import EngineManager from '../../engine.manager';
@@ -25,13 +24,7 @@ import ObjectManager from './object/object.manager';
 import ObjectsHandlerManager from './objects-handler.manager';
 
 class ObjectsManager extends EntitiesManager<ObjectManager> {
-  controller = new ControllerManager({
-    editingObject: null! as ObjectManager,
-  });
-
-  get editingObject() {
-    return this.controller.data.editingObject;
-  }
+  editingObject: ObjectManager = null!;
 
   private _binded = false;
 
@@ -109,13 +102,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  create<T extends ObjectType = ObjectType>(
-    type: T,
-    props: CreateObjectProps<T> = {},
-  ) {
-    return this._createFromType(type, props);
-  }
-
   _createRaw(
     id: string,
     data: ObjectManager['data'],
@@ -134,15 +120,24 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  private _createObject(id: string, data: ObjectDataProps) {
-    const object = this._createRaw(id, data);
+  create<T extends ObjectType = ObjectType>(
+    type: T,
+    props: CreateObjectProps<T> = {},
+  ) {
+    return this._createFromType(type, props);
+  }
+
+  createFromData(data: ObjectDataProps, id?: string) {
+    const objectId = id ?? data.id!;
+
+    const object = this._createRaw(objectId, data);
 
     // emit
     this.emitHandler(object, player => {
       this._messenger.emit(
         'createObject',
         [
-          id,
+          objectId,
           {
             [data.t]: data,
           },
@@ -263,9 +258,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     // create
     const object = this._createRaw(props.id!, objectData);
 
-    // mark as controller
-    object.isController = true;
-
     // chunk change
     if (this.engine.isServer && !object.parent) {
       this.engine.streamer.refreshEntity(object);
@@ -313,11 +305,16 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   private _onObjectEdit: ScriptMessengerMethods['onObjectEditRaw'] = ({
-    data: [data, type],
+    data: [data, type, transform],
   }) => {
     this._CHECK_FOR_CLIENT();
 
-    this.engine.events.emit('onObjectEdit', this.ensure(data.id!, data), type);
+    this.engine.events.emit(
+      'onObjectEdit',
+      this.ensure(data.id!, data),
+      type,
+      transform,
+    );
   };
 
   private _editBinded = false;
@@ -331,14 +328,14 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     this._messenger.emit('editObject', [object.id]);
 
-    this.controller.set('editingObject', object);
+    this.editingObject = object;
   }
 
   cancelEdit() {
     this._CHECK_FOR_CLIENT();
 
     this._messenger.emit('cancelObjectEdit');
-    this.controller.set('editingObject', null!);
+    this.editingObject = null!;
   }
 
   setEditSnaps(
@@ -392,7 +389,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     objectProps.id = id;
 
-    const newObject = this._createObject(id, objectProps);
+    const newObject = this.createFromData(objectProps, id);
 
     return newObject;
   }

@@ -38,9 +38,16 @@ export type {
 } from 'engine/definitions/types/clothes.types';
 
 export type {
+  ObjectType,
   ObjectEditMode,
   ObjectEditActionType,
+  ObjectEditTransform,
 } from 'engine/definitions/types/objects/objects.types';
+
+export type {
+  PickObject,
+  PickObjectProps,
+} from 'engine/definitions/types/objects/objects-definition.types';
 
 export type {
   Vector2Array,
@@ -49,6 +56,12 @@ export type {
   QuaternionArray,
   IntersectsResult,
   RaycastOptions,
+  ViewportRender,
+  MoonPhases,
+  SkyboxProps,
+  Timezone,
+  TimeMode,
+  WeatherType,
 } from 'engine/definitions/types/world.types';
 
 export type {
@@ -70,10 +83,17 @@ export type {
 } from 'engine/definitions/types/ui.types';
 
 export type {
-  ObjectMaterial,
+  ObjectMaterialType,
   ObjectTextureType,
   ObjectTexture,
-  ObjectStandardMaterial,
+  ObjectMaterialMix,
+  ObjectMaterial,
+  ObjectMaterialSharedProps,
+  ObjectMaterialStandard,
+  ObjectMaterialPhysical,
+  ObjectMaterialBasic,
+  ObjectMaterialNormal,
+  ObjectMaterialDepth,
 } from 'engine/definitions/types/objects/objects-materials.types';
 
 export type {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
@@ -97,6 +117,12 @@ export type {
   PlayerVoicechatManager,
   PlayerCameraManager,
 };
+
+export type {
+  EntityDrawDistanceType,
+  EntityCollisionType,
+  EntityColliderType,
+} from './definitions/types/entities.types';
 
 // custom blending destination factors
 export {
@@ -184,16 +210,30 @@ export {
 // Filters
 export {
   type TextureFilter,
+  type MagnificationTextureFilter,
+  type MinificationTextureFilter,
   NearestFilter,
   NearestMipmapNearestFilter,
-  NearestMipMapNearestFilter,
   NearestMipmapLinearFilter,
-  NearestMipMapLinearFilter,
   LinearFilter,
   LinearMipmapNearestFilter,
-  LinearMipMapNearestFilter,
   LinearMipmapLinearFilter,
-  LinearMipMapLinearFilter,
+} from 'three';
+
+// Texture Data types
+export {
+  type TextureDataType,
+  UnsignedByteType,
+  ByteType,
+  ShortType,
+  UnsignedShortType,
+  IntType,
+  UnsignedIntType,
+  FloatType,
+  HalfFloatType,
+  UnsignedShort4444Type,
+  UnsignedShort5551Type,
+  UnsignedInt248Type,
 } from 'three';
 
 // Pixel formats
@@ -210,4 +250,21 @@ export {
   RGFormat,
   RGIntegerFormat,
   RGBAIntegerFormat,
+} from 'three';
+
+// Combine
+export {
+  type Combine,
+  MultiplyOperation,
+  MixOperation,
+  AddOperation,
+} from 'three';
+
+// ColorSpace
+export {
+  type ColorSpace,
+  NoColorSpace,
+  SRGBColorSpace,
+  LinearSRGBColorSpace,
+  DisplayP3ColorSpace,
 } from 'three';

@@ -6,12 +6,12 @@ export const useInterface = (tag: string): boolean => {
   const ui = useUI();
 
   const [enabled, setEnabled] = useState(() =>
-    ui.controller.data.interfaces.has(tag),
+    ui.controller.interfaces.has(tag),
   );
 
   useEffect(() => {
     // check if value has changed
-    setEnabled(ui.controller.data.interfaces.has(tag));
+    setEnabled(ui.controller.interfaces.has(tag));
 
     const onChange = ui.controller.events.on('interfaces', interfaces => {
       setEnabled(interfaces.has(tag));
