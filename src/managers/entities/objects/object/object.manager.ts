@@ -587,57 +587,65 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
 
   setProps<D extends PickObjectProps<OT> = PickObjectProps<OT>>(
     props: Partial<D>,
+    partial = true,
   ) {
-    this.setData({o: props} as unknown as PickObject<OT>);
+    this.setData({o: props, partial} as unknown as PickObject<OT>);
   }
 
   setData<D extends PickObject<OT> = PickObject<OT>>(
     data: Partial<Omit<D, 'o'> & {o: Partial<D['o']>}>,
+    partial = true,
   ) {
     const {o: props, ...rest} = data;
     Object.assign(this.data, rest);
 
     // update props
     if (props) {
-      const {material, userData, ...rest} = props as BoxProps;
-      Object.assign(this.data.o as BoxProps, rest);
+      if (!partial) {
+        Object.assign(this.data.o, props);
+      } else {
+        const {material, userData, ...rest} = props as BoxProps;
+        Object.assign(this.data.o as BoxProps, rest);
 
-      // material
-      if (material) {
-        if (!(this.data.o as BoxProps).material) {
-          (this.data.o as BoxProps).material = {};
-        }
-
-        // check maps
-        Object.entries(material).forEach(([key, value]) => {
-          if (
-            !MATERIAL_MAPS.has(key as 'map') ||
-            value === null ||
-            typeof value !== 'object'
-          ) {
-            (this.data.o as any).material[key] = value;
-            return;
+        // material
+        if (material) {
+          if (!(this.data.o as BoxProps).material) {
+            (this.data.o as BoxProps).material = {};
           }
 
-          if (!(this.data.o as BoxProps).material![key as 'map']) {
-            (this.data.o as BoxProps).material![key as 'map'] =
-              {} as ObjectTexture;
-          }
+          // check maps
+          Object.entries(material).forEach(([key, value]) => {
+            if (
+              !MATERIAL_MAPS.has(key as 'map') ||
+              value === null ||
+              typeof value !== 'object'
+            ) {
+              (this.data.o as any).material[key] = value;
+              return;
+            }
 
-          Object.assign(
-            (this.data.o as BoxProps).material![key as 'map'] as ObjectTexture,
-            value,
-          );
-        });
-      }
+            if (!(this.data.o as BoxProps).material![key as 'map']) {
+              (this.data.o as BoxProps).material![key as 'map'] =
+                {} as ObjectTexture;
+            }
 
-      // user data
-      if (userData) {
-        if (!this.data.o.userData) {
-          this.data.o.userData = {};
+            Object.assign(
+              (this.data.o as BoxProps).material![
+                key as 'map'
+              ] as ObjectTexture,
+              value,
+            );
+          });
         }
 
-        Object.assign(this.data.o.userData, userData);
+        // user data
+        if (userData) {
+          if (!this.data.o.userData) {
+            this.data.o.userData = {};
+          }
+
+          Object.assign(this.data.o.userData, userData);
+        }
       }
     }
 
@@ -649,6 +657,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
           {
             [this.objectType]: data,
           },
+          partial,
         ],
         player.id,
       );

@@ -41,6 +41,7 @@ export type {
   ObjectType,
   ObjectEditMode,
   ObjectEditActionType,
+  ObjectEditTransform,
 } from 'engine/definitions/types/objects/objects.types';
 
 export type {

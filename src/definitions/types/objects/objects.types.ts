@@ -23,6 +23,12 @@ export type ObjectEditActionType =
   | 'update'
   | 'end';
 
+export type ObjectEditTransform = {
+  position: Vector3Array;
+  rotation: QuaternionArray;
+  scale: Vector3Array;
+};
+
 export type ObjectEditAxes = Partial<{
   showX: boolean;
   showY: boolean;

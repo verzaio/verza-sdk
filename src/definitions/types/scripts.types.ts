@@ -24,6 +24,7 @@ import {
   ObjectDataProps,
   ObjectEditActionType,
   ObjectEditAxes,
+  ObjectEditTransform,
   ObjectHighlightOptions,
   ObjectTransition,
 } from './objects/objects.types';
@@ -346,7 +347,11 @@ export type ScriptEventMap = {
 
   editObject: (objectId: string) => void;
 
-  setObjectData: (objectId: string, data: Partial<ObjectTypes>) => void;
+  setObjectData: (
+    objectId: string,
+    data: Partial<ObjectTypes>,
+    partial: boolean,
+  ) => void;
 
   setObjectVisible: (objectId: string, visible: boolean) => void;
 
@@ -373,8 +378,14 @@ export type ScriptEventMap = {
   onObjectEditRaw: (
     object: ObjectDataProps,
     type: ObjectEditActionType,
+    transform: ObjectEditTransform,
   ) => void;
-  onObjectEdit: (object: ObjectManager, type: ObjectEditActionType) => void;
+
+  onObjectEdit: (
+    object: ObjectManager,
+    type: ObjectEditActionType,
+    transform: ObjectEditTransform,
+  ) => void;
 
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
 

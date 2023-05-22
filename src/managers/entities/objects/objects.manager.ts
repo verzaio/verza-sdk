@@ -306,11 +306,16 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   private _onObjectEdit: ScriptMessengerMethods['onObjectEditRaw'] = ({
-    data: [data, type],
+    data: [data, type, transform],
   }) => {
     this._CHECK_FOR_CLIENT();
 
-    this.engine.events.emit('onObjectEdit', this.ensure(data.id!, data), type);
+    this.engine.events.emit(
+      'onObjectEdit',
+      this.ensure(data.id!, data),
+      type,
+      transform,
+    );
   };
 
   private _editBinded = false;
