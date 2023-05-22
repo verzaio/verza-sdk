@@ -56,6 +56,12 @@ export type {
   QuaternionArray,
   IntersectsResult,
   RaycastOptions,
+  ViewportRender,
+  MoonPhases,
+  SkyboxProps,
+  Timezone,
+  TimeMode,
+  WeatherType,
 } from 'engine/definitions/types/world.types';
 
 export type {

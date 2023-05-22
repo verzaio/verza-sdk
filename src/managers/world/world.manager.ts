@@ -4,6 +4,7 @@ import {
   SkyboxProps,
   TimeMode,
   Timezone,
+  ViewportRender,
   WeatherType,
 } from 'engine/definitions/types/world.types';
 
@@ -98,6 +99,10 @@ class WorldManager {
 
   setSkyManualMode(status: boolean) {
     this._engine.messenger.emit('setSkyManualMode', [status]);
+  }
+
+  setViewportRender(type: ViewportRender) {
+    this._engine.messenger.emit('setViewportRender', [type]);
   }
 }
 

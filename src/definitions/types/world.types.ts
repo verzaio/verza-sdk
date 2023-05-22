@@ -88,3 +88,10 @@ export type Timezone = (typeof TIMEZONES_LIST)[number];
 export type TimeMode = 'fixed' | 'cycle' | 'timezone';
 
 export type WeatherType = 'clear' | 'neutral' | 'cloudy';
+
+export type ViewportRender =
+  | 'render'
+  | 'solid'
+  | 'wireframe'
+  | 'wireframe-normal'
+  | 'normal';

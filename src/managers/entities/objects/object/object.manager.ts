@@ -173,6 +173,18 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.o;
   }
 
+  get supportsShadows() {
+    return (
+      this.objectType !== 'group' &&
+      this.objectType !== 'line' &&
+      this.objectType !== 'text'
+    );
+  }
+
+  get shadows() {
+    return this.data.ss ?? this.supportsShadows;
+  }
+
   get supportsCollision() {
     return (
       this.objectType !== 'group' &&
@@ -343,6 +355,12 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       // Vector3
       this.location.scale.copy(scale);
     }
+  }
+
+  setShadows(status: boolean) {
+    this.setData({
+      ss: status,
+    } as PickObject<OT>);
   }
 
   setCollision(collision: EntityCollisionType | null) {

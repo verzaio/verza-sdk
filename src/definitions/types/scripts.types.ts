@@ -50,6 +50,7 @@ import {
   TimeMode,
   Timezone,
   Vector3Array,
+  ViewportRender,
   WeatherType,
 } from './world.types';
 
@@ -509,6 +510,8 @@ export type ScriptEventMap = {
   setTimezone: (timezone: Timezone) => void;
 
   setWeather: (weather: WeatherType) => void;
+
+  setViewportRender: (type: ViewportRender) => void;
 
   setInteriorMode: (status: boolean) => void;
 
