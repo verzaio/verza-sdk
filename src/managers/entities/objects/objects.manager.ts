@@ -102,13 +102,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  create<T extends ObjectType = ObjectType>(
-    type: T,
-    props: CreateObjectProps<T> = {},
-  ) {
-    return this._createFromType(type, props);
-  }
-
   _createRaw(
     id: string,
     data: ObjectManager['data'],
@@ -127,15 +120,24 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     return object;
   }
 
-  private _createObject(id: string, data: ObjectDataProps) {
-    const object = this._createRaw(id, data);
+  create<T extends ObjectType = ObjectType>(
+    type: T,
+    props: CreateObjectProps<T> = {},
+  ) {
+    return this._createFromType(type, props);
+  }
+
+  createFromData(data: ObjectDataProps, id?: string) {
+    const objectId = id ?? data.id!;
+
+    const object = this._createRaw(objectId, data);
 
     // emit
     this.emitHandler(object, player => {
       this._messenger.emit(
         'createObject',
         [
-          id,
+          objectId,
           {
             [data.t]: data,
           },
@@ -255,9 +257,6 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     // create
     const object = this._createRaw(props.id!, objectData);
-
-    // mark as controller
-    object.isController = true;
 
     // chunk change
     if (this.engine.isServer && !object.parent) {
@@ -390,7 +389,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     objectProps.id = id;
 
-    const newObject = this._createObject(id, objectProps);
+    const newObject = this.createFromData(objectProps, id);
 
     return newObject;
   }

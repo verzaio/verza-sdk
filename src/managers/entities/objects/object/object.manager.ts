@@ -55,8 +55,6 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
 
   boundingBox: Box3 = null!;
 
-  isController = false;
-
   private _messenger: MessengerEmitterManager;
 
   private _worldLocation: Object3D = null!;
