@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="150" src="https://docs.verza.io/img/logo.svg" alt="Verza">
+  <img width="150" src="https://verza.io/img/verza-public.svg" alt="Verza">
 
   <p align="center">SDK for <a href="https://verza.io" target="_blank">verza.io</a> platform.</p>
 </p>
