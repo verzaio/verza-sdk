@@ -239,10 +239,16 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
         // validate data only for receiver
         if (this.isReciever) {
-          Object.assign(
-            message.data,
-            validator?.parser?.parse(message.data) ?? {},
-          );
+          if (!validator?.parser?.parse) {
+            // no parser? then we remove the data,
+            // any data from sender will be ignored
+            message.data.length = 0;
+          } else {
+            Object.assign(
+              message.data,
+              validator?.parser?.parse(message.data) ?? {},
+            );
+          }
         }
 
         // call callback (optional)
@@ -254,6 +260,8 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
           } else {
             validator?.callback?.(message);
           }
+
+          return;
         }
       } catch (e) {
         // log error if request is not present
@@ -278,21 +286,26 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
         );
         return;
       }
-    }
+    } else {
+      // handle registration
+      switch (eventName) {
+        case 'register': {
+          this.events.registeredEvents.add(message.data[0]);
+          return;
+        }
+        case 'unregister': {
+          this.events.registeredEvents.delete(message.data[0]);
+          return;
+        }
+        case 'OR': {
+          (this.events.emit as any)(`OR:${requestId}`, message);
+          return;
+        }
+      }
 
-    // handle registration
-    switch (eventName) {
-      case 'register': {
-        this.events.registeredEvents.add(message.data[0]);
-        return;
-      }
-      case 'unregister': {
-        this.events.registeredEvents.delete(message.data[0]);
-        return;
-      }
-      case 'OR': {
-        (this.events.emit as any)(`OR:${requestId}`, message);
-        return;
+      // if no receiver & validator, then we remove the data,
+      if (this.isReciever) {
+        message.data.length = 0;
       }
     }
 

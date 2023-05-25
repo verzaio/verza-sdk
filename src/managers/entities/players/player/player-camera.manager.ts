@@ -63,6 +63,10 @@ class PlayerCameraManager {
 
     this._messenger.emit('setCameraPosition', [this._player.id, position]);
   }
+
+  setFov(fov: number | null) {
+    this._messenger.emit('setCameraFov', [this._player.id, fov]);
+  }
 }
 
 export default PlayerCameraManager;

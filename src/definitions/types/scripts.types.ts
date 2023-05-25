@@ -133,6 +133,8 @@ export type ScriptEventMap = {
 
   openUrl: (tag: string) => void;
 
+  goToServer: (serverId: string) => void;
+
   isUIComponent: (type: UIComponentType) => boolean;
 
   toggleUIComponent: (type: UIComponentType) => void;
@@ -307,6 +309,8 @@ export type ScriptEventMap = {
     playerId: number,
     transition: CameraTransition<string>,
   ) => void;
+
+  setCameraFov: (playerId: number, fov: number | null) => void;
 
   setCameraPosition: (playerId: number, position: CameraPosition) => void;
 

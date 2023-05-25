@@ -89,6 +89,16 @@ export type TimeMode = 'fixed' | 'cycle' | 'timezone';
 
 export type WeatherType = 'clear' | 'neutral' | 'cloudy';
 
+export type RenderResolution =
+  | 0.5
+  | 0.75
+  | 1
+  | 1.25
+  | 1.5
+  | 1.75
+  | 2
+  | 'native';
+
 export type ViewportRender =
   | 'render'
   | 'solid'

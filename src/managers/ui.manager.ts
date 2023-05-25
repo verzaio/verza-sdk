@@ -329,6 +329,14 @@ class UIManager {
     return this.interfaces.has(tag);
   }
 
+  isAnyInterfaceShown() {
+    return this.interfaces.size!;
+  }
+
+  removeAllInterfaces() {
+    this.interfaces.forEach(tag => this.removeInterface(tag));
+  }
+
   // cursor
   isCursorShown() {
     return this.hasInterface(INTERFACE_CURSOR);
@@ -405,6 +413,10 @@ class UIManager {
 
   openUrl(url: string) {
     this._messenger.emit('openUrl', [url]);
+  }
+
+  goToServer(serverId: string) {
+    this._messenger.emit('goToServer', [serverId]);
   }
 
   destroy() {
