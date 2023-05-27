@@ -58,6 +58,10 @@ class PlayerCameraManager {
     ]);
   }
 
+  stopTransitions() {
+    this._messenger.emit('stopCameraTransitions', [this._player.id]);
+  }
+
   setPosition(position: CameraPosition) {
     this._normalizeVectors(position);
 

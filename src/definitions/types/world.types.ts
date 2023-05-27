@@ -67,6 +67,10 @@ export type MoonPhases =
 
 export type SkyboxProps =
   | {
+      url: string;
+      isHdr?: boolean;
+    }
+  | {
       right: string;
       left: string;
       top: string;

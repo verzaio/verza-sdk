@@ -193,9 +193,9 @@ export type ScriptEventMap = {
   /* animations */
   addAnimations: (url: string) => AnimationInfo[];
 
-  getAnimation: (id: string) => AnimationInfo;
+  getAnimation: (animId: string) => AnimationInfo;
 
-  removeAnimation: (id: string) => void;
+  removeAnimation: (animId: string) => void;
 
   getAnimations: () => AnimationInfo[];
 
@@ -309,6 +309,8 @@ export type ScriptEventMap = {
     playerId: number,
     transition: CameraTransition<string>,
   ) => void;
+
+  stopCameraTransitions: (playerId: number) => void;
 
   setCameraFov: (playerId: number, fov: number | null) => void;
 

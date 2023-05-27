@@ -329,17 +329,13 @@ class UIManager {
     return this.interfaces.has(tag);
   }
 
-  isAnyInterfaceShown() {
-    return this.interfaces.size!;
-  }
-
   removeAllInterfaces() {
     this.interfaces.forEach(tag => this.removeInterface(tag));
   }
 
   // cursor
   isCursorShown() {
-    return this.hasInterface(INTERFACE_CURSOR);
+    return !!this.interfaces.size;
   }
 
   toggleCursor() {
@@ -354,7 +350,7 @@ class UIManager {
     this.removeInterface(INTERFACE_CURSOR);
   }
 
-  async isComponent(component: UIComponentType) {
+  async isComponentShown(component: UIComponentType) {
     const {
       data: [result],
     } = await this._messenger.emitAsync('isUIComponent', [component]);
