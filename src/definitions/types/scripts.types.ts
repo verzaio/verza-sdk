@@ -193,9 +193,9 @@ export type ScriptEventMap = {
   /* animations */
   addAnimations: (url: string) => AnimationInfo[];
 
-  getAnimation: (animId: string) => AnimationInfo;
+  getAnimation: (id: string) => AnimationInfo;
 
-  removeAnimation: (animId: string) => void;
+  removeAnimation: (id: string) => void;
 
   getAnimations: () => AnimationInfo[];
 
@@ -385,13 +385,13 @@ export type ScriptEventMap = {
   onObjectEditRaw: (
     object: ObjectDataProps,
     type: ObjectEditActionType,
-    transform: ObjectEditTransform,
+    prevTransform: ObjectEditTransform,
   ) => void;
 
   onObjectEdit: (
     object: ObjectManager,
     type: ObjectEditActionType,
-    transform: ObjectEditTransform,
+    prevTransform: ObjectEditTransform,
   ) => void;
 
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
