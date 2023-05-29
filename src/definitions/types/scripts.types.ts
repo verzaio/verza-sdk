@@ -13,6 +13,7 @@ import {
   AnimationInfo,
   AnimationOptions,
 } from './animations.types';
+import {AssetTransformOptions} from './assets.types';
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {ChunkData, ChunkIndex} from './chunks.types';
 import {ClotheItem, PlayerClotheItem, SkinMaskItem} from './clothes.types';
@@ -327,7 +328,7 @@ export type ScriptEventMap = {
   sendChunk: (chunkIndex: ChunkIndex, chunk: ChunkData) => void;
 
   /* assets */
-  uploadAsset: (file: FileTransfer) => string;
+  uploadAsset: (file: FileTransfer, options: AssetTransformOptions) => string;
 
   deleteAsset: (assetId: string) => void;
 

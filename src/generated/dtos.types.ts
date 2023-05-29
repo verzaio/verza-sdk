@@ -152,13 +152,27 @@ export interface AssetDto {
 export interface CreateAssetDto {
   /** @format binary */
   asset_file: File;
+  optimize_geometry?: boolean;
+  optimize_textures?: boolean;
+  debug?: boolean;
 }
 
 export interface CharacterShapekeyValueDto {
   name:
-    | 'asian'
-    | 'black'
     | 'caucasian'
+    | 'black'
+    | 'asian'
+    | 'variation_1'
+    | 'variation_2'
+    | 'variation_3'
+    | 'variation_4'
+    | 'variation_5'
+    | 'variation_6'
+    | 'variation_7'
+    | 'variation_8'
+    | 'variation_9'
+    | 'variation_10'
+    | 'variation_11'
     | 'e_blink_left'
     | 'e_blink_right'
     | '{cheeks}_cheek_fullness'
@@ -171,8 +185,11 @@ export interface CharacterShapekeyValueDto {
     | '{ears}_ear_turn'
     | '{ears}_ear_width'
     | '{eyes}_eye_tilt'
+    | '{eyes}_eye_orbit_size'
     | '{eyes}_eyelid_fat_pad'
     | '{eyes}_eyelid_rotation'
+    | '{eyes}_eyelid_shift_vertical'
+    | '{eyes}_eyelid_shift_horizontal'
     | '{jaw}_jaw_location_horizontal'
     | '{jaw}_jaw_location_vertical'
     | '{jaw}_jaw_width'
@@ -191,7 +208,10 @@ export interface CharacterShapekeyValueDto {
     | '{mouth}_lip_location'
     | '{mouth}_lip_cupid_bow'
     | '{mouth}_lip_offset'
-    | '{mouth}_lip_height';
+    | '{mouth}_lip_height'
+    | '{u_skull}_browridge_loc_vertical'
+    | '{l_skull}_muzzle_location_vertical'
+    | '{l_skull}_muzzle_location_horizontal';
   /**
    * @min -2
    * @max 2
