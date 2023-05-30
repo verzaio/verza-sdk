@@ -2,6 +2,7 @@ import {
   INTERFACE_CHAT,
   INTERFACE_CURSOR,
   INTERFACE_OPTIONS,
+  INTERFACE_PLAYERS_LIST,
   INTERFACE_SERVER,
 } from 'engine/definitions/constants/ui.constants';
 import {
@@ -396,7 +397,11 @@ class UIManager {
   }
 
   isSystemMenu() {
-    return this.isOptionsMenu() || this.isServerMenu();
+    return this.isOptionsMenu() || this.isServerMenu() || this.isPlayersList();
+  }
+
+  isPlayersList() {
+    return this.hasInterface(INTERFACE_PLAYERS_LIST);
   }
 
   isServerMenu() {

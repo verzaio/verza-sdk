@@ -13,7 +13,8 @@ export type ServerMenuTabType =
   | 'scripts'
   | 'commands'
   | 'keys'
-  | 'banlist';
+  | 'banlist'
+  | 'privacy_and_security';
 
 export type IndicatorId = string | number;
 
@@ -297,4 +298,5 @@ export type UIComponentType =
   | 'chat'
   | 'toolbar_right'
   | 'toolbar_bottom'
-  | 'voicechat';
+  | 'voicechat'
+  | 'players_list';

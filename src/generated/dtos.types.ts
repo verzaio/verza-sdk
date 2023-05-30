@@ -154,7 +154,6 @@ export interface CreateAssetDto {
   asset_file: File;
   optimize_geometry?: boolean;
   optimize_textures?: boolean;
-  debug?: boolean;
 }
 
 export interface CharacterShapekeyValueDto {
@@ -436,6 +435,7 @@ export interface ServerDto {
   roles: RoleDto[];
   permissions: ServerPermissionsDto;
   status: 'active' | 'inactive';
+  privacy_mode: 'public' | 'private' | 'unlisted';
   commands: CommandConfigDto[];
   assets_url?: string;
   favorited: boolean;
@@ -459,6 +459,8 @@ export interface ScriptActionPacketSendDto {
 export interface JoinPacketDto {
   /** server id */
   s: string;
+  /** password */
+  p?: string;
 }
 
 export interface EncryptedPacketsDto {
@@ -761,7 +763,10 @@ export interface PlayerIdDto {
 export interface ServerFiltersDto {
   /** @maxLength 128 */
   name?: string;
-  region?: 'global';
+  /**
+   * @IsEnum(NetworkRegion)
+   *   region: NetworkRegion;
+   */
   favorites?: boolean;
 }
 
@@ -772,6 +777,11 @@ export interface CreateServerDto {
    * @maxLength 128
    */
   name: string;
+  privacy_mode: 'public' | 'private' | 'unlisted';
+}
+
+export interface ServerPasswordDto {
+  password: string;
 }
 
 export interface UpdateScriptDto {
@@ -793,6 +803,7 @@ export interface UpdateServerDto {
    * @maxLength 128
    */
   name?: string;
+  privacy_mode?: 'public' | 'private' | 'unlisted';
   scripts?: UpdateScriptDto[];
   commands?: CommandConfigDto[];
 }
