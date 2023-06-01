@@ -473,10 +473,12 @@ export interface StatePacketDto {
   t: number;
   /** code */
   c?: number;
-  /** error or message */
+  /** error code or message */
   e?: string;
   /** message */
   m?: string;
+  /** secondary message */
+  s?: string;
   /** encrypted packets */
   p?: EncryptedPacketsDto;
 }
@@ -815,12 +817,17 @@ export interface KeyDto {
 export interface MemberFiltersDto {
   /** @maxLength 64 */
   search?: string;
+  banned?: boolean;
 }
 
 export interface MemberDto {
   id: string;
   user: UserProfileDto;
   roles: RoleDto[];
+  banned: boolean;
+  /** @format date-time */
+  ban_expiration: string;
+  ban_reason: string | null;
   /** @format date-time */
   joined_at: string;
   /** @format date-time */

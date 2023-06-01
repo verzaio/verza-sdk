@@ -29,6 +29,7 @@ import {
   ObjectHighlightOptions,
   ObjectTransition,
 } from './objects/objects.types';
+import {PlayerBanStatus} from './players.types';
 import {
   ColorType,
   FileTransfer,
@@ -241,6 +242,18 @@ export type ScriptEventMap = {
   setPlayerNametagColor: (playerId: number, color: ColorType) => void;
 
   setPlayerDimension: (playerId: number, dimension: number) => void;
+
+  getPlayerBanStatus: (playerId: number) => PlayerBanStatus;
+
+  unbanPlayer: (playerId: number) => void;
+
+  banPlayer: (
+    playerId: number,
+    reason: string | null,
+    duration: number | null,
+  ) => PlayerBanStatus;
+
+  kickPlayer: (playerId: number, reason: string | null) => void;
 
   addPlayerRole: (playerId: number, role: string) => void;
 

@@ -58,6 +58,10 @@ class PlayerManager extends EntityManager<
     control: false,
   };
 
+  get isAdmin() {
+    return this.engine.network.hasAdminRole(this.roles);
+  }
+
   get isController() {
     return !!this.data?.controller;
   }
@@ -155,6 +159,34 @@ class PlayerManager extends EntityManager<
 
   async removeRole(roleId: string) {
     await this.messenger.emitAsync('removePlayerRole', [this.id, roleId]);
+  }
+
+  async getBanStatus() {
+    const {
+      data: [status],
+    } = await this.messenger.emitAsync('getPlayerBanStatus', [this.id]);
+
+    return status;
+  }
+
+  async ban(reason: string, duration = null) {
+    const {
+      data: [status],
+    } = await this.messenger.emitAsync('banPlayer', [
+      this.id,
+      reason,
+      duration,
+    ]);
+
+    return status;
+  }
+
+  async unban() {
+    await this.messenger.emitAsync('unbanPlayer', [this.id]);
+  }
+
+  async kick(reason: string) {
+    await this.messenger.emitAsync('kickPlayer', [this.id, reason]);
   }
 
   setDimension(dimension: number) {
@@ -325,6 +357,14 @@ class PlayerManager extends EntityManager<
       this.id,
       Array.isArray(clotheIds) ? clotheIds : [clotheIds],
     ]);
+  }
+
+  async getClothes() {
+    const {
+      data: [clothes],
+    } = await this.messenger.emitAsync('getPlayerClothes', [this.id]);
+
+    return clothes;
   }
 
   playAnimation(animId: string, options: AnimationOptions) {

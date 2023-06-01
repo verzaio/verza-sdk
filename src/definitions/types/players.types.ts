@@ -44,3 +44,9 @@ export type PlayerAnimItem = {
   index: number;
   clip: AnimationClip;
 };
+
+export type PlayerBanStatus = {
+  banned: boolean;
+  reason: string | null;
+  expiration: Date | null;
+};
