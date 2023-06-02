@@ -13,7 +13,6 @@ export type ServerMenuTabType =
   | 'scripts'
   | 'commands'
   | 'keys'
-  | 'banlist'
   | 'privacy_and_security';
 
 export type IndicatorId = string | number;

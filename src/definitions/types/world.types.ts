@@ -1,3 +1,5 @@
+import {Vector3} from 'three';
+
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
@@ -14,6 +16,10 @@ export type Vector3Array = [x: number, y: number, z: number];
 export type EulerArray = [x: number, y: number, z: number];
 
 export type QuaternionArray = [x: number, y: number, z: number, w: number];
+
+export type WorldEventMap = {
+  onProximityActionsUpdated: () => void;
+};
 
 export type InteresectionData<T> = {
   distance: number;
@@ -109,3 +115,13 @@ export type ViewportRender =
   | 'wireframe'
   | 'wireframe-normal'
   | 'normal';
+
+export type ProximityAction = {
+  id: string;
+  objectId?: string;
+  position?: Vector3 | Vector3Array;
+  label?: string;
+  description?: string;
+  key?: string;
+  distance?: number;
+};

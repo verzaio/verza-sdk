@@ -46,6 +46,7 @@ import {
 import {
   IntersectsResultRaw,
   MoonPhases,
+  ProximityAction,
   QuaternionArray,
   RaycastOptions,
   SkyboxProps,
@@ -460,6 +461,13 @@ export type ScriptEventMap = {
 
   stopObjectTransitions: (objectId: string) => void;
 
+  setObjectProximityAction: (
+    objectId: string,
+    action: Omit<ProximityAction, 'id' | 'objectId'>,
+  ) => void;
+
+  removeObjectProximityAction: (objectId: string) => void;
+
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;
 
@@ -510,6 +518,12 @@ export type ScriptEventMap = {
     maxDistance: number | null,
     options: RaycastOptions,
   ) => IntersectsResultRaw;
+
+  createProximityAction: (action: ProximityAction) => void;
+
+  deleteProximityAction: (actionId: string) => void;
+
+  onProximityActionTriggered: (actionId: string) => void;
 
   /* server */
   restartServer: (reason?: string | null) => void;
@@ -570,6 +584,10 @@ export type ScriptEventMap = {
   ) => void;
 } & {
   [key in `onObjectTransitionEndRaw_${string}`]: (id: number | string) => void;
+} & {
+  [key in `onObjectProximityActionTriggeredRaw_${string}`]: (
+    actionId: string,
+  ) => void;
 } & {
   [key in `onPlayerAnimation_${string}`]: (event: AnimationEvent) => void;
 } & {

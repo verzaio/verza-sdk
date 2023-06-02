@@ -1,6 +1,7 @@
 import {ColorType} from 'engine/definitions/types/ui.types';
 import {
   MoonPhases,
+  ProximityAction,
   SkyboxProps,
   TimeMode,
   Timezone,
@@ -103,6 +104,14 @@ class WorldManager {
 
   setViewportRender(type: ViewportRender) {
     this._engine.messenger.emit('setViewportRender', [type]);
+  }
+
+  createProximityAction(aciton: ProximityAction) {
+    this._engine.messenger.emit('createProximityAction', [aciton]);
+  }
+
+  deleteProximityAction(actionId: string) {
+    this._engine.messenger.emit('deleteProximityAction', [actionId]);
   }
 }
 

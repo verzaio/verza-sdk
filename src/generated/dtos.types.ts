@@ -826,7 +826,7 @@ export interface MemberDto {
   roles: RoleDto[];
   banned: boolean;
   /** @format date-time */
-  ban_expiration: string;
+  ban_expiration: string | null;
   ban_reason: string | null;
   /** @format date-time */
   joined_at: string;

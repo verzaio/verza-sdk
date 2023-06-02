@@ -62,6 +62,8 @@ class ObjectsHandlerManager {
     if (this._engine.isClient) {
       // watch events
       this._objects.eventsToWatch = new Set([
+        'onProximityActionTriggered',
+
         'onTransitionStart',
         'onTransitionEnd',
 
@@ -72,6 +74,20 @@ class ObjectsHandlerManager {
         'onPointerDown',
         'onPointerUp',
       ]);
+
+      this._objects.watcher.on(
+        'onProximityActionTriggered',
+        (object, subscribed) => {
+          this._tracker.track(
+            !!object.events.listenerCount('onProximityActionTriggered'),
+            'onProximityActionTriggered',
+            object.id,
+            subscribed,
+            () => object.bindOnProximityActionTriggered(),
+            () => object.unbindOnProximityActionTriggered(),
+          );
+        },
+      );
 
       this._objects.watcher.on('onTransitionStart', (object, subscribed) => {
         this._tracker.track(

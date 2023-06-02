@@ -22,6 +22,7 @@ import {
 import {
   Boolean3Array,
   EulerArray,
+  ProximityAction,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
@@ -847,6 +848,23 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this._messenger.emit('stopObjectTransitions', [this.id]);
   }
 
+  setProximityAction(action: Omit<ProximityAction, 'id' | 'objectId'>) {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectProximityAction',
+        [this.id, action],
+        player.id,
+      );
+    });
+  }
+
+  removeProximityAction() {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('removeObjectProximityAction', [this.id], player.id);
+    });
+  }
+
+  /* binds */
   private _onTransitionStart = (id: number | string) => {
     this.events.emit('onTransitionStart', id);
   };
@@ -854,6 +872,24 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   private _onTransitionEnd = (id: number | string) => {
     this.events.emit('onTransitionEnd', id);
   };
+
+  private _onProximityActionTriggered = (actionId: string) => {
+    this.events.emit('onProximityActionTriggered', actionId);
+  };
+
+  bindOnProximityActionTriggered() {
+    this.engine.events.on(
+      `onObjectProximityActionTriggeredRaw_${this.id}`,
+      this._onProximityActionTriggered,
+    );
+  }
+
+  unbindOnProximityActionTriggered() {
+    this.engine.events.off(
+      `onObjectProximityActionTriggeredRaw_${this.id}`,
+      this._onProximityActionTriggered,
+    );
+  }
 
   bindOnTransitionStart() {
     this.engine.events.on(
