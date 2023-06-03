@@ -6,44 +6,85 @@ class SubscriberTracker<
 > {
   private _ids = new Map<Events, Set<string | number>>();
 
+  private _idsGlobal = new Map<Events, Set<string | number>>();
+
   get(name: Events) {
     return this._ids.get(name);
   }
 
+  getGlobal(name: Events) {
+    return this._idsGlobal.get(name);
+  }
+
   track(
-    hasEvents: boolean,
     eventName: Events,
     id: string | number,
+    hasEvents: boolean,
+    status: boolean,
+    onAdd: () => void,
+    onRemove: () => void,
+  ) {
+    if (status) {
+      const ids = this._ids.get(eventName) ?? new Set();
+
+      if (!ids.has(id)) {
+        onAdd?.();
+      } else {
+        ids.add(id);
+      }
+
+      this._ids.set(eventName, ids);
+    } else {
+      if (hasEvents) return;
+
+      const ids = this._ids.get(eventName);
+
+      if (ids) {
+        ids.delete(id);
+
+        if (!ids.size) {
+          this._ids.delete(eventName);
+        }
+      }
+
+      onRemove?.();
+    }
+  }
+
+  trackGlobal(
+    eventName: Events,
+    id: string | number,
+    hasEvents: boolean,
     status: boolean,
     onAdd?: () => void,
     onRemove?: () => void,
   ) {
     if (status) {
-      if (!this._ids.has(eventName)) {
+      if (!this._idsGlobal.has(eventName)) {
         onAdd?.();
       }
 
-      this._ids.set(
+      this._idsGlobal.set(
         eventName,
-        this._ids.get(eventName)?.add(id) ?? new Set([id]),
+        this._idsGlobal.get(eventName)?.add(id) ?? new Set([id]),
       );
     } else {
-      if (!hasEvents) {
-        const ids = this._ids.get(eventName);
+      if (hasEvents) return;
 
-        if (ids) {
-          ids.delete(id);
+      const ids = this._idsGlobal.get(eventName);
 
-          if (!ids.size) {
-            this._ids.delete(eventName);
-            onRemove?.();
-          }
+      if (ids) {
+        ids.delete(id);
 
-          return;
+        if (!ids.size) {
+          this._idsGlobal.delete(eventName);
+          onRemove?.();
         }
 
-        onRemove?.();
+        return;
       }
+
+      onRemove?.();
     }
   }
 }

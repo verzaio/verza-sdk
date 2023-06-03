@@ -79,9 +79,9 @@ class ObjectsHandlerManager {
         'onProximityActionTriggered',
         (object, subscribed) => {
           this._tracker.track(
-            !!object.events.listenerCount('onProximityActionTriggered'),
             'onProximityActionTriggered',
             object.id,
+            !!object.events.listenerCount('onProximityActionTriggered'),
             subscribed,
             () => object.bindOnProximityActionTriggered(),
             () => object.unbindOnProximityActionTriggered(),
@@ -91,9 +91,9 @@ class ObjectsHandlerManager {
 
       this._objects.watcher.on('onTransitionStart', (object, subscribed) => {
         this._tracker.track(
-          !!object.events.listenerCount('onTransitionStart'),
           'onTransitionStart',
           object.id,
+          !!object.events.listenerCount('onTransitionStart'),
           subscribed,
           () => object.bindOnTransitionStart(),
           () => object.unbindOnTransitionStart(),
@@ -102,9 +102,9 @@ class ObjectsHandlerManager {
 
       this._objects.watcher.on('onTransitionEnd', (object, subscribed) => {
         this._tracker.track(
-          !!object.events.listenerCount('onTransitionStart'),
           'onTransitionEnd',
           object.id,
+          !!object.events.listenerCount('onTransitionStart'),
           subscribed,
           () => object.bindOnTransitionEnd(),
           () => object.unbindOnTransitionEnd(),
@@ -147,7 +147,7 @@ class ObjectsHandlerManager {
 
     if (!tempObject) return;
 
-    const ids = this._tracker.get(POINTER_EVENTS_RELATION[event.type]);
+    const ids = this._tracker.getGlobal(POINTER_EVENTS_RELATION[event.type]);
 
     if (!ids) return;
 
@@ -185,7 +185,10 @@ class ObjectsHandlerManager {
 
       const object = !tempObject
         ? tempObject
-        : await findObject(tempObject, this._tracker.get('onPointerMove'));
+        : await findObject(
+            tempObject,
+            this._tracker.getGlobal('onPointerMove'),
+          );
 
       if (!object) {
         this._enteredObjects.forEach(objectId => {
@@ -253,10 +256,10 @@ class ObjectsHandlerManager {
     object: ObjectManager,
     subscribed: boolean,
   ) => {
-    this._tracker.track(
-      !!object.events.listenerCount(eventName), // we checks for any related events count
+    this._tracker.trackGlobal(
       'onPointerMove',
       object.id,
+      !!object.events.listenerCount(eventName), // we checks for any related events count
       subscribed,
       () => {
         this._engine.events.on('onPointerMove', this._onPointerEventHandleOver);
@@ -278,13 +281,17 @@ class ObjectsHandlerManager {
     object: ObjectManager,
     subscribed: boolean,
   ) => {
-    this._tracker.track(
-      !!object.events.listenerCount(eventName),
+    this._tracker.trackGlobal(
       eventName,
       object.id,
+      !!object.events.listenerCount(eventName),
       subscribed,
-      () => this._engine.events.on(eventName, this._onPointerEventHandle),
-      () => this._engine.events.off(eventName, this._onPointerEventHandle),
+      () => {
+        this._engine.events.on(eventName, this._onPointerEventHandle);
+      },
+      () => {
+        this._engine.events.off(eventName, this._onPointerEventHandle);
+      },
     );
   };
 }

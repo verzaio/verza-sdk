@@ -91,14 +91,10 @@ const useObjectCreator = <T extends ObjectType = ObjectType>(
 
     setObject(object, ref);
 
-    events.forEach((event, name) => {
-      object.events.on(name, event);
-    });
+    events.forEach((event, name) => object.events.on(name, event));
 
     return () => {
-      events.forEach((event, name) => {
-        object.events.off(name, event);
-      });
+      events.forEach((event, name) => object.events.off(name, event));
     };
   }, [setObject, objects, props, type, ref]);
 
