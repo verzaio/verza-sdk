@@ -1,12 +1,14 @@
 import {ColorType} from 'engine/definitions/types/ui.types';
 import {
   MoonPhases,
+  ProximityAction,
   SkyboxProps,
   TimeMode,
   Timezone,
   ViewportRender,
   WeatherType,
 } from 'engine/definitions/types/world.types';
+import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';
 import RaycasterManager from './raycaster.manager';
@@ -103,6 +105,18 @@ class WorldManager {
 
   setViewportRender(type: ViewportRender) {
     this._engine.messenger.emit('setViewportRender', [type]);
+  }
+
+  createProximityAction(action: ProximityAction) {
+    if (action.position) {
+      action.position = toVector3Array(action.position);
+    }
+
+    this._engine.messenger.emit('createProximityAction', [action]);
+  }
+
+  deleteProximityAction(actionId: string) {
+    this._engine.messenger.emit('deleteProximityAction', [actionId]);
   }
 }
 

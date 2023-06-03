@@ -13,6 +13,7 @@ import {
   AnimationInfo,
   AnimationOptions,
 } from './animations.types';
+import {AssetTransformOptions} from './assets.types';
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {ChunkData, ChunkIndex} from './chunks.types';
 import {ClotheItem, PlayerClotheItem, SkinMaskItem} from './clothes.types';
@@ -28,6 +29,7 @@ import {
   ObjectHighlightOptions,
   ObjectTransition,
 } from './objects/objects.types';
+import {PlayerBanStatus} from './players.types';
 import {
   ColorType,
   FileTransfer,
@@ -44,6 +46,8 @@ import {
 import {
   IntersectsResultRaw,
   MoonPhases,
+  ProximityAction,
+  ProximityActionEvent,
   QuaternionArray,
   RaycastOptions,
   SkyboxProps,
@@ -132,6 +136,8 @@ export type ScriptEventMap = {
   onDrop: (event: DragEvent, files: FileTransfer[]) => void;
 
   openUrl: (tag: string) => void;
+
+  goToServer: (serverId: string) => void;
 
   isUIComponent: (type: UIComponentType) => boolean;
 
@@ -239,6 +245,18 @@ export type ScriptEventMap = {
 
   setPlayerDimension: (playerId: number, dimension: number) => void;
 
+  getPlayerBanStatus: (playerId: number) => PlayerBanStatus;
+
+  unbanPlayer: (playerId: number) => void;
+
+  banPlayer: (
+    playerId: number,
+    reason: string | null,
+    duration: number | null,
+  ) => PlayerBanStatus;
+
+  kickPlayer: (playerId: number, reason: string | null) => void;
+
   addPlayerRole: (playerId: number, role: string) => void;
 
   removePlayerRole: (playerId: number, role: string) => void;
@@ -308,6 +326,10 @@ export type ScriptEventMap = {
     transition: CameraTransition<string>,
   ) => void;
 
+  stopCameraTransitions: (playerId: number) => void;
+
+  setCameraFov: (playerId: number, fov: number | null) => void;
+
   setCameraPosition: (playerId: number, position: CameraPosition) => void;
 
   onCameraTransitionStart: (id?: number | string) => void;
@@ -321,7 +343,7 @@ export type ScriptEventMap = {
   sendChunk: (chunkIndex: ChunkIndex, chunk: ChunkData) => void;
 
   /* assets */
-  uploadAsset: (file: FileTransfer) => string;
+  uploadAsset: (file: FileTransfer, options: AssetTransformOptions) => string;
 
   deleteAsset: (assetId: string) => void;
 
@@ -379,13 +401,13 @@ export type ScriptEventMap = {
   onObjectEditRaw: (
     object: ObjectDataProps,
     type: ObjectEditActionType,
-    transform: ObjectEditTransform,
+    prevTransform: ObjectEditTransform,
   ) => void;
 
   onObjectEdit: (
     object: ObjectManager,
     type: ObjectEditActionType,
-    transform: ObjectEditTransform,
+    prevTransform: ObjectEditTransform,
   ) => void;
 
   setObjectPosition: (objectId: string, position: Vector3Array) => void;
@@ -440,6 +462,13 @@ export type ScriptEventMap = {
 
   stopObjectTransitions: (objectId: string) => void;
 
+  setObjectProximityAction: (
+    objectId: string,
+    action: Omit<ProximityAction, 'id' | 'objectId'>,
+  ) => void;
+
+  removeObjectProximityAction: (objectId: string) => void;
+
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;
 
@@ -490,6 +519,12 @@ export type ScriptEventMap = {
     maxDistance: number | null,
     options: RaycastOptions,
   ) => IntersectsResultRaw;
+
+  createProximityAction: (action: ProximityAction) => void;
+
+  deleteProximityAction: (actionId: string) => void;
+
+  onProximityActionTriggered: (event: ProximityActionEvent) => void;
 
   /* server */
   restartServer: (reason?: string | null) => void;
@@ -550,6 +585,10 @@ export type ScriptEventMap = {
   ) => void;
 } & {
   [key in `onObjectTransitionEndRaw_${string}`]: (id: number | string) => void;
+} & {
+  [key in `onObjectProximityActionTriggeredRaw_${string}`]: (
+    event: ProximityActionEvent,
+  ) => void;
 } & {
   [key in `onPlayerAnimation_${string}`]: (event: AnimationEvent) => void;
 } & {

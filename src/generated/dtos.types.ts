@@ -152,13 +152,26 @@ export interface AssetDto {
 export interface CreateAssetDto {
   /** @format binary */
   asset_file: File;
+  optimize_geometry?: boolean;
+  optimize_textures?: boolean;
 }
 
 export interface CharacterShapekeyValueDto {
   name:
-    | 'asian'
-    | 'black'
     | 'caucasian'
+    | 'black'
+    | 'asian'
+    | 'variation_1'
+    | 'variation_2'
+    | 'variation_3'
+    | 'variation_4'
+    | 'variation_5'
+    | 'variation_6'
+    | 'variation_7'
+    | 'variation_8'
+    | 'variation_9'
+    | 'variation_10'
+    | 'variation_11'
     | 'e_blink_left'
     | 'e_blink_right'
     | '{cheeks}_cheek_fullness'
@@ -171,8 +184,11 @@ export interface CharacterShapekeyValueDto {
     | '{ears}_ear_turn'
     | '{ears}_ear_width'
     | '{eyes}_eye_tilt'
+    | '{eyes}_eye_orbit_size'
     | '{eyes}_eyelid_fat_pad'
     | '{eyes}_eyelid_rotation'
+    | '{eyes}_eyelid_shift_vertical'
+    | '{eyes}_eyelid_shift_horizontal'
     | '{jaw}_jaw_location_horizontal'
     | '{jaw}_jaw_location_vertical'
     | '{jaw}_jaw_width'
@@ -191,7 +207,10 @@ export interface CharacterShapekeyValueDto {
     | '{mouth}_lip_location'
     | '{mouth}_lip_cupid_bow'
     | '{mouth}_lip_offset'
-    | '{mouth}_lip_height';
+    | '{mouth}_lip_height'
+    | '{u_skull}_browridge_loc_vertical'
+    | '{l_skull}_muzzle_location_vertical'
+    | '{l_skull}_muzzle_location_horizontal';
   /**
    * @min -2
    * @max 2
@@ -416,6 +435,7 @@ export interface ServerDto {
   roles: RoleDto[];
   permissions: ServerPermissionsDto;
   status: 'active' | 'inactive';
+  privacy_mode: 'public' | 'private' | 'unlisted';
   commands: CommandConfigDto[];
   assets_url?: string;
   favorited: boolean;
@@ -439,6 +459,8 @@ export interface ScriptActionPacketSendDto {
 export interface JoinPacketDto {
   /** server id */
   s: string;
+  /** password */
+  p?: string;
 }
 
 export interface EncryptedPacketsDto {
@@ -451,10 +473,12 @@ export interface StatePacketDto {
   t: number;
   /** code */
   c?: number;
-  /** error or message */
+  /** error code or message */
   e?: string;
   /** message */
   m?: string;
+  /** secondary message */
+  s?: string;
   /** encrypted packets */
   p?: EncryptedPacketsDto;
 }
@@ -741,7 +765,10 @@ export interface PlayerIdDto {
 export interface ServerFiltersDto {
   /** @maxLength 128 */
   name?: string;
-  region?: 'global';
+  /**
+   * @IsEnum(NetworkRegion)
+   *   region: NetworkRegion;
+   */
   favorites?: boolean;
 }
 
@@ -752,6 +779,11 @@ export interface CreateServerDto {
    * @maxLength 128
    */
   name: string;
+  privacy_mode: 'public' | 'private' | 'unlisted';
+}
+
+export interface ServerPasswordDto {
+  password: string;
 }
 
 export interface UpdateScriptDto {
@@ -773,6 +805,7 @@ export interface UpdateServerDto {
    * @maxLength 128
    */
   name?: string;
+  privacy_mode?: 'public' | 'private' | 'unlisted';
   scripts?: UpdateScriptDto[];
   commands?: CommandConfigDto[];
 }
@@ -784,12 +817,17 @@ export interface KeyDto {
 export interface MemberFiltersDto {
   /** @maxLength 64 */
   search?: string;
+  banned?: boolean;
 }
 
 export interface MemberDto {
   id: string;
   user: UserProfileDto;
   roles: RoleDto[];
+  banned: boolean;
+  /** @format date-time */
+  ban_expiration: string | null;
+  ban_reason: string | null;
   /** @format date-time */
   joined_at: string;
   /** @format date-time */

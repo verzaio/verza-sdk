@@ -1,7 +1,9 @@
 export enum CommandType {
+  string = 'string',
+
   number = 'number',
 
-  string = 'string',
+  float = 'float',
 
   user = 'user',
 }

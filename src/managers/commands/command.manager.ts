@@ -174,9 +174,10 @@ export class Command<Params extends CommandParam[] = CommandParam[]>
 }
 
 export type CommandTypeCast = {
+  float: number;
   number: number;
   string: string;
-  user: number;
+  user: PlayerManager;
 };
 
 export class CommandParam<
@@ -220,6 +221,14 @@ export class CommandParam<
     let value: any = undefined;
 
     switch (this.type) {
+      case 'float': {
+        value = parseFloat(input);
+
+        if (value === Infinity || isNaN(value)) {
+          return undefined!;
+        }
+        break;
+      }
       case 'number': {
         value = parseInt(input);
 

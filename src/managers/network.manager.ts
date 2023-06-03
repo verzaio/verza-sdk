@@ -39,6 +39,10 @@ class NetworkManager {
     this._engine = engine;
   }
 
+  hasAdminRole(roles: string[]) {
+    return !!this.server?.roles?.some(e => e.admin && roles.includes(e.id));
+  }
+
   bind() {
     // ignore if is server
     if (this._isServer) return;

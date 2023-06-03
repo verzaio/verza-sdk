@@ -2,6 +2,7 @@ import {
   INTERFACE_CHAT,
   INTERFACE_CURSOR,
   INTERFACE_OPTIONS,
+  INTERFACE_PLAYERS_LIST,
   INTERFACE_SERVER,
 } from 'engine/definitions/constants/ui.constants';
 import {
@@ -329,9 +330,13 @@ class UIManager {
     return this.interfaces.has(tag);
   }
 
+  removeAllInterfaces() {
+    this.interfaces.forEach(tag => this.removeInterface(tag));
+  }
+
   // cursor
   isCursorShown() {
-    return this.hasInterface(INTERFACE_CURSOR);
+    return !!this.interfaces.size;
   }
 
   toggleCursor() {
@@ -346,7 +351,7 @@ class UIManager {
     this.removeInterface(INTERFACE_CURSOR);
   }
 
-  async isComponent(component: UIComponentType) {
+  async isComponentShown(component: UIComponentType) {
     const {
       data: [result],
     } = await this._messenger.emitAsync('isUIComponent', [component]);
@@ -392,7 +397,11 @@ class UIManager {
   }
 
   isSystemMenu() {
-    return this.isOptionsMenu() || this.isServerMenu();
+    return this.isOptionsMenu() || this.isServerMenu() || this.isPlayersList();
+  }
+
+  isPlayersList() {
+    return this.hasInterface(INTERFACE_PLAYERS_LIST);
   }
 
   isServerMenu() {
@@ -405,6 +414,10 @@ class UIManager {
 
   openUrl(url: string) {
     this._messenger.emit('openUrl', [url]);
+  }
+
+  goToServer(serverId: string) {
+    this._messenger.emit('goToServer', [serverId]);
   }
 
   destroy() {

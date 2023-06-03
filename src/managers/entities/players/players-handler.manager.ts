@@ -53,9 +53,9 @@ class PlayersHandlerManager {
 
       this._players.watcher.on('onAnimation', (player, subscribed) => {
         this._tracker.track(
-          !!player.events.listenerCount('onAnimation'),
           'onAnimation',
           player.id,
+          !!player.events.listenerCount('onAnimation'),
           subscribed,
           () =>
             this._engine.events.on(
@@ -72,9 +72,9 @@ class PlayersHandlerManager {
 
       this._players.watcher.on('onUpdate', (player, subscribed) => {
         this._tracker.track(
-          !!player.events.listenerCount('onUpdate'),
           'onUpdate',
           player.id,
+          !!player.events.listenerCount('onUpdate'),
           subscribed,
           () => this._engine.events.on(`OPU_${player.id}`, player._onUpdate),
           () => this._engine.events.off(`OPU_${player.id}`, player._onUpdate),

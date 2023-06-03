@@ -22,12 +22,14 @@ import {
 import {
   Boolean3Array,
   EulerArray,
+  ProximityAction,
+  ProximityActionEvent,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
-import {ObjectTexture} from 'engine/types';
+import {ObjectProximityActionEvent, ObjectTexture} from 'engine/types';
 import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EntityManager from '../../entity/entity.manager';
@@ -84,13 +86,16 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   // TODO: Improve API design to avoid this
-  get worldLocationAsync() {
+  get worldLocationSync() {
     return (async () => {
       if (!this._worldLocation) {
         this._worldLocation = new Object3D();
       }
 
       const parent = await this.resolveParent();
+
+      // TODO: Improve to resolve only transform
+      await this.resolve();
 
       if (parent) {
         this.location.getWorldPosition(this._worldLocation.position);
@@ -847,6 +852,27 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this._messenger.emit('stopObjectTransitions', [this.id]);
   }
 
+  setProximityAction(action: Omit<ProximityAction, 'id' | 'objectId'>) {
+    if (action.position) {
+      action.position = toVector3Array(action.position);
+    }
+
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit(
+        'setObjectProximityAction',
+        [this.id, action],
+        player.id,
+      );
+    });
+  }
+
+  removeProximityAction() {
+    this.engine.objects.emitHandler(this, player => {
+      this._messenger.emit('removeObjectProximityAction', [this.id], player.id);
+    });
+  }
+
+  /* binds */
   private _onTransitionStart = (id: number | string) => {
     this.events.emit('onTransitionStart', id);
   };
@@ -854,6 +880,27 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   private _onTransitionEnd = (id: number | string) => {
     this.events.emit('onTransitionEnd', id);
   };
+
+  private _onProximityActionTriggered = (event: ProximityActionEvent) => {
+    this.events.emit('onProximityActionTriggered', {
+      ...event,
+      object: this,
+    } as ObjectProximityActionEvent<OT>);
+  };
+
+  bindOnProximityActionTriggered() {
+    this.engine.events.on(
+      `onObjectProximityActionTriggeredRaw_${this.id}`,
+      this._onProximityActionTriggered,
+    );
+  }
+
+  unbindOnProximityActionTriggered() {
+    this.engine.events.off(
+      `onObjectProximityActionTriggeredRaw_${this.id}`,
+      this._onProximityActionTriggered,
+    );
+  }
 
   bindOnTransitionStart() {
     this.engine.events.on(

@@ -17,6 +17,12 @@ export type {EngineParams} from 'engine/definitions/local/types/engine.types';
 
 export type {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
 
+export {
+  PlayerState,
+  CharacterGender,
+  PlayerBanStatus,
+} from './definitions/types/players.types';
+
 export type {
   ScriptEventMap,
   NetworkEventData,
@@ -36,6 +42,11 @@ export type {
   ClotheItem,
   PlayerClotheItem,
 } from 'engine/definitions/types/clothes.types';
+
+export type {
+  ObjectPointerEvent,
+  ObjectProximityActionEvent,
+} from 'engine/definitions/local/types/events.types';
 
 export type {
   ObjectType,
