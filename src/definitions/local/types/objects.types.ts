@@ -9,6 +9,7 @@ import {PickObject} from 'engine/definitions/types/objects/objects-definition.ty
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
 import {
   Boolean3Array,
+  ProximityAction,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
@@ -54,4 +55,6 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   shadows?: boolean;
 
   renderOrder?: number;
+
+  proximityAction?: boolean | Omit<ProximityAction, 'id' | 'objectId'>;
 } & PickObject<T>['o'];

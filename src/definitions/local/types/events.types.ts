@@ -26,7 +26,10 @@ export type ObjectEventMap<T extends ObjectType = ObjectType> = {
 
   onTransitionStart: (transitionId: number | string) => void;
 
-  onProximityActionTriggered: (actionId: string) => void;
+  onProximityActionTriggered: (
+    object: ObjectManager<T>,
+    actionId: string,
+  ) => void;
 };
 
 export type ObjectEventMapList<T extends ObjectType = ObjectType> = Partial<

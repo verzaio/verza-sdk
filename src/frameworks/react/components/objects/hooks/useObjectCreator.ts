@@ -1,11 +1,14 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 
+import equal from 'fast-deep-equal';
+
 import {
   ObjectEventMap,
   ObjectEventMapList,
 } from 'engine/definitions/local/types/events.types';
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
+import {ProximityAction} from 'engine/definitions/types/world.types';
 import {useObjects} from 'engine/frameworks/react/hooks/useObjects';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
@@ -17,6 +20,7 @@ const EVENT_KEYS: (keyof ObjectEventMap)[] = [
   'onPointerUp',
   'onPointerEnter',
   'onPointerLeave',
+  'onProximityActionTriggered',
 ];
 
 const useObjectCreator = <T extends ObjectType = ObjectType>(
@@ -98,9 +102,36 @@ const useObjectCreator = <T extends ObjectType = ObjectType>(
     };
   }, [setObject, objects, props, type, ref]);
 
-  // hook events
+  const lastProximityAction = useRef<
+    Omit<ProximityAction, 'id' | 'objectId'> | null | boolean
+  >(null);
+
+  // proximity action
+  useEffect(() => {
+    if (!props.proximityAction || !object) return;
+
+    if (equal(lastProximityAction.current, props.proximityAction)) return;
+
+    lastProximityAction.current =
+      typeof props.proximityAction === 'boolean'
+        ? props.proximityAction
+        : {...props.proximityAction};
+
+    const proximityAciton =
+      typeof props.proximityAction === 'boolean' ? {} : props.proximityAction;
+
+    object.setProximityAction(proximityAciton);
+  }, [object, props.proximityAction]);
+
+  // remove proximity action
   useEffect(() => {
     if (!object) return;
+
+    return () => {
+      if (lastProximityAction.current) {
+        object.removeProximityAction();
+      }
+    };
   }, [object]);
 
   return {object};

@@ -85,13 +85,16 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   // TODO: Improve API design to avoid this
-  get worldLocationAsync() {
+  get worldLocationSync() {
     return (async () => {
       if (!this._worldLocation) {
         this._worldLocation = new Object3D();
       }
 
       const parent = await this.resolveParent();
+
+      // TODO: Improve to resolve only transform
+      await this.resolve();
 
       if (parent) {
         this.location.getWorldPosition(this._worldLocation.position);
@@ -849,6 +852,10 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   setProximityAction(action: Omit<ProximityAction, 'id' | 'objectId'>) {
+    if (action.position) {
+      action.position = toVector3Array(action.position);
+    }
+
     this.engine.objects.emitHandler(this, player => {
       this._messenger.emit(
         'setObjectProximityAction',
@@ -874,7 +881,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   };
 
   private _onProximityActionTriggered = (actionId: string) => {
-    this.events.emit('onProximityActionTriggered', actionId);
+    this.events.emit('onProximityActionTriggered', this, actionId);
   };
 
   bindOnProximityActionTriggered() {

@@ -8,6 +8,7 @@ import {
   ViewportRender,
   WeatherType,
 } from 'engine/definitions/types/world.types';
+import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';
 import RaycasterManager from './raycaster.manager';
@@ -106,8 +107,12 @@ class WorldManager {
     this._engine.messenger.emit('setViewportRender', [type]);
   }
 
-  createProximityAction(aciton: ProximityAction) {
-    this._engine.messenger.emit('createProximityAction', [aciton]);
+  createProximityAction(action: ProximityAction) {
+    if (action.position) {
+      action.position = toVector3Array(action.position);
+    }
+
+    this._engine.messenger.emit('createProximityAction', [action]);
   }
 
   deleteProximityAction(actionId: string) {
