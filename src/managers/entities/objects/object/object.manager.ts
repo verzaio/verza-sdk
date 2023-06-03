@@ -23,12 +23,13 @@ import {
   Boolean3Array,
   EulerArray,
   ProximityAction,
+  ProximityActionEvent,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
-import {ObjectTexture} from 'engine/types';
+import {ObjectProximityActionEvent, ObjectTexture} from 'engine/types';
 import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EntityManager from '../../entity/entity.manager';
@@ -880,8 +881,11 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.events.emit('onTransitionEnd', id);
   };
 
-  private _onProximityActionTriggered = (actionId: string) => {
-    this.events.emit('onProximityActionTriggered', this, actionId);
+  private _onProximityActionTriggered = (event: ProximityActionEvent) => {
+    this.events.emit('onProximityActionTriggered', {
+      ...event,
+      object: this,
+    } as ObjectProximityActionEvent<OT>);
   };
 
   bindOnProximityActionTriggered() {

@@ -1,4 +1,5 @@
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
+import {ProximityActionEvent} from 'engine/definitions/types/world.types';
 import {
   IntersectsResult,
   ObjectManager,
@@ -6,10 +7,16 @@ import {
   ScriptEventMap,
 } from 'engine/types';
 
-type ObjectPointerEvent<T extends ObjectType = ObjectType> = PointerEvent & {
-  object: ObjectManager<T>;
-  intersects: IntersectsResult;
-};
+export type ObjectPointerEvent<T extends ObjectType = ObjectType> =
+  PointerEvent & {
+    object: ObjectManager<T>;
+    intersects: IntersectsResult;
+  };
+
+export type ObjectProximityActionEvent<T extends ObjectType = ObjectType> =
+  ProximityActionEvent & {
+    object: ObjectManager<T>;
+  };
 
 export type ObjectEventMap<T extends ObjectType = ObjectType> = {
   onPointerMove: (event: ObjectPointerEvent<T>) => void;
@@ -26,10 +33,7 @@ export type ObjectEventMap<T extends ObjectType = ObjectType> = {
 
   onTransitionStart: (transitionId: number | string) => void;
 
-  onProximityActionTriggered: (
-    object: ObjectManager<T>,
-    actionId: string,
-  ) => void;
+  onProximityActionTriggered: (event: ObjectProximityActionEvent<T>) => void;
 };
 
 export type ObjectEventMapList<T extends ObjectType = ObjectType> = Partial<

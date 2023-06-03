@@ -47,6 +47,7 @@ import {
   IntersectsResultRaw,
   MoonPhases,
   ProximityAction,
+  ProximityActionEvent,
   QuaternionArray,
   RaycastOptions,
   SkyboxProps,
@@ -523,7 +524,7 @@ export type ScriptEventMap = {
 
   deleteProximityAction: (actionId: string) => void;
 
-  onProximityActionTriggered: (actionId: string) => void;
+  onProximityActionTriggered: (event: ProximityActionEvent) => void;
 
   /* server */
   restartServer: (reason?: string | null) => void;
@@ -586,7 +587,7 @@ export type ScriptEventMap = {
   [key in `onObjectTransitionEndRaw_${string}`]: (id: number | string) => void;
 } & {
   [key in `onObjectProximityActionTriggeredRaw_${string}`]: (
-    actionId: string,
+    event: ProximityActionEvent,
   ) => void;
 } & {
   [key in `onPlayerAnimation_${string}`]: (event: AnimationEvent) => void;

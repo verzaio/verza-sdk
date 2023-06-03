@@ -44,6 +44,11 @@ export type {
 } from 'engine/definitions/types/clothes.types';
 
 export type {
+  ObjectPointerEvent,
+  ObjectProximityActionEvent,
+} from 'engine/definitions/local/types/events.types';
+
+export type {
   ObjectType,
   ObjectEditMode,
   ObjectEditActionType,

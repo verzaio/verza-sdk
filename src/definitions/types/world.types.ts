@@ -6,6 +6,7 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 import {TIMEZONES_LIST} from '../constants/timezones.constants';
 import {EntityType} from '../enums/entities.enums';
 import {ObjectDataProps} from './objects/objects.types';
+import {KeyEvent} from './ui.types';
 
 export type Boolean3Array = [x: boolean, y: boolean, z: boolean];
 
@@ -124,4 +125,9 @@ export type ProximityAction = {
   description?: string;
   key?: string;
   distance?: number;
+};
+
+export type ProximityActionEvent = KeyEvent & {
+  actionId: string;
+  objectId?: string;
 };
