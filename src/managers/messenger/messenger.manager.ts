@@ -290,11 +290,13 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       // handle registration
       switch (eventName) {
         case 'register': {
-          this.events.registeredEvents.add(message.data[0]);
+          this.events.register(message.data[0]);
+
           return;
         }
         case 'unregister': {
-          this.events.registeredEvents.delete(message.data[0]);
+          this.events.unregister(message.data[0]);
+
           return;
         }
         case 'OR': {
@@ -390,6 +392,10 @@ export class MessengerEvents<
 
   registeredEvents = new Set<keyof T>();
 
+  registeredEventsEmitter = new EventsManager<{
+    [name in keyof T]: (status: boolean) => void;
+  }>();
+
   private _messenger: MessengerManager;
 
   constructor(messenger: MessengerManager) {
@@ -400,7 +406,7 @@ export class MessengerEvents<
 
   on<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
     // try to register
-    this._register(eventName);
+    this.register(eventName);
 
     return super.on(eventName, listener);
   }
@@ -409,7 +415,7 @@ export class MessengerEvents<
     super.off(eventName, listener);
 
     // try to unregister
-    this._unregister(eventName);
+    this.unregister(eventName);
   }
 
   once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
@@ -421,31 +427,38 @@ export class MessengerEvents<
     super.removeAllListeners();
 
     // unregister all events
-    this.registeredEvents.forEach(event => this._unregister(event));
+    this.registeredEvents.forEach(event => this.unregister(event));
   }
 
-  private _register<A extends keyof T>(eventName: A) {
-    if (this.registerEvents && !this.registeredEvents.has(eventName)) {
-      this.registeredEvents.add(eventName);
+  register<A extends keyof T>(eventName: A) {
+    if (this.registerEvents) {
+      if (!this.registeredEvents.has(eventName)) {
+        this.registeredEvents.add(eventName);
 
-      // emit
-      if (this._messenger.connected) {
-        this._messenger.emit('register', [eventName]);
+        // emit
+        if (this._messenger.connected) {
+          this._messenger.emit('register', [eventName]);
+        }
       }
+    } else {
+      this.registeredEvents.add(eventName);
+      //(this.registeredEventsEmitter.emit as any)(eventName, true);
     }
   }
 
-  private _unregister<A extends keyof T>(eventName: A) {
-    if (
-      this.registerEvents &&
-      this.getEmitter().listenerCount(eventName as string) === 0
-    ) {
-      this.registeredEvents.delete(eventName);
+  unregister<A extends keyof T>(eventName: A) {
+    if (this.registerEvents) {
+      if (this.getEmitter().listenerCount(eventName as string) === 0) {
+        this.registeredEvents.delete(eventName);
 
-      // emit
-      if (this._messenger.connected) {
-        this._messenger.emit('unregister', [eventName]);
+        // emit
+        if (this._messenger.connected) {
+          this._messenger.emit('unregister', [eventName]);
+        }
       }
+    } else {
+      this.registeredEvents.delete(eventName);
+      //(this.registeredEventsEmitter.emit as any)(eventName, false);
     }
   }
 

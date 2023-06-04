@@ -43,6 +43,8 @@ export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
 
   cc?: EntityColliderType | null; // collider
 
+  cs?: boolean; // collision sensor
+
   m?: number; // mass
 
   ff?: number; // friction

@@ -25,7 +25,6 @@ import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter
 import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';
-import PlayersManager from '../players.manager';
 import PlayerCameraManager from './player-camera.manager';
 import type PlayerHandleManager from './player-handle.manager';
 import PlayerVoicechatManager from './player-voicechat.manager';
@@ -396,10 +395,23 @@ class PlayerManager extends EntityManager<
   };
 
   _onUpdate = (packet: PlayerPacketDto | PlayerPacketUpdateDto) => {
-    (this.manager as PlayersManager).handlePacket(
-      this.id,
-      packet as PlayerPacketDto,
-    );
+    this.engine.players.handlePacket(this.id, packet as PlayerPacketDto);
+  };
+
+  _onEnterSensor = async (objectId: string) => {
+    const object = await this.engine.objects.resolve(objectId);
+
+    if (object) {
+      this.events.emit('onEnterSensor', object);
+    }
+  };
+
+  _onLeaveSensor = async (objectId: string) => {
+    const object = await this.engine.objects.resolve(objectId);
+
+    if (object) {
+      this.events.emit('onLeaveSensor', object);
+    }
   };
 }
 

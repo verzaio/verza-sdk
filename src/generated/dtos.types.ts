@@ -597,6 +597,8 @@ export interface ObjectDataDto {
   c?: string | null;
   /** collider | EntityCollider */
   cc?: string | null;
+  /** collision sensor */
+  cs?: boolean;
   /** mass */
   m?: number;
   /** draw distance | EntityDrawDistance */

@@ -235,9 +235,13 @@ export type ScriptEventMap = {
 
   onPlayerDestroy: (playerId: number) => void;
 
-  onPlayerStreamIn: (playerId: number, data?: PlayerManager['data']) => void;
+  onPlayerStreamInRaw: (playerId: number, data?: PlayerManager['data']) => void;
 
-  onPlayerStreamOut: (playerId: number) => void;
+  onPlayerStreamOutRaw: (playerId: number) => void;
+
+  onPlayerEnterSensorRaw: (playerId: number, objectId: ObjectManager) => void;
+
+  onPlayerLeaveSensorRaw: (playerId: number, objectId: ObjectManager) => void;
 
   setPlayerName: (playerId: number, name: string) => void;
 
@@ -595,4 +599,12 @@ export type ScriptEventMap = {
   [key in `OPU_${number}`]: (
     update: PlayerPacketDto | PlayerPacketUpdateDto,
   ) => void;
+} & {
+  [key in `onPlayerEnterSensorRaw_${number}`]: (objectId: string) => void;
+} & {
+  [key in `onPlayerLeaveSensorRaw_${number}`]: (objectId: string) => void;
+} & {
+  [key in `onPlayerEnterObjectSensorRaw_${string}`]: (playerId: number) => void;
+} & {
+  [key in `onPlayerLeaveObjectSensorRaw_${string}`]: (playerId: number) => void;
 };

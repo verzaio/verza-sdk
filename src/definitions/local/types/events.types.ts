@@ -1,11 +1,10 @@
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
+import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+import {PointerEvent} from 'engine/definitions/types/ui.types';
 import {ProximityActionEvent} from 'engine/definitions/types/world.types';
-import {
-  IntersectsResult,
-  ObjectManager,
-  PointerEvent,
-  ScriptEventMap,
-} from 'engine/types';
+import {IntersectsResult} from 'engine/definitions/types/world.types';
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
+import PlayerManager from 'engine/managers/entities/players/player/player.manager';
 
 export type ObjectPointerEvent<T extends ObjectType = ObjectType> =
   PointerEvent & {
@@ -34,6 +33,10 @@ export type ObjectEventMap<T extends ObjectType = ObjectType> = {
   onTransitionStart: (transitionId: number | string) => void;
 
   onProximityActionTriggered: (event: ObjectProximityActionEvent<T>) => void;
+
+  onEnterSensor: (player: PlayerManager) => void;
+
+  onLeaveSensor: (player: PlayerManager) => void;
 };
 
 export type ObjectEventMapList<T extends ObjectType = ObjectType> = Partial<

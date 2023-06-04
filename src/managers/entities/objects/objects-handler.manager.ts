@@ -73,8 +73,12 @@ class ObjectsHandlerManager {
 
         'onPointerDown',
         'onPointerUp',
+
+        'onEnterSensor',
+        'onLeaveSensor',
       ]);
 
+      // onProximityActionTriggered
       this._objects.watcher.on(
         'onProximityActionTriggered',
         (object, subscribed) => {
@@ -83,31 +87,99 @@ class ObjectsHandlerManager {
             object.id,
             !!object.events.listenerCount('onProximityActionTriggered'),
             subscribed,
-            () => object.bindOnProximityActionTriggered(),
-            () => object.unbindOnProximityActionTriggered(),
+            () =>
+              this._engine.events.on(
+                `onObjectProximityActionTriggeredRaw_${object.id}`,
+                object._onProximityActionTriggered,
+              ),
+
+            () =>
+              this._engine.events.off(
+                `onObjectProximityActionTriggeredRaw_${object.id}`,
+                object._onProximityActionTriggered,
+              ),
           );
         },
       );
 
+      // onTransitionStart
       this._objects.watcher.on('onTransitionStart', (object, subscribed) => {
         this._tracker.track(
           'onTransitionStart',
           object.id,
           !!object.events.listenerCount('onTransitionStart'),
           subscribed,
-          () => object.bindOnTransitionStart(),
-          () => object.unbindOnTransitionStart(),
+          () =>
+            this._engine.events.on(
+              `onObjectTransitionStartRaw_${object.id}`,
+              object._onTransitionStart,
+            ),
+
+          () =>
+            this._engine.events.off(
+              `onObjectTransitionStartRaw_${object.id}`,
+              object._onTransitionStart,
+            ),
         );
       });
 
+      // onTransitionEnd
       this._objects.watcher.on('onTransitionEnd', (object, subscribed) => {
         this._tracker.track(
           'onTransitionEnd',
           object.id,
           !!object.events.listenerCount('onTransitionStart'),
           subscribed,
-          () => object.bindOnTransitionEnd(),
-          () => object.unbindOnTransitionEnd(),
+          () =>
+            this._engine.events.on(
+              `onObjectTransitionEndRaw_${object.id}`,
+              object._onTransitionEnd,
+            ),
+          () =>
+            this._engine.events.off(
+              `onObjectTransitionEndRaw_${object.id}`,
+              object._onTransitionEnd,
+            ),
+        );
+      });
+
+      // onEnterSensor
+      this._objects.watcher.on('onEnterSensor', (object, subscribed) => {
+        this._tracker.track(
+          'onEnterSensor',
+          object.id,
+          !!object.events.listenerCount('onEnterSensor'),
+          subscribed,
+          () =>
+            this._engine.events.on(
+              `onPlayerEnterObjectSensorRaw_${object.id}`,
+              object._onEnterSensor,
+            ),
+          () =>
+            this._engine.events.off(
+              `onPlayerEnterObjectSensorRaw_${object.id}`,
+              object._onEnterSensor,
+            ),
+        );
+      });
+
+      // onLeaveSensor
+      this._objects.watcher.on('onLeaveSensor', (object, subscribed) => {
+        this._tracker.track(
+          'onLeaveSensor',
+          object.id,
+          !!object.events.listenerCount('onLeaveSensor'),
+          subscribed,
+          () =>
+            this._engine.events.on(
+              `onPlayerLeaveObjectSensorRaw_${object.id}`,
+              object._onLeaveSensor,
+            ),
+          () =>
+            this._engine.events.off(
+              `onPlayerLeaveObjectSensorRaw_${object.id}`,
+              object._onLeaveSensor,
+            ),
         );
       });
 

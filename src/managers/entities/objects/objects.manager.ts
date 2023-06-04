@@ -206,6 +206,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       collision,
       collider,
+      sensor,
       mass,
       friction,
       restitution,
@@ -239,6 +240,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
       ...(collision !== undefined && {c: collision}),
 
       ...(collider !== undefined && {cc: collider}),
+
+      ...(sensor !== undefined && {cs: sensor}),
 
       ...(mass !== undefined && {m: mass}),
 

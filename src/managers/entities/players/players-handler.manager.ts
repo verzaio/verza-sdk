@@ -49,8 +49,14 @@ class PlayersHandlerManager {
       }
 
       // watch events
-      this._players.eventsToWatch = new Set(['onAnimation', 'onUpdate']);
+      this._players.eventsToWatch = new Set([
+        'onAnimation',
+        'onUpdate',
+        'onEnterSensor',
+        'onLeaveSensor',
+      ]);
 
+      // onAnimation
       this._players.watcher.on('onAnimation', (player, subscribed) => {
         this._tracker.track(
           'onAnimation',
@@ -70,6 +76,7 @@ class PlayersHandlerManager {
         );
       });
 
+      // onUpdate
       this._players.watcher.on('onUpdate', (player, subscribed) => {
         this._tracker.track(
           'onUpdate',
@@ -78,6 +85,46 @@ class PlayersHandlerManager {
           subscribed,
           () => this._engine.events.on(`OPU_${player.id}`, player._onUpdate),
           () => this._engine.events.off(`OPU_${player.id}`, player._onUpdate),
+        );
+      });
+
+      // onEnterSensor
+      this._players.watcher.on('onEnterSensor', (player, subscribed) => {
+        this._tracker.track(
+          'onEnterSensor',
+          player.id,
+          !!player.events.listenerCount('onEnterSensor'),
+          subscribed,
+          () =>
+            this._engine.events.on(
+              `onPlayerEnterSensorRaw_${player.id}`,
+              player._onEnterSensor,
+            ),
+          () =>
+            this._engine.events.off(
+              `onPlayerEnterSensorRaw_${player.id}`,
+              player._onEnterSensor,
+            ),
+        );
+      });
+
+      // onLeaveSensor
+      this._players.watcher.on('onLeaveSensor', (player, subscribed) => {
+        this._tracker.track(
+          'onLeaveSensor',
+          player.id,
+          !!player.events.listenerCount('onLeaveSensor'),
+          subscribed,
+          () =>
+            this._engine.events.on(
+              `onPlayerLeaveSensorRaw_${player.id}`,
+              player._onLeaveSensor,
+            ),
+          () =>
+            this._engine.events.off(
+              `onPlayerLeaveSensorRaw_${player.id}`,
+              player._onLeaveSensor,
+            ),
         );
       });
     }
@@ -103,13 +150,13 @@ class PlayersHandlerManager {
     });
 
     this._messenger.events.on(
-      'onPlayerStreamIn',
+      'onPlayerStreamInRaw',
       ({data: [playerId, data]}) => {
         this._players.streamIn(this._players.get(playerId), data);
       },
     );
 
-    this._messenger.events.on('onPlayerStreamOut', ({data: [playerId]}) => {
+    this._messenger.events.on('onPlayerStreamOutRaw', ({data: [playerId]}) => {
       this._players.streamOut(this._players.get(playerId));
     });
   }
