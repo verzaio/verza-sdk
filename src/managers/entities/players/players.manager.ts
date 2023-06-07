@@ -39,7 +39,7 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     //console.log('packet', packet);
 
     const player = this.get(playerId);
-    if (!player?.handle) return;
+    if (!player) return;
 
     // name
     if (packet.e !== undefined) {
@@ -57,8 +57,8 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     }
 
     // surfing
-    if (packet.f !== undefined && player.handle) {
-      player.handle.surfing = packet.f;
+    if (packet.f !== undefined) {
+      player.surfing = packet.f;
     }
 
     // state animation
@@ -103,16 +103,10 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
   }
 
   private _updateStateAnimIndex(player: PlayerManager, stateAnimIndex: number) {
-    if (!player.handle) return;
-
-    // sync state
-    player.handle.stateAnimIndex = stateAnimIndex;
+    player.data.stateAnimIndex = stateAnimIndex;
   }
 
   private _updateState(player: PlayerManager, newState: PlayerState) {
-    if (!player.handle) return;
-
-    // sync state
     player.data.state = newState;
   }
 

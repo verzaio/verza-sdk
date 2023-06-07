@@ -20,7 +20,11 @@ const EVENT_KEYS: (keyof ObjectEventMap)[] = [
   'onPointerUp',
   'onPointerEnter',
   'onPointerLeave',
+
   'onProximityActionTriggered',
+
+  'onEnterSensor',
+  'onLeaveSensor',
 ];
 
 const useObjectCreator = <T extends ObjectType = ObjectType>(

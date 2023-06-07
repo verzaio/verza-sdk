@@ -7,8 +7,12 @@ class EntityEventsManager<
 > extends EventsManager<T> {
   private _entity: EntityManager;
 
+  private get _entitiesManager() {
+    return this._entity.engine.entities[this._entity.type];
+  }
+
   private get _eventsToWatch() {
-    return this._entity.manager.eventsToWatch;
+    return this._entitiesManager.eventsToWatch;
   }
 
   constructor(entity: EntityManager) {
@@ -21,7 +25,11 @@ class EntityEventsManager<
     super.on(eventName, listener);
 
     if (this._eventsToWatch.has(eventName as any)) {
-      (this._entity.manager.watcher.emit as any)(eventName, this._entity, true);
+      (this._entitiesManager.watcher.emit as any)(
+        eventName,
+        this._entity,
+        true,
+      );
     }
 
     return listener;
@@ -34,7 +42,7 @@ class EntityEventsManager<
       super.off(eventName, listener);
 
       if (count !== 0) {
-        (this._entity.manager.watcher.emit as any)(
+        (this._entitiesManager.watcher.emit as any)(
           eventName,
           this._entity,
           false,
@@ -59,7 +67,7 @@ class EntityEventsManager<
 
       eventNames.forEach(eventName => {
         if (this._eventsToWatch.has(eventName as any)) {
-          (this._entity.manager.watcher.emit as any)(
+          (this._entitiesManager.watcher.emit as any)(
             eventName,
             this._entity,
             false,

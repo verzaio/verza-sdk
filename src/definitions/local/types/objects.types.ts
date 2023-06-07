@@ -19,7 +19,9 @@ import {ObjectEventMapList} from './events.types';
 export type ComponentObjectProps<T extends ObjectType = ObjectType> = Omit<
   ObjectEventMapList<T> & CreateObjectProps<T>,
   'type'
->;
+> & {
+  proximityAction?: boolean | Omit<ProximityAction, 'id' | 'objectId'>;
+};
 
 export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   id?: string;
@@ -42,6 +44,8 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
 
   collider?: EntityColliderType | null;
 
+  sensor?: boolean;
+
   mass?: number;
 
   friction?: number;
@@ -55,6 +59,4 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
   shadows?: boolean;
 
   renderOrder?: number;
-
-  proximityAction?: boolean | Omit<ProximityAction, 'id' | 'objectId'>;
 } & PickObject<T>['o'];

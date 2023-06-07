@@ -83,6 +83,10 @@ export type PlayerEventMap = {
   onAnimation: (event: AnimationEvent) => void;
 
   onUpdate: () => void;
+
+  onEnterSensor: (object: ObjectManager) => void;
+
+  onLeaveSensor: (object: ObjectManager) => void;
 };
 
 export type ObjectEventMap = {

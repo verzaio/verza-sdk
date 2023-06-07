@@ -141,11 +141,11 @@ export class EngineManager {
   }
 
   get players() {
-    return this.entities.player;
+    return this.entities.player as PlayersManager;
   }
 
   get objects() {
-    return this.entities.object;
+    return this.entities.object as ObjectsManager;
   }
 
   get isServer() {

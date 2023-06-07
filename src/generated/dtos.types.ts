@@ -597,6 +597,8 @@ export interface ObjectDataDto {
   c?: string | null;
   /** collider | EntityCollider */
   cc?: string | null;
+  /** collision sensor */
+  cs?: boolean;
   /** mass */
   m?: number;
   /** draw distance | EntityDrawDistance */
@@ -666,12 +668,10 @@ export interface VoicePacketDto {
   t: number;
   /** player id */
   p: number;
-  /** timestamp */
-  s: number;
-  /** type */
-  e: 'delta' | 'key';
   /** data */
   d: object;
+  /** timestamp */
+  s: number;
 }
 
 export interface VoicePacketSendDto {
@@ -680,8 +680,6 @@ export interface VoicePacketSendDto {
    * @min 0
    */
   s: number;
-  /** type */
-  e: 'delta' | 'key';
   /** data */
   d: object;
   /** replay to myself (dev) */

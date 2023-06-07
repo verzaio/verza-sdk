@@ -99,10 +99,6 @@ class EntityManager<
     this.data.dd = drawDistance;
   }
 
-  get manager() {
-    return this.engine.entities[this.type];
-  }
-
   constructor(entity: T, engine: EngineManager) {
     this.entity = entity;
     this.engine = engine;

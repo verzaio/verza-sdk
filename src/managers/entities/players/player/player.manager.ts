@@ -1,6 +1,10 @@
 import {Euler, Quaternion, Vector3} from 'three';
 import {MathUtils} from 'three';
 
+import {
+  ANIMATIONS,
+  ANIMATIONS_INDEX,
+} from 'engine/definitions/constants/animations.constants';
 import {STREAMER_CHUNK_SIZE} from 'engine/definitions/constants/streamer.constants';
 import {
   AnimationEvent,
@@ -25,7 +29,6 @@ import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter
 import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';
-import PlayersManager from '../players.manager';
 import PlayerCameraManager from './player-camera.manager';
 import type PlayerHandleManager from './player-handle.manager';
 import PlayerVoicechatManager from './player-voicechat.manager';
@@ -58,6 +61,24 @@ class PlayerManager extends EntityManager<
     control: false,
   };
 
+  velocity: Vector3 = new Vector3();
+
+  surfing = 0;
+
+  onGround = false;
+
+  get state() {
+    return this.data.state;
+  }
+
+  get stateAnimIndex() {
+    return this.data.stateAnimIndex;
+  }
+
+  get stateAnim(): keyof typeof ANIMATIONS | null {
+    return ANIMATIONS_INDEX[this.stateAnimIndex!] ?? null;
+  }
+
   get isAdmin() {
     return this.engine.network.hasAdminRole(this.roles);
   }
@@ -87,18 +108,6 @@ class PlayerManager extends EntityManager<
     this.data.roles = roles;
   }
 
-  get onGround() {
-    return this.handle?.onGround;
-  }
-
-  get state() {
-    return this.handle?.state;
-  }
-
-  get velocity() {
-    return this.handle.velocity;
-  }
-
   private get _serverCommands() {
     return this.engine.network.serverCommands;
   }
@@ -111,6 +120,8 @@ class PlayerManager extends EntityManager<
     this.messenger = new MessengerEmitterManager(engine);
 
     this.messenger.playerId = this.id;
+
+    this.data.stateAnimIndex = ANIMATIONS.none;
 
     if (engine.isServer || this.isController) {
       this.camera = new PlayerCameraManager(this);
@@ -396,10 +407,23 @@ class PlayerManager extends EntityManager<
   };
 
   _onUpdate = (packet: PlayerPacketDto | PlayerPacketUpdateDto) => {
-    (this.manager as PlayersManager).handlePacket(
-      this.id,
-      packet as PlayerPacketDto,
-    );
+    this.engine.players.handlePacket(this.id, packet as PlayerPacketDto);
+  };
+
+  _onEnterSensor = async (objectId: string) => {
+    const object = await this.engine.objects.resolve(objectId);
+
+    if (object) {
+      this.events.emit('onEnterSensor', object);
+    }
+  };
+
+  _onLeaveSensor = async (objectId: string) => {
+    const object = await this.engine.objects.resolve(objectId);
+
+    if (object) {
+      this.events.emit('onLeaveSensor', object);
+    }
   };
 }
 

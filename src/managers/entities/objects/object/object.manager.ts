@@ -210,6 +210,14 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.cc ?? null;
   }
 
+  get sensor() {
+    if (!this.supportsCollision) {
+      return false;
+    }
+
+    return !!this.data.cs;
+  }
+
   get mass() {
     return this.data.m;
   }
@@ -873,62 +881,28 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   /* binds */
-  private _onTransitionStart = (id: number | string) => {
+  _onTransitionStart = (id: number | string) => {
     this.events.emit('onTransitionStart', id);
   };
 
-  private _onTransitionEnd = (id: number | string) => {
+  _onTransitionEnd = (id: number | string) => {
     this.events.emit('onTransitionEnd', id);
   };
 
-  private _onProximityActionTriggered = (event: ProximityActionEvent) => {
+  _onProximityActionTriggered = (event: ProximityActionEvent) => {
     this.events.emit('onProximityActionTriggered', {
       ...event,
       object: this,
     } as ObjectProximityActionEvent<OT>);
   };
 
-  bindOnProximityActionTriggered() {
-    this.engine.events.on(
-      `onObjectProximityActionTriggeredRaw_${this.id}`,
-      this._onProximityActionTriggered,
-    );
-  }
+  _onEnterSensor = (playerId: number) => {
+    this.events.emit('onEnterSensor', this.engine.players.get(playerId));
+  };
 
-  unbindOnProximityActionTriggered() {
-    this.engine.events.off(
-      `onObjectProximityActionTriggeredRaw_${this.id}`,
-      this._onProximityActionTriggered,
-    );
-  }
-
-  bindOnTransitionStart() {
-    this.engine.events.on(
-      `onObjectTransitionStartRaw_${this.id}`,
-      this._onTransitionStart,
-    );
-  }
-
-  unbindOnTransitionStart() {
-    this.engine.events.off(
-      `onObjectTransitionStartRaw_${this.id}`,
-      this._onTransitionStart,
-    );
-  }
-
-  bindOnTransitionEnd() {
-    this.engine.events.on(
-      `onObjectTransitionEndRaw_${this.id}`,
-      this._onTransitionEnd,
-    );
-  }
-
-  unbindOnTransitionEnd() {
-    this.engine.events.off(
-      `onObjectTransitionEndRaw_${this.id}`,
-      this._onTransitionEnd,
-    );
-  }
+  _onLeaveSensor = (playerId: number) => {
+    this.events.emit('onLeaveSensor', this.engine.players.get(playerId));
+  };
 }
 
 export default ObjectManager;
