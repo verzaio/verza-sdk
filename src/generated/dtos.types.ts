@@ -668,12 +668,10 @@ export interface VoicePacketDto {
   t: number;
   /** player id */
   p: number;
-  /** timestamp */
-  s: number;
-  /** type */
-  e: 'delta' | 'key';
   /** data */
   d: object;
+  /** timestamp */
+  s: number;
 }
 
 export interface VoicePacketSendDto {
@@ -682,8 +680,6 @@ export interface VoicePacketSendDto {
    * @min 0
    */
   s: number;
-  /** type */
-  e: 'delta' | 'key';
   /** data */
   d: object;
   /** replay to myself (dev) */

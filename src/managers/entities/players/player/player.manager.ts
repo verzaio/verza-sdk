@@ -1,6 +1,10 @@
 import {Euler, Quaternion, Vector3} from 'three';
 import {MathUtils} from 'three';
 
+import {
+  ANIMATIONS,
+  ANIMATIONS_INDEX,
+} from 'engine/definitions/constants/animations.constants';
 import {STREAMER_CHUNK_SIZE} from 'engine/definitions/constants/streamer.constants';
 import {
   AnimationEvent,
@@ -57,6 +61,24 @@ class PlayerManager extends EntityManager<
     control: false,
   };
 
+  velocity: Vector3 = new Vector3();
+
+  surfing = 0;
+
+  onGround = false;
+
+  get state() {
+    return this.data.state;
+  }
+
+  get stateAnimIndex() {
+    return this.data.stateAnimIndex;
+  }
+
+  get stateAnim(): keyof typeof ANIMATIONS | null {
+    return ANIMATIONS_INDEX[this.stateAnimIndex!] ?? null;
+  }
+
   get isAdmin() {
     return this.engine.network.hasAdminRole(this.roles);
   }
@@ -86,18 +108,6 @@ class PlayerManager extends EntityManager<
     this.data.roles = roles;
   }
 
-  get onGround() {
-    return this.handle?.onGround;
-  }
-
-  get state() {
-    return this.handle?.state;
-  }
-
-  get velocity() {
-    return this.handle.velocity;
-  }
-
   private get _serverCommands() {
     return this.engine.network.serverCommands;
   }
@@ -110,6 +120,8 @@ class PlayerManager extends EntityManager<
     this.messenger = new MessengerEmitterManager(engine);
 
     this.messenger.playerId = this.id;
+
+    this.data.stateAnimIndex = ANIMATIONS.none;
 
     if (engine.isServer || this.isController) {
       this.camera = new PlayerCameraManager(this);
