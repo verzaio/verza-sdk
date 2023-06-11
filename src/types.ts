@@ -15,7 +15,7 @@ export type {EngineParams} from 'engine/definitions/local/types/engine.types';
 
 export type {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
 
-export {
+export type {
   PlayerState,
   CharacterGender,
   PlayerBanStatus,
