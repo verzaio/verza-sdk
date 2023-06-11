@@ -75,8 +75,6 @@ export type {
 
 export type {
   ColorType,
-  KeyEventType,
-  KeyEvent,
   IndicatorId,
   IndicatorTitle,
   Indicator,
@@ -86,10 +84,15 @@ export type {
   ToolbarElement,
   ToolbarItem,
   ToolbarPosition,
+} from 'engine/definitions/types/ui.types';
+
+export type {
+  KeyEventType,
+  KeyEvent,
   PointerEvent,
   PointerEventType,
   FileTransfer,
-} from 'engine/definitions/types/ui.types';
+} from 'engine/definitions/types/input.types';
 
 export type {
   ObjectMaterialType,

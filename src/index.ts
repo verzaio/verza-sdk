@@ -1,15 +1,18 @@
 export * from './types';
 
+import AnimationsManager from 'engine/managers/animations.manager';
 import ApiManager from 'engine/managers/api/api.manager';
 import AssetsManager from 'engine/managers/assets.manager';
 import CameraManager from 'engine/managers/camera.manager';
 import ChatManager from 'engine/managers/chat.manager';
+import ClothesManager from 'engine/managers/clothes.manager';
 import ControllerManager, {
   createControllerManager,
 } from 'engine/managers/controller.manager';
 import EventsManager, {
   type EventListenersMap,
 } from 'engine/managers/events.manager';
+import InputManager from 'engine/managers/input.manager';
 import MessengerManager from 'engine/managers/messenger/messenger.manager';
 import NetworkManager from 'engine/managers/network.manager';
 import UIManager from 'engine/managers/ui.manager';
@@ -53,6 +56,9 @@ export {
   UIManager,
   WorldManager,
   RaycasterManager,
+  AnimationsManager,
+  ClothesManager,
+  InputManager,
 };
 
 export {EngineManager} from 'engine/managers/engine.manager';

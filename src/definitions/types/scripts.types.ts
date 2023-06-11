@@ -19,6 +19,7 @@ import {ChunkData, ChunkIndex} from './chunks.types';
 import {ClotheItem, PlayerClotheItem, SkinMaskItem} from './clothes.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
+import {FileTransfer, KeyEvent, PointerEvent, DragEvent} from './input.types';
 import {ObjectTypes} from './objects/objects-definition.types';
 import {
   ObjectBoundingBox,
@@ -32,15 +33,11 @@ import {
 import {PlayerBanStatus} from './players.types';
 import {
   ColorType,
-  FileTransfer,
   IndicatorId,
   IndicatorTitle,
-  KeyEvent,
-  PointerEvent,
   UISizeProps,
   ToolbarElement,
   MainToolbarItem,
-  DragEvent,
   UIComponentType,
 } from './ui.types';
 import {

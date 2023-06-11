@@ -8,6 +8,7 @@ import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EngineScriptEventMap} from 'engine/definitions/local/types/events.types';
 import {EventKey} from 'engine/definitions/types/events.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+import InputManager from 'engine/managers/input.manager';
 import {isValidEnv} from 'engine/utils/misc.utils';
 
 import AnimationsManager from './animations.manager';
@@ -38,6 +39,8 @@ export class EngineManager {
   network: NetworkManager;
 
   api: ApiManager;
+
+  input: InputManager = null!;
 
   ui: UIManager = null!;
 
@@ -182,6 +185,7 @@ export class EngineManager {
 
     // only for client
     if (this.isClient) {
+      this.input = new InputManager(this);
       this.ui = new UIManager(this);
       this.camera = new CameraManager(this);
       this.assets = new AssetsManager(this);

@@ -9,7 +9,7 @@ import {
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
 import {ProximityAction} from 'engine/definitions/types/world.types';
-import {useObjects} from 'engine/frameworks/react/hooks/useObjects';
+import {useEngine} from 'engine/framework-react';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import useObjectParent from './useObjectParent';
@@ -32,7 +32,7 @@ const useObjectCreator = <T extends ObjectType = ObjectType>(
   props: ComponentObjectProps<T>,
   ref: any,
 ) => {
-  const objects = useObjects();
+  const {objects} = useEngine();
   const parent = useObjectParent();
   const parentIdRef = useRef(parent?.id);
   parentIdRef.current = parent?.id;

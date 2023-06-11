@@ -1,10 +1,10 @@
 import {useEffect, useMemo, useRef} from 'react';
 
-import {POINTER_EVENTS_RELATION} from 'engine/definitions/local/types/ui.types';
+import {POINTER_EVENTS_RELATION} from 'engine/definitions/local/types/input.types';
 import {
   PointerEvent,
   PointerEventType,
-} from 'engine/definitions/types/ui.types';
+} from 'engine/definitions/types/input.types';
 
 import {useEngine} from './useEngine';
 

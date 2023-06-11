@@ -1,6 +1,6 @@
+import {PointerEvent} from 'engine/definitions/types/input.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
-import {PointerEvent} from 'engine/definitions/types/ui.types';
 import {ProximityActionEvent} from 'engine/definitions/types/world.types';
 import {IntersectsResult} from 'engine/definitions/types/world.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';

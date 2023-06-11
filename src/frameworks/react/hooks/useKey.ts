@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useRef} from 'react';
 
-import {KeyEvent, KeyEventType} from 'engine/definitions/types/ui.types';
+import {KeyEvent, KeyEventType} from 'engine/definitions/types/input.types';
 
 import {useEngine} from './useEngine';
 

@@ -1,12 +1,10 @@
-import {useEngine, useKey, useObjects, useUI} from '@verza/sdk/react';
+import {useEngine, useKey} from '@verza/sdk/react';
 import {useEffect} from 'react';
 
 const InterfaceTest = () => {
-  const ui = useUI();
   const engine = useEngine();
-  const objects = useObjects();
 
-  objects;
+  const {ui} = engine;
 
   const onPressed = () => {
     ui.toggleInterface('test_interface');
