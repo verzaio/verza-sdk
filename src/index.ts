@@ -3,6 +3,8 @@ export * from './types';
 import AnimationsManager from 'engine/managers/animations.manager';
 import ApiManager from 'engine/managers/api/api.manager';
 import AssetsManager from 'engine/managers/assets.manager';
+import AudioManager from 'engine/managers/audio/audio.manager';
+import SoundManager from 'engine/managers/audio/sound.manager';
 import CameraManager from 'engine/managers/camera.manager';
 import ChatManager from 'engine/managers/chat.manager';
 import ClothesManager from 'engine/managers/clothes.manager';
@@ -59,6 +61,8 @@ export {
   AnimationsManager,
   ClothesManager,
   InputManager,
+  AudioManager,
+  SoundManager,
 };
 
 export {EngineManager} from 'engine/managers/engine.manager';

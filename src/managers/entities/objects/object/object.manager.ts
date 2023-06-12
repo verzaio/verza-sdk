@@ -1,7 +1,11 @@
 import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {MATERIAL_MAPS} from 'engine/definitions/constants/materials.constants';
-import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
+import {
+  ObjectEventMap,
+  ObjectSoundEvent,
+} from 'engine/definitions/local/types/events.types';
+import {SoundEvent, SoundOptions} from 'engine/definitions/types/audio.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
   EntityColliderType,
@@ -860,6 +864,24 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this._messenger.emit('stopObjectTransitions', [this.id]);
   }
 
+  setSound(soundName: string, options?: Omit<SoundOptions, 'objectId'>) {
+    return this.engine.audio.createSound(
+      soundName,
+      {
+        ...options,
+
+        loop: 'repeat',
+        autoplay: true,
+        objectId: this.id,
+      },
+      this.id,
+    );
+  }
+
+  removeSound() {
+    this._messenger.emit('destroySound', [this.id]);
+  }
+
   setProximityAction(action: Omit<ProximityAction, 'id' | 'objectId'>) {
     if (action.position) {
       action.position = toVector3Array(action.position);
@@ -894,6 +916,13 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       ...event,
       object: this,
     } as ObjectProximityActionEvent<OT>);
+  };
+
+  _onSoundEnd = (event: SoundEvent) => {
+    this.events.emit('onSoundEnd', {
+      ...event,
+      object: this,
+    } as ObjectSoundEvent<OT>);
   };
 
   _onEnterSensor = (playerId: number) => {

@@ -8,6 +8,7 @@ import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EngineScriptEventMap} from 'engine/definitions/local/types/events.types';
 import {EventKey} from 'engine/definitions/types/events.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+import AudioManager from 'engine/managers/audio/audio.manager';
 import InputManager from 'engine/managers/input.manager';
 import {isValidEnv} from 'engine/utils/misc.utils';
 
@@ -43,6 +44,8 @@ export class EngineManager {
   input: InputManager = null!;
 
   ui: UIManager = null!;
+
+  audio: AudioManager = null!;
 
   chat: ChatManager;
 
@@ -187,6 +190,7 @@ export class EngineManager {
     if (this.isClient) {
       this.input = new InputManager(this);
       this.ui = new UIManager(this);
+      this.audio = new AudioManager(this);
       this.camera = new CameraManager(this);
       this.assets = new AssetsManager(this);
     }

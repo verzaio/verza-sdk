@@ -1,5 +1,6 @@
 import {Euler, Quaternion, Vector3} from 'three';
 
+import {SoundOptions} from 'engine/definitions/types/audio.types';
 import {
   EntityColliderType,
   EntityCollisionType,
@@ -21,6 +22,8 @@ export type ComponentObjectProps<T extends ObjectType = ObjectType> = Omit<
   'type'
 > & {
   proximityAction?: boolean | Omit<ProximityAction, 'id' | 'objectId'>;
+  soundName?: string;
+  soundOptions?: Omit<SoundOptions, 'objectId'>;
 };
 
 export type CreateObjectProps<T extends ObjectType = ObjectType> = {

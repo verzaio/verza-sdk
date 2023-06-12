@@ -1,4 +1,9 @@
 import {
+  SoundEvent,
+  SoundItem,
+  SoundOptions,
+} from 'engine/definitions/types/audio.types';
+import {
   ChunkDto,
   EncryptedPacketsDto,
   PlayerPacketDto,
@@ -500,6 +505,27 @@ export type ScriptEventMap = {
     data?: NetworkEventData,
   ) => void;
 
+  /* audio */
+  addSound(sound: SoundItem): void;
+
+  removeSound(soundId: string): void;
+
+  createSound(soundId: string, options: SoundOptions, withId: string): void;
+
+  playSound(soundId: string): void;
+
+  pauseSound(soundId: string): void;
+
+  resumeSound(soundId: string): void;
+
+  stopSound(soundId: string): void;
+
+  destroySound(soundId: string): void;
+
+  setSoundOptions(soundId: string, options: SoundOptions): void;
+
+  onSoundEnd: (event: SoundEvent) => void;
+
   /* world */
   raycastScreenPoint: (
     x: number,
@@ -590,6 +616,8 @@ export type ScriptEventMap = {
   [key in `onObjectProximityActionTriggeredRaw_${string}`]: (
     event: ProximityActionEvent,
   ) => void;
+} & {
+  [key in `onObjectSoundEndRaw_${string}`]: (event: SoundEvent) => void;
 } & {
   [key in `onPlayerAnimation_${string}`]: (event: AnimationEvent) => void;
 } & {

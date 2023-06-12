@@ -63,6 +63,7 @@ class ObjectsHandlerManager {
       // watch events
       this._objects.eventsToWatch = new Set([
         'onProximityActionTriggered',
+        'onSoundEnd',
 
         'onTransitionStart',
         'onTransitionEnd',
@@ -101,6 +102,27 @@ class ObjectsHandlerManager {
           );
         },
       );
+
+      // onSoundEnd
+      this._objects.watcher.on('onSoundEnd', (object, subscribed) => {
+        this._tracker.track(
+          'onSoundEnd',
+          object.id,
+          !!object.events.listenerCount('onSoundEnd'),
+          subscribed,
+          () =>
+            this._engine.events.on(
+              `onObjectSoundEndRaw_${object.id}`,
+              object._onSoundEnd,
+            ),
+
+          () =>
+            this._engine.events.off(
+              `onObjectSoundEndRaw_${object.id}`,
+              object._onSoundEnd,
+            ),
+        );
+      });
 
       // onTransitionStart
       this._objects.watcher.on('onTransitionStart', (object, subscribed) => {
