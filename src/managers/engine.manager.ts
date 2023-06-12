@@ -264,6 +264,7 @@ export class EngineManager {
     // binds
     this.network.bind();
     this.api.bind(); // always after network
+    this.input?.bind();
     this.ui?.bind();
     this.camera?.bind();
     this.streamer?.bind();
@@ -287,6 +288,7 @@ export class EngineManager {
     this.api.destroy();
     this.messenger.destroy();
     this.commands.destroy();
+    this.input?.destroy();
     this.ui?.destroy();
     this.players.unload();
     this.objects.unload();
