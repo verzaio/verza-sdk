@@ -42,6 +42,15 @@ export type {
 } from 'engine/definitions/types/clothes.types';
 
 export type {
+  SoundName,
+  SoundItem,
+  SoundLoop,
+  SoundOptions,
+  SoundEventType,
+  SoundEvent,
+} from 'engine/definitions/types/audio.types';
+
+export type {
   ObjectPointerEvent,
   ObjectProximityActionEvent,
 } from 'engine/definitions/local/types/events.types';

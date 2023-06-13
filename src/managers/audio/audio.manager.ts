@@ -1,6 +1,6 @@
 import {Vector3} from 'three';
 
-import {SoundOptions} from 'engine/definitions/types/audio.types';
+import {SoundItem, SoundOptions} from 'engine/definitions/types/audio.types';
 import {Vector3Array} from 'engine/types';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
@@ -16,6 +16,18 @@ class AudioManager {
 
   constructor(engine: EngineManager) {
     this._engine = engine;
+  }
+
+  async addSound(sound: SoundItem) {
+    const {
+      data: [added],
+    } = await this._messenger.emitAsync('addSound', [sound]);
+
+    return added;
+  }
+
+  removeSound(soundName: string) {
+    this._messenger.emit('removeSound', [soundName]);
   }
 
   createSound(

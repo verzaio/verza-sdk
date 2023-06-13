@@ -3,12 +3,12 @@ import {Vector3} from 'three';
 import {ArrayValues} from 'engine/definitions/types/helpers.types';
 import {Vector3Array} from 'engine/definitions/types/world.types';
 
-import {SOUNDS_LIST} from '../constants/audio.constants';
+import {CORE_SOUNDS_LIST} from '../constants/audio.constants';
 
-export type SoundName = ArrayValues<typeof SOUNDS_LIST>;
+export type SoundName = ArrayValues<typeof CORE_SOUNDS_LIST>;
 
 export type SoundItem = {
-  soundName: string;
+  name: string;
   url: string;
 };
 

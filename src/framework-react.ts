@@ -17,6 +17,7 @@ export {useCursorLock} from 'engine/frameworks/react/hooks/useCursorLock';
 export {useInterfaces} from 'engine/frameworks/react/hooks/useInterfaces';
 export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
 export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
+export {useAddSound} from 'engine/frameworks/react/hooks/useAddSound';
 
 export {useLocalPlayerId} from 'engine/frameworks/react/hooks/useLocalPlayerId';
 export {useLocalPlayer} from 'engine/frameworks/react/hooks/useLocalPlayer';

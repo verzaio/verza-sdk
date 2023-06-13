@@ -506,7 +506,7 @@ export type ScriptEventMap = {
   ) => void;
 
   /* audio */
-  addSound(sound: SoundItem): void;
+  addSound(sound: SoundItem): boolean;
 
   removeSound(soundId: string): void;
 

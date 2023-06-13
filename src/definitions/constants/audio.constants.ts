@@ -1,4 +1,4 @@
-export const SOUNDS_LIST = [
+export const CORE_SOUNDS_LIST = [
   /* character */
   'character/rolling',
   'character/footsteps-run',

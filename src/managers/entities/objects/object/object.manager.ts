@@ -868,9 +868,10 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.engine.audio.createSound(
       soundName,
       {
+        loop: 'repeat',
+
         ...options,
 
-        loop: 'repeat',
         autoplay: true,
         objectId: this.id,
       },
