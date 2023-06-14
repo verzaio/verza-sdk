@@ -49,6 +49,11 @@ class UIManager {
       this.interfaces.add(tag);
       this.controller.interfaces = new Set(this.interfaces);
     });
+
+    this._messenger.events.on('removeInterface', ({data: [tag]}) => {
+      this.interfaces.delete(tag);
+      this.controller.interfaces = new Set(this.interfaces);
+    });
   }
 
   /* base */
