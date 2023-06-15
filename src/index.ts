@@ -17,6 +17,9 @@ import EventsManager, {
 import InputManager from 'engine/managers/input.manager';
 import MessengerManager from 'engine/managers/messenger/messenger.manager';
 import NetworkManager from 'engine/managers/network.manager';
+import MemoryStoreManager from 'engine/managers/storage/memory-store.manager';
+import PersistentStoreManager from 'engine/managers/storage/persistent-store.manager';
+import StorageManager from 'engine/managers/storage/storage.manager';
 import UIManager from 'engine/managers/ui.manager';
 import RaycasterManager from 'engine/managers/world/raycaster.manager';
 import WorldManager from 'engine/managers/world/world.manager';
@@ -63,6 +66,9 @@ export {
   InputManager,
   AudioManager,
   SoundManager,
+  StorageManager,
+  PersistentStoreManager,
+  MemoryStoreManager,
 };
 
 export {EngineManager} from 'engine/managers/engine.manager';

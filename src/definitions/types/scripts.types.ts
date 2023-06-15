@@ -3,6 +3,9 @@ import {
   SoundItem,
   SoundOptions,
 } from 'engine/definitions/types/audio.types';
+import {StorageModeType} from 'engine/definitions/types/storage.types';
+import {StorageFilters} from 'engine/definitions/types/storage.types';
+import {StorageResult} from 'engine/definitions/types/storage.types';
 import {
   ChunkDto,
   EncryptedPacketsDto,
@@ -525,6 +528,37 @@ export type ScriptEventMap = {
   setSoundOptions(soundId: string, options: SoundOptions): void;
 
   onSoundEnd: (event: SoundEvent) => void;
+
+  /* storage */
+  setStoreValue: (
+    mode: StorageModeType,
+    name: string,
+    scope: string,
+    key: string,
+    value: unknown,
+    expiration: number,
+  ) => void;
+
+  getStoreValue: (
+    mode: StorageModeType,
+    name: string,
+    scope: string,
+    key: string,
+  ) => unknown;
+
+  deleteStoreValue: (
+    mode: StorageModeType,
+    name: string,
+    scope: string,
+    key: string,
+  ) => void;
+
+  getStoreDataList: (
+    mode: StorageModeType,
+    name: string,
+    scope: string,
+    filters: StorageFilters,
+  ) => StorageResult;
 
   /* world */
   raycastScreenPoint: (

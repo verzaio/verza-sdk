@@ -1,0 +1,13 @@
+export const DEFAULT_STORAGE_SCOPE = 'global';
+
+export const MAX_STORAGE_PERSISTENT_LENGTH = 4194304; // 4MB
+
+export const MAX_STORAGE_MEMORY_LENGTH = 1024; // 1KB
+
+export const MAX_STORAGE_KEY_LENGTH = 64;
+
+export const MAX_STORAGE_NAME_LENGTH = 64;
+
+export const MAX_STORAGE_SCOPE_LENGTH = 64;
+
+export const MAX_STORAGE_EXPIRATION = 3600 * 24 * 7;

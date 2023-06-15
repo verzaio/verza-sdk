@@ -18,6 +18,8 @@ export {useInterfaces} from 'engine/frameworks/react/hooks/useInterfaces';
 export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
 export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
 export {useAddSound} from 'engine/frameworks/react/hooks/useAddSound';
+export {usePersistentStore} from 'engine/frameworks/react/hooks/usePersistentStore';
+export {useMemoryStore} from 'engine/frameworks/react/hooks/useMemoryStore';
 
 export {useLocalPlayerId} from 'engine/frameworks/react/hooks/useLocalPlayerId';
 export {useLocalPlayer} from 'engine/frameworks/react/hooks/useLocalPlayer';

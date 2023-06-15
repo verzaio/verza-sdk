@@ -10,6 +10,7 @@ import {EventKey} from 'engine/definitions/types/events.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import AudioManager from 'engine/managers/audio/audio.manager';
 import InputManager from 'engine/managers/input.manager';
+import StorageManager from 'engine/managers/storage/storage.manager';
 import {isValidEnv} from 'engine/utils/misc.utils';
 
 import AnimationsManager from './animations.manager';
@@ -40,6 +41,8 @@ export class EngineManager {
   network: NetworkManager;
 
   api: ApiManager;
+
+  storage: StorageManager;
 
   input: InputManager = null!;
 
@@ -175,6 +178,8 @@ export class EngineManager {
     this.api = new ApiManager(this);
 
     this.network = new NetworkManager(this);
+
+    this.storage = new StorageManager(this);
 
     this.world = new WorldManager(this);
 

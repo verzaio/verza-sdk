@@ -26,6 +26,13 @@ export type {
   NetworkEventData,
 } from 'engine/definitions/types/scripts.types';
 
+export {
+  StorageModeType,
+  StorageFilters,
+  StorageResultItem,
+  StorageResult,
+} from 'engine/definitions/types/storage.types';
+
 export type {
   AnimationLoop,
   AnimationInfo,
