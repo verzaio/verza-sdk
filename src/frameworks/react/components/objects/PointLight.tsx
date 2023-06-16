@@ -5,12 +5,12 @@ import ObjectManager from 'engine/managers/entities/objects/object/object.manage
 
 import ObjectRender from './components/ObjectRender';
 
-export type TetrahedronProps = ComponentObjectProps<'tetrahedron'>;
+export type PointLightProps = ComponentObjectProps<'pointlight'>;
 
-export const Tetrahedron = forwardRef<ObjectManager, TetrahedronProps>(
+export const PointLight = forwardRef<ObjectManager, PointLightProps>(
   (props, ref) => {
-    return <ObjectRender type="tetrahedron" props={props} objectRef={ref} />;
+    return <ObjectRender type="pointlight" props={props} objectRef={ref} />;
   },
 );
 
-Tetrahedron.displayName = 'Tetrahedron';
+PointLight.displayName = 'PointLight';

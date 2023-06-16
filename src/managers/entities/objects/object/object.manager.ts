@@ -2,6 +2,10 @@ import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {MATERIAL_MAPS} from 'engine/definitions/constants/materials.constants';
 import {
+  UNSUPPORTED_OBJECTS_COLLISIONS,
+  UNSUPPORTED_OBJECTS_SHADOWS,
+} from 'engine/definitions/constants/objects-shared.constants';
+import {
   ObjectEventMap,
   ObjectSoundEvent,
 } from 'engine/definitions/local/types/events.types';
@@ -183,11 +187,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   get supportsShadows() {
-    return (
-      this.objectType !== 'group' &&
-      this.objectType !== 'line' &&
-      this.objectType !== 'text'
-    );
+    return !UNSUPPORTED_OBJECTS_SHADOWS.has(this.objectType);
   }
 
   get shadows() {
@@ -195,11 +195,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   get supportsCollision() {
-    return (
-      this.objectType !== 'group' &&
-      this.objectType !== 'line' &&
-      this.objectType !== 'text'
-    );
+    return !UNSUPPORTED_OBJECTS_COLLISIONS.has(this.objectType);
   }
 
   get collision(): EntityCollisionType | null {
@@ -608,6 +604,10 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.engine.objects.emitHandler(this, player => {
       this._messenger.emit('setObjectVisible', [this.id, visible], player.id);
     });
+  }
+
+  setHelper(status: boolean) {
+    this._messenger.emit('setObjectHelper', [this.id, status]);
   }
 
   enableHighlight(options: ObjectHighlightOptions = {}) {

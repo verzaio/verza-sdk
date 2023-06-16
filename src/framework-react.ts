@@ -98,3 +98,15 @@ export {
   Text,
   type TextProps,
 } from 'engine/frameworks/react/components/objects/Text';
+export {
+  PointLight,
+  type PointLightProps,
+} from 'engine/frameworks/react/components/objects/PointLight';
+export {
+  SpotLight,
+  type SpotLightProps,
+} from 'engine/frameworks/react/components/objects/SpotLight';
+export {
+  RectAreaLight,
+  type RectAreaLightProps,
+} from 'engine/frameworks/react/components/objects/RectAreaLight';

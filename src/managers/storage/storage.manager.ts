@@ -20,7 +20,7 @@ class StorageManager {
     name: string,
     scope = DEFAULT_STORAGE_SCOPE,
   ): PersistentStoreManager<T> {
-    const key = `persistent:${scope}:${name}`;
+    const key = `persistent:${scope.toLowerCase()}:${name.toLowerCase()}`;
 
     if (this._stores.has(key)) {
       return this._stores.get(key) as PersistentStoreManager<T>;
@@ -37,7 +37,7 @@ class StorageManager {
     name: string,
     scope = DEFAULT_STORAGE_SCOPE,
   ): MemoryStoreManager<T> {
-    const key = `memory:${scope}:${name}`;
+    const key = `memory:${scope.toLowerCase()}:${name.toLowerCase()}`;
 
     if (this._stores.has(key)) {
       return this._stores.get(key) as MemoryStoreManager<T>;

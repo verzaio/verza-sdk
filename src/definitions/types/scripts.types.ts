@@ -438,6 +438,8 @@ export type ScriptEventMap = {
     rotation: QuaternionArray | Vector3Array,
   ) => void;
 
+  setObjectHelper: (objectId: string, status: boolean) => void;
+
   enableObjectHighlight: (
     objectId: string,
     options: ObjectHighlightOptions,

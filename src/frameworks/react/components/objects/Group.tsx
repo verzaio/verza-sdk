@@ -3,8 +3,7 @@ import React, {forwardRef, ReactNode} from 'react';
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import useObjectCreator from './hooks/useObjectCreator';
-import {ParentContext} from './hooks/useObjectParent';
+import ObjectRender from './components/ObjectRender';
 
 export type GroupProps = ComponentObjectProps<'group'> & {
   id?: string;
@@ -14,12 +13,10 @@ export type GroupProps = ComponentObjectProps<'group'> & {
 
 export const Group = forwardRef<ObjectManager, GroupProps>(
   ({children, ...props}, ref) => {
-    const {object} = useObjectCreator('group', props, ref);
-
-    if (!object || object.destroyed) return null;
-
     return (
-      <ParentContext.Provider value={object}>{children}</ParentContext.Provider>
+      <ObjectRender type="group" props={props} objectRef={ref}>
+        {children}
+      </ObjectRender>
     );
   },
 );

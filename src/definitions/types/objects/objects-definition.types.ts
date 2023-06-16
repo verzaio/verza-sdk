@@ -323,6 +323,39 @@ export type ObjectTextType = ObjectBaseType<
   }
 >;
 
+export type ObjectSpotLightType = ObjectBaseType<
+  'spotlight',
+  {
+    color?: ColorType;
+    intensity?: number;
+    distance?: number;
+    angle?: number;
+    penumbra?: number;
+    decay?: number;
+    target?: Vector3Array;
+  }
+>;
+
+export type ObjectPointLightType = ObjectBaseType<
+  'pointlight',
+  {
+    color?: ColorType;
+    intensity?: number;
+    distance?: number;
+    decay?: number;
+  }
+>;
+
+export type ObjectRectAreaLightType = ObjectBaseType<
+  'rectarealight',
+  {
+    color?: ColorType;
+    intensity?: number;
+    width?: number;
+    height?: number;
+  }
+>;
+
 export type ObjectTypes = {
   group: ObjectGroupType;
 
@@ -357,6 +390,12 @@ export type ObjectTypes = {
   gltf: ObjectGltfType;
 
   text: ObjectTextType;
+
+  spotlight: ObjectSpotLightType;
+
+  pointlight: ObjectPointLightType;
+
+  rectarealight: ObjectRectAreaLightType;
 };
 
 export type ObjectTypeValues<T extends ObjectTypes = ObjectTypes> = T[keyof T];
