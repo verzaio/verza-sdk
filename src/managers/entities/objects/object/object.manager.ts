@@ -2,6 +2,7 @@ import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {MATERIAL_MAPS} from 'engine/definitions/constants/materials.constants';
 import {
+  UNSUPPORTED_OBJECTS_BLOOM,
   UNSUPPORTED_OBJECTS_COLLISIONS,
   UNSUPPORTED_OBJECTS_SHADOWS,
 } from 'engine/definitions/constants/objects-shared.constants';
@@ -194,6 +195,14 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.ss ?? this.supportsShadows;
   }
 
+  get supportsBloom() {
+    return !UNSUPPORTED_OBJECTS_BLOOM.has(this.objectType);
+  }
+
+  get bloom() {
+    return (this.data.o as BoxProps).bloom ?? false;
+  }
+
   get supportsCollision() {
     return !UNSUPPORTED_OBJECTS_COLLISIONS.has(this.objectType);
   }
@@ -373,6 +382,14 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   setShadows(status: boolean) {
     this.setData({
       ss: status,
+    } as PickObject<OT>);
+  }
+
+  setBloom(status: boolean) {
+    this.setData({
+      o: {
+        bloom: status,
+      },
     } as PickObject<OT>);
   }
 

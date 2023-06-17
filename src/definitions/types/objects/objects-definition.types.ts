@@ -65,6 +65,8 @@ export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
 export type ObjectMaterialProps = {
   color?: ColorType;
 
+  bloom?: boolean;
+
   material?: ObjectMaterialMix;
 };
 
@@ -223,11 +225,7 @@ export type ObjectTetrahedronType = ObjectBaseType<
     radius?: number;
 
     detail?: number;
-
-    color?: ColorType;
-
-    material?: ObjectMaterialMix;
-  }
+  } & ObjectMaterialProps
 >;
 
 export type ObjectDodecahedronType = ObjectBaseType<
@@ -263,6 +261,8 @@ export type ObjectLineType = ObjectBaseType<
     points?: Vector3Array[];
 
     color?: ColorType;
+
+    bloom?: boolean;
   }
 >;
 
