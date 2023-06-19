@@ -609,6 +609,12 @@ export type ScriptEventMap = {
 
   setWeather: (weather: WeatherType) => void;
 
+  setFogStatus: (status: boolean) => void;
+
+  setFogColor: (color: ColorType) => void;
+
+  setFogDensity: (density: number) => void;
+
   setViewportRender: (type: ViewportRender) => void;
 
   setInteriorMode: (status: boolean) => void;
