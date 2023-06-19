@@ -1,4 +1,12 @@
 import {
+  SoundEvent,
+  SoundItem,
+  SoundOptions,
+} from 'engine/definitions/types/audio.types';
+import {StorageModeType} from 'engine/definitions/types/storage.types';
+import {StorageFilters} from 'engine/definitions/types/storage.types';
+import {StorageResult} from 'engine/definitions/types/storage.types';
+import {
   ChunkDto,
   EncryptedPacketsDto,
   PlayerPacketDto,
@@ -19,6 +27,7 @@ import {ChunkData, ChunkIndex} from './chunks.types';
 import {ClotheItem, PlayerClotheItem, SkinMaskItem} from './clothes.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
+import {FileTransfer, KeyEvent, PointerEvent, DragEvent} from './input.types';
 import {ObjectTypes} from './objects/objects-definition.types';
 import {
   ObjectBoundingBox,
@@ -32,15 +41,11 @@ import {
 import {PlayerBanStatus} from './players.types';
 import {
   ColorType,
-  FileTransfer,
   IndicatorId,
   IndicatorTitle,
-  KeyEvent,
-  PointerEvent,
   UISizeProps,
   ToolbarElement,
   MainToolbarItem,
-  DragEvent,
   UIComponentType,
 } from './ui.types';
 import {
@@ -433,6 +438,8 @@ export type ScriptEventMap = {
     rotation: QuaternionArray | Vector3Array,
   ) => void;
 
+  setObjectHelper: (objectId: string, status: boolean) => void;
+
   enableObjectHighlight: (
     objectId: string,
     options: ObjectHighlightOptions,
@@ -503,6 +510,58 @@ export type ScriptEventMap = {
     data?: NetworkEventData,
   ) => void;
 
+  /* audio */
+  addSound(sound: SoundItem): boolean;
+
+  removeSound(soundId: string): void;
+
+  createSound(soundId: string, options: SoundOptions, withId: string): void;
+
+  playSound(soundId: string): void;
+
+  pauseSound(soundId: string): void;
+
+  resumeSound(soundId: string): void;
+
+  stopSound(soundId: string): void;
+
+  destroySound(soundId: string): void;
+
+  setSoundOptions(soundId: string, options: SoundOptions): void;
+
+  onSoundEnd: (event: SoundEvent) => void;
+
+  /* storage */
+  setStoreValue: (
+    mode: StorageModeType,
+    name: string,
+    scope: string,
+    key: string,
+    value: unknown,
+    expiration: number,
+  ) => void;
+
+  getStoreValue: (
+    mode: StorageModeType,
+    name: string,
+    scope: string,
+    key: string,
+  ) => unknown;
+
+  deleteStoreValue: (
+    mode: StorageModeType,
+    name: string,
+    scope: string,
+    key: string,
+  ) => void;
+
+  getStoreDataList: (
+    mode: StorageModeType,
+    name: string,
+    scope: string,
+    filters: StorageFilters,
+  ) => StorageResult;
+
   /* world */
   raycastScreenPoint: (
     x: number,
@@ -550,6 +609,12 @@ export type ScriptEventMap = {
 
   setWeather: (weather: WeatherType) => void;
 
+  setFogStatus: (status: boolean) => void;
+
+  setFogColor: (color: ColorType) => void;
+
+  setFogDensity: (density: number) => void;
+
   setViewportRender: (type: ViewportRender) => void;
 
   setInteriorMode: (status: boolean) => void;
@@ -593,6 +658,8 @@ export type ScriptEventMap = {
   [key in `onObjectProximityActionTriggeredRaw_${string}`]: (
     event: ProximityActionEvent,
   ) => void;
+} & {
+  [key in `onObjectSoundEndRaw_${string}`]: (event: SoundEvent) => void;
 } & {
   [key in `onPlayerAnimation_${string}`]: (event: AnimationEvent) => void;
 } & {

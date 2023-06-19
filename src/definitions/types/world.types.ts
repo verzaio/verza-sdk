@@ -5,8 +5,8 @@ import PlayerManager from 'engine/managers/entities/players/player/player.manage
 
 import {TIMEZONES_LIST} from '../constants/timezones.constants';
 import {EntityType} from '../enums/entities.enums';
+import {KeyEvent} from './input.types';
 import {ObjectDataProps} from './objects/objects.types';
-import {KeyEvent} from './ui.types';
 
 export type Boolean3Array = [x: boolean, y: boolean, z: boolean];
 

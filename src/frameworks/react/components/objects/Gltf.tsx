@@ -1,9 +1,9 @@
-import {forwardRef, useMemo} from 'react';
+import React, {forwardRef, useMemo} from 'react';
 
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import useObjectCreator from './hooks/useObjectCreator';
+import ObjectRender from './components/ObjectRender';
 
 export type GltfProps = Omit<ComponentObjectProps<'gltf'>, 'u'> & {
   url: string;
@@ -11,20 +11,16 @@ export type GltfProps = Omit<ComponentObjectProps<'gltf'>, 'u'> & {
 };
 
 export const Gltf = forwardRef<ObjectManager, GltfProps>((props, ref) => {
-  useObjectCreator(
-    'gltf',
-    useMemo(() => {
-      const {url, u, ...allProps} = props;
+  const allProps = useMemo(() => {
+    const {url, u, ...allProps} = props;
 
-      return {
-        u: u ?? url,
-        ...allProps,
-      };
-    }, [props]),
-    ref,
-  );
+    return {
+      u: u ?? url,
+      ...allProps,
+    };
+  }, [props]);
 
-  return null;
+  return <ObjectRender type="gltf" props={allProps} objectRef={ref} />;
 });
 
 Gltf.displayName = 'Gltf';

@@ -159,26 +159,18 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
 
     // validate pos
-    if (props.position) {
-      props.position = Array.isArray(props.position)
-        ? props.position
-        : props.position.toArray();
+    if (props.position && !Array.isArray(props.position)) {
+      props.position = props.position.toArray();
     }
 
     // validate rot
-    if (props.rotation) {
-      if (!Array.isArray(props.rotation)) {
-        // Euler
-        if (props.rotation instanceof Euler) {
-          props.rotation = [
-            props.rotation.x,
-            props.rotation.y,
-            props.rotation.z,
-          ];
-        } else {
-          // Quaternion
-          props.rotation = props.rotation.toArray() as QuaternionArray;
-        }
+    if (props.rotation && !Array.isArray(props.rotation)) {
+      // Euler
+      if (props.rotation instanceof Euler) {
+        props.rotation = [props.rotation.x, props.rotation.y, props.rotation.z];
+      } else {
+        // Quaternion
+        props.rotation = props.rotation.toArray() as QuaternionArray;
       }
     }
 
@@ -186,10 +178,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     if (props.scale !== undefined) {
       if (typeof props.scale === 'number') {
         props.scale = [props.scale, props.scale, props.scale];
-      } else {
-        props.scale = Array.isArray(props.scale)
-          ? props.scale
-          : props.scale.toArray();
+      } else if (!Array.isArray(props.scale)) {
+        props.scale = props.scale.toArray();
       }
     }
 

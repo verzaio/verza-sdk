@@ -1,17 +1,25 @@
 export * from './types';
 
+import AnimationsManager from 'engine/managers/animations.manager';
 import ApiManager from 'engine/managers/api/api.manager';
 import AssetsManager from 'engine/managers/assets.manager';
+import AudioManager from 'engine/managers/audio/audio.manager';
+import SoundManager from 'engine/managers/audio/sound.manager';
 import CameraManager from 'engine/managers/camera.manager';
 import ChatManager from 'engine/managers/chat.manager';
+import ClothesManager from 'engine/managers/clothes.manager';
 import ControllerManager, {
   createControllerManager,
 } from 'engine/managers/controller.manager';
 import EventsManager, {
   type EventListenersMap,
 } from 'engine/managers/events.manager';
+import InputManager from 'engine/managers/input.manager';
 import MessengerManager from 'engine/managers/messenger/messenger.manager';
 import NetworkManager from 'engine/managers/network.manager';
+import MemoryStoreManager from 'engine/managers/storage/memory-store.manager';
+import PersistentStoreManager from 'engine/managers/storage/persistent-store.manager';
+import StorageManager from 'engine/managers/storage/storage.manager';
 import UIManager from 'engine/managers/ui.manager';
 import RaycasterManager from 'engine/managers/world/raycaster.manager';
 import WorldManager from 'engine/managers/world/world.manager';
@@ -53,6 +61,14 @@ export {
   UIManager,
   WorldManager,
   RaycasterManager,
+  AnimationsManager,
+  ClothesManager,
+  InputManager,
+  AudioManager,
+  SoundManager,
+  StorageManager,
+  PersistentStoreManager,
+  MemoryStoreManager,
 };
 
 export {EngineManager} from 'engine/managers/engine.manager';

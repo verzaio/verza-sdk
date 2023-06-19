@@ -1,9 +1,9 @@
-import {forwardRef, useMemo} from 'react';
+import React, {forwardRef, useMemo} from 'react';
 
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import useObjectCreator from './hooks/useObjectCreator';
+import ObjectRender from './components/ObjectRender';
 
 export type TextProps = Omit<ComponentObjectProps<'text'>, 'text'> & {
   text?: string;
@@ -12,18 +12,14 @@ export type TextProps = Omit<ComponentObjectProps<'text'>, 'text'> & {
 
 export const Text = forwardRef<ObjectManager, TextProps>(
   ({children, ...props}, ref) => {
-    useObjectCreator(
-      'text',
-      useMemo(() => {
-        return {
-          ...props,
-          text: props.text ?? children ?? 'No Text',
-        };
-      }, [children, props]),
-      ref,
-    );
+    const allProps = useMemo(() => {
+      return {
+        ...props,
+        text: props.text ?? children ?? 'No Text',
+      };
+    }, [children, props]);
 
-    return null;
+    return <ObjectRender type="text" props={allProps} objectRef={ref} />;
   },
 );
 

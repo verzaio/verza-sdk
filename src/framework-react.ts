@@ -9,28 +9,21 @@ export {useFrame} from 'engine/frameworks/react/hooks/useFrame';
 export {useOnTicks} from 'engine/frameworks/react/hooks/useOnTicks';
 export {useKey} from 'engine/frameworks/react/hooks/useKey';
 export {useControllerProp} from 'engine/frameworks/react/hooks/useControllerProp';
-export {useNetwork} from 'engine/frameworks/react/hooks/useNetwork';
-export {useCamera} from 'engine/frameworks/react/hooks/useCamera';
-export {useAssets} from 'engine/frameworks/react/hooks/useAssets';
-export {useChat} from 'engine/frameworks/react/hooks/useChat';
 export {useCommand} from 'engine/frameworks/react/hooks/useCommand';
 export {useMainToolbarItem} from 'engine/frameworks/react/hooks/useMainToolbarItem';
 export {useToolbar} from 'engine/frameworks/react/hooks/useToolbar';
 export {useToolbarItemPress} from 'engine/frameworks/react/hooks/useToolbarItemPress';
-export {useWorld} from 'engine/frameworks/react/hooks/useWorld';
-export {useUI} from 'engine/frameworks/react/hooks/useUI';
 export {useCursorLock} from 'engine/frameworks/react/hooks/useCursorLock';
 export {useInterfaces} from 'engine/frameworks/react/hooks/useInterfaces';
 export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
-export {useRaycaster} from 'engine/frameworks/react/hooks/useRaycaster';
 export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
+export {useAddSound} from 'engine/frameworks/react/hooks/useAddSound';
+export {usePersistentStore} from 'engine/frameworks/react/hooks/usePersistentStore';
+export {useMemoryStore} from 'engine/frameworks/react/hooks/useMemoryStore';
 
 export {useLocalPlayerId} from 'engine/frameworks/react/hooks/useLocalPlayerId';
 export {useLocalPlayer} from 'engine/frameworks/react/hooks/useLocalPlayer';
 export {useStreamedLocalPlayer} from 'engine/frameworks/react/hooks/useStreamedLocalPlayer';
-
-export {useObjects} from 'engine/frameworks/react/hooks/useObjects';
-export {usePlayers} from 'engine/frameworks/react/hooks/usePlayers';
 
 export {useObject} from 'engine/frameworks/react/hooks/useObject';
 export {usePlayer} from 'engine/frameworks/react/hooks/usePlayer';
@@ -105,3 +98,15 @@ export {
   Text,
   type TextProps,
 } from 'engine/frameworks/react/components/objects/Text';
+export {
+  PointLight,
+  type PointLightProps,
+} from 'engine/frameworks/react/components/objects/PointLight';
+export {
+  SpotLight,
+  type SpotLightProps,
+} from 'engine/frameworks/react/components/objects/SpotLight';
+export {
+  RectAreaLight,
+  type RectAreaLightProps,
+} from 'engine/frameworks/react/components/objects/RectAreaLight';

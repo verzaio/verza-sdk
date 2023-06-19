@@ -15,7 +15,7 @@ export type {EngineParams} from 'engine/definitions/local/types/engine.types';
 
 export type {MessengerManagerEventsMap} from 'engine/definitions/types/messenger.types';
 
-export {
+export type {
   PlayerState,
   CharacterGender,
   PlayerBanStatus,
@@ -25,6 +25,13 @@ export type {
   ScriptEventMap,
   NetworkEventData,
 } from 'engine/definitions/types/scripts.types';
+
+export {
+  StorageModeType,
+  StorageFilters,
+  StorageResultItem,
+  StorageResult,
+} from 'engine/definitions/types/storage.types';
 
 export type {
   AnimationLoop,
@@ -40,6 +47,15 @@ export type {
   ClotheItem,
   PlayerClotheItem,
 } from 'engine/definitions/types/clothes.types';
+
+export type {
+  SoundName,
+  SoundItem,
+  SoundLoop,
+  SoundOptions,
+  SoundEventType,
+  SoundEvent,
+} from 'engine/definitions/types/audio.types';
 
 export type {
   ObjectPointerEvent,
@@ -75,8 +91,6 @@ export type {
 
 export type {
   ColorType,
-  KeyEventType,
-  KeyEvent,
   IndicatorId,
   IndicatorTitle,
   Indicator,
@@ -86,10 +100,15 @@ export type {
   ToolbarElement,
   ToolbarItem,
   ToolbarPosition,
+} from 'engine/definitions/types/ui.types';
+
+export type {
+  KeyEventType,
+  KeyEvent,
   PointerEvent,
   PointerEventType,
   FileTransfer,
-} from 'engine/definitions/types/ui.types';
+} from 'engine/definitions/types/input.types';
 
 export type {
   ObjectMaterialType,

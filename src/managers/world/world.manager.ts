@@ -91,6 +91,18 @@ class WorldManager {
     this._engine.messenger.emit('setWeather', [weather]);
   }
 
+  setFogStatus(status: boolean) {
+    this._engine.messenger.emit('setFogStatus', [status]);
+  }
+
+  setFogColor(color: ColorType) {
+    this._engine.messenger.emit('setFogColor', [color]);
+  }
+
+  setFogDensity(density: number) {
+    this._engine.messenger.emit('setFogDensity', [density]);
+  }
+
   setSkybox(skybox: SkyboxProps | string | null) {
     this._engine.messenger.emit('setSkybox', [skybox]);
   }

@@ -1,7 +1,16 @@
 import {Box3, Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {MATERIAL_MAPS} from 'engine/definitions/constants/materials.constants';
-import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
+import {
+  UNSUPPORTED_OBJECTS_BLOOM,
+  UNSUPPORTED_OBJECTS_COLLISIONS,
+  UNSUPPORTED_OBJECTS_SHADOWS,
+} from 'engine/definitions/constants/objects-shared.constants';
+import {
+  ObjectEventMap,
+  ObjectSoundEvent,
+} from 'engine/definitions/local/types/events.types';
+import {SoundEvent, SoundOptions} from 'engine/definitions/types/audio.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
   EntityColliderType,
@@ -179,23 +188,23 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   get supportsShadows() {
-    return (
-      this.objectType !== 'group' &&
-      this.objectType !== 'line' &&
-      this.objectType !== 'text'
-    );
+    return !UNSUPPORTED_OBJECTS_SHADOWS.has(this.objectType);
   }
 
   get shadows() {
     return this.data.ss ?? this.supportsShadows;
   }
 
+  get supportsBloom() {
+    return !UNSUPPORTED_OBJECTS_BLOOM.has(this.objectType);
+  }
+
+  get bloom() {
+    return (this.data.o as BoxProps).bloom ?? false;
+  }
+
   get supportsCollision() {
-    return (
-      this.objectType !== 'group' &&
-      this.objectType !== 'line' &&
-      this.objectType !== 'text'
-    );
+    return !UNSUPPORTED_OBJECTS_COLLISIONS.has(this.objectType);
   }
 
   get collision(): EntityCollisionType | null {
@@ -373,6 +382,14 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   setShadows(status: boolean) {
     this.setData({
       ss: status,
+    } as PickObject<OT>);
+  }
+
+  setBloom(status: boolean) {
+    this.setData({
+      o: {
+        bloom: status,
+      },
     } as PickObject<OT>);
   }
 
@@ -604,6 +621,10 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.engine.objects.emitHandler(this, player => {
       this._messenger.emit('setObjectVisible', [this.id, visible], player.id);
     });
+  }
+
+  setHelper(status: boolean) {
+    this._messenger.emit('setObjectHelper', [this.id, status]);
   }
 
   enableHighlight(options: ObjectHighlightOptions = {}) {
@@ -860,6 +881,25 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this._messenger.emit('stopObjectTransitions', [this.id]);
   }
 
+  setSound(soundName: string, options?: Omit<SoundOptions, 'objectId'>) {
+    return this.engine.audio.createSound(
+      soundName,
+      {
+        loop: 'repeat',
+
+        ...options,
+
+        autoplay: true,
+        objectId: this.id,
+      },
+      this.id,
+    );
+  }
+
+  removeSound() {
+    this._messenger.emit('destroySound', [this.id]);
+  }
+
   setProximityAction(action: Omit<ProximityAction, 'id' | 'objectId'>) {
     if (action.position) {
       action.position = toVector3Array(action.position);
@@ -894,6 +934,13 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       ...event,
       object: this,
     } as ObjectProximityActionEvent<OT>);
+  };
+
+  _onSoundEnd = (event: SoundEvent) => {
+    this.events.emit('onSoundEnd', {
+      ...event,
+      object: this,
+    } as ObjectSoundEvent<OT>);
   };
 
   _onEnterSensor = (playerId: number) => {

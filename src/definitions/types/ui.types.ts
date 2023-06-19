@@ -42,67 +42,6 @@ export type UISizeProps<T extends string = UISizePropValue> = {
   zIndex?: number;
 };
 
-export type KeyEventType = 'keydown' | 'keyup';
-
-export type UIEvent = {
-  altKey?: boolean;
-
-  ctrlKey?: boolean;
-
-  metaKey?: boolean;
-
-  shiftKey?: boolean;
-
-  activeInput?: boolean;
-};
-
-export type KeyEvent = {
-  type: KeyEventType;
-
-  code: string;
-
-  key: string;
-} & UIEvent;
-
-export type PointerEventType =
-  | 'pointermove'
-  | 'pointerdown'
-  | 'pointerup'
-  | 'pointerenter'
-  | 'pointerleave';
-
-export type PointerEvent = {
-  type: PointerEventType;
-
-  pointerType: string;
-
-  x: number;
-
-  y: number;
-
-  button: number;
-
-  buttons: number;
-
-  source?: string;
-} & UIEvent;
-
-export type DragEventType = 'dragover' | 'dragenter' | 'dragleave' | 'drop';
-
-export type DragEvent = {
-  type: DragEventType;
-
-  x: number;
-
-  y: number;
-
-  button: number;
-
-  buttons: number;
-
-  source?: string;
-} & UIEvent;
-
 export type ToolbarPosition = 'bottom' | 'right';
 
 export type MainToolbarItem = {
@@ -121,13 +60,6 @@ export type ToolbarElement = {
   id: string;
   position: ToolbarPosition;
   items: ToolbarItem[];
-};
-
-export type FileTransfer = {
-  name: string;
-  type: string;
-  size: number;
-  buffer: ArrayBuffer;
 };
 
 declare const _colorKeywords: {

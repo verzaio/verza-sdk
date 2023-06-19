@@ -11,8 +11,11 @@ export const useOnTicks = (
     const ticksTime = 1000 / ticks;
 
     let timeoutId: ReturnType<typeof setTimeout> = null!;
+    let unloaded = false;
 
     const check = async () => {
+      if (unloaded) return;
+
       await handleRef.current();
 
       timeoutId = setTimeout(check, ticksTime);
@@ -21,9 +24,8 @@ export const useOnTicks = (
     check();
 
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      unloaded = true;
+      clearTimeout(timeoutId);
     };
   }, [ticks]);
 };

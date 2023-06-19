@@ -8,6 +8,9 @@ import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EngineScriptEventMap} from 'engine/definitions/local/types/events.types';
 import {EventKey} from 'engine/definitions/types/events.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
+import AudioManager from 'engine/managers/audio/audio.manager';
+import InputManager from 'engine/managers/input.manager';
+import StorageManager from 'engine/managers/storage/storage.manager';
 import {isValidEnv} from 'engine/utils/misc.utils';
 
 import AnimationsManager from './animations.manager';
@@ -39,7 +42,13 @@ export class EngineManager {
 
   api: ApiManager;
 
+  storage: StorageManager;
+
+  input: InputManager = null!;
+
   ui: UIManager = null!;
+
+  audio: AudioManager = null!;
 
   chat: ChatManager;
 
@@ -170,6 +179,8 @@ export class EngineManager {
 
     this.network = new NetworkManager(this);
 
+    this.storage = new StorageManager(this);
+
     this.world = new WorldManager(this);
 
     this.clothes = new ClothesManager(this);
@@ -182,7 +193,9 @@ export class EngineManager {
 
     // only for client
     if (this.isClient) {
+      this.input = new InputManager(this);
       this.ui = new UIManager(this);
+      this.audio = new AudioManager(this);
       this.camera = new CameraManager(this);
       this.assets = new AssetsManager(this);
     }
@@ -260,6 +273,7 @@ export class EngineManager {
     // binds
     this.network.bind();
     this.api.bind(); // always after network
+    this.input?.bind();
     this.ui?.bind();
     this.camera?.bind();
     this.streamer?.bind();
@@ -283,6 +297,7 @@ export class EngineManager {
     this.api.destroy();
     this.messenger.destroy();
     this.commands.destroy();
+    this.input?.destroy();
     this.ui?.destroy();
     this.players.unload();
     this.objects.unload();

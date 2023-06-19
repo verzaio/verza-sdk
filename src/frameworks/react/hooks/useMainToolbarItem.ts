@@ -1,11 +1,10 @@
 import {useEffect} from 'react';
 
 import {MainToolbarItem} from 'engine/definitions/types/ui.types';
-
-import {useUI} from './useUI';
+import {useEngine} from 'engine/framework-react';
 
 export const useMainToolbarItem = (item: MainToolbarItem) => {
-  const ui = useUI();
+  const {ui} = useEngine();
 
   // create or update
   useEffect(() => {

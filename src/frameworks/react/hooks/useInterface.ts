@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
 
-import {useUI} from './useUI';
+import {useEngine} from 'engine/framework-react';
 
 export const useInterface = (tag: string): boolean => {
-  const ui = useUI();
+  const {ui} = useEngine();
 
   const [enabled, setEnabled] = useState(() =>
     ui.controller.interfaces.has(tag),

@@ -1,6 +1,7 @@
+import {useEngine} from 'engine/framework-react';
+
 import {useControllerProp} from './useControllerProp';
-import {useUI} from './useUI';
 
 export const useInterfaces = () => {
-  return useControllerProp(useUI().controller, 'interfaces');
+  return useControllerProp(useEngine().ui.controller, 'interfaces');
 };

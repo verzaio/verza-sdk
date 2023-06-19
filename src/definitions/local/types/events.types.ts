@@ -1,6 +1,7 @@
+import {SoundEvent} from 'engine/definitions/types/audio.types';
+import {PointerEvent} from 'engine/definitions/types/input.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
 import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
-import {PointerEvent} from 'engine/definitions/types/ui.types';
 import {ProximityActionEvent} from 'engine/definitions/types/world.types';
 import {IntersectsResult} from 'engine/definitions/types/world.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
@@ -16,6 +17,10 @@ export type ObjectProximityActionEvent<T extends ObjectType = ObjectType> =
   ProximityActionEvent & {
     object: ObjectManager<T>;
   };
+
+export type ObjectSoundEvent<T extends ObjectType = ObjectType> = SoundEvent & {
+  object: ObjectManager<T>;
+};
 
 export type ObjectEventMap<T extends ObjectType = ObjectType> = {
   onPointerMove: (event: ObjectPointerEvent<T>) => void;
@@ -33,6 +38,8 @@ export type ObjectEventMap<T extends ObjectType = ObjectType> = {
   onTransitionStart: (transitionId: number | string) => void;
 
   onProximityActionTriggered: (event: ObjectProximityActionEvent<T>) => void;
+
+  onSoundEnd: (event: ObjectSoundEvent<T>) => void;
 
   onEnterSensor: (player: PlayerManager) => void;
 

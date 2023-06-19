@@ -1,20 +1,26 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import React, {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import equal from 'fast-deep-equal';
-
-import {
-  ObjectEventMap,
-  ObjectEventMapList,
-} from 'engine/definitions/local/types/events.types';
+import {ObjectEventMapList} from 'engine/definitions/local/types/events.types';
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
-import {ProximityAction} from 'engine/definitions/types/world.types';
-import {useObjects} from 'engine/frameworks/react/hooks/useObjects';
+import {useEngine} from 'engine/framework-react';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
-import useObjectParent from './useObjectParent';
+import {ObjectHelper} from './ObjectHelper';
+import {ObjectProximityAction} from './ObjectProximityAction';
+import {ObjectSound} from './ObjectSound';
 
-const EVENT_KEYS: (keyof ObjectEventMap)[] = [
+export const ObjectContext = createContext<ObjectManager>(null!);
+
+const EVENT_KEYS: Set<keyof ObjectEventMapList> = new Set([
   'onPointerMove',
   'onPointerDown',
   'onPointerUp',
@@ -22,18 +28,35 @@ const EVENT_KEYS: (keyof ObjectEventMap)[] = [
   'onPointerLeave',
 
   'onProximityActionTriggered',
+  'onSoundEnd',
 
   'onEnterSensor',
   'onLeaveSensor',
-];
+]);
 
-const useObjectCreator = <T extends ObjectType = ObjectType>(
-  type: T,
-  props: ComponentObjectProps<T>,
-  ref: any,
-) => {
-  const objects = useObjects();
-  const parent = useObjectParent();
+const EXCLUDED_PROPS: Set<keyof ComponentObjectProps> = new Set([
+  'proximityAction',
+  'soundName',
+  'soundOptions',
+  'helper',
+]);
+
+type ObjectRenderProps<T extends ObjectType = ObjectType> = {
+  type: T;
+  props: ComponentObjectProps<T>;
+  objectRef: any;
+  children?: ReactNode;
+};
+
+const ObjectRender = <T extends ObjectType = ObjectType>({
+  children,
+  type,
+  props,
+  objectRef: ref,
+}: ObjectRenderProps<T>) => {
+  const {objects} = useEngine();
+
+  const parent = useContext(ObjectContext);
   const parentIdRef = useRef(parent?.id);
   parentIdRef.current = parent?.id;
 
@@ -91,6 +114,12 @@ const useObjectCreator = <T extends ObjectType = ObjectType>(
       }
     });
 
+    EXCLUDED_PROPS.forEach(name => {
+      if (objectProps[name]) {
+        delete objectProps[name];
+      }
+    });
+
     const object = objects.create(type, objectProps);
 
     setObject(object, ref);
@@ -102,39 +131,35 @@ const useObjectCreator = <T extends ObjectType = ObjectType>(
     };
   }, [setObject, objects, props, type, ref]);
 
-  const lastProximityAction = useRef<
-    Omit<ProximityAction, 'id' | 'objectId'> | null | boolean
-  >(null);
+  if (!object || object?.destroyed) return null;
 
-  // proximity action
-  useEffect(() => {
-    if (!props.proximityAction || !object) return;
+  return (
+    <>
+      {children && (
+        <ObjectContext.Provider value={object}>
+          {children}
+        </ObjectContext.Provider>
+      )}
 
-    if (equal(lastProximityAction.current, props.proximityAction)) return;
+      {/* object options */}
+      {props.proximityAction && (
+        <ObjectProximityAction
+          object={object}
+          proximityAction={props.proximityAction}
+        />
+      )}
 
-    lastProximityAction.current =
-      typeof props.proximityAction === 'boolean'
-        ? props.proximityAction
-        : {...props.proximityAction};
+      {!!props.soundName && (
+        <ObjectSound
+          object={object}
+          soundName={props.soundName}
+          soundOptions={props.soundOptions}
+        />
+      )}
 
-    const proximityAciton =
-      typeof props.proximityAction === 'boolean' ? {} : props.proximityAction;
-
-    object.setProximityAction(proximityAciton);
-  }, [object, props.proximityAction]);
-
-  // remove proximity action
-  useEffect(() => {
-    if (!object) return;
-
-    return () => {
-      if (lastProximityAction.current) {
-        object.removeProximityAction();
-      }
-    };
-  }, [object]);
-
-  return {object};
+      {props.helper && <ObjectHelper object={object} />}
+    </>
+  );
 };
 
-export default useObjectCreator;
+export default ObjectRender;

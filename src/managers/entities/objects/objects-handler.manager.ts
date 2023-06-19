@@ -1,9 +1,9 @@
 import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
 import {
   POINTER_EVENTS_RELATION,
-  UIPointerEvents,
-} from 'engine/definitions/local/types/ui.types';
-import {PointerEvent} from 'engine/definitions/types/ui.types';
+  InputPointerEvents,
+} from 'engine/definitions/local/types/input.types';
+import {PointerEvent} from 'engine/definitions/types/input.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import ObjectsManager from 'engine/managers/entities/objects/objects.manager';
 import SubscriberTracker from 'engine/managers/entities/utils/SubscriberTracker';
@@ -63,6 +63,7 @@ class ObjectsHandlerManager {
       // watch events
       this._objects.eventsToWatch = new Set([
         'onProximityActionTriggered',
+        'onSoundEnd',
 
         'onTransitionStart',
         'onTransitionEnd',
@@ -101,6 +102,27 @@ class ObjectsHandlerManager {
           );
         },
       );
+
+      // onSoundEnd
+      this._objects.watcher.on('onSoundEnd', (object, subscribed) => {
+        this._tracker.track(
+          'onSoundEnd',
+          object.id,
+          !!object.events.listenerCount('onSoundEnd'),
+          subscribed,
+          () =>
+            this._engine.events.on(
+              `onObjectSoundEndRaw_${object.id}`,
+              object._onSoundEnd,
+            ),
+
+          () =>
+            this._engine.events.off(
+              `onObjectSoundEndRaw_${object.id}`,
+              object._onSoundEnd,
+            ),
+        );
+      });
 
       // onTransitionStart
       this._objects.watcher.on('onTransitionStart', (object, subscribed) => {
@@ -349,7 +371,7 @@ class ObjectsHandlerManager {
   };
 
   private _onPointerEvent = (
-    eventName: UIPointerEvents,
+    eventName: InputPointerEvents,
     object: ObjectManager,
     subscribed: boolean,
   ) => {

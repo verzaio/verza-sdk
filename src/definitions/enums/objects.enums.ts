@@ -16,6 +16,9 @@ export enum ObjectType {
   icosahedron = 'icosahedron',
   line = 'line',
   text = 'text',
+  spotlight = 'spotlight',
+  pointlight = 'pointlight',
+  rectarealight = 'rectarealight',
 }
 
 export enum ObjectSource {
