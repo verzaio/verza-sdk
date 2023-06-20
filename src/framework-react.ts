@@ -5,29 +5,39 @@ export {
 
 export {useEngine} from 'engine/frameworks/react/hooks/useEngine';
 export {useEvent} from 'engine/frameworks/react/hooks/useEvent';
+
 export {useFrame} from 'engine/frameworks/react/hooks/useFrame';
 export {useOnTicks} from 'engine/frameworks/react/hooks/useOnTicks';
-export {useKey} from 'engine/frameworks/react/hooks/useKey';
-export {useControllerProp} from 'engine/frameworks/react/hooks/useControllerProp';
+
 export {useCommand} from 'engine/frameworks/react/hooks/useCommand';
+
+export {useControllerProp} from 'engine/frameworks/react/hooks/useControllerProp';
+
+export {useKey} from 'engine/frameworks/react/hooks/useKey';
+export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
+
 export {useMainToolbarItem} from 'engine/frameworks/react/hooks/useMainToolbarItem';
 export {useToolbar} from 'engine/frameworks/react/hooks/useToolbar';
 export {useToolbarItemPress} from 'engine/frameworks/react/hooks/useToolbarItemPress';
 export {useCursorLock} from 'engine/frameworks/react/hooks/useCursorLock';
 export {useInterfaces} from 'engine/frameworks/react/hooks/useInterfaces';
 export {useInterface} from 'engine/frameworks/react/hooks/useInterface';
-export {usePointer} from 'engine/frameworks/react/hooks/usePointer';
-export {useAddSound} from 'engine/frameworks/react/hooks/useAddSound';
+
 export {usePersistentStore} from 'engine/frameworks/react/hooks/usePersistentStore';
 export {useMemoryStore} from 'engine/frameworks/react/hooks/useMemoryStore';
+
+export {useAddSound} from 'engine/frameworks/react/hooks/useAddSound';
+export {useAddAnimations} from 'engine/frameworks/react/hooks/useAddAnimations';
+export {useAddClothes} from 'engine/frameworks/react/hooks/useAddClothes';
 
 export {useLocalPlayerId} from 'engine/frameworks/react/hooks/useLocalPlayerId';
 export {useLocalPlayer} from 'engine/frameworks/react/hooks/useLocalPlayer';
 export {useStreamedLocalPlayer} from 'engine/frameworks/react/hooks/useStreamedLocalPlayer';
 
-export {useObject} from 'engine/frameworks/react/hooks/useObject';
 export {usePlayer} from 'engine/frameworks/react/hooks/usePlayer';
 export {useStreamedPlayer} from 'engine/frameworks/react/hooks/useStreamedPlayer';
+
+export {useObject} from 'engine/frameworks/react/hooks/useObject';
 export {useStreamedObject} from 'engine/frameworks/react/hooks/useStreamedObject';
 
 export {
