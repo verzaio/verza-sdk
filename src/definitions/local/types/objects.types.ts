@@ -22,8 +22,11 @@ export type ComponentObjectProps<T extends ObjectType = ObjectType> = Omit<
   'type'
 > & {
   proximityAction?: Omit<ProximityAction, 'id' | 'objectId'> | boolean;
+
   soundName?: string;
+
   soundOptions?: Omit<SoundOptions, 'objectId'>;
+
   helper?: boolean;
 };
 

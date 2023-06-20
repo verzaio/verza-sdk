@@ -35,13 +35,17 @@ class SyncManager {
 
     // player set
     this.events.on(NetworkSyncEvent.PlayerSet, packet => {
-      this.players.create(packet.i!, {
-        name: packet.e,
-        state: PLAYER_STATE_PACKET_INDEX[packet.s!],
-        stateAnimIndex: packet.n,
-        character: packet.c,
-        roles: packet.l,
-      });
+      this.players.create(
+        packet.i!,
+        {
+          name: packet.e,
+          state: PLAYER_STATE_PACKET_INDEX[packet.s!],
+          stateAnimIndex: packet.n,
+          character: packet.c,
+          roles: packet.l,
+        },
+        false,
+      );
       this.players.handlePacket(packet.i!, packet);
     });
 

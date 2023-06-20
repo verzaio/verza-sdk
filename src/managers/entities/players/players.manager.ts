@@ -24,8 +24,8 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
     this._handler = new PlayersHandlerManager(this);
   }
 
-  create(id: number, data?: PlayerDataProps) {
-    return this._create(id, data);
+  create(id: number, data?: PlayerDataProps, isDetached = true) {
+    return this._create(id, data, isDetached);
   }
 
   load() {

@@ -26,6 +26,7 @@ import {
 } from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import {PlayerBanStatus} from 'engine/types';
 import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';
@@ -172,7 +173,7 @@ class PlayerManager extends EntityManager<
     await this.messenger.emitAsync('removePlayerRole', [this.id, roleId]);
   }
 
-  async getBanStatus() {
+  async getBanStatus(): Promise<PlayerBanStatus> {
     const {
       data: [status],
     } = await this.messenger.emitAsync('getPlayerBanStatus', [this.id]);
@@ -180,7 +181,7 @@ class PlayerManager extends EntityManager<
     return status;
   }
 
-  async ban(reason: string, duration = null) {
+  async ban(reason: string, duration = null): Promise<PlayerBanStatus> {
     const {
       data: [status],
     } = await this.messenger.emitAsync('banPlayer', [

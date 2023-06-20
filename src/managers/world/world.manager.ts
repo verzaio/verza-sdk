@@ -1,3 +1,5 @@
+import {v4} from 'uuid';
+
 import {ColorType} from 'engine/definitions/types/ui.types';
 import {
   MoonPhases,
@@ -119,12 +121,20 @@ class WorldManager {
     this._engine.messenger.emit('setViewportRender', [type]);
   }
 
-  createProximityAction(action: ProximityAction) {
+  createProximityAction(action: Partial<ProximityAction>): string {
     if (action.position) {
       action.position = toVector3Array(action.position);
     }
 
-    this._engine.messenger.emit('createProximityAction', [action]);
+    if (!action.id) {
+      action.id = v4();
+    }
+
+    this._engine.messenger.emit('createProximityAction', [
+      action as ProximityAction,
+    ]);
+
+    return action.id;
   }
 
   deleteProximityAction(actionId: string) {

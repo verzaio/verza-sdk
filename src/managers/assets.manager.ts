@@ -1,4 +1,4 @@
-import {AssetTransformOptions} from 'engine/definitions/types/assets.types';
+import {AssetOptions} from 'engine/definitions/types/assets.types';
 
 import {FileTransfer} from '..';
 
@@ -20,7 +20,7 @@ class AssetsManager {
     this._engine = engine;
   }
 
-  async upload(file: FileTransfer, options: AssetTransformOptions = {}) {
+  async upload(file: FileTransfer, options: AssetOptions = {}) {
     const {
       data: [assetId],
     } = await this._engine.messenger.emitAsync('uploadAsset', [file, options]);
