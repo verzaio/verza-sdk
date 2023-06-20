@@ -7,14 +7,14 @@ class MemoryStoreManager<T = any> extends BaseStoreManager<T> {
     super(engine, 'memory', name, scope);
   }
 
-  async set(key: string, value: unknown, expiration = 3600 * 24) {
+  async set(key: string, value: unknown, ttl = 3600 * 24) {
     await this.messenger.emitAsync('setStoreValue', [
       this.mode,
       this.name,
       this.scope,
       key,
       value,
-      expiration,
+      ttl,
     ]);
   }
 }

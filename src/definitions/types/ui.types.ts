@@ -28,6 +28,12 @@ export type UISizePropValue =
   | `${number}vh`
   | `${number}vw`
   | `${number}px`
+  | `${number}svw`
+  | `${number}svh`
+  | `${number}lvw`
+  | `${number}lvh`
+  | `${number}dvw`
+  | `${number}dvh`
   | `${number}%`
   | 'auto'
   | 'none';
