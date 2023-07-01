@@ -63,9 +63,9 @@ export type ObjectBaseType<T extends ObjectType = ObjectType, D = unknown> = {
 };
 
 export type ObjectMaterialProps = {
-  color?: ColorType;
-
   bloom?: boolean;
+
+  color?: ColorType;
 
   material?: ObjectMaterialMix;
 };
@@ -90,6 +90,8 @@ export type ObjectGltfType = ObjectBaseType<
   'gltf',
   {
     u?: string;
+
+    bloom?: boolean;
   }
 >;
 
@@ -260,9 +262,9 @@ export type ObjectLineType = ObjectBaseType<
   {
     points?: Vector3Array[];
 
-    color?: ColorType;
-
     bloom?: boolean;
+
+    color?: ColorType;
   }
 >;
 

@@ -186,9 +186,13 @@ class WebServerManager {
     this._engine.localPlayerId = playerId;
 
     // create player
-    this._engine.players.create(playerId, {
-      roles,
-    });
+    this._engine.players.create(
+      playerId,
+      {
+        roles,
+      },
+      false,
+    );
 
     return true;
   }

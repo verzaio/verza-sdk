@@ -136,7 +136,7 @@ class PlayersHandlerManager {
     this._messenger.events.on(
       'onPlayerCreate',
       ({data: [playerId, data, streamed]}) => {
-        const player = this._players.create(playerId, data);
+        const player = this._players.create(playerId, data, false);
 
         // stream
         if (streamed) {

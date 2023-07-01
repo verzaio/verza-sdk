@@ -62,7 +62,11 @@ class EntitiesManager<
     return this.entitiesMap.get(id)!;
   }
 
-  protected _create(id: string | number, data?: T['data']) {
+  protected _create(
+    id: string | number,
+    data?: T['data'],
+    isDetached?: boolean,
+  ) {
     let entity: T = null!;
 
     entity = this.get(id);
@@ -81,6 +85,10 @@ class EntitiesManager<
     };
 
     entity = new this.Manager(newEntity, this.engine) as T;
+
+    if (isDetached) {
+      return entity;
+    }
 
     // create events
     entity.events = (this.engine.eventsManager.get(
