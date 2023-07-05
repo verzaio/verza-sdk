@@ -62,7 +62,6 @@ class EffectsManager {
   }
 
   playParticlesAtPosition(
-    soundName: string,
     position: Vector3Array | Vector3,
     options: ParticlesOptions = {},
     withId?: string,
