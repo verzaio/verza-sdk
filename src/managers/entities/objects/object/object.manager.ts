@@ -889,8 +889,8 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
 
   setSound(soundName: string, options?: SoundOptions) {
     this.sound = this.engine.audio.createObjectSound(
-      soundName,
       this.id,
+      soundName,
       {
         loop: 'repeat',
 

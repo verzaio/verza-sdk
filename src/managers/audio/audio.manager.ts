@@ -89,6 +89,7 @@ class AudioManager {
       soundName,
       {
         ...options,
+
         position: toVector3Array(position),
       },
       withId,
