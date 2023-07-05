@@ -14,6 +14,7 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
+import {ParticlesOptions} from 'engine/types';
 
 import {ObjectEventMapList} from './events.types';
 
@@ -21,11 +22,13 @@ export type ComponentObjectProps<T extends ObjectType = ObjectType> = Omit<
   ObjectEventMapList<T> & CreateObjectProps<T>,
   'type'
 > & {
-  proximityAction?: Omit<ProximityAction, 'id' | 'objectId'> | boolean;
-
   soundName?: string;
 
-  soundOptions?: Omit<SoundOptions, 'objectId'>;
+  soundOptions?: SoundOptions;
+
+  proximityAction?: Omit<ProximityAction, 'id' | 'objectId'> | boolean;
+
+  particles?: ParticlesOptions | boolean;
 
   helper?: boolean;
 };

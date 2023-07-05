@@ -11,6 +11,8 @@ import ClothesManager from 'engine/managers/clothes.manager';
 import ControllerManager, {
   createControllerManager,
 } from 'engine/managers/controller.manager';
+import EffectsManager from 'engine/managers/effects/effects.manager';
+import ParticlesManager from 'engine/managers/effects/particles.manager';
 import EventsManager, {
   type EventListenersMap,
 } from 'engine/managers/events.manager';
@@ -62,6 +64,8 @@ export {
   WorldManager,
   RaycasterManager,
   AnimationsManager,
+  EffectsManager,
+  ParticlesManager,
   ClothesManager,
   InputManager,
   AudioManager,

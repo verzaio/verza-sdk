@@ -57,6 +57,19 @@ export type {
   SoundEvent,
 } from 'engine/definitions/types/audio.types';
 
+export {
+  EffectEasing,
+  EffectLoop,
+  EffectShape,
+  EffectDirection,
+  EffectCubicBezier,
+  ColorSequenceStep,
+  NumberSequenceStep,
+  EffectType,
+  EffectValueRange,
+  ParticlesOptions,
+} from 'engine/definitions/types/effects.types';
+
 export type {
   ObjectPointerEvent,
   ObjectProximityActionEvent,

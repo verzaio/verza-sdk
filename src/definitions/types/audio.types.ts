@@ -26,7 +26,6 @@ export type SoundOptions = {
   maxDistance?: number;
   rolloffFactor?: number;
   autoDestroy?: boolean;
-  objectId?: string;
 };
 
 export type SoundEventType = 'ended';

@@ -36,6 +36,8 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
+import SoundManager from 'engine/managers/audio/sound.manager';
+import ParticlesManager from 'engine/managers/effects/particles.manager';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
 import {ObjectProximityActionEvent, ObjectTexture} from 'engine/types';
@@ -65,6 +67,10 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   children: Set<ObjectManager> = new Set();
 
   boundingBox: Box3 = null!;
+
+  sound: SoundManager | null = null;
+
+  particles: ParticlesManager | null = null!;
 
   private _messenger: MessengerEmitterManager;
 
@@ -881,23 +887,39 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this._messenger.emit('stopObjectTransitions', [this.id]);
   }
 
-  setSound(soundName: string, options?: Omit<SoundOptions, 'objectId'>) {
-    return this.engine.audio.createSound(
+  setSound(soundName: string, options?: SoundOptions) {
+    this.sound = this.engine.audio.createObjectSound(
       soundName,
+      this.id,
       {
         loop: 'repeat',
 
         ...options,
 
         autoplay: true,
-        objectId: this.id,
       },
       this.id,
     );
+
+    return this.sound;
   }
 
   removeSound() {
-    this._messenger.emit('destroySound', [this.id]);
+    this.sound?.destroy();
+  }
+
+  setParticles(options?: SoundOptions) {
+    this.particles = this.engine.effects.createObjectParticles(
+      this.id,
+      options,
+      this.id,
+    );
+
+    return this.particles;
+  }
+
+  removeParticles() {
+    this.particles?.destroy();
   }
 
   setProximityAction(action: Omit<ProximityAction, 'id' | 'objectId'>) {

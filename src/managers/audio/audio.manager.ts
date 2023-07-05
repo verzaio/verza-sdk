@@ -1,7 +1,7 @@
 import {Vector3} from 'three';
 
 import {SoundItem, SoundOptions} from 'engine/definitions/types/audio.types';
-import {Vector3Array} from 'engine/types';
+import {ObjectManager, Vector3Array} from 'engine/types';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import {EngineManager} from '../engine.manager';
@@ -38,6 +38,26 @@ class AudioManager {
     const sound = new SoundManager(this._engine, soundName, withId);
 
     this._messenger.emit('createSound', [soundName, options, sound.id]);
+
+    return sound;
+  }
+
+  createObjectSound(
+    object: string | ObjectManager,
+    soundName: string,
+    options: SoundOptions = {},
+    withId?: string,
+  ): SoundManager {
+    const sound = new SoundManager(this._engine, soundName, withId);
+
+    this._messenger.emit('createObjectSound', [
+      soundName,
+      typeof object === 'string' ? object : object.id,
+      {
+        ...options,
+      },
+      sound.id,
+    ]);
 
     return sound;
   }
