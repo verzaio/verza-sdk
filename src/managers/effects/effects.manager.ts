@@ -26,7 +26,7 @@ class EffectsManager {
     player: number | PlayerManager,
     options: ParticlesOptions = {},
     withId?: string,
-  ) {
+  ): ParticlesManager {
     return new ParticlesManager(
       this._engine,
       options,
@@ -39,7 +39,7 @@ class EffectsManager {
     object: string | ObjectManager,
     options: ParticlesOptions = {},
     withId?: string,
-  ) {
+  ): ParticlesManager {
     return new ParticlesManager(
       this._engine,
       options,
@@ -49,7 +49,10 @@ class EffectsManager {
     );
   }
 
-  playParticles(options: ParticlesOptions = {}, withId?: string) {
+  playParticles(
+    options: ParticlesOptions = {},
+    withId?: string,
+  ): ParticlesManager {
     return this.createParticles(
       {
         ...options,
@@ -65,7 +68,7 @@ class EffectsManager {
     position: Vector3Array | Vector3,
     options: ParticlesOptions = {},
     withId?: string,
-  ) {
+  ): ParticlesManager {
     return this.playParticles(
       {
         ...options,

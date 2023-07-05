@@ -62,7 +62,11 @@ class AudioManager {
     return sound;
   }
 
-  playSound(soundName: string, options: SoundOptions = {}, withId?: string) {
+  playSound(
+    soundName: string,
+    options: SoundOptions = {},
+    withId?: string,
+  ): SoundManager {
     return this.createSound(
       soundName,
       {
@@ -80,7 +84,7 @@ class AudioManager {
     position: Vector3Array | Vector3,
     options: SoundOptions = {},
     withId?: string,
-  ) {
+  ): SoundManager {
     return this.playSound(
       soundName,
       {
