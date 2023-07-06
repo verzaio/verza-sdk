@@ -36,9 +36,10 @@ const EVENT_KEYS: Set<keyof ObjectEventMapList> = new Set([
 ]);
 
 const EXCLUDED_PROPS: Set<keyof ComponentObjectProps> = new Set([
-  'proximityAction',
   'soundName',
   'soundOptions',
+  'proximityAction',
+  'particles',
   'helper',
 ]);
 
