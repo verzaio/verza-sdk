@@ -1,6 +1,8 @@
+import {Vector3} from 'three';
+
 import {v4} from 'uuid';
 
-import {ParticlesOptions} from 'engine/types';
+import {ParticlesOptions, Vector3Array} from 'engine/types';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';
@@ -52,6 +54,10 @@ class ParticlesManager {
     }
 
     return options;
+  }
+
+  setPosition(position: Vector3Array | Vector3) {
+    this.setOptions({position});
   }
 
   setOptions(options: ParticlesOptions, respawn = false) {
