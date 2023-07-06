@@ -1,6 +1,7 @@
 import {Euler, Quaternion, Vector3} from 'three';
 
 import {SoundOptions} from 'engine/definitions/types/audio.types';
+import {ParticleOptions} from 'engine/definitions/types/effects.types';
 import {
   EntityColliderType,
   EntityCollisionType,
@@ -14,7 +15,6 @@ import {
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
-import {ParticlesOptions} from 'engine/types';
 
 import {ObjectEventMapList} from './events.types';
 
@@ -28,7 +28,7 @@ export type ComponentObjectProps<T extends ObjectType = ObjectType> = Omit<
 
   proximityAction?: Omit<ProximityAction, 'id' | 'objectId'> | boolean;
 
-  particles?: ParticlesOptions | boolean;
+  particles?: ParticleOptions | boolean;
 
   helper?: boolean;
 };

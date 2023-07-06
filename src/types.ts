@@ -63,11 +63,11 @@ export {
   EffectShape,
   EffectDirection,
   EffectCubicBezier,
-  ColorSequenceStep,
-  NumberSequenceStep,
   EffectType,
   EffectValueRange,
-  ParticlesOptions,
+  ParticleOptions,
+  ColorSequenceStep,
+  NumberSequenceStep,
 } from 'engine/definitions/types/effects.types';
 
 export type {

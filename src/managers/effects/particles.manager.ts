@@ -2,7 +2,7 @@ import {Vector3} from 'three';
 
 import {v4} from 'uuid';
 
-import {ParticlesOptions, Vector3Array} from 'engine/types';
+import {ParticleOptions, Vector3Array} from 'engine/types';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';
@@ -18,7 +18,7 @@ class ParticlesManager {
 
   constructor(
     engine: EngineManager,
-    options: ParticlesOptions,
+    options: ParticleOptions,
     withId?: string,
     playerId?: number,
     objectId?: string,
@@ -44,7 +44,7 @@ class ParticlesManager {
     }
   }
 
-  private _parseOptions(options: ParticlesOptions) {
+  private _parseOptions(options: ParticleOptions) {
     if (options.position && typeof options.position !== 'string') {
       options.position = toVector3Array(options.position);
     }
@@ -60,7 +60,7 @@ class ParticlesManager {
     this.setOptions({position});
   }
 
-  setOptions(options: ParticlesOptions, respawn = false) {
+  setOptions(options: ParticleOptions, respawn = false) {
     this._messenger.emit('setParticlesOptions', [
       this.id,
       this._parseOptions(options),
@@ -68,7 +68,7 @@ class ParticlesManager {
     ]);
   }
 
-  play(reset = false, options: ParticlesOptions = {}, respawn = false) {
+  play(reset = false, options: ParticleOptions = {}, respawn = false) {
     this._messenger.emit('playParticles', [
       this.id,
       reset,

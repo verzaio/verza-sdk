@@ -34,7 +34,7 @@ export type EffectType = EffectEasing | EffectCubicBezier;
 
 export type EffectValueRange = [min: number, max: number];
 
-export type ParticlesOptions = {
+export type ParticleOptions = {
   texture?: string;
 
   autoplay?: boolean;
