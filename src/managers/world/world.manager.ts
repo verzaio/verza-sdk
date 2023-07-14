@@ -38,87 +38,87 @@ class WorldManager {
 
   /* light */
   setInteriorMode(status: boolean) {
-    this._engine.messenger.emit('setInteriorMode', [status]);
+    this._messenger.emit('setInteriorMode', [status]);
   }
 
   setHemisphereLightColor(color: ColorType) {
-    this._engine.messenger.emit('setHemisphereLightColor', [color]);
+    this._messenger.emit('setHemisphereLightColor', [color]);
   }
 
   setHemisphereLightGroundColor(color: ColorType) {
-    this._engine.messenger.emit('setHemisphereLightGroundColor', [color]);
+    this._messenger.emit('setHemisphereLightGroundColor', [color]);
   }
 
   setHemisphereLightIntensity(intensity: number) {
-    this._engine.messenger.emit('setHemisphereLightIntensity', [intensity]);
+    this._messenger.emit('setHemisphereLightIntensity', [intensity]);
   }
 
   setGlobalLightColor(color: ColorType) {
-    this._engine.messenger.emit('setGlobalLightColor', [color]);
+    this._messenger.emit('setGlobalLightColor', [color]);
   }
 
   setGlobalLightIntensity(intensity: number) {
-    this._engine.messenger.emit('setGlobalLightIntensity', [intensity]);
+    this._messenger.emit('setGlobalLightIntensity', [intensity]);
   }
 
   /* time */
   setTime(seconds: number) {
-    this._engine.messenger.emit('setTime', [seconds]);
+    this._messenger.emit('setTime', [seconds]);
   }
 
   getTime() {
-    return this._engine.messenger.emitAsync('getTime');
+    return this._messenger.emitAsync('getTime');
   }
 
   setTimeRepresentation(hour: number, minute = 0, second = 0) {
-    this._engine.messenger.emit('setTime', [
+    this._messenger.emit('setTime', [
       Math.max(0, Math.min(hour * 3600 + minute * 60 + second, 86400)),
     ]);
   }
 
   setTimeMode(timeMode: TimeMode) {
-    this._engine.messenger.emit('setTimeMode', [timeMode]);
+    this._messenger.emit('setTimeMode', [timeMode]);
   }
 
   setTimeCycleDuration(timeCycleDuration: number) {
-    this._engine.messenger.emit('setTimeCycleDuration', [timeCycleDuration]);
+    this._messenger.emit('setTimeCycleDuration', [timeCycleDuration]);
   }
 
   setTimezone(timezone: Timezone) {
-    this._engine.messenger.emit('setTimezone', [timezone]);
+    this._messenger.emit('setTimezone', [timezone]);
   }
 
   /* sky */
   setWeather(weather: WeatherType) {
-    this._engine.messenger.emit('setWeather', [weather]);
+    this._messenger.emit('setWeather', [weather]);
   }
 
   setFogStatus(status: boolean) {
-    this._engine.messenger.emit('setFogStatus', [status]);
+    this._messenger.emit('setFogStatus', [status]);
   }
 
   setFogColor(color: ColorType) {
-    this._engine.messenger.emit('setFogColor', [color]);
+    this._messenger.emit('setFogColor', [color]);
   }
 
   setFogDensity(density: number) {
-    this._engine.messenger.emit('setFogDensity', [density]);
+    this._messenger.emit('setFogDensity', [density]);
   }
 
   setSkybox(skybox: SkyboxProps | string | null) {
-    this._engine.messenger.emit('setSkybox', [skybox]);
+    this._messenger.emit('setSkybox', [skybox]);
   }
 
   setMoonPhase(phase: MoonPhases) {
-    this._engine.messenger.emit('setMoonPhase', [phase]);
+    this._messenger.emit('setMoonPhase', [phase]);
   }
 
   setSkyManualMode(status: boolean) {
-    this._engine.messenger.emit('setSkyManualMode', [status]);
+    this._messenger.emit('setSkyManualMode', [status]);
   }
 
   setViewportRender(type: ViewportRender) {
-    this._engine.messenger.emit('setViewportRender', [type]);
+    this._messenger.emit('setViewportRender', [type]);
   }
 
   createProximityAction(action: Partial<ProximityAction>): string {
@@ -130,15 +130,13 @@ class WorldManager {
       action.id = v4();
     }
 
-    this._engine.messenger.emit('createProximityAction', [
-      action as ProximityAction,
-    ]);
+    this._messenger.emit('createProximityAction', [action as ProximityAction]);
 
     return action.id;
   }
 
   deleteProximityAction(actionId: string) {
-    this._engine.messenger.emit('deleteProximityAction', [actionId]);
+    this._messenger.emit('deleteProximityAction', [actionId]);
   }
 }
 

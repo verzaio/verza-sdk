@@ -21,6 +21,7 @@ import ChatManager from './chat.manager';
 import ClothesManager from './clothes.manager';
 import CommandsManager from './commands/commands.manager';
 import {createControllerManager} from './controller.manager';
+import EffectsManager from './effects/effects.manager';
 import EntityEventsManager from './entities/entity/entity-events.manager';
 import ObjectsManager from './entities/objects/objects.manager';
 import PlayersManager from './entities/players/players.manager';
@@ -62,9 +63,11 @@ export class EngineManager {
 
   world: WorldManager;
 
-  clothes: ClothesManager;
+  clothes: ClothesManager = null!;
 
-  animations: AnimationsManager;
+  animations: AnimationsManager = null!;
+
+  effects: EffectsManager = null!;
 
   assets: AssetsManager = null!;
 
@@ -183,10 +186,6 @@ export class EngineManager {
 
     this.world = new WorldManager(this);
 
-    this.clothes = new ClothesManager(this);
-
-    this.animations = new AnimationsManager(this);
-
     this.methodsHandler = new MethodsHandlerManager(this);
 
     this.utils = new UtilsManager(this);
@@ -198,6 +197,9 @@ export class EngineManager {
       this.audio = new AudioManager(this);
       this.camera = new CameraManager(this);
       this.assets = new AssetsManager(this);
+      this.effects = new EffectsManager(this);
+      this.animations = new AnimationsManager(this);
+      this.clothes = new ClothesManager(this);
     }
 
     // only for server

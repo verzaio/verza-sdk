@@ -1,11 +1,11 @@
-import {Box, Group, useFrame, useObjects} from '@verza/sdk/react';
+import {Box, Group, useEngine, useFrame} from '@verza/sdk/react';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import {useCallback, useEffect, useRef} from 'react';
 
 // https://github.com/KhronosGroup/glTF-Sample-Models
 
 const ObjectsTest = () => {
-  const objects = useObjects();
+  const {objects} = useEngine();
   const objectRef = useRef<ObjectManager>(null!);
 
   const anotherOneRef = useRef<ObjectManager>(null!);

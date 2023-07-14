@@ -15,6 +15,7 @@ import {useEngine} from 'engine/framework-react';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import {ObjectHelper} from './ObjectHelper';
+import {ObjectParticles} from './ObjectParticles';
 import {ObjectProximityAction} from './ObjectProximityAction';
 import {ObjectSound} from './ObjectSound';
 
@@ -35,9 +36,10 @@ const EVENT_KEYS: Set<keyof ObjectEventMapList> = new Set([
 ]);
 
 const EXCLUDED_PROPS: Set<keyof ComponentObjectProps> = new Set([
-  'proximityAction',
   'soundName',
   'soundOptions',
+  'proximityAction',
+  'particles',
   'helper',
 ]);
 
@@ -155,6 +157,10 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
           soundName={props.soundName}
           soundOptions={props.soundOptions}
         />
+      )}
+
+      {!!props.particles && (
+        <ObjectParticles object={object} particles={props.particles} />
       )}
 
       {props.helper && <ObjectHelper object={object} />}

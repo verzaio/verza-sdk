@@ -1,7 +1,7 @@
 import {Vector3} from 'three';
 
 import {SoundItem, SoundOptions} from 'engine/definitions/types/audio.types';
-import {Vector3Array} from 'engine/types';
+import {ObjectManager, Vector3Array} from 'engine/types';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import {EngineManager} from '../engine.manager';
@@ -42,7 +42,31 @@ class AudioManager {
     return sound;
   }
 
-  playSound(soundName: string, options: SoundOptions = {}, withId?: string) {
+  createObjectSound(
+    object: string | ObjectManager,
+    soundName: string,
+    options: SoundOptions = {},
+    withId?: string,
+  ): SoundManager {
+    const sound = new SoundManager(this._engine, soundName, withId);
+
+    this._messenger.emit('createObjectSound', [
+      soundName,
+      typeof object === 'string' ? object : object.id,
+      {
+        ...options,
+      },
+      sound.id,
+    ]);
+
+    return sound;
+  }
+
+  playSound(
+    soundName: string,
+    options: SoundOptions = {},
+    withId?: string,
+  ): SoundManager {
     return this.createSound(
       soundName,
       {
@@ -60,11 +84,12 @@ class AudioManager {
     position: Vector3Array | Vector3,
     options: SoundOptions = {},
     withId?: string,
-  ) {
+  ): SoundManager {
     return this.playSound(
       soundName,
       {
         ...options,
+
         position: toVector3Array(position),
       },
       withId,

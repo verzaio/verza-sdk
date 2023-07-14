@@ -80,9 +80,7 @@ export type ObjectGroupType = ObjectBaseType<
 export type ObjectModelType = ObjectBaseType<
   'model',
   {
-    model?: string; // model id
-
-    data?: unknown; // data
+    model?: unknown; // data
   }
 >;
 
