@@ -40,7 +40,8 @@ export const ANIMATIONS = {
   running: 40,
 
   /* jumping */
-  jumping_long: 50,
+  jumping_1: 50,
+  jumping_long: 55,
 
   /* falling */
   falling: 60,

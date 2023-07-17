@@ -61,6 +61,10 @@ class WorldManager {
     this._messenger.emit('setGlobalLightIntensity', [intensity]);
   }
 
+  setGlobalLightAzimuth(azimuth: number) {
+    this._messenger.emit('setGlobalLightAzimuth', [azimuth]);
+  }
+
   /* time */
   setTime(seconds: number) {
     this._messenger.emit('setTime', [seconds]);

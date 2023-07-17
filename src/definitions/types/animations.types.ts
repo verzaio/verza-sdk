@@ -13,9 +13,9 @@ export type AnimationOptions = {
   loop?: AnimationLoop;
   repetitions?: number;
   speed?: number;
-  paused?: boolean;
   stopAtLastFrame?: boolean;
   fadeInDuration?: number;
+  paused?: boolean;
 };
 
 export type AnimationEventType = 'loop' | 'finished';
