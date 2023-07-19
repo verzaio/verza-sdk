@@ -213,6 +213,7 @@ export type ScriptEventMap = {
     playerId: number,
     animId: string,
     options: AnimationOptions,
+    networkSync: boolean,
   ) => void;
 
   pausePlayerAnimation: (playerId: number, animId: string) => void;
@@ -307,6 +308,8 @@ export type ScriptEventMap = {
   ) => void;
 
   setPlayerLinearVelocity: (playerId: number, vel: Vector3Array) => void;
+
+  setPlayerClimbAngle: (playerId: number, angle: number) => void;
 
   setPlayerVisible: (playerId: number, visible: boolean) => void;
 
@@ -669,6 +672,7 @@ export type ScriptEventMap = {
 
   setGlobalLightColor: (color: ColorType) => void;
   setGlobalLightIntensity: (intensity: number) => void;
+  setGlobalLightAzimuth: (azimuth: number) => void;
 
   setSkybox: (skybox: SkyboxProps | string | null) => void;
 

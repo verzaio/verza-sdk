@@ -279,6 +279,10 @@ class PlayerManager extends EntityManager<
     this.messenger.emit('setPlayerVisible', [this.id, visible]);
   }
 
+  setClimbAngle(angle: number) {
+    this.messenger.emit('setPlayerClimbAngle', [this.id, angle]);
+  }
+
   sendSuccessNotification(message: string, duration = 0) {
     this.messenger.emit('sendPlayerNotification', [
       this.id,
@@ -379,8 +383,13 @@ class PlayerManager extends EntityManager<
     return clothes;
   }
 
-  playAnimation(animId: string, options: AnimationOptions) {
-    this.messenger.emit('playPlayerAnimation', [this.id, animId, options]);
+  playAnimation(animId: string, options: AnimationOptions, networkSync = true) {
+    this.messenger.emit('playPlayerAnimation', [
+      this.id,
+      animId,
+      options,
+      networkSync,
+    ]);
   }
 
   stopAnimation(animId: string, fadeOutDuration = 0) {
