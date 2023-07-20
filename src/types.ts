@@ -43,8 +43,9 @@ export type {
 
 export type {
   ClotheCategory,
-  SkinMaskItem,
+  ClotheGender,
   ClotheItem,
+  SkinMaskItem,
   PlayerClotheItem,
 } from 'engine/definitions/types/clothes.types';
 
