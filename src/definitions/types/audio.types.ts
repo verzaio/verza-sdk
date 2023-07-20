@@ -14,7 +14,10 @@ export type SoundItem = {
 
 export type SoundLoop = 'once' | 'repeat';
 
+export type SoundType = 'sfx' | 'ambience';
+
 export type SoundOptions = {
+  type?: SoundType;
   volume?: number;
   autoplay?: boolean;
   playbackRate?: number;

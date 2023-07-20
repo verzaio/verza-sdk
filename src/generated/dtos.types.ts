@@ -476,6 +476,8 @@ export interface EncryptedPacketsDto {
 export interface StatePacketDto {
   /** packet id */
   t: number;
+  /** instance id */
+  i: string;
   /** code */
   c?: number;
   /** error code or message */
