@@ -238,6 +238,7 @@ export interface CharacterDto {
   eyebrows_color: string | null;
   eyebrows_opacity: number | null;
   clothes: CharacterClotheDto[] | null;
+  outfit: string | null;
   image_url: string | null;
   status: 'active' | 'deleted';
   selected: boolean;
@@ -248,6 +249,8 @@ export interface CharacterDto {
 export interface CreateCharacterDto {
   gender: 'male' | 'female';
   clothes?: CharacterClotheDto[];
+  /** @maxLength 64 */
+  outfit?: string;
 }
 
 export interface UpdateCharacterDto {
@@ -388,6 +391,8 @@ export interface UpdateCharacterDto {
    */
   eyebrows_opacity?: number | null;
   clothes?: CharacterClotheDto[];
+  /** @maxLength 64 */
+  outfit?: string | null;
 }
 
 export interface BasicWorldDto {
