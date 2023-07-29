@@ -71,12 +71,14 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   update(object: ObjectManager, data: ObjectManager['data'], sync?: boolean) {
     // update
     if (sync) {
-      data.p && object.setPosition(data.p);
-      data.r && object.setRotation(data.r);
-      data.s && object.setScale(data.s);
+      const {p, r, s, ...rest} = data;
+
+      p && object.setPosition(p);
+      r && object.setRotation(r);
+      s && object.setScale(s);
 
       // set data
-      object.setData(data);
+      object.setData(rest);
     } else {
       data.p && object.updatePosition(data.p);
       data.r && object.updateRotation(data.r);
