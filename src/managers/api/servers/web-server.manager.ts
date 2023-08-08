@@ -56,6 +56,7 @@ class WebServerManager {
   bind() {
     const onSync = () => {
       this.emitDiscoverPacket();
+
       this._engine.events.off('syncEncryptedPackets', onSync);
     };
 
@@ -122,9 +123,6 @@ class WebServerManager {
   }
 
   hasAccess(player: PlayerManager, command: string): boolean {
-    player;
-    command;
-
     // no declared? then allow it
     if (!this.declaredCommands.includes(command)) {
       return true;
@@ -204,7 +202,6 @@ class WebServerManager {
 
     // length should be 3
     if (data.length !== 4) {
-      console.log('22aac');
       return false;
     }
 

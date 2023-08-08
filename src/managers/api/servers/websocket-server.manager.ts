@@ -63,9 +63,10 @@ class WebsocketServerManager {
     if (response.status < 200 || response.status > 299) {
       try {
         console.error(
-          'Verza API',
+          'Verza API Error',
           JSON.stringify(await response.json(), null, 2),
         );
+        return null!;
       } catch (e) {
         console.error('Verza API Error ', await response.text());
         throw e;
