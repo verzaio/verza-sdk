@@ -280,6 +280,9 @@ class CommandsManager {
   }
 
   registerWebServerCommand(command: CommandInfo) {
+    // try to bind
+    this._bind();
+
     this._engine.messenger.emit('registerCommand', [
       this._engine.localPlayer.id,
       command,

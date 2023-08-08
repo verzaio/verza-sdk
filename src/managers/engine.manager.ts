@@ -223,7 +223,9 @@ export class EngineManager {
   connectServer() {
     this._setup();
 
-    this.api.connectWs();
+    if (!this.api.isWebServerAvailable) {
+      this.api.connectWs();
+    }
   }
 
   connectClient() {

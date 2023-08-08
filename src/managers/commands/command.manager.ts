@@ -250,8 +250,8 @@ export class CommandParam<
     return value;
   }
 
-  required() {
-    this.isRequired = true;
+  optional() {
+    this.isRequired = false;
 
     return this;
   }
