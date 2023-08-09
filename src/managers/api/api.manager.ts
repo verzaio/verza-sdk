@@ -33,7 +33,7 @@ class ApiManager {
   private _accessTokenBase64: string = null!;
 
   get webServerEndpoint() {
-    return this.webServer.webServerEndpoint;
+    return this.webServer?.webServerEndpoint;
   }
 
   get isWebServerAvailable() {
@@ -73,9 +73,9 @@ class ApiManager {
 
     this._setEndpoint();
 
-    this._setAccessToken();
-
     this.webServer = new WebServerManager(engine);
+
+    this._setAccessToken();
   }
 
   bind() {
@@ -128,8 +128,10 @@ class ApiManager {
 
     // abort if using it on the client
     if (
-      !this.endpoint.startsWith('http://localhost') &&
-      typeof window !== 'undefined'
+      !this.webServerEndpoint?.startsWith('http://localhost') &&
+      !this.endpoint?.startsWith('http://localhost') &&
+      typeof window !== 'undefined' &&
+      !location.origin.startsWith('http://localhost')
     ) {
       throw new Error(
         'DO NOT INCLUDE THE "ACCESS TOKEN" IN CLIENT-SIDE SCRIPTS',

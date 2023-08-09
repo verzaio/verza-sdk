@@ -161,6 +161,7 @@ class WebServerManager {
     if (!Array.isArray(authPacket)) {
       console.debug(
         '[api] cannot decrypt packet, do we have the correct Access Token?',
+        this.endpoint,
         packet,
       );
       return false;
@@ -302,7 +303,11 @@ class WebServerManager {
     return null!;
   }
 
-  emitToWebServer(event: PacketEvent, data?: unknown, commandPacket?: string) {
+  async emitToWebServer(
+    event: PacketEvent,
+    data?: unknown,
+    commandPacket?: string,
+  ) {
     // ignore if no endpoint or is not client
     if (!this.webServerEndpoint || !this.isClient) return;
 
@@ -332,12 +337,6 @@ class WebServerManager {
       referrerPolicy: 'no-referrer',
 
       credentials: 'omit',
-
-      mode: 'no-cors',
-
-      headers: {
-        'Content-Type': 'application/json',
-      },
 
       body: JSON.stringify(packet),
     });
