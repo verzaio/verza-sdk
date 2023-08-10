@@ -1,6 +1,6 @@
 {
   "name": "@verza/sdk",
-  "version": "2.0.40",
+  "version": "2.0.41",
   "description": "Verza Client & Server SDK",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -89,10 +89,10 @@
     }
   },
   "devDependencies": {
-    "@rollup/plugin-alias": "^4.0.3",
-    "@rollup/plugin-commonjs": "^24.1.0",
-    "@rollup/plugin-node-resolve": "^15.0.2",
-    "@rollup/plugin-typescript": "^11.1.0",
+    "@rollup/plugin-alias": "^5.0.0",
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-typescript": "^11.1.2",
     "@types/events": "^3.0.0",
     "@types/node": "^20.1.2",
     "@types/react": "^18.2.6",
@@ -109,7 +109,7 @@
     "eslint-plugin-react": "^7.32.2",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",
-    "rollup": "^3.21.6",
+    "rollup": "^3.28.0",
     "tsc-alias": "^1.8.6",
     "typescript": "^4.9.4"
   }
