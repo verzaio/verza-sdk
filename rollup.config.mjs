@@ -7,9 +7,29 @@ import pkg from './package.json' assert {type: 'json'};
 
 const external = [...Object.keys(pkg.dependencies ?? {}), 'react'];
 
-const plugins = [typescript(), nodeResolve(), commonjs()];
+const plugins = [nodeResolve(), typescript(), commonjs()];
+
+const browserPlugins = [
+  nodeResolve({
+    browser: true,
+    preferBuiltins: false,
+  }),
+  typescript(),
+  commonjs(),
+];
 
 const builds = [
+  // Core
+  {
+    input: 'src/index.ts',
+    plugins: browserPlugins,
+    output: [
+      {
+        format: 'es',
+        file: 'dist/index.es.js',
+      },
+    ],
+  },
   {
     input: 'src/index.ts',
     plugins,
@@ -19,7 +39,6 @@ const builds = [
         format: 'esm',
         file: 'dist/index.esm.js',
       },
-
       {
         format: 'cjs',
         file: 'dist/index.cjs.js',
@@ -27,6 +46,17 @@ const builds = [
     ],
   },
 
+  // Utils
+  {
+    input: 'src/utils.ts',
+    plugins: browserPlugins,
+    output: [
+      {
+        format: 'es',
+        file: 'dist/utils.es.js',
+      },
+    ],
+  },
   {
     input: 'src/utils.ts',
     plugins,
@@ -36,7 +66,6 @@ const builds = [
         format: 'esm',
         file: 'dist/utils.esm.js',
       },
-
       {
         format: 'cjs',
         file: 'dist/utils.cjs.js',
@@ -44,6 +73,17 @@ const builds = [
     ],
   },
 
+  // React
+  {
+    input: 'src/framework-react.ts',
+    plugins: browserPlugins,
+    output: [
+      {
+        format: 'es',
+        file: 'dist/framework-react.es.js',
+      },
+    ],
+  },
   {
     input: 'src/framework-react.ts',
     plugins,
@@ -53,7 +93,6 @@ const builds = [
         format: 'esm',
         file: 'dist/framework-react.esm.js',
       },
-
       {
         format: 'cjs',
         file: 'dist/framework-react.cjs.js',

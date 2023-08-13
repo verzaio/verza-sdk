@@ -777,6 +777,33 @@ export interface ServerFiltersDto {
   favorites?: boolean;
 }
 
+export interface ServerPlayerDto {
+  id: number;
+  name: string;
+  position: number[];
+}
+
+export interface ServerStatusDto {
+  id: string;
+  name: string | null;
+  logo_url: string;
+  players_count: number;
+  region: 'global';
+  world: BasicWorldDto | null;
+  scripts: ScriptDto[];
+  roles: RoleDto[];
+  permissions: ServerPermissionsDto;
+  status: 'active' | 'inactive';
+  privacy_mode: 'public' | 'private' | 'unlisted';
+  commands: CommandConfigDto[];
+  assets_url?: string;
+  favorited: boolean;
+  /** @format date-time */
+  created_at: string;
+  instance_id?: string;
+  players?: ServerPlayerDto[];
+}
+
 export interface CreateServerDto {
   region?: 'global';
   /**
