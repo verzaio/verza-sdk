@@ -26,7 +26,7 @@ class PlayerVoicechatManager {
     ]);
   }
 
-  addChannel(channel: number) {
+  enableChannel(channel: number) {
     this._messenger.emit('setPlayerVoicechatChannel', [
       this._player.id,
       channel,
@@ -34,7 +34,7 @@ class PlayerVoicechatManager {
     ]);
   }
 
-  removeChannel(channel: number) {
+  disableChannel(channel: number) {
     this._messenger.emit('setPlayerVoicechatChannel', [
       this._player.id,
       channel,
