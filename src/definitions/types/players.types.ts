@@ -29,6 +29,10 @@ export type PlayerDataProps = CreateEntityProps & {
   character?: CharacterDto;
 
   roles?: string[];
+
+  voicechatDistance?: number | null;
+
+  voicechatMode?: number | null;
 };
 
 export type PlayerCameraDistance = 'short' | 'normal' | 'long';

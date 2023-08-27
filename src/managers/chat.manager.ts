@@ -10,6 +10,10 @@ class ChatManager {
     this._engine = engine;
   }
 
+  setEnabled(enabled: boolean) {
+    this._engine.api.emitAction('setChatEnabled', [enabled]);
+  }
+
   escapeText(text?: string) {
     return (text ?? '')?.replace(CHAT_INPUT_DELIMITER_REGEX, '');
   }

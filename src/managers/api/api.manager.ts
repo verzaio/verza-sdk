@@ -169,7 +169,7 @@ class ApiManager {
     }
 
     // server
-    this.emitActionToServer(eventName, args, playerId);
+    await this.emitActionToServer(eventName, args, playerId);
   }
 
   async emitActionAsync<A extends keyof ScriptEventMap>(

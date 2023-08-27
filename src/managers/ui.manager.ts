@@ -142,8 +142,12 @@ class UIManager {
     this._messenger.emit('hideUIComponent', [component]);
   }
 
-  showIndicator(id: IndicatorId, title?: IndicatorTitle) {
-    this._messenger.emit('showIndicator', [id, title]);
+  showIndicator(
+    id: IndicatorId,
+    title?: IndicatorTitle,
+    subTitle?: IndicatorTitle,
+  ) {
+    this._messenger.emit('showIndicator', [id, title, subTitle]);
   }
 
   hideIndicator(id: IndicatorId) {

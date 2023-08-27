@@ -97,8 +97,8 @@ class WorldManager {
     this._messenger.emit('setWeather', [weather]);
   }
 
-  setFogStatus(status: boolean) {
-    this._messenger.emit('setFogStatus', [status]);
+  setFogEnabled(status: boolean) {
+    this._messenger.emit('setFogEnabled', [status]);
   }
 
   setFogColor(color: ColorType) {

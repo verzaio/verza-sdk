@@ -405,6 +405,7 @@ export interface BasicWorldDto {
 export interface ScriptDto {
   url: string;
   name?: string;
+  content?: string;
   disabled?: boolean;
   settings?: object;
 }
@@ -429,6 +430,15 @@ export interface CommandConfigDto {
   roles: string[];
 }
 
+export interface ServerSettingsDto {
+  chat_enabled?: boolean;
+  voicechat_enabled?: boolean;
+  voicechat_mode?: 'global' | 'proximity';
+  voicechat_distance?: number;
+  players_nametag_distance?: number | null;
+  players_streamer_distance?: number | null;
+}
+
 export interface ServerDto {
   id: string;
   name: string | null;
@@ -442,6 +452,7 @@ export interface ServerDto {
   status: 'active' | 'inactive';
   privacy_mode: 'public' | 'private' | 'unlisted';
   commands: CommandConfigDto[];
+  settings: ServerSettingsDto;
   assets_url?: string;
   favorited: boolean;
   /** @format date-time */
@@ -519,6 +530,10 @@ export interface PlayerPacketDto {
   d?: number;
   /** roles */
   l?: string[];
+  /** voicechat mode */
+  m?: number | null;
+  /** voicechat distance */
+  k?: number | null;
 }
 
 export interface PlayerPacketUpdateDto {
@@ -585,6 +600,10 @@ export interface PlayerPacketLocalUpdateDto {
   c?: CharacterDto;
   /** roles */
   l?: string[];
+  /** voicechat mode */
+  m?: number | null;
+  /** voicechat distance */
+  k?: number | null;
 }
 
 export interface ObjectDataDto {
@@ -700,6 +719,8 @@ export interface SyncPacketDto {
   server?: ServerDto;
   /** encrypted packets */
   packets?: EncryptedPacketsDto;
+  /** voicechatMute */
+  voicechatMute?: boolean;
 }
 
 export interface SyncPacketSendDto {
@@ -796,6 +817,7 @@ export interface ServerStatusDto {
   status: 'active' | 'inactive';
   privacy_mode: 'public' | 'private' | 'unlisted';
   commands: CommandConfigDto[];
+  settings: ServerSettingsDto;
   assets_url?: string;
   favorited: boolean;
   /** @format date-time */
@@ -825,6 +847,7 @@ export interface UpdateScriptDto {
    */
   name?: string;
   url: string;
+  content?: string;
   disabled?: boolean;
   settings?: object;
 }

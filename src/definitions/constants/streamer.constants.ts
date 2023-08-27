@@ -1,5 +1,7 @@
 import {EntityDrawDistanceType} from '../types/entities.types';
 
+export const DEFAULT_PLAYERS_STREAMER_DISTANCE = 256;
+
 export const STREAMER_CHUNK_SIZE = 1024;
 
 export const STREAMER_LOW_DRAW_DISTANCE = 64;
