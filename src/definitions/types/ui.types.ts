@@ -13,6 +13,8 @@ export type ServerMenuTabType =
   | 'scripts'
   | 'commands'
   | 'keys'
+  | 'communication'
+  | 'world'
   | 'privacy_and_security';
 
 export type IndicatorId = string | number;
@@ -22,6 +24,7 @@ export type IndicatorTitle = string | null;
 export type Indicator = {
   id: IndicatorId;
   title: IndicatorTitle;
+  subTitle?: IndicatorTitle;
 };
 
 export type UISizePropValue =

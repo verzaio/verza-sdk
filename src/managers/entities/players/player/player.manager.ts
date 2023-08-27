@@ -435,6 +435,10 @@ class PlayerManager extends EntityManager<
       this.events.emit('onLeaveSensor', object);
     }
   };
+
+  setChatEnabled(enabled: boolean) {
+    this.messenger.emit('setPlayerChatEnabled', [this.id, enabled]);
+  }
 }
 
 export default PlayerManager;

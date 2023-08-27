@@ -15,7 +15,6 @@ export enum NetworkSyncEvent {
   PlayerUnset = 'p.un',
 
   PlayerUpdate = 'p.u',
-  PlayerVoicechat = 'p.v',
 
   EntityStreamer = 'e.s',
 }
@@ -31,11 +30,6 @@ export type NetworkSyncEventMap = {
   [NetworkSyncEvent.PlayerUnset]: [playerId: number];
 
   [NetworkSyncEvent.PlayerUpdate]: [packet: PlayerPacketDto];
-  [NetworkSyncEvent.PlayerVoicechat]: [
-    playerId1: number,
-    playerId2: number,
-    status: boolean,
-  ];
 
   [NetworkSyncEvent.EntityStreamer]: [
     playerId: number,

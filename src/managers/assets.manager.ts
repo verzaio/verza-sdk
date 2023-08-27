@@ -23,7 +23,7 @@ class AssetsManager {
   async upload(file: FileTransfer, options: AssetOptions = {}) {
     const {
       data: [assetId],
-    } = await this._engine.messenger.emitAsync('uploadAsset', [file, options]);
+    } = await this._messenger.emitAsync('uploadAsset', [file, options]);
 
     return assetId;
   }

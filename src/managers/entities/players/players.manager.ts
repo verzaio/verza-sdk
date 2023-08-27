@@ -127,6 +127,18 @@ class PlayersManager extends EntitiesManager<PlayerManager> {
       }
     });
   }
+
+  async setNametagsDistance(distance: number) {
+    await this.engine.api.emitActionAsync('setPlayersNametagDistance', [
+      distance,
+    ]);
+  }
+
+  async setStreamerDistance(distance: number) {
+    await this.engine.api.emitActionAsync('setPlayersStreamerDistance', [
+      distance,
+    ]);
+  }
 }
 
 export default PlayersManager;

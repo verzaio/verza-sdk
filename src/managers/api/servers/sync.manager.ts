@@ -73,23 +73,6 @@ class SyncManager {
       },
     );
 
-    // voicechat
-    this.events.on(
-      NetworkSyncEvent.PlayerVoicechat,
-      (playerId1, playerId2, status) => {
-        const player1 = this.players.get(playerId1);
-        const player2 = this.players.get(playerId2);
-
-        if (!player1 || !player2) return;
-
-        if (status) {
-          player1.voicechat.connect(player2);
-        } else {
-          player1.voicechat.disconnect(player2);
-        }
-      },
-    );
-
     // ready
     this.events.on(NetworkSyncEvent.Ready, () => {
       console.debug('[VerzaServer] Server synced');

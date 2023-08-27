@@ -49,6 +49,7 @@ import {
   MainToolbarItem,
   UIComponentType,
 } from './ui.types';
+import {VoicechatModeType} from './voicechat.types';
 import {
   IntersectsResultRaw,
   MoonPhases,
@@ -94,6 +95,8 @@ export type ScriptEventMap = {
   setPlayerId: (playerId: number) => void;
 
   /* chat */
+  setChatEnabled: (enabled: boolean) => void;
+
   onChat: (text: string, playerId?: number) => void;
 
   sendMessage: (text: string, playerId?: number) => void;
@@ -157,7 +160,11 @@ export type ScriptEventMap = {
 
   removeInterface: (tag: string) => void;
 
-  showIndicator: (id: IndicatorId, title?: IndicatorTitle) => void;
+  showIndicator: (
+    id: IndicatorId,
+    title?: IndicatorTitle,
+    subtitle?: IndicatorTitle,
+  ) => void;
 
   hideIndicator: (id: IndicatorId) => void;
 
@@ -313,12 +320,40 @@ export type ScriptEventMap = {
 
   setPlayerVisible: (playerId: number, visible: boolean) => void;
 
+  setPlayerToPlayerVoicechatMode: (
+    playerId1: number,
+    playerId2: number,
+    mode: VoicechatModeType | null,
+  ) => void;
+
+  setPlayerVoicechatChannel: (
+    playerId: number,
+    channel: number,
+    status: boolean,
+  ) => void;
+
+  setPlayerVoicechatMuted: (playerId: number, muted: boolean) => void;
+
+  setPlayerVoicechatDistance: (
+    playerId: number,
+    distance: number | null,
+  ) => void;
+
+  setPlayerChatEnabled: (playerId: number, enabled: boolean) => void;
+
   sendPlayerNotification: (
     playerId: number,
     message: string,
     type: 'success' | 'error',
     duration: number,
   ) => void;
+
+  /* voicechat */
+  setVoicechatEnabled: (enabled: boolean) => void;
+
+  setVoicechatMode: (mode: VoicechatModeType) => void;
+
+  setVoicechatDistance: (distance: number) => void;
 
   /* camera */
   OCU: (position: Vector3Array, quaternion: QuaternionArray) => void;
@@ -656,7 +691,7 @@ export type ScriptEventMap = {
 
   setWeather: (weather: WeatherType) => void;
 
-  setFogStatus: (status: boolean) => void;
+  setFogEnabled: (enabled: boolean) => void;
 
   setFogColor: (color: ColorType) => void;
 
@@ -683,6 +718,11 @@ export type ScriptEventMap = {
   requestResourcesCheck: (freeze: boolean) => void;
 
   areResourcesReady: () => boolean;
+
+  /* misc */
+  setPlayersNametagDistance: (distance: number) => void;
+
+  setPlayersStreamerDistance: (distance: number) => void;
 } & {
   [key in `onServerCustomEvent_${string}`]: (data?: NetworkEventData) => void;
 } & {
