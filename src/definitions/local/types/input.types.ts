@@ -1,4 +1,4 @@
-import {PointerEventType} from 'engine/types';
+import {PointerEventType} from 'engine/definitions/types/input.types';
 
 export type InputPointerEvents =
   | 'onPointerMove'

@@ -3,7 +3,7 @@ import {useEffect, useRef} from 'react';
 import equal from 'fast-deep-equal';
 
 import {ProximityAction} from 'engine/definitions/types/world.types';
-import {ObjectManager} from 'engine/types';
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 type ObjectProximityActionProps = {
   object: ObjectManager;

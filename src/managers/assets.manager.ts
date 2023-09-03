@@ -1,6 +1,5 @@
 import {AssetOptions} from 'engine/definitions/types/assets.types';
-
-import {FileTransfer} from '..';
+import {FileTransfer} from 'engine/definitions/types/input.types';
 
 import EngineManager from './engine.manager';
 

@@ -2,7 +2,8 @@ import {Vector3} from 'three';
 
 import {v4} from 'uuid';
 
-import {ParticleOptions, Vector3Array} from 'engine/types';
+import {ParticleOptions} from 'engine/definitions/types/effects.types';
+import {Vector3Array} from 'engine/definitions/types/world.types';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';

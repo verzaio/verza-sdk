@@ -8,6 +8,7 @@ import {
 } from 'engine/definitions/constants/objects-shared.constants';
 import {
   ObjectEventMap,
+  ObjectProximityActionEvent,
   ObjectSoundEvent,
 } from 'engine/definitions/local/types/events.types';
 import {SoundEvent, SoundOptions} from 'engine/definitions/types/audio.types';
@@ -22,6 +23,7 @@ import {
   PickObject,
   PickObjectProps,
 } from 'engine/definitions/types/objects/objects-definition.types';
+import {ObjectTexture} from 'engine/definitions/types/objects/objects-materials.types';
 import {
   ObjectDataProps,
   ObjectHighlightOptions,
@@ -40,7 +42,6 @@ import SoundManager from 'engine/managers/audio/sound.manager';
 import ParticlesManager from 'engine/managers/effects/particles.manager';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
-import {ObjectProximityActionEvent, ObjectTexture} from 'engine/types';
 import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EntityManager from '../../entity/entity.manager';

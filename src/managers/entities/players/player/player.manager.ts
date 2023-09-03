@@ -15,6 +15,7 @@ import {PlayerClotheItem} from 'engine/definitions/types/clothes.types';
 import {PlayerControls} from 'engine/definitions/types/controls.types';
 import {PlayerEntity} from 'engine/definitions/types/entities.types';
 import {PlayerEventMap} from 'engine/definitions/types/events.types';
+import {PlayerBanStatus} from 'engine/definitions/types/players.types';
 import {ColorType} from 'engine/definitions/types/ui.types';
 import {
   QuaternionArray,
@@ -26,7 +27,6 @@ import {
 } from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
-import {PlayerBanStatus} from 'engine/types';
 import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';

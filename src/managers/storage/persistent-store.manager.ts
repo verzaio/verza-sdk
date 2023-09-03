@@ -1,5 +1,8 @@
+import {
+  StorageFilters,
+  StorageResult,
+} from 'engine/definitions/types/storage.types';
 import BaseStoreManager from 'engine/managers/storage/base-store.manager';
-import {StorageFilters, StorageResult} from 'engine/types';
 
 import {EngineManager} from '../engine.manager';
 

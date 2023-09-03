@@ -2,7 +2,8 @@ import {useEffect, useRef} from 'react';
 
 import equal from 'fast-deep-equal';
 
-import {ObjectManager, SoundOptions} from 'engine/types';
+import {SoundOptions} from 'engine/definitions/types/audio.types';
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 type ObjectSoundProps = {
   object: ObjectManager;

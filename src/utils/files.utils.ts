@@ -1,4 +1,4 @@
-import {FileTransfer} from '..';
+import {FileTransfer} from 'engine/definitions/types/input.types';
 
 export const createFileTransferFromFile = async (
   file: File,
