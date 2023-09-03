@@ -239,6 +239,7 @@ export interface CharacterDto {
   eyes_color: string | null;
   lipstick_color: string | null;
   blush_color: string | null;
+  foundation_color: string | null;
   eyeshadow_color: string | null;
   eyeliner_color: string | null;
   eyebrows_style: number | null;
@@ -274,6 +275,7 @@ export interface UpdateCharacterDto {
   eyes_color?: string | null;
   lipstick_color?: string | null;
   blush_color?: string | null;
+  foundation_color?: string | null;
   eyeshadow_color?: string | null;
   eyeliner_color?: string | null;
   /**
