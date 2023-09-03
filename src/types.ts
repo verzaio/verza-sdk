@@ -26,7 +26,7 @@ export type {
   NetworkEventData,
 } from 'engine/definitions/types/scripts.types';
 
-export {
+export type {
   StorageModeType,
   StorageFilters,
   StorageResultItem,
@@ -58,7 +58,7 @@ export type {
   SoundEvent,
 } from 'engine/definitions/types/audio.types';
 
-export {
+export type {
   EffectEasing,
   EffectLoop,
   EffectShape,

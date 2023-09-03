@@ -222,6 +222,10 @@ declare const _colorKeywords: {
   yellowgreen: 0x9acd32;
 };
 
+export type RGBAArray = [r: number, g: number, b: number, a: number];
+
+export type RGBArray = [r: number, g: number, b: number];
+
 export type ColorKeyword = keyof typeof _colorKeywords;
 
 export type ColorModelString = `${'rgb' | 'hsl'}(${string})`;

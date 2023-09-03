@@ -266,6 +266,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       } catch (e) {
         // log error if request is not present
         if (!requestId) {
+          console.debug(eventName, message.data);
           console.error(e);
           return;
         }

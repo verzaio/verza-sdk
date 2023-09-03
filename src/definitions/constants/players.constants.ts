@@ -43,10 +43,13 @@ export const PLAYER_STATE_PACKET: Record<PlayerState, number> = {
 
 export const PLAYER_STATE_PACKET_INDEX = Object.entries(
   PLAYER_STATE_PACKET,
-).reduce((anims, anim) => {
-  anims[anim[1]] = anim[0] as keyof typeof PLAYER_STATE_PACKET;
-  return anims;
-}, {} as Record<number, PlayerState>);
+).reduce(
+  (anims, anim) => {
+    anims[anim[1]] = anim[0] as keyof typeof PLAYER_STATE_PACKET;
+    return anims;
+  },
+  {} as Record<number, PlayerState>,
+);
 
 export const PLAYER_STATE_PACKET_KEYS: (keyof PlayerPacketUpdateDto)[] = [
   'n',
