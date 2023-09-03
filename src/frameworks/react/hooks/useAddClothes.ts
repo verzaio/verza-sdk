@@ -1,6 +1,6 @@
 import {useMemo, useRef} from 'react';
 
-import {deepEqual} from 'fast-equals';
+import deepEqual from 'deep-equal';
 
 import {ClotheItem} from 'engine/definitions/types/clothes.types';
 import {useEngine} from 'engine/framework-react';
