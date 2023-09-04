@@ -135,7 +135,7 @@ class EntitiesManager<
   }
 
   streamIn(entity: T, data?: T['data']) {
-    if (entity?.handle) {
+    if (!entity || entity?.handle) {
       return;
     }
 

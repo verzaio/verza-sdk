@@ -2,7 +2,8 @@ import {useEffect, useRef} from 'react';
 
 import equal from 'fast-deep-equal';
 
-import {ObjectManager, ParticleOptions} from 'engine/types';
+import {ParticleOptions} from 'engine/definitions/types/effects.types';
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 type ObjectParticlesProps = {
   object: ObjectManager;

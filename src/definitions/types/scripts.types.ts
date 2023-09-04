@@ -699,7 +699,7 @@ export type ScriptEventMap = {
 
   setViewportRender: (type: ViewportRender) => void;
 
-  setInteriorMode: (status: boolean) => void;
+  setInteriorModeEnabled: (enabled: boolean) => void;
 
   setHemisphereLightColor: (color: ColorType) => void;
   setHemisphereLightGroundColor: (color: ColorType) => void;
@@ -711,7 +711,7 @@ export type ScriptEventMap = {
 
   setSkybox: (skybox: SkyboxProps | string | null) => void;
 
-  setSkyManualMode: (status: boolean) => void;
+  setSkyManualModeEnabled: (enabled: boolean) => void;
 
   onResourcesReady: () => void;
 

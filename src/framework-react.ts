@@ -29,6 +29,7 @@ export {useMemoryStore} from 'engine/frameworks/react/hooks/useMemoryStore';
 export {useAddSound} from 'engine/frameworks/react/hooks/useAddSound';
 export {useAddAnimations} from 'engine/frameworks/react/hooks/useAddAnimations';
 export {useAddClothes} from 'engine/frameworks/react/hooks/useAddClothes';
+export {useAddSkinMasks} from 'engine/frameworks/react/hooks/useAddSkinMasks';
 
 export {useLocalPlayerId} from 'engine/frameworks/react/hooks/useLocalPlayerId';
 export {useLocalPlayer} from 'engine/frameworks/react/hooks/useLocalPlayer';

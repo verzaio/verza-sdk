@@ -37,8 +37,8 @@ class WorldManager {
   }
 
   /* light */
-  setInteriorMode(status: boolean) {
-    this._messenger.emit('setInteriorMode', [status]);
+  setInteriorModeEnabled(enabled: boolean) {
+    this._messenger.emit('setInteriorModeEnabled', [enabled]);
   }
 
   setHemisphereLightColor(color: ColorType) {
@@ -117,8 +117,8 @@ class WorldManager {
     this._messenger.emit('setMoonPhase', [phase]);
   }
 
-  setSkyManualMode(status: boolean) {
-    this._messenger.emit('setSkyManualMode', [status]);
+  setSkyManualModeEnabled(status: boolean) {
+    this._messenger.emit('setSkyManualModeEnabled', [status]);
   }
 
   setViewportRender(type: ViewportRender) {

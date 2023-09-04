@@ -1,10 +1,11 @@
 import {Vector3} from 'three';
 
 import {SoundItem, SoundOptions} from 'engine/definitions/types/audio.types';
-import {ObjectManager, Vector3Array} from 'engine/types';
+import {Vector3Array} from 'engine/definitions/types/world.types';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import {EngineManager} from '../engine.manager';
+import ObjectManager from '../entities/objects/object/object.manager';
 import SoundManager from './sound.manager';
 
 class AudioManager {

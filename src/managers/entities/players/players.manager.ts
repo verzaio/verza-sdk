@@ -5,8 +5,11 @@ import {
   PlayerDataProps,
   PlayerState,
 } from 'engine/definitions/types/players.types';
+import {
+  QuaternionArray,
+  Vector3Array,
+} from 'engine/definitions/types/world.types';
 import {PlayerPacketDto} from 'engine/generated/dtos.types';
-import {QuaternionArray, Vector3Array} from 'engine/types';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';

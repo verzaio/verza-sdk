@@ -1,4 +1,4 @@
-import {AnimationInfo} from '..';
+import {AnimationInfo} from 'engine/definitions/types/animations.types';
 
 import EngineManager from './engine.manager';
 

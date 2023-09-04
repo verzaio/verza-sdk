@@ -218,8 +218,16 @@ export interface CharacterShapekeyValueDto {
   value: number;
 }
 
+export type Map = object;
+
 export interface CharacterClotheDto {
+  /** @maxLength 64 */
   id: string;
+  color?: string;
+  materialTextures?: Map;
+  materialColors?: Map;
+  maskColors?: Map;
+  headMaskColors?: Map;
 }
 
 export interface CharacterDto {
@@ -228,10 +236,10 @@ export interface CharacterDto {
   gender: 'male' | 'female';
   shapekeys: CharacterShapekeyValueDto[] | null;
   skin_index: number | null;
-  skin_color: string | null;
   eyes_color: string | null;
   lipstick_color: string | null;
   blush_color: string | null;
+  foundation_color: string | null;
   eyeshadow_color: string | null;
   eyeliner_color: string | null;
   eyebrows_style: number | null;
@@ -264,127 +272,18 @@ export interface UpdateCharacterDto {
    * @max 9
    */
   skin_index?: number | null;
-  eyes_color?:
-    | '#ffffff'
-    | '#d3520d'
-    | '#c45435'
-    | '#a53d07'
-    | '#8e3200'
-    | '#7eba8b'
-    | '#41ba5b'
-    | '#1a9935'
-    | '#039623'
-    | '#2f857d'
-    | '#4eb6ac'
-    | '#7db3c7'
-    | '#509dba'
-    | '#177b9f'
-    | '#ff9b2d'
-    | '#ffbb2e'
-    | '#e0afaf'
-    | '#aca4a4'
-    | null;
-  skin_color?:
-    | '#fee0e0'
-    | '#ffd9d9'
-    | '#f8cdcd'
-    | '#dbb6b6'
-    | '#be9e9e'
-    | '#ad9090'
-    | '#9a8080'
-    | '#866f6f'
-    | '#826a6a'
-    | '#ffffff'
-    | null;
-  lipstick_color?:
-    | '#ffaeae'
-    | '#ff9c9c'
-    | '#c87e7e'
-    | '#c96969'
-    | '#ff5353'
-    | '#ff2525'
-    | '#c20000'
-    | '#930202'
-    | '#f97504'
-    | '#d16201'
-    | '#9d4900'
-    | '#05ff4c'
-    | '#00c739'
-    | '#00962b'
-    | '#de96ff'
-    | '#cf00ca'
-    | '#ff28c1'
-    | '#054dff'
-    | '#170c00'
-    | null;
-  blush_color?:
-    | '#FFFFFF'
-    | '#fee0e0'
-    | '#ffd9d9'
-    | '#f8cdcd'
-    | '#dbb6b6'
-    | '#be9e9e'
-    | '#ad9090'
-    | '#9a8080'
-    | '#866f6f'
-    | '#826a6a'
-    | '#ffffff'
-    | '#ff0000'
-    | '#ff00c2'
-    | '#fd8656'
-    | null;
-  eyeshadow_color?:
-    | '#000000'
-    | '#505050'
-    | '#a5a5a5'
-    | '#e7e7e7'
-    | '#615050'
-    | '#3d3232'
-    | '#d08383'
-    | '#712222'
-    | '#d6ab8b'
-    | '#a1e499'
-    | '#20fa62'
-    | '#7ac0bb'
-    | '#20faed'
-    | '#7899b6'
-    | '#0089fe'
-    | '#7e77b5'
-    | '#8f80fe'
-    | '#a000fe'
-    | '#fe00e2'
-    | '#b976b1'
-    | '#d0b07e'
-    | null;
-  eyeliner_color?:
-    | '#000000'
-    | '#505050'
-    | '#a5a5a5'
-    | '#e7e7e7'
-    | '#615050'
-    | '#3d3232'
-    | '#d08383'
-    | '#712222'
-    | '#d6ab8b'
-    | '#a1e499'
-    | '#20fa62'
-    | '#7ac0bb'
-    | '#20faed'
-    | '#7899b6'
-    | '#0089fe'
-    | '#7e77b5'
-    | '#8f80fe'
-    | '#a000fe'
-    | '#fe00e2'
-    | '#b976b1'
-    | '#d0b07e'
-    | null;
+  eyes_color?: string | null;
+  lipstick_color?: string | null;
+  blush_color?: string | null;
+  foundation_color?: string | null;
+  eyeshadow_color?: string | null;
+  eyeliner_color?: string | null;
   /**
    * @min 0
    * @max 6
    */
   eyebrows_style?: number | null;
-  eyebrows_color?: '#292A2C' | '#5D513A' | '#aba8a1' | '#f2be00' | '#4ef800' | '#ff0dfb' | null;
+  eyebrows_color?: string | null;
   /**
    * @min 0
    * @max 100

@@ -1,14 +1,22 @@
-import {useEngine} from 'engine/framework-react';
-import {ClotheItem} from 'engine/types';
+import {useMemo, useRef} from 'react';
 
-import {useSuspend} from './useSuspend';
+import deepEqual from 'deep-equal';
+
+import {ClotheItem} from 'engine/definitions/types/clothes.types';
+import {useEngine} from 'engine/framework-react';
 
 const useAddClothes = (clotheItems: ClotheItem[]) => {
   const {clothes} = useEngine();
 
-  useSuspend(
-    () => Promise.all(clotheItems.map(clothe => clothes.addClothe(clothe))),
-    [clotheItems],
+  const itemsRef = useRef(clotheItems);
+
+  const isEqual = deepEqual(clotheItems, itemsRef.current);
+
+  itemsRef.current = clotheItems;
+
+  useMemo(
+    () => itemsRef.current.forEach(item => clothes.addClothe(item)),
+    [isEqual],
   );
 };
 

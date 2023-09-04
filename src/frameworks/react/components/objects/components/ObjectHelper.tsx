@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 
-import {ObjectManager} from 'engine/types';
+import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 type ObjectHelperProps = {
   object: ObjectManager;
