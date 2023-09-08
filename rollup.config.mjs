@@ -7,12 +7,7 @@ import pkg from './package.json' assert {type: 'json'};
 
 const external = [...Object.keys(pkg.dependencies ?? {}), 'react'];
 
-const sharedPlugins = [
-  typescript({
-    //rootDir: './src',
-  }),
-  commonjs(),
-];
+const sharedPlugins = [typescript(), commonjs()];
 
 const plugins = [nodeResolve(), ...sharedPlugins];
 
