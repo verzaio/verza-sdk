@@ -42,7 +42,7 @@ import SoundManager from 'engine/managers/audio/sound.manager';
 import ParticlesManager from 'engine/managers/effects/particles.manager';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
-import {ParticleOptions} from 'engine/types';
+import {ParticlesOptions} from 'engine/types';
 import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EntityManager from '../../entity/entity.manager';
@@ -933,14 +933,14 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.sound?.destroy();
   }
 
-  createParticles(options?: ParticleOptions, withId?: string) {
+  createParticles(options?: ParticlesOptions, withId?: string) {
     return this.engine.effects.createObjectParticles(this, options, withId);
   }
 
   /**
    * @private
    */
-  _setParticles(options?: ParticleOptions) {
+  _setParticles(options?: ParticlesOptions) {
     this.particles = this.engine.effects.createObjectParticles(
       this.id,
       options,

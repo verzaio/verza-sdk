@@ -2,12 +2,12 @@ import {useEffect, useRef} from 'react';
 
 import equal from 'fast-deep-equal';
 
-import {ParticleOptions} from 'engine/definitions/types/effects.types';
+import {ParticlesOptions} from 'engine/definitions/types/effects.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 type ObjectParticlesProps = {
   object: ObjectManager;
-  particles: ParticleOptions | boolean;
+  particles: ParticlesOptions | boolean;
 };
 
 export const ObjectParticles = ({object, particles}: ObjectParticlesProps) => {

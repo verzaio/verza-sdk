@@ -34,7 +34,7 @@ export type EffectType = EffectEasing | EffectCubicBezier;
 
 export type EffectValueRange = [min: number, max: number];
 
-export type ParticleOptions = {
+export type ParticlesOptions = {
   /**
    * The texture URL or Asset ID to use for the particle.
    *
@@ -124,7 +124,7 @@ export type ParticleOptions = {
    * @min 0
    * @max 20
    *
-   * @default 0
+   * @default 1
    */
   lifetime?: number;
 

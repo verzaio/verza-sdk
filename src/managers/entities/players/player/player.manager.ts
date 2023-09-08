@@ -28,7 +28,7 @@ import {
 } from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
-import {ParticleOptions, SoundOptions} from 'engine/types';
+import {ParticlesOptions, SoundOptions} from 'engine/types';
 import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';
@@ -426,7 +426,7 @@ class PlayerManager extends EntityManager<
     return this.engine.world.createPlayerProximityAction(this, options, withId);
   }
 
-  createParticles(options?: ParticleOptions, withId?: string) {
+  createParticles(options?: ParticlesOptions, withId?: string) {
     return this.engine.effects.createPlayerParticles(this, options, withId);
   }
 

@@ -27,7 +27,7 @@ import {ChunkData, ChunkIndex} from './chunks.types';
 import {ClotheItem, PlayerClotheItem, SkinMaskItem} from './clothes.types';
 import {CommandInfo} from './commands.types';
 import {PlayerControls} from './controls.types';
-import {ParticleOptions} from './effects.types';
+import {ParticlesOptions} from './effects.types';
 import {FileTransfer, KeyEvent, PointerEvent, DragEvent} from './input.types';
 import {ObjectTypes} from './objects/objects-definition.types';
 import {
@@ -578,30 +578,30 @@ export type ScriptEventMap = {
   onSoundEnd: (event: SoundEvent) => void;
 
   /* particles */
-  createParticles: (particlesId: string, options: ParticleOptions) => void;
+  createParticles: (particlesId: string, options: ParticlesOptions) => void;
 
   createPlayerParticles: (
     particlesId: string,
     playerId: number,
-    options: ParticleOptions,
+    options: ParticlesOptions,
   ) => void;
 
   createObjectParticles: (
     particlesId: string,
     objectId: string,
-    options: ParticleOptions,
+    options: ParticlesOptions,
   ) => void;
 
   setParticlesOptions: (
     particlesId: string,
-    options: ParticleOptions,
+    options: ParticlesOptions,
     respawn: boolean,
   ) => void;
 
   playParticles: (
     particlesId: string,
     reset: boolean,
-    options: ParticleOptions,
+    options: ParticlesOptions,
     respawn: boolean,
   ) => void;
 
