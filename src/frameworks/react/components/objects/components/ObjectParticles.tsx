@@ -22,14 +22,14 @@ export const ObjectParticles = ({object, particles}: ObjectParticlesProps) => {
 
     const options = typeof particles === 'boolean' ? {} : particles;
 
-    object.setParticles(options);
+    object._setParticles(options);
   }, [object, particles]);
 
   // unload
   useEffect(() => {
     return () => {
       lastParticles.current = null!;
-      object.removeParticles();
+      object._removeParticles();
     };
   }, [object]);
 

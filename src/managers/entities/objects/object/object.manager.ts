@@ -33,8 +33,8 @@ import {
 import {
   Boolean3Array,
   EulerArray,
-  ProximityAction,
   ProximityActionEvent,
+  ProximityActionOptions,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
@@ -42,6 +42,7 @@ import SoundManager from 'engine/managers/audio/sound.manager';
 import ParticlesManager from 'engine/managers/effects/particles.manager';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import {ParticleOptions} from 'engine/types';
 import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EntityManager from '../../entity/entity.manager';
@@ -73,11 +74,17 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
 
   particles: ParticlesManager | null = null!;
 
+  private _visible = true;
+
   private _messenger: MessengerEmitterManager;
 
   private _worldLocation: Object3D = null!;
 
   /* getter & setters */
+  get visible() {
+    return this._visible;
+  }
+
   get objectType() {
     return this.data.t;
   }
@@ -625,6 +632,8 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   setVisible(visible: boolean) {
+    this._visible = visible;
+
     this.engine.objects.emitHandler(this, player => {
       this._messenger.emit('setObjectVisible', [this.id, visible], player.id);
     });
@@ -888,7 +897,19 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this._messenger.emit('stopObjectTransitions', [this.id]);
   }
 
-  setSound(soundName: string, options?: SoundOptions) {
+  createSound(soundName: string, options?: SoundOptions, withId?: string) {
+    return this.engine.audio.createObjectSound(
+      this,
+      soundName,
+      options,
+      withId,
+    );
+  }
+
+  /**
+   * @private
+   */
+  _setSound(soundName: string, options?: SoundOptions) {
     this.sound = this.engine.audio.createObjectSound(
       this.id,
       soundName,
@@ -905,11 +926,21 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.sound;
   }
 
-  removeSound() {
+  /**
+   * @private
+   */
+  _removeSound() {
     this.sound?.destroy();
   }
 
-  setParticles(options?: SoundOptions) {
+  createParticles(options?: ParticleOptions, withId?: string) {
+    return this.engine.effects.createObjectParticles(this, options, withId);
+  }
+
+  /**
+   * @private
+   */
+  _setParticles(options?: ParticleOptions) {
     this.particles = this.engine.effects.createObjectParticles(
       this.id,
       options,
@@ -919,39 +950,55 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.particles;
   }
 
-  removeParticles() {
+  /**
+   * @private
+   */
+  _removeParticles() {
     this.particles?.destroy();
   }
 
-  setProximityAction(action: Omit<ProximityAction, 'id' | 'objectId'>) {
+  createProximityAction(options?: ProximityActionOptions, withId?: string) {
+    return this.engine.world.createObjectProximityAction(this, options, withId);
+  }
+
+  /**
+   * @private
+   */
+  _setProximityAction(action: Omit<ProximityActionOptions, 'objectId'>) {
     if (action.position) {
       action.position = toVector3Array(action.position);
     }
 
-    this.engine.objects.emitHandler(this, player => {
-      this._messenger.emit(
-        'setObjectProximityAction',
-        [this.id, action],
-        player.id,
-      );
-    });
+    this._messenger.emit('createProximityAction', [this.id, action]);
   }
 
-  removeProximityAction() {
-    this.engine.objects.emitHandler(this, player => {
-      this._messenger.emit('removeObjectProximityAction', [this.id], player.id);
+  /**
+   * @private
+   */
+  _removeProximityAction() {
+    this.engine.objects.emitHandler(this, () => {
+      this._messenger.emit('deleteProximityAction', [this.id]);
     });
   }
 
   /* binds */
+  /**
+   * @private
+   */
   _onTransitionStart = (id: number | string) => {
     this.events.emit('onTransitionStart', id);
   };
 
+  /**
+   * @private
+   */
   _onTransitionEnd = (id: number | string) => {
     this.events.emit('onTransitionEnd', id);
   };
 
+  /**
+   * @private
+   */
   _onProximityActionTriggered = (event: ProximityActionEvent) => {
     this.events.emit('onProximityActionTriggered', {
       ...event,
@@ -959,6 +1006,9 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     } as ObjectProximityActionEvent<OT>);
   };
 
+  /**
+   * @private
+   */
   _onSoundEnd = (event: SoundEvent) => {
     this.events.emit('onSoundEnd', {
       ...event,
@@ -966,10 +1016,16 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     } as ObjectSoundEvent<OT>);
   };
 
+  /**
+   * @private
+   */
   _onEnterSensor = (playerId: number) => {
     this.events.emit('onEnterSensor', this.engine.players.get(playerId));
   };
 
+  /**
+   * @private
+   */
   _onLeaveSensor = (playerId: number) => {
     this.events.emit('onLeaveSensor', this.engine.players.get(playerId));
   };

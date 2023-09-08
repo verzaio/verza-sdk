@@ -38,4 +38,5 @@ export type SoundEvent = {
   type: SoundEventType;
   soundName: string;
   objectId?: string;
+  playerId?: number;
 };

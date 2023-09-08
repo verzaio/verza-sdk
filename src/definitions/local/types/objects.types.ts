@@ -11,7 +11,7 @@ import {PickObject} from 'engine/definitions/types/objects/objects-definition.ty
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
 import {
   Boolean3Array,
-  ProximityAction,
+  ProximityActionOptions,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
@@ -26,7 +26,7 @@ export type ComponentObjectProps<T extends ObjectType = ObjectType> = Omit<
 
   soundOptions?: SoundOptions;
 
-  proximityAction?: Omit<ProximityAction, 'id' | 'objectId'> | boolean;
+  proximityAction?: Omit<ProximityActionOptions, 'objectId'> | boolean;
 
   particles?: ParticleOptions | boolean;
 

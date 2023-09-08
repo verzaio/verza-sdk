@@ -117,9 +117,9 @@ export type ViewportRender =
   | 'wireframe-normal'
   | 'normal';
 
-export type ProximityAction = {
-  id: string;
+export type ProximityActionOptions = {
   objectId?: string;
+  playerId?: number;
   position?: Vector3 | Vector3Array;
   label?: string;
   description?: string;

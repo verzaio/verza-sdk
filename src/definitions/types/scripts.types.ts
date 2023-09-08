@@ -53,7 +53,7 @@ import {VoicechatModeType} from './voicechat.types';
 import {
   IntersectsResultRaw,
   MoonPhases,
-  ProximityAction,
+  ProximityActionOptions,
   ProximityActionEvent,
   QuaternionArray,
   RaycastOptions,
@@ -512,13 +512,6 @@ export type ScriptEventMap = {
 
   stopObjectTransitions: (objectId: string) => void;
 
-  setObjectProximityAction: (
-    objectId: string,
-    action: Omit<ProximityAction, 'id' | 'objectId'>,
-  ) => void;
-
-  removeObjectProximityAction: (objectId: string) => void;
-
   /* api */
   syncServer: (server: ServerDto, endpoint: string) => void;
 
@@ -555,6 +548,13 @@ export type ScriptEventMap = {
   removeSound(soundId: string): void;
 
   createSound(soundId: string, options: SoundOptions, withId: string): void;
+
+  createPlayerSound(
+    soundId: string,
+    playerId: number,
+    options: SoundOptions,
+    withId: string,
+  ): void;
 
   createObjectSound(
     soundId: string,
@@ -665,7 +665,22 @@ export type ScriptEventMap = {
     options: RaycastOptions,
   ) => IntersectsResultRaw;
 
-  createProximityAction: (action: ProximityAction) => void;
+  createProximityAction: (
+    actionId: string,
+    options: ProximityActionOptions,
+  ) => void;
+
+  createPlayerProximityAction: (
+    actionId: string,
+    playerId: number,
+    options: ProximityActionOptions,
+  ) => void;
+
+  createObjectProximityAction: (
+    actionId: string,
+    objectId: string,
+    options: ProximityActionOptions,
+  ) => void;
 
   deleteProximityAction: (actionId: string) => void;
 
@@ -743,7 +758,7 @@ export type ScriptEventMap = {
 } & {
   [key in `onObjectTransitionEndRaw_${string}`]: (id: number | string) => void;
 } & {
-  [key in `onObjectProximityActionTriggeredRaw_${string}`]: (
+  [key in `onProximityActionTriggeredRaw_${string}`]: (
     event: ProximityActionEvent,
   ) => void;
 } & {
