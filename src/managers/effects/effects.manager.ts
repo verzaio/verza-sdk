@@ -1,6 +1,6 @@
 import {Vector3} from 'three';
 
-import {ParticleOptions} from 'engine/definitions/types/effects.types';
+import {ParticlesOptions} from 'engine/definitions/types/effects.types';
 import {Vector3Array} from 'engine/definitions/types/world.types';
 
 import EngineManager from '../engine.manager';
@@ -16,7 +16,7 @@ class EffectsManager {
   }
 
   createParticles(
-    options: ParticleOptions = {},
+    options: ParticlesOptions = {},
     withId?: string,
   ): ParticlesManager {
     return new ParticlesManager(this._engine, options, withId);
@@ -24,7 +24,7 @@ class EffectsManager {
 
   createPlayerParticles(
     player: number | PlayerManager,
-    options: ParticleOptions = {},
+    options: ParticlesOptions = {},
     withId?: string,
   ): ParticlesManager {
     return new ParticlesManager(
@@ -37,7 +37,7 @@ class EffectsManager {
 
   createObjectParticles(
     object: string | ObjectManager,
-    options: ParticleOptions = {},
+    options: ParticlesOptions = {},
     withId?: string,
   ): ParticlesManager {
     return new ParticlesManager(
@@ -50,7 +50,7 @@ class EffectsManager {
   }
 
   playParticles(
-    options: ParticleOptions = {},
+    options: ParticlesOptions = {},
     withId?: string,
   ): ParticlesManager {
     return this.createParticles(
@@ -66,7 +66,7 @@ class EffectsManager {
 
   playParticlesAtPosition(
     position: Vector3Array | Vector3,
-    options: ParticleOptions = {},
+    options: ParticlesOptions = {},
     withId?: string,
   ): ParticlesManager {
     return this.playParticles(

@@ -26,14 +26,14 @@ export const ObjectSound = ({
 
     lastSound.current = [soundName, {...soundOptions}];
 
-    object.setSound(soundName, soundOptions);
+    object._setSound(soundName, soundOptions);
   }, [object, soundName, soundOptions]);
 
   // unload
   useEffect(() => {
     return () => {
       lastSound.current = null;
-      object.removeSound();
+      object._removeSound();
     };
   }, [object]);
 

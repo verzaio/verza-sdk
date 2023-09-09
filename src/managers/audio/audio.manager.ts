@@ -6,6 +6,7 @@ import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import {EngineManager} from '../engine.manager';
 import ObjectManager from '../entities/objects/object/object.manager';
+import PlayerManager from '../entities/players/player/player.manager';
 import SoundManager from './sound.manager';
 
 class AudioManager {
@@ -39,6 +40,26 @@ class AudioManager {
     const sound = new SoundManager(this._engine, soundName, withId);
 
     this._messenger.emit('createSound', [soundName, options, sound.id]);
+
+    return sound;
+  }
+
+  createPlayerSound(
+    player: number | PlayerManager,
+    soundName: string,
+    options: SoundOptions = {},
+    withId?: string,
+  ): SoundManager {
+    const sound = new SoundManager(this._engine, soundName, withId);
+
+    this._messenger.emit('createPlayerSound', [
+      soundName,
+      typeof player === 'number' ? player : player.id,
+      {
+        ...options,
+      },
+      sound.id,
+    ]);
 
     return sound;
   }

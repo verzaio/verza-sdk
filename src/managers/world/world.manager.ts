@@ -1,18 +1,18 @@
-import {v4} from 'uuid';
-
 import {ColorType} from 'engine/definitions/types/ui.types';
 import {
   MoonPhases,
-  ProximityAction,
+  ProximityActionOptions,
   SkyboxProps,
   TimeMode,
   Timezone,
   ViewportRender,
   WeatherType,
 } from 'engine/definitions/types/world.types';
-import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';
+import ObjectManager from '../entities/objects/object/object.manager';
+import PlayerManager from '../entities/players/player/player.manager';
+import ProximityActionManager from './proximity-action.manager';
 import RaycasterManager from './raycaster.manager';
 
 class WorldManager {
@@ -125,22 +125,38 @@ class WorldManager {
     this._messenger.emit('setViewportRender', [type]);
   }
 
-  createProximityAction(action: Partial<ProximityAction>): string {
-    if (action.position) {
-      action.position = toVector3Array(action.position);
-    }
-
-    if (!action.id) {
-      action.id = v4();
-    }
-
-    this._messenger.emit('createProximityAction', [action as ProximityAction]);
-
-    return action.id;
+  createProximityAction(
+    options: ProximityActionOptions = {},
+    withId?: string,
+  ): ProximityActionManager {
+    return new ProximityActionManager(this._engine, options, withId);
   }
 
-  deleteProximityAction(actionId: string) {
-    this._messenger.emit('deleteProximityAction', [actionId]);
+  createPlayerProximityAction(
+    player: number | PlayerManager,
+    options: ProximityActionOptions = {},
+    withId?: string,
+  ): ProximityActionManager {
+    return new ProximityActionManager(
+      this._engine,
+      options,
+      withId,
+      undefined,
+      typeof player === 'number' ? player : player.id,
+    );
+  }
+
+  createObjectProximityAction(
+    object: string | ObjectManager,
+    options: ProximityActionOptions = {},
+    withId?: string,
+  ): ProximityActionManager {
+    return new ProximityActionManager(
+      this._engine,
+      options,
+      withId,
+      typeof object === 'string' ? object : object.id,
+    );
   }
 }
 

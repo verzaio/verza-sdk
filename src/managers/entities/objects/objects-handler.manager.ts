@@ -90,13 +90,13 @@ class ObjectsHandlerManager {
             subscribed,
             () =>
               this._engine.events.on(
-                `onObjectProximityActionTriggeredRaw_${object.id}`,
+                `onProximityActionTriggeredRaw_${object.id}`,
                 object._onProximityActionTriggered,
               ),
 
             () =>
               this._engine.events.off(
-                `onObjectProximityActionTriggeredRaw_${object.id}`,
+                `onProximityActionTriggeredRaw_${object.id}`,
                 object._onProximityActionTriggered,
               ),
           );

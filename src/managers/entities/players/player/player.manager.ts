@@ -18,6 +18,7 @@ import {PlayerEventMap} from 'engine/definitions/types/events.types';
 import {PlayerBanStatus} from 'engine/definitions/types/players.types';
 import {ColorType} from 'engine/definitions/types/ui.types';
 import {
+  ProximityActionOptions,
   QuaternionArray,
   Vector3Array,
 } from 'engine/definitions/types/world.types';
@@ -27,6 +28,7 @@ import {
 } from 'engine/generated/dtos.types';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import {ParticlesOptions, SoundOptions} from 'engine/types';
 import {getChunkInfo} from 'engine/utils/chunks.utils';
 
 import EntityManager from '../../entity/entity.manager';
@@ -104,6 +106,12 @@ class PlayerManager extends EntityManager<
   get roles() {
     return this.data.roles ?? [];
   }
+
+  get visible() {
+    return this._visible;
+  }
+
+  private _visible = false;
 
   private set roles(roles: string[]) {
     this.data.roles = roles;
@@ -276,6 +284,8 @@ class PlayerManager extends EntityManager<
   }
 
   setVisible(visible: boolean) {
+    this._visible = visible;
+
     this.messenger.emit('setPlayerVisible', [this.id, visible]);
   }
 
@@ -410,6 +420,23 @@ class PlayerManager extends EntityManager<
 
   resumeAnimation(animId: string) {
     this.messenger.emit('resumePlayerAnimation', [this.id, animId]);
+  }
+
+  createProximityAction(options?: ProximityActionOptions, withId?: string) {
+    return this.engine.world.createPlayerProximityAction(this, options, withId);
+  }
+
+  createParticles(options?: ParticlesOptions, withId?: string) {
+    return this.engine.effects.createPlayerParticles(this, options, withId);
+  }
+
+  createSound(soundName: string, options?: SoundOptions, withId?: string) {
+    return this.engine.audio.createPlayerSound(
+      this,
+      soundName,
+      options,
+      withId,
+    );
   }
 
   _onAnimation = (event: AnimationEvent) => {

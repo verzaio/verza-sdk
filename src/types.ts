@@ -66,7 +66,7 @@ export type {
   EffectCubicBezier,
   EffectType,
   EffectValueRange,
-  ParticleOptions,
+  ParticlesOptions,
   ColorSequenceStep,
   NumberSequenceStep,
 } from 'engine/definitions/types/effects.types';
