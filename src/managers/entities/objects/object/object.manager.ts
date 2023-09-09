@@ -42,6 +42,7 @@ import SoundManager from 'engine/managers/audio/sound.manager';
 import ParticlesManager from 'engine/managers/effects/particles.manager';
 import EngineManager from 'engine/managers/engine.manager';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import ProximityActionManager from 'engine/managers/world/proximity-action.manager';
 import {ParticlesOptions} from 'engine/types';
 import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
@@ -73,6 +74,8 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   sound: SoundManager | null = null;
 
   particles: ParticlesManager | null = null!;
+
+  proximityAction: ProximityActionManager | null = null!;
 
   private _visible = true;
 
@@ -916,9 +919,9 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       {
         loop: 'repeat',
 
-        ...options,
-
         autoplay: true,
+
+        ...options,
       },
       this.id,
     );
@@ -931,6 +934,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
    */
   _removeSound() {
     this.sound?.destroy();
+    this.sound = null;
   }
 
   createParticles(options?: ParticlesOptions, withId?: string) {
@@ -955,6 +959,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
    */
   _removeParticles() {
     this.particles?.destroy();
+    this.particles = null;
   }
 
   createProximityAction(options?: ProximityActionOptions, withId?: string) {
@@ -965,20 +970,21 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
    * @private
    */
   _setProximityAction(action: Omit<ProximityActionOptions, 'objectId'>) {
-    if (action.position) {
-      action.position = toVector3Array(action.position);
-    }
+    this.proximityAction = this.engine.world.createObjectProximityAction(
+      this,
+      action,
+      this.id,
+    );
 
-    this._messenger.emit('createProximityAction', [this.id, action]);
+    return this.proximityAction;
   }
 
   /**
    * @private
    */
   _removeProximityAction() {
-    this.engine.objects.emitHandler(this, () => {
-      this._messenger.emit('deleteProximityAction', [this.id]);
-    });
+    this.proximityAction?.destroy();
+    this.proximityAction = null;
   }
 
   /* binds */
