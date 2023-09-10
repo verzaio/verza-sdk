@@ -13,7 +13,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # locks
-package-lock.json
 yarn.lock
 
 # local env files

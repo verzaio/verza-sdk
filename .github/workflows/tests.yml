@@ -16,28 +16,28 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.19.0'
+          node-version: '18.16.1'
 
-      - name: Cache yarn node_modules
+      - name: Cache node_modules
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install packages
-        run: yarn install
+        run: npm install
 
       - name: Typescript type check
-        run: yarn run ts-check
+        run: npm run ts-check
 
       - name: Lint check
-        run: yarn run lint
+        run: npm run lint
 
       #- name: Tests
-      #  run: yarn run test:ci
+      #  run: npm run test:ci
 
       - name: Build test
-        run: yarn run build
+        run: npm run build
 
       - name: Pull request to main
         if: ${{ github.ref == 'refs/heads/dev' }}
