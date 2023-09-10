@@ -23,6 +23,8 @@ import EntityStreamManager from './entity-stream.manager';
 
 const TEMP_POS = new Vector3();
 
+type ExcludedEventMethods = 'onEnter' | 'onLeave';
+
 class EntityManager<
   T extends EntityItem = EntityItem,
   H extends EntityHandleManager<any> | void = void,
@@ -39,14 +41,17 @@ class EntityManager<
 
   streamed = false;
 
-  events: EntityEventsManager<MergeEntityEvents<Events, EntityEventMap<this>>> =
-    null!;
+  events: EntityEventsManager<
+    MergeEntityEvents<Events, Omit<EntityEventMap<this>, ExcludedEventMethods>>
+  > = null!;
 
   private _location = new Object3D();
 
   streamer: EntityStreamManager = null!;
 
   chunkIndex: ChunkIndex = null!;
+
+  vars: Map<string, any> = new Map();
 
   /* accessors */
   get id(): T['id'] {

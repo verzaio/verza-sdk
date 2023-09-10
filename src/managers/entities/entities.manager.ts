@@ -167,27 +167,6 @@ class EntitiesManager<
     this.events.emit('onStreamOut', entity);
     entity.events.emit('onStreamOut', entity);
   }
-
-  /* manipulation methods */
-  get map() {
-    return this.entities.map;
-  }
-
-  get some() {
-    return this.entities.some;
-  }
-
-  get filter() {
-    return this.entities.filter;
-  }
-
-  get find() {
-    return this.entities.find;
-  }
-
-  get forEach() {
-    return this.entitiesMap.forEach;
-  }
 }
 
 export default EntitiesManager;
