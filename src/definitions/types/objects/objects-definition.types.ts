@@ -13,6 +13,8 @@ export type PickObject<T extends ObjectType> = ObjectTypes[T];
 export type PickObjectProps<T extends ObjectType> = PickObject<T>['o'];
 
 export type ObjectDataBase = {
+  c?: ObjectTypeValues[];
+
   userData?: {
     [name: string]: unknown;
   };
@@ -70,19 +72,7 @@ export type ObjectMaterialProps = {
   material?: ObjectMaterialMix;
 };
 
-export type ObjectGroupType = ObjectBaseType<
-  'group',
-  {
-    c?: ObjectTypeValues[];
-  }
->;
-
-export type ObjectModelType = ObjectBaseType<
-  'model',
-  {
-    model?: unknown; // data
-  }
->;
+export type ObjectGroupType = ObjectBaseType<'group'>;
 
 export type ObjectGltfType = ObjectBaseType<
   'gltf',
@@ -358,8 +348,6 @@ export type ObjectRectAreaLightType = ObjectBaseType<
 
 export type ObjectTypes = {
   group: ObjectGroupType;
-
-  model: ObjectModelType;
 
   box: ObjectBoxType;
 

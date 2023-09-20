@@ -8,7 +8,7 @@ import ObjectRender from './components/ObjectRender';
 export type PlaneProps = ComponentObjectProps<'plane'>;
 
 export const Plane = forwardRef<ObjectManager, PlaneProps>((props, ref) => {
-  return <ObjectRender type="plane" props={props} objectRef={ref} />;
+  return <ObjectRender type="plane" {...props} objectRef={ref} />;
 });
 
 Plane.displayName = 'Plane';

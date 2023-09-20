@@ -11,6 +11,7 @@ import {
   ObjectProximityActionEvent,
   ObjectSoundEvent,
 } from 'engine/definitions/local/types/events.types';
+import {EntityAttachOptions} from 'engine/definitions/types/attachments.types';
 import {SoundEvent, SoundOptions} from 'engine/definitions/types/audio.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
@@ -19,7 +20,6 @@ import {
   ObjectEntity,
 } from 'engine/definitions/types/entities.types';
 import {
-  ObjectGroupType,
   PickObject,
   PickObjectProps,
 } from 'engine/definitions/types/objects/objects-definition.types';
@@ -65,10 +65,6 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   ObjectHandleManager,
   ObjectEventMap
 > {
-  parent: ObjectManager | null = null;
-
-  children: Set<ObjectManager> = new Set();
-
   boundingBox: Box3 = null!;
 
   sound: SoundManager | null = null;
@@ -92,20 +88,18 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return this.data.t;
   }
 
+  get scale() {
+    return this.location.scale;
+  }
+
   get worldLocation() {
     if (!this._worldLocation) {
       this._worldLocation = new Object3D();
     }
 
-    if (this.parent) {
-      this.location.getWorldPosition(this._worldLocation.position);
-      this.location.getWorldQuaternion(this._worldLocation.quaternion);
-    } else {
-      this._worldLocation.position.copy(this.location.position);
-      this._worldLocation.quaternion.copy(this.location.quaternion);
-    }
+    this._worldLocation.position.copy(this.worldPosition);
+    this._worldLocation.quaternion.copy(this.worldQuaternion);
 
-    // scale
     this._worldLocation.scale.copy(this.location.scale);
 
     return this._worldLocation;
@@ -114,57 +108,26 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   // TODO: Improve API design to avoid this
   get worldLocationSync() {
     return (async () => {
-      if (!this._worldLocation) {
-        this._worldLocation = new Object3D();
-      }
-
-      const parent = await this.resolveParent();
+      await this.resolveParent();
 
       // TODO: Improve to resolve only transform
       await this.resolve();
 
-      if (parent) {
-        this.location.getWorldPosition(this._worldLocation.position);
-        this.location.getWorldQuaternion(this._worldLocation.quaternion);
-      } else {
-        this._worldLocation.position.copy(this.location.position);
-        this._worldLocation.quaternion.copy(this.location.quaternion);
-      }
-
-      // scale
-      this._worldLocation.scale.copy(this.location.scale);
-
-      return this._worldLocation;
+      return this.worldLocation;
     })();
   }
 
-  get location() {
-    return super.location;
-  }
-
-  get position() {
-    return super.location.position;
-  }
-
-  get rotation() {
-    return super.location.quaternion;
-  }
-
-  get scale() {
-    return super.location.scale;
-  }
-
   get permanent() {
-    if (this.parent) {
-      return this.parent.permanent;
+    if (this.attachedTo?.isObject) {
+      return (this.attachedTo as ObjectManager).permanent;
     }
 
     return !!this.data.po;
   }
 
   set permanent(permanent: boolean) {
-    if (this.parent) {
-      this.parent.permanent = permanent;
+    if (this.parentObject) {
+      this.parentObject.permanent = permanent;
       return;
     }
 
@@ -176,11 +139,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   get remote() {
-    if (this.parent) {
-      return this.parent.remote;
-    }
-
-    return !!this.data.rm;
+    return this.parentObject?.remote ?? !!this.data.rm;
   }
 
   set remote(remote: boolean) {
@@ -188,11 +147,17 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     remote;
   }
 
-  get parentId(): string | undefined {
+  get parentObject(): ObjectManager | undefined {
+    if (this.parentObjectId) {
+      return this.engine.objects.get(this.parentObjectId);
+    }
+  }
+
+  get parentObjectId(): string | undefined {
     return this.data.parent_id;
   }
 
-  set parentId(parentId: string | undefined) {
+  set parentObjectId(parentId: string | undefined) {
     this.data.parent_id = parentId!;
   }
 
@@ -276,8 +241,8 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this._checkForChildren();
 
     // check for parent via data.parent_id
-    if (this.parentId) {
-      this.attachToParent(this.engine.objects.get(this.parentId));
+    if (this.parentObject) {
+      this.parentObject?.attach(this);
       return;
     }
 
@@ -296,7 +261,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   private _lastChunkIndex: ChunkIndex = null!;
   updateChunkIndex(emit = true) {
     // ignore client-side and if not the parent object
-    if (this.engine.isClient || this.parentId) return;
+    if (this.engine.isClient || this.parentObjectId) return;
 
     super.updateChunkIndex();
 
@@ -324,7 +289,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.updateChunkIndex();
 
     // emit
-    if (this.parentId) {
+    if (this.parentObjectId) {
       this.engine.objects.emitHandler(this, player => {
         this._messenger.emit(
           'setObjectPosition',
@@ -350,7 +315,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.updateChunkIndex();
 
     // emit
-    if (this.parentId) {
+    if (this.parentObjectId) {
       this.engine.objects.emitHandler(this, player => {
         this._messenger.emit(
           'setObjectRotation',
@@ -453,7 +418,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   async setPositionFromWorldSpace(position: Vector3 | Vector3Array) {
-    if (!this.parentId) {
+    if (!this.parentObjectId) {
       this.setPosition(position);
       return;
     }
@@ -487,7 +452,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   async setRotationFromWorldSpace(
     rotation: Quaternion | Euler | QuaternionArray | EulerArray,
   ) {
-    if (!this.parentId) {
+    if (!this.parentObjectId) {
       this.setRotation(rotation);
       return;
     }
@@ -524,64 +489,32 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     this.setRotation(_TEMP_QUAT);
   }
 
-  detachFromParent() {
-    if (!this.parent) return;
-
-    this.parent.children.delete(this);
-    this.parent.location.remove(this.location);
-    this.parent = null!;
-  }
-
-  attachToParent(parent: ObjectManager) {
-    if (!parent) {
-      /* console.debug(
-        `[objects:script] no parent found (parent id: ${this.parentId} | object id: ${this.id}:${this.objectType})`,
-      ); */
-      return;
-    }
-
-    if (parent.objectType !== 'group') {
-      console.debug(
-        `[objects:script] only groups can have children (parent id: ${this.parentId}:${parent?.objectType} | object id ${this.id}:${this.objectType})`,
-      );
-      return;
-    }
-
-    this.parent = parent;
-    parent.children.add(this);
-    parent.location.add(this.location);
-  }
-
   private _checkForChildren() {
-    if (this.objectType !== 'group') return;
-
     // loop children
-    (this.data as ObjectGroupType).o?.c?.forEach(item => {
-      const data = item.o;
+    this.data.o?.c?.forEach(item => {
+      if (!item.o) return;
 
-      if (data) {
-        // set parent id
-        item.parent_id = this.id;
+      // set parent id
+      item.parent_id = this.id;
 
-        const child = this.engine.objects.get(item.id!);
+      const child = this.engine.objects.get(item.id!);
 
-        // create or update
-        if (child) {
-          // attach if not attached
-          if (!child.parent) {
-            child.attachToParent(this);
-          }
-
-          // update
-          this.engine.objects.update(child, item as ObjectEntity['data']);
-        } else {
-          // create
-          this.engine.objects._createRaw(
-            item.id!,
-            item as ObjectEntity['data'],
-            this,
-          );
+      // create or update
+      if (child) {
+        // attach if not attached
+        if (!child.parentObject) {
+          child.attach(this);
         }
+
+        // update
+        this.engine.objects.update(child, item as ObjectEntity['data']);
+      } else {
+        // create
+        this.engine.objects._createRaw(
+          item.id!,
+          item as ObjectEntity['data'],
+          this,
+        );
       }
     });
   }
@@ -629,9 +562,9 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   }
 
   async resolveParent(forceUpdate?: boolean): Promise<ObjectManager | null> {
-    if (!this.parentId) return null;
+    if (!this.parentObjectId) return null;
 
-    return this.engine.objects.resolve(this.parentId, forceUpdate);
+    return this.engine.objects.resolve(this.parentObjectId, forceUpdate);
   }
 
   setVisible(visible: boolean) {
@@ -802,22 +735,21 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
     return {
       ...this.data,
 
-      parent_id: this.parentId,
+      parent_id: this.parentObjectId,
 
-      // children
-      ...(this.children && {
-        o: {
-          ...this.data.o,
+      // props
+      o: {
+        ...this.data.o,
 
-          ...(this.children.size > 0 && {
-            c: [...this.children.values()]?.map(e => e.toData()),
-          }),
-        },
-      }),
+        ...(this.attachedEntities.size > 0 && {
+          c: [...this.attachedEntities.keys()]
+            .filter(entity => entity.isObject)
+            ?.map(entity => (entity as ObjectManager).toData()),
+        }),
+      },
 
-      // update position & rotation
       p: this.position.toArray(),
-      r: this.rotation.toArray() as QuaternionArray,
+      r: this.quaternion.toArray() as QuaternionArray,
       s: this.scale.toArray(),
     };
   }
@@ -1035,6 +967,24 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
   _onLeaveSensor = (playerId: number) => {
     this.events.emit('onLeaveSensor', this.engine.players.get(playerId));
   };
+
+  attach(entity: EntityManager, options?: EntityAttachOptions) {
+    // set parent id
+    if (entity.isObject) {
+      (entity as ObjectManager).data.parent_id = this.id;
+    }
+
+    super.attach(entity, options);
+  }
+
+  detach(entity: EntityManager, isDestroy?: boolean): void {
+    // unset parent id
+    if (entity.isObject && !isDestroy) {
+      delete (entity as ObjectManager).data.parent_id;
+    }
+
+    super.detach(entity);
+  }
 }
 
 export default ObjectManager;

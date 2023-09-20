@@ -20,7 +20,7 @@ export const Gltf = forwardRef<ObjectManager, GltfProps>((props, ref) => {
     };
   }, [props]);
 
-  return <ObjectRender type="gltf" props={allProps} objectRef={ref} />;
+  return <ObjectRender type="gltf" {...allProps} objectRef={ref} />;
 });
 
 Gltf.displayName = 'Gltf';

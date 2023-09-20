@@ -8,7 +8,7 @@ import ObjectRender from './components/ObjectRender';
 export type CapsuleProps = ComponentObjectProps<'capsule'>;
 
 export const Capsule = forwardRef<ObjectManager, CapsuleProps>((props, ref) => {
-  return <ObjectRender type="capsule" props={props} objectRef={ref} />;
+  return <ObjectRender type="capsule" {...props} objectRef={ref} />;
 });
 
 Capsule.displayName = 'Capsule';

@@ -9,7 +9,7 @@ export type OctahedronProps = ComponentObjectProps<'octahedron'>;
 
 export const Octahedron = forwardRef<ObjectManager, OctahedronProps>(
   (props, ref) => {
-    return <ObjectRender type="octahedron" props={props} objectRef={ref} />;
+    return <ObjectRender type="octahedron" {...props} objectRef={ref} />;
   },
 );
 

@@ -1,6 +1,5 @@
 export enum ObjectType {
   group = 'group',
-  model = 'model',
   gltf = 'gltf',
   box = 'box',
   sphere = 'sphere',

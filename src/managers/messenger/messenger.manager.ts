@@ -271,15 +271,25 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
           return;
         }
 
+        const errorObject =
+          typeof e === 'object' && e !== null && e instanceof Error
+            ? {
+                details: {
+                  name: e.name,
+                  message: e.message,
+                },
+              }
+            : {
+                details: e,
+              };
+
         // send error response
         (this.emit as any)(
           `OR:${requestId}`,
           [
             {
               error: `Error processing "${eventName}"`,
-              ...JSON.parse(
-                JSON.stringify(typeof e === 'object' ? e : {details: e}),
-              ),
+              ...JSON.parse(JSON.stringify(errorObject)),
             },
           ],
           undefined,

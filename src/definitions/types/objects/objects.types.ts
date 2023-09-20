@@ -64,8 +64,8 @@ export type ObjectTransitionItem = ObjectTransition & {
   startTime: number;
   currentStep: number;
   steps: number;
-  originPosition: Object3D;
-  finalPosition: Object3D;
+  originLocation: Object3D;
+  finalLocation: Object3D;
   easingFunction: (delta: number) => number;
 };
 

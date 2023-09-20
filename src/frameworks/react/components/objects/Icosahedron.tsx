@@ -9,7 +9,7 @@ export type IcosahedronProps = ComponentObjectProps<'icosahedron'>;
 
 export const Icosahedron = forwardRef<ObjectManager, IcosahedronProps>(
   (props, ref) => {
-    return <ObjectRender type="icosahedron" props={props} objectRef={ref} />;
+    return <ObjectRender type="icosahedron" {...props} objectRef={ref} />;
   },
 );
 

@@ -1,5 +1,4 @@
 import React, {
-  ReactNode,
   createContext,
   useCallback,
   useContext,
@@ -43,18 +42,17 @@ const EXCLUDED_PROPS: Set<keyof ComponentObjectProps> = new Set([
   'helper',
 ]);
 
-type ObjectRenderProps<T extends ObjectType = ObjectType> = {
-  type: T;
-  props: ComponentObjectProps<T>;
-  objectRef: any;
-  children?: ReactNode;
-};
+type ObjectRenderProps<T extends ObjectType = ObjectType> =
+  ComponentObjectProps<T> & {
+    type: T;
+    objectRef: any;
+  };
 
 const ObjectRender = <T extends ObjectType = ObjectType>({
   children,
   type,
-  props,
   objectRef: ref,
+  ...props
 }: ObjectRenderProps<T>) => {
   const {objects} = useEngine();
 
@@ -117,8 +115,8 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
     });
 
     EXCLUDED_PROPS.forEach(name => {
-      if (objectProps[name]) {
-        delete objectProps[name];
+      if ((objectProps as any)[name]) {
+        delete (objectProps as any)[name];
       }
     });
 
@@ -131,7 +129,7 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
     return () => {
       events.forEach((event, name) => object.events.off(name, event));
     };
-  }, [setObject, objects, props, type, ref]);
+  });
 
   if (!object || object?.destroyed) return null;
 

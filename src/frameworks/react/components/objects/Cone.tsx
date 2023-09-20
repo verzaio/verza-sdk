@@ -8,7 +8,7 @@ import ObjectRender from './components/ObjectRender';
 export type ConeProps = ComponentObjectProps<'cone'>;
 
 export const Cone = forwardRef<ObjectManager, ConeProps>((props, ref) => {
-  return <ObjectRender type="cone" props={props} objectRef={ref} />;
+  return <ObjectRender type="cone" {...props} objectRef={ref} />;
 });
 
 Cone.displayName = 'Cone';

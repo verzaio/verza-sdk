@@ -46,10 +46,6 @@ export {
   type GroupProps,
 } from 'engine/frameworks/react/components/objects/Group';
 export {
-  Model,
-  type ModelProps,
-} from 'engine/frameworks/react/components/objects/Model';
-export {
   Box,
   type BoxProps,
 } from 'engine/frameworks/react/components/objects/Box';

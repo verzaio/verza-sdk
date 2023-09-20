@@ -9,7 +9,7 @@ export type SpotLightProps = ComponentObjectProps<'spotlight'>;
 
 export const SpotLight = forwardRef<ObjectManager, SpotLightProps>(
   (props, ref) => {
-    return <ObjectRender type="spotlight" props={props} objectRef={ref} />;
+    return <ObjectRender type="spotlight" {...props} objectRef={ref} />;
   },
 );
 

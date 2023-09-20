@@ -9,7 +9,7 @@ export type PointLightProps = ComponentObjectProps<'pointlight'>;
 
 export const PointLight = forwardRef<ObjectManager, PointLightProps>(
   (props, ref) => {
-    return <ObjectRender type="pointlight" props={props} objectRef={ref} />;
+    return <ObjectRender type="pointlight" {...props} objectRef={ref} />;
   },
 );
 
