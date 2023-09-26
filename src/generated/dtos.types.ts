@@ -697,6 +697,14 @@ export interface ServerFiltersDto {
   favorites?: boolean;
 }
 
+export interface ServerConnectionDto {
+  token: string | null;
+}
+
+export interface ValidateServerConnectionDto {
+  token: string;
+}
+
 export interface ServerPlayerDto {
   id: number;
   name: string;

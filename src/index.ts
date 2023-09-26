@@ -49,6 +49,8 @@ export {
   fileToDataUrl,
 } from './utils/files.utils';
 
+export {createEngineManager} from 'engine/utils/misc.utils';
+
 export {
   EventsManager,
   EventListenersMap,

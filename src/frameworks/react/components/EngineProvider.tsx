@@ -1,57 +1,40 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useEffect,
-  useMemo,
-  useState,
-  memo,
-} from 'react';
+import React, {PropsWithChildren, useEffect, useState, memo} from 'react';
 
-import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import EngineManager from 'engine/managers/engine.manager';
 
-export const EngineContext = createContext<EngineManager>(null!);
+import {useEngine} from '../hooks/useEngine';
+import {EngineContext} from './EngineContext';
 
 export type EngineProviderProps = {
-  params?: EngineParams;
+  engine?: EngineManager;
 };
 
 export const EngineProvider = memo(
-  ({children, params}: PropsWithChildren<EngineProviderProps>) => {
-    const [engine, setEngine] = useState<EngineManager>(null!);
-    const [synced, setSynced] = useState(false);
+  ({engine: engineProp, children}: PropsWithChildren<EngineProviderProps>) => {
+    const [connected, setConnected] = useState(true);
 
-    // handle engine creation
+    const engineContext = useEngine();
+
+    const engine = engineProp ?? engineContext;
+
+    // handle disconnect
     useEffect(() => {
-      const engine = new EngineManager(params);
-      engine.connectClient();
-
-      const onSynced = engine.events.on('onSynced', () => {
-        setSynced(true);
+      const onDisconnect = engine.events.on('onDisconnect', () => {
+        setConnected(false);
       });
 
-      // set engine
-      setEngine(engine);
-
       return () => {
-        engine.events.off('onSynced', onSynced);
-        engine.destroy();
-        setEngine(null!);
-        setSynced(false);
+        engine.events.off('onDisconnect', onDisconnect);
+        setConnected(false);
       };
-    }, []);
+    }, [engine]);
 
-    return useMemo(
-      () => (
-        <>
-          {synced && engine && (
-            <EngineContext.Provider value={engine}>
-              {children}
-            </EngineContext.Provider>
-          )}
-        </>
-      ),
-      [engine, synced],
+    if (!connected) return null;
+
+    return (
+      <EngineContext.Provider value={engine ?? engineContext}>
+        {children}
+      </EngineContext.Provider>
     );
   },
 );

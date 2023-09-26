@@ -183,7 +183,7 @@ export type ScriptEventMap = {
 
   onInputFocus: (status: boolean) => void;
 
-  setSize: (props: UISizeProps<string>) => void;
+  setProps: (props: UISizeProps<string>) => void;
 
   show: () => void;
 

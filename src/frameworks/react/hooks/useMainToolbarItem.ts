@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
 
 import {MainToolbarItem} from 'engine/definitions/types/ui.types';
-import {useEngine} from 'engine/framework-react';
+import {useEngine} from 'engine/frameworks/react/hooks/useEngine';
 
 export const useMainToolbarItem = (item: MainToolbarItem) => {
   const {ui} = useEngine();
@@ -16,5 +16,5 @@ export const useMainToolbarItem = (item: MainToolbarItem) => {
     return () => {
       ui.removeMainToolbarItem(item.id);
     };
-  }, [item.id]);
+  }, [ui, item.id]);
 };

@@ -1,23 +1,41 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["es6", "dom"],
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
     "module": "esnext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "jsx": "react",
-    "pretty": true,
-    "strict": true,
     "skipLibCheck": true,
-    "declaration": true,
-    "removeComments": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "removeComments": true,
     "noImplicitThis": false,
+    "pretty": true,
+    "esModuleInterop": true,
+
+    /* Misc */
+    "declaration": true,
     "baseUrl": "./",
     "outDir": "dist",
+    "declarationDir": "dist",
+
+    /* Paths */
     "paths": {
       "engine/*": ["./src/*"]
-    }
+    },
+
+    /* Types */
+    "types": ["node", "vite/client"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

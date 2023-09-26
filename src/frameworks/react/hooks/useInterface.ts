@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 
-import {useEngine} from 'engine/framework-react';
+import {useEngine} from 'engine/frameworks/react/hooks/useEngine';
 
 export const useInterface = (tag: string): boolean => {
   const {ui} = useEngine();

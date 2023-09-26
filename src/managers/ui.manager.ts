@@ -19,11 +19,6 @@ import EngineManager from './engine.manager';
 class UIManager {
   visible = false;
 
-  private _sizeProps: UISizeProps = {
-    height: '100%',
-    width: '100%',
-  };
-
   private _engine: EngineManager;
 
   /* controller */
@@ -71,10 +66,8 @@ class UIManager {
     this._messenger.emit('hide');
   }
 
-  setProps(props: Partial<UISizeProps>) {
-    Object.assign(this._sizeProps, props);
-
-    this._messenger.emit('setSize', [this._sizeProps]);
+  setProps(props: UISizeProps) {
+    this._messenger.emit('setProps', [props]);
   }
 
   /* interfaces */

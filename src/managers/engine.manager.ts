@@ -11,7 +11,6 @@ import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import AudioManager from 'engine/managers/audio/audio.manager';
 import InputManager from 'engine/managers/input.manager';
 import StorageManager from 'engine/managers/storage/storage.manager';
-import {isValidEnv} from 'engine/utils/misc.utils';
 
 import AnimationsManager from './animations.manager';
 import ApiManager from './api/api.manager';
@@ -38,6 +37,8 @@ import WorldManager from './world/world.manager';
 
 export class EngineManager {
   z = z;
+
+  domElement: HTMLElement = null!;
 
   network: NetworkManager;
 
@@ -73,7 +74,7 @@ export class EngineManager {
 
   methodsHandler: MethodsHandlerManager;
 
-  messenger = new MessengerManager<ScriptEventMap>('sender');
+  messenger: MessengerManager<ScriptEventMap>;
 
   eventsManager: Map<EventKey, EventsManager | EntityEventsManager> = new Map();
 
@@ -172,8 +173,10 @@ export class EngineManager {
     return this.network.server?.world?.chunk_size ?? STREAMER_CHUNK_SIZE;
   }
 
-  constructor(params?: EngineParams) {
-    this.params = params ?? {};
+  constructor(params: EngineParams = {}) {
+    this.params = params;
+
+    this.messenger = new MessengerManager<ScriptEventMap>('sender', params.id);
 
     // register all events
     this.messenger.events.registerEvents = true;
@@ -230,9 +233,12 @@ export class EngineManager {
 
   connectClient() {
     // validate env (only client)
-    if (this.isClient && !isValidEnv()) {
+    if (this.isClient && typeof window === 'undefined') {
       return;
     }
+
+    // set dom element
+    this.domElement = document.querySelector(`[id^="${this.id}-ui"]`)!;
 
     this._setup();
 
@@ -242,7 +248,7 @@ export class EngineManager {
     });
 
     // connect it
-    this.messenger.connect(window.top!);
+    this.messenger.connect(window);
   }
 
   private _setup() {
@@ -374,7 +380,7 @@ export class EngineEvents<
     }
   }
 
-  once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
+  once<A extends keyof T>(_: A, listener: T[A]): T[A] {
     console.debug('[EngineEvents] events.once is not available');
     return listener;
   }
