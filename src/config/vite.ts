@@ -52,9 +52,8 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
       rollupOptions: {
         input: versionedEntryObject,
         output: {
-          format: 'es',
+          format: 'esm',
           entryFileNames: `[name].js`,
-          manualChunks: {},
         },
       },
       outDir: 'dist',

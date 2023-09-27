@@ -82,6 +82,7 @@ const builds = [
       {
         format: 'esm',
         dir: 'dist',
+        entryFileNames: '[name].esm.js',
       },
     ],
   },
