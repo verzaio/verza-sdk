@@ -191,7 +191,7 @@ export class EngineManager {
 
     this.methodsHandler = new MethodsHandlerManager(this);
 
-    this.utils = new UtilsManager(this);
+    this.utils = new UtilsManager();
 
     // only for client
     if (this.isClient) {
@@ -311,6 +311,7 @@ export class EngineManager {
     this.ui?.destroy();
     this.players.unload();
     this.objects.unload();
+    this.utils.destroy();
 
     // remove all events
     this.events.removeAllListeners();

@@ -1,29 +1,16 @@
 import * as THREE from 'three';
 
-import {GLTF} from 'three-stdlib';
 import {v4} from 'uuid';
-
-export {THREE};
 
 export {z} from 'zod';
 
-export {v4 as uuid};
-
 export {MathUtils} from 'three';
 
-export {
-  GLTFLoader,
-  GLTFExporter,
-  FBXLoader,
-  SkeletonUtils,
-  SceneUtils,
-  GeometryUtils,
-} from 'three-stdlib';
+export {THREE};
 
-export type {GLTF};
+export {GLTFExporter} from 'three/examples/jsm/exporters/GLTFExporter.js';
+export {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 
-declare module 'three-stdlib' {
-  export interface GLTFLoader {
-    parseAsync(data: ArrayBuffer | string, path: string): Promise<GLTF>;
-  }
-}
+export {type GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+export {v4 as uuid};

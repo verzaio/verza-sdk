@@ -28,7 +28,9 @@ export const createEngineManager = (
   importUrl: string,
   params: EngineParams = {},
 ): Promise<EngineManager> => {
-  params.id = resolveScriptId(importUrl);
+  if (typeof window !== 'undefined') {
+    params.id = resolveScriptId(importUrl);
+  }
 
   return new Promise((resolve, reject) => {
     try {

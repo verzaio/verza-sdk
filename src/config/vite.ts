@@ -58,9 +58,10 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
       },
       outDir: 'dist',
       copyPublicDir: true,
-      cssCodeSplit: false,
+      cssCodeSplit: true,
       emptyOutDir: true,
-      minify: false,
+      sourcemap: true,
+      minify: true,
     },
 
     server: {
@@ -69,7 +70,7 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
     },
 
     base: baseUrl,
-  });
+  } satisfies UserConfig);
 };
 
 const generateVersionedEntries = (entryObject: Record<string, string>) =>

@@ -31,7 +31,7 @@ const builds = [
   {
     input: {
       index: './src/index.ts',
-      client: './src/client.ts',
+      utils: './src/utils.ts',
     },
     plugins: browserPlugins,
     output: [
@@ -47,47 +47,9 @@ const builds = [
     input: {
       index: './src/index.ts',
       client: './src/client.ts',
-    },
-    plugins,
-    external,
-    output: [
-      {
-        format: 'esm',
-        dir: 'dist',
-        entryFileNames: '[name].esm.js',
-        chunkFileNames: '[name]-[hash].shared.esm.js',
-      },
-    ],
-  },
-
-  // Utils
-  {
-    input: './src/utils.ts',
-    plugins: browserPlugins,
-    output: [
-      {
-        format: 'es',
-        file: 'dist/utils.es.js',
-      },
-    ],
-  },
-  {
-    input: './src/utils.ts',
-    plugins,
-    external,
-    output: [
-      {
-        format: 'esm',
-        file: 'dist/utils.esm.js',
-      },
-    ],
-  },
-
-  // React
-  {
-    input: {
       'framework-react': './src/framework-react.ts',
       'framework-react-client': './src/framework-react-client.ts',
+      utils: './src/utils.ts',
     },
     plugins,
     external,
