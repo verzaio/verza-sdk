@@ -35,7 +35,7 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
     : generateVersionedEntries(entryObject);
 
   if (!isDevelopment) {
-    generateRedirects(entryObject, baseDir);
+    generateProvidersConfig(entryObject, baseDir);
   }
 
   process.env.VITE_BASE_URL = baseUrl;
@@ -57,7 +57,10 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
         },
       },
       outDir: 'dist',
+      copyPublicDir: true,
       cssCodeSplit: false,
+      emptyOutDir: true,
+      minify: false,
     },
 
     server: {
@@ -168,13 +171,68 @@ const getBaseUrl = (devPort: number) => {
   return baseUrl;
 };
 
-const generateRedirects = (
+const generateProvidersConfig = (
   entryObject: Record<string, string>,
   baseDir: string,
 ) => {
+  generateCloudflareConfig(entryObject, baseDir);
+  generateVercelConfig(entryObject, baseDir);
+};
+
+const generateCloudflareConfig = (
+  entryObject: Record<string, string>,
+  baseDir: string,
+) => {
+  // redirects
   const redirects = Object.keys(entryObject)
     .map(key => `/${key} /${key}-${VERSION}.js 302`)
     .join('\n');
 
   fs.writeFileSync(`${baseDir}/public/_redirects`, redirects);
+
+  // headers
+  const headers = `/*\n  Access-Control-Allow-Origin: *`;
+
+  fs.writeFileSync(`${baseDir}/public/_headers`, headers);
+};
+
+const generateVercelConfig = (
+  entryObject: Record<string, string>,
+  baseDir: string,
+) => {
+  const vercelJson: Record<string, any> = {};
+
+  // redirects
+  vercelJson.redirects = Object.keys(entryObject).map(key => ({
+    source: `/${key}`,
+    destination: `/${key}-${VERSION}.js`,
+    statusCode: 302,
+  }));
+
+  // headers
+  vercelJson.headers = [
+    {
+      source: '(.*)',
+      headers: [
+        {
+          key: 'Access-Control-Allow-Origin',
+          value: '*',
+        },
+      ],
+    },
+  ];
+
+  //
+
+  // vercel.json
+  fs.writeFileSync(
+    `${baseDir}/public/vercel.json`,
+    JSON.stringify(vercelJson, null, 2),
+  );
+
+  // serve.json
+  fs.writeFileSync(
+    `${baseDir}/public/serve.json`,
+    JSON.stringify(vercelJson, null, 2),
+  );
 };

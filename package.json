@@ -1,6 +1,6 @@
 {
   "name": "@verza/sdk",
-  "version": "2.0.51-dev.3",
+  "version": "2.0.51-dev.12",
   "description": "Verza Client & Server SDK",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -24,6 +24,10 @@
       "import": "./dist/index.esm.js",
       "require": "./dist/index.cjs.js"
     },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.esm.js"
+    },
     "./utils": {
       "types": "./dist/utils.d.ts",
       "import": "./dist/utils.esm.js",
@@ -33,9 +37,9 @@
       "types": "./dist/framework-react.d.ts",
       "import": "./dist/framework-react.esm.js"
     },
-    "./client": {
-      "types": "./dist/client.d.ts",
-      "import": "./dist/client.esm.js"
+    "./react/client": {
+      "types": "./dist/framework-react-client.d.ts",
+      "import": "./dist/framework-react-client.esm.js"
     },
     "./config": {
       "types": "./dist/config.d.ts",
@@ -47,14 +51,17 @@
       "index": [
         "./dist/index.d.ts"
       ],
+      "client": [
+        "./dist/client.d.ts"
+      ],
       "utils": [
         "./dist/utils.d.ts"
       ],
       "react": [
         "./dist/framework-react.d.ts"
       ],
-      "client": [
-        "./dist/client.d.ts"
+      "react-client": [
+        "./dist/framework-react-client.d.ts"
       ],
       "config": [
         "./dist/config.d.ts"

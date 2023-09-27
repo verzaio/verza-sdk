@@ -3,7 +3,7 @@ export {
   type EngineProviderProps,
 } from 'engine/frameworks/react/components/EngineProvider';
 
-export {useEngine} from 'engine/frameworks/react/hooks/useEngine';
+export {useEngine} from 'engine/frameworks/react/components/EngineProvider';
 export {useEvent} from 'engine/frameworks/react/hooks/useEvent';
 
 export {useFrame} from 'engine/frameworks/react/hooks/useFrame';

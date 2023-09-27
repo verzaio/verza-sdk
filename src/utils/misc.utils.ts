@@ -28,7 +28,7 @@ export const createEngineManager = (
   importUrl: string,
   params: EngineParams = {},
 ): Promise<EngineManager> => {
-  params.id = getScriptId(importUrl);
+  params.id = resolveScriptId(importUrl);
 
   return new Promise((resolve, reject) => {
     try {
@@ -49,7 +49,7 @@ export const createEngineManager = (
   });
 };
 
-export const getScriptId = (url: string) => {
+const resolveScriptId = (url: string) => {
   // lookup by exact url
   let scriptId = document.querySelector(
     `script[data-script-url="${url}"],script[src="${url}"]`,
@@ -57,8 +57,10 @@ export const getScriptId = (url: string) => {
 
   // lookup by url prefix
   if (!scriptId) {
+    const queryUrl = url.substring(0, url.lastIndexOf('-'));
+
     scriptId = document.querySelector(
-      `script[data-script-url^="${url}-"],script[src^="${url}-"]`,
+      `script[data-script-url^="${queryUrl}"],script[src^="${queryUrl}"]`,
     )?.id;
   }
 

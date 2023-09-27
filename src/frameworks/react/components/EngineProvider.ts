@@ -1,9 +1,17 @@
-import React, {PropsWithChildren, useEffect, useState, memo} from 'react';
+/* @vite-ignore */
+
+import React, {
+  PropsWithChildren,
+  useEffect,
+  useState,
+  memo,
+  useContext,
+  createContext,
+} from 'react';
 
 import EngineManager from 'engine/managers/engine.manager';
 
-import {useEngine} from '../hooks/useEngine';
-import {EngineContext} from './EngineContext';
+export const EngineContext = createContext<EngineManager>(null!);
 
 export type EngineProviderProps = {
   engine?: EngineManager;
@@ -13,9 +21,9 @@ export const EngineProvider = memo(
   ({engine: engineProp, children}: PropsWithChildren<EngineProviderProps>) => {
     const [connected, setConnected] = useState(true);
 
-    const engineContext = useEngine();
+    const currentContext = useEngine();
 
-    const engine = engineProp ?? engineContext;
+    const engine = engineProp ?? currentContext;
 
     // handle disconnect
     useEffect(() => {
@@ -31,12 +39,16 @@ export const EngineProvider = memo(
 
     if (!connected) return null;
 
-    return (
-      <EngineContext.Provider value={engine ?? engineContext}>
-        {children}
-      </EngineContext.Provider>
+    return React.createElement(
+      EngineContext.Provider,
+      {value: engine},
+      children,
     );
   },
 );
+
+export const useEngine = () => {
+  return useContext(EngineContext);
+};
 
 EngineProvider.displayName = 'EngineProvider';

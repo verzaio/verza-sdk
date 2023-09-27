@@ -1,6 +1,14 @@
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {createEngineManager} from 'engine/utils/misc.utils';
 
+declare global {
+  interface Window {
+    __VITE_CLIENTS: {
+      [key: string]: boolean;
+    };
+  }
+}
+
 const REACT_CLIENT_URL = '/@vite/client';
 
 export const isViteDevMode = () =>

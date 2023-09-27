@@ -3,9 +3,19 @@ import React, {ReactNode} from 'react';
 import {createRoot} from 'react-dom/client';
 
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
+import {EngineProvider} from 'engine/frameworks/react/components/EngineProvider';
 import {createEngineManager} from 'engine/utils/misc.utils';
 
-import {initViteClient, isViteDevMode} from './client';
+import {initViteClient, isViteDevMode} from '../../../utils/client.utils';
+
+declare global {
+  interface Window {
+    $RefreshReg$: () => void;
+    $RefreshSig$: () => (type: unknown) => unknown;
+
+    __vite_plugin_react_preamble_installed__: boolean;
+  }
+}
 
 const REACT_REFRESH_URL = '/@react-refresh';
 
@@ -33,11 +43,7 @@ export const createReactEngineManager = async (
   //
 
   return async (children: ReactNode) => {
-    const {EngineProvider} = await import(
-      'engine/frameworks/react/components/EngineProvider'
-    );
-
-    root.render(<EngineProvider engine={engine}>{children}</EngineProvider>);
+    root.render(React.createElement(EngineProvider, {engine}, children));
   };
 };
 

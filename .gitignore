@@ -24,8 +24,3 @@ yarn.lock
 # typescript
 /dist*
 *.tsbuildinfo
-
-
-
-
-
