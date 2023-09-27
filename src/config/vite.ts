@@ -4,7 +4,9 @@ import {PluginOption, UserConfig, defineConfig, mergeConfig} from 'vite';
 
 const VERSION = Math.floor(Math.random() * 8999999 + 1000000);
 
-const DEFAULT_PORT = 8085;
+const IS_DEV = process.env.NODE_ENV === 'development';
+
+const DEFAULT_PORT = IS_DEV ? 8085 : 8081;
 
 export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
   const baseConfig = defineConfig(
@@ -24,17 +26,15 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
 
   const port = baseConfig!.server!.port!;
 
-  const baseUrl = getBaseUrl(port);
-
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const baseUrl = baseConfig.base ?? resolveBaseUrl(port);
 
   const entryObject = generateEntryObject(baseDir);
 
-  const versionedEntryObject = isDevelopment
+  const versionedEntryObject = IS_DEV
     ? entryObject
     : generateVersionedEntries(entryObject);
 
-  if (!isDevelopment) {
+  if (!IS_DEV) {
     generateProvidersConfig(entryObject, baseDir);
   }
 
@@ -42,8 +42,8 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
 
   return mergeConfig(baseConfig, {
     plugins: [
-      isDevelopment && cssUrlPrefix(baseUrl),
-      isDevelopment && urlAliasesMiddleware(baseDir, baseUrl),
+      IS_DEV && cssUrlPrefix(baseUrl),
+      IS_DEV && urlAliasesMiddleware(baseDir, baseUrl),
     ].filter(Boolean),
 
     build: {
@@ -151,7 +151,7 @@ const urlAliasesMiddleware = (
   };
 };
 
-const getBaseUrl = (devPort: number) => {
+const resolveBaseUrl = (devPort: number) => {
   let baseUrl = `http://localhost:${devPort}`;
 
   // cloudflare pages
