@@ -49,7 +49,7 @@ export {
   fileToDataUrl,
 } from './utils/files.utils';
 
-export {createEngineManager} from 'engine/utils/misc.utils';
+export {initEngine} from 'engine/utils/misc.utils';
 
 export {
   EventsManager,

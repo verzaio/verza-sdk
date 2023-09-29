@@ -88,6 +88,8 @@ export type ScriptEventMap = {
 
   onDisconnect: () => void;
 
+  onDestroy: () => void;
+
   OR: (response: unknown) => void;
 
   /* engine */

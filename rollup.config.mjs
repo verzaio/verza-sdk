@@ -8,7 +8,7 @@ import pkg from './package.json' assert {type: 'json'};
 const external = [
   ...Object.keys(pkg.dependencies ?? {}),
   ...Object.keys(pkg.devDependencies ?? {}),
-  'vite',
+  ...Object.keys(pkg.peerDependencies ?? {}),
   'react',
   'react-dom',
   'react-dom/client',
@@ -46,7 +46,6 @@ const builds = [
   {
     input: {
       index: './src/index.ts',
-      client: './src/client.ts',
       'framework-react': './src/framework-react.ts',
       'framework-react-client': './src/framework-react-client.ts',
       utils: './src/utils.ts',

@@ -83,8 +83,6 @@ export class EngineManager {
   params: EngineParams = {};
 
   controller = createControllerManager({
-    connected: false,
-
     synced: false,
 
     playerId: null! as number,
@@ -135,10 +133,6 @@ export class EngineManager {
 
   get synced() {
     return this.controller.synced;
-  }
-
-  get connected() {
-    return this.controller.connected;
   }
 
   get localPlayerId() {
@@ -238,7 +232,7 @@ export class EngineManager {
     }
 
     // set dom element
-    this.domElement = document.querySelector(`[id^="${this.id}-ui"]`)!;
+    this.domElement = document.getElementById(this.id)!;
 
     this._setup();
 
@@ -267,15 +261,6 @@ export class EngineManager {
     }
 
     // events
-    this.messenger.events.on('onConnect', () => {
-      this.controller.connected = true;
-    });
-
-    this.messenger.events.on('onDisconnect', () => {
-      this.controller.connected = false;
-    });
-
-    // events
     this.messenger.events.on('onSynced', () => {
       this.controller.synced = true;
     });
@@ -299,7 +284,7 @@ export class EngineManager {
 
     this.destroyed = true;
 
-    this.controller.connected = false;
+    this.events.emit('onDestroy');
 
     this.controller.synced = false;
 

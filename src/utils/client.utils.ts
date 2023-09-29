@@ -1,6 +1,3 @@
-import {EngineParams} from 'engine/definitions/local/types/engine.types';
-import {createEngineManager} from 'engine/utils/misc.utils';
-
 declare global {
   interface Window {
     __VITE_CLIENTS: {
@@ -9,38 +6,32 @@ declare global {
   }
 }
 
-const REACT_CLIENT_URL = '/@vite/client';
-
 export const isViteDevMode = () =>
-  import.meta && import.meta.env?.MODE === 'development';
+  typeof window !== 'undefined' &&
+  import.meta &&
+  import.meta.env?.MODE === 'development';
 
-export const createClientEngineManager = async (
-  importUrl: string,
-  params: EngineParams = {},
-) => {
-  const engine = await createEngineManager(importUrl, params);
-
-  await initViteClient(importUrl);
-
-  return engine;
-};
-
-export const initViteClient = async (importUrl: string) => {
+export const initViteClient = async () => {
   if (!isViteDevMode()) return;
-
-  const url = new URL(importUrl);
-
-  const viteClientId = `${url.host}-vite-client`;
 
   window.__VITE_CLIENTS = window.__VITE_CLIENTS ?? {};
 
-  // @vite/client
-  if (!window.__VITE_CLIENTS[viteClientId]) {
-    await import(
-      /* @vite-ignore */
-      REACT_CLIENT_URL
-    );
+  const url = new URL(import.meta.url);
 
-    window.__VITE_CLIENTS[viteClientId] = true;
+  const TAG_ID = `${url.host}-vite-client`;
+
+  // @vite/client
+  if (!window.__VITE_CLIENTS[TAG_ID]) {
+    window.__VITE_CLIENTS[TAG_ID] = true;
+
+    try {
+      await import(
+        /* @vite-ignore */
+        `${url.origin}/@vite/client`
+      );
+    } catch (error) {
+      delete window.__VITE_CLIENTS[TAG_ID];
+      throw error;
+    }
   }
 };

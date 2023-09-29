@@ -1,10 +1,42 @@
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import EngineManager from 'engine/managers/engine.manager';
+import {initViteClient} from 'engine/utils/client.utils';
+
+export const initEngine = async (
+  params: EngineParams | string = {},
+): Promise<EngineManager> => {
+  await initViteClient();
+
+  if (typeof params === 'string') {
+    params = {id: params};
+  }
+
+  if (typeof window !== 'undefined' && !params.id) {
+    displayWarnMessage();
+    throw new Error(`Script ID is required for Client Scripts (${params.id})`);
+  }
+
+  return new Promise((resolve, reject) => {
+    try {
+      const engine = new EngineManager(params as EngineParams);
+
+      engine.events.on('onSynced', async () => resolve(engine));
+
+      engine.events.on('onDisconnect', () => engine.destroy());
+
+      engine.connectClient();
+
+      return engine;
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 const DEFAULT_MESSAGE =
   "Client Script cannot initiate, make sure the script is added/connected to the Server's settings";
 
-export const displayClientMessage = (msg = DEFAULT_MESSAGE) => {
+export const displayWarnMessage = (msg = DEFAULT_MESSAGE) => {
   const el = document.createElement('div');
   const h4 = document.createElement('h4');
 
@@ -22,55 +54,4 @@ export const displayClientMessage = (msg = DEFAULT_MESSAGE) => {
 
   document.body.appendChild(el);
   console.debug(msg);
-};
-
-export const createEngineManager = (
-  importUrl: string,
-  params: EngineParams = {},
-): Promise<EngineManager> => {
-  if (typeof window !== 'undefined') {
-    params.id = resolveScriptId(importUrl);
-  }
-
-  return new Promise((resolve, reject) => {
-    try {
-      const engine = new EngineManager(params);
-
-      engine.events.on('onSynced', () => resolve(engine));
-
-      engine.events.on('onDisconnect', () => {
-        engine.destroy();
-      });
-
-      engine.connectClient();
-
-      return engine;
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
-
-const resolveScriptId = (url: string) => {
-  // lookup by exact url
-  let scriptId = document.querySelector(
-    `script[data-script-url="${url}"],script[src="${url}"]`,
-  )?.id;
-
-  // lookup by url prefix
-  if (!scriptId) {
-    const queryUrl = url.substring(0, url.lastIndexOf('-'));
-
-    scriptId = document.querySelector(
-      `script[data-script-url^="${queryUrl}"],script[src^="${queryUrl}"]`,
-    )?.id;
-  }
-
-  if (!scriptId) {
-    displayClientMessage();
-
-    throw new Error(`Script with url ${url} not found`);
-  }
-
-  return scriptId;
 };

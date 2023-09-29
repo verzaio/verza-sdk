@@ -4,9 +4,10 @@ import {createRoot} from 'react-dom/client';
 
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EngineProvider} from 'engine/frameworks/react/components/EngineProvider';
-import {createEngineManager} from 'engine/utils/misc.utils';
+import {EngineManager} from 'engine/index';
+import {initEngine} from 'engine/utils/misc.utils';
 
-import {initViteClient, isViteDevMode} from '../../../utils/client.utils';
+import {isViteDevMode} from '../../../utils/client.utils';
 
 declare global {
   interface Window {
@@ -17,60 +18,63 @@ declare global {
   }
 }
 
-const REACT_REFRESH_URL = '/@react-refresh';
+export const initReactEngine = async (
+  params: EngineParams | string = {},
+): Promise<[(children: ReactNode) => void, EngineManager]> => {
+  //
 
-export const createReactEngineManager = async (
-  importUrl: string,
-  params: EngineParams = {},
-): Promise<(children: ReactNode) => Promise<void>> => {
-  const engine = await createEngineManager(importUrl, params);
+  await initReactRefreshClient();
 
   //
 
-  await initViteClient(importUrl);
-  await initReactRefreshClient(importUrl);
-
-  //
+  const engine = await initEngine(params);
 
   const root = createRoot(engine.domElement);
 
   //
 
-  engine.events.on('onDisconnect', () => {
+  engine.events.on('onDestroy', () => {
     root.unmount();
   });
 
   //
 
-  return async (children: ReactNode) => {
-    root.render(React.createElement(EngineProvider, {engine}, children));
-  };
+  return [
+    (children: ReactNode) =>
+      root.render(React.createElement(EngineProvider, {engine}, children)),
+    engine,
+  ];
 };
 
-export const initReactRefreshClient = async (baseUrl: string) => {
+export const initReactRefreshClient = async () => {
   if (!isViteDevMode()) return;
-
-  await initViteClient(baseUrl);
-
-  const url = new URL(baseUrl);
-
-  const reactRefreshClientId = `${url.host}-react-refresh`;
 
   window.__VITE_CLIENTS = window.__VITE_CLIENTS ?? {};
 
+  const url = new URL(import.meta.url);
+
+  const TAG_ID = `${url.host}-react-refresh`;
+
   // react-refresh
-  if (!window.__VITE_CLIENTS[reactRefreshClientId]) {
-    const {
-      default: {injectIntoGlobalHook},
-    } = await import(/* @vite-ignore */ REACT_REFRESH_URL);
+  if (!window.__VITE_CLIENTS[TAG_ID]) {
+    window.__VITE_CLIENTS[TAG_ID] = true;
 
-    injectIntoGlobalHook(window);
+    try {
+      const {
+        default: {injectIntoGlobalHook},
+      } = await import(/* @vite-ignore */ `${url.origin}/@react-refresh`);
 
-    window.$RefreshReg$ = () => {};
-    window.$RefreshSig$ = () => type => type;
+      injectIntoGlobalHook(window);
 
-    window.__vite_plugin_react_preamble_installed__ = true;
+      if (!window.$RefreshReg$) {
+        window.$RefreshReg$ = () => {};
+        window.$RefreshSig$ = () => type => type;
+      }
 
-    window.__VITE_CLIENTS[reactRefreshClientId] = true;
+      window.__vite_plugin_react_preamble_installed__ = true;
+    } catch (error) {
+      delete window.__VITE_CLIENTS[TAG_ID];
+      throw error;
+    }
   }
 };

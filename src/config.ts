@@ -1,3 +1,3 @@
-export {defineViteConfig} from './config/vite';
+export {defineViteConfig} from './config/vite.config';
 
-export {defineReactViteConfig} from './config/vite-react';
+export {defineReactViteConfig} from './config/vite-react.config';
