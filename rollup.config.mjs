@@ -46,9 +46,9 @@ const builds = [
   {
     input: {
       index: './src/index.ts',
+      utils: './src/utils.ts',
       'framework-react': './src/framework-react.ts',
       'framework-react-client': './src/framework-react-client.ts',
-      utils: './src/utils.ts',
     },
     plugins,
     external,
