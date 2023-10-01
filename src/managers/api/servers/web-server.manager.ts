@@ -87,11 +87,15 @@ class WebServerManager {
 
     // try to create player from auth packet
     if (!this._createPlayerFromAuthPacket(authPacket)) {
-      return null!;
+      return {
+        error: 'invalid auth packet',
+      };
     }
 
     if (commandPacket && !this._createCommandPacket(commandPacket)) {
-      return null!;
+      return {
+        error: 'invalid command packet',
+      };
     }
 
     return this._handlePacket(eventId, packetData) ?? null;
@@ -161,8 +165,7 @@ class WebServerManager {
     if (!Array.isArray(authPacket)) {
       console.debug(
         '[api] cannot decrypt packet, do we have the correct Access Token?',
-        this.endpoint,
-        packet,
+        `(${this.endpoint}) packet: ${packet}`,
       );
       return false;
     }
@@ -287,6 +290,10 @@ class WebServerManager {
       }
       default: {
         console.debug(`[webserver] unhandled packet: ${event}`);
+
+        return {
+          error: `unhandled packet: ${event}`,
+        };
       }
     }
 

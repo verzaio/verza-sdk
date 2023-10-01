@@ -215,6 +215,10 @@ export class EngineManager {
       this.entities[key as keyof typeof ENTITIES_RENDERS].Manager =
         value.EntityManager;
     });
+
+    if (this.isClient) {
+      this._watchFrames();
+    }
   }
 
   connectServer() {
@@ -229,6 +233,10 @@ export class EngineManager {
     // validate env (only client)
     if (this.isClient && typeof window === 'undefined') {
       return;
+    }
+
+    if (typeof window === 'undefined') {
+      throw new Error('Client scripts cannot be run on the server');
     }
 
     // set dom element
@@ -263,6 +271,11 @@ export class EngineManager {
     // events
     this.messenger.events.on('onSynced', () => {
       this.controller.synced = true;
+    });
+
+    // events
+    this.messenger.events.on('onDisconnect', () => {
+      this.destroy();
     });
 
     // binds
@@ -321,6 +334,25 @@ export class EngineManager {
 
   areResourcesReady() {
     return this.messenger.emitAsync('areResourcesReady');
+  }
+
+  /* render */
+  private _watchFrames() {
+    let lastFrameTime = performance.now();
+
+    const check = () => {
+      requestAnimationFrame(delta => {
+        if (this.destroyed) return;
+
+        this.events.emit('onFrame', delta - lastFrameTime);
+
+        lastFrameTime = delta;
+
+        check();
+      });
+    };
+
+    check();
   }
 }
 

@@ -6,6 +6,8 @@ export const DRACO_URL =
 export const LocalEngineEvents: (keyof ScriptEventMap)[] = [
   /* engine */
   'onDestroy',
+  'onFrame',
+  'onFixedFrame',
 
   /* chat */
   'onCommand',

@@ -90,6 +90,10 @@ export type ScriptEventMap = {
 
   onDestroy: () => void;
 
+  onFrame: (deltaTime: number) => void;
+
+  onFixedFrame: (deltaTime: number) => void;
+
   OR: (response: unknown) => void;
 
   /* engine */
@@ -117,8 +121,6 @@ export type ScriptEventMap = {
   unregisterCommand: (playerId: number, command: string) => void;
 
   /* ui */
-  onEscapeKey: () => void;
-
   onPointerEvent: (event: PointerEvent) => void;
 
   onPointerMove: (event: PointerEvent) => void;

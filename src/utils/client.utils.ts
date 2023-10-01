@@ -1,37 +1,73 @@
-declare global {
-  interface Window {
-    __VITE_CLIENTS: {
-      [key: string]: boolean;
-    };
+import {EngineParams} from 'engine/definitions/local/types/engine.types';
+import EngineManager from 'engine/managers/engine.manager';
+import {initViteClient} from 'engine/utils/vite.utils';
+
+export const initEngine = async (
+  params: EngineParams | string = {},
+  isWebSocket = false,
+): Promise<EngineManager> => {
+  if (typeof params === 'string') {
+    params = {id: params};
   }
-}
 
-export const isViteDevMode = () =>
-  typeof window !== 'undefined' &&
-  import.meta &&
-  import.meta.env?.MODE === 'development';
+  if (
+    typeof process !== 'undefined' &&
+    process.env.VERZA_MODE === 'websocket'
+  ) {
+    isWebSocket = true;
+  }
 
-export const initViteClient = async () => {
-  if (!isViteDevMode()) return;
+  await initViteClient();
 
-  window.__VITE_CLIENTS = window.__VITE_CLIENTS ?? {};
+  if (typeof window !== 'undefined' && !params.id) {
+    displayWarnMessage();
+    throw new Error(`Script ID is required for Client Scripts (${params.id})`);
+  }
 
-  const url = new URL(import.meta.url);
+  if (typeof window === 'undefined' && !isWebSocket) {
+    return new EngineManager(params as EngineParams);
+  }
 
-  const TAG_ID = `${url.host}-vite-client`;
-
-  // @vite/client
-  if (!window.__VITE_CLIENTS[TAG_ID]) {
-    window.__VITE_CLIENTS[TAG_ID] = true;
-
+  return new Promise((resolve, reject) => {
     try {
-      await import(
-        /* @vite-ignore */
-        `${url.origin}/@vite/client`
-      );
+      const engine = new EngineManager(params as EngineParams);
+
+      engine.events.on('onSynced', async () => resolve(engine));
+
+      engine.events.on('onDisconnect', () => engine.destroy());
+
+      if (typeof window === 'undefined') {
+        engine.connectServer();
+      } else {
+        engine.connectClient();
+      }
+
+      return engine;
     } catch (error) {
-      delete window.__VITE_CLIENTS[TAG_ID];
-      throw error;
+      reject(error);
     }
-  }
+  });
+};
+
+const DEFAULT_MESSAGE =
+  "Client Script cannot initiate, make sure the script is added/connected to the Server's settings";
+
+export const displayWarnMessage = (msg = DEFAULT_MESSAGE) => {
+  const el = document.createElement('div');
+  const h4 = document.createElement('h4');
+
+  el.append(h4);
+
+  el.style.position = 'absolute';
+  el.style.left = '0px';
+  el.style.top = '0px';
+  el.style.width = '100%';
+  el.style.display = 'flex';
+  el.style.margin = '0 auto';
+  el.style.padding = '30px';
+
+  h4.innerText = msg;
+
+  document.body.appendChild(el);
+  console.debug(msg);
 };

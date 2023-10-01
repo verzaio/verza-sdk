@@ -5,9 +5,9 @@ import {createRoot} from 'react-dom/client';
 import {EngineParams} from 'engine/definitions/local/types/engine.types';
 import {EngineProvider} from 'engine/frameworks/react/components/EngineProvider';
 import {EngineManager} from 'engine/index';
-import {initEngine} from 'engine/utils/misc.utils';
+import {initEngine} from 'engine/utils/client.utils';
 
-import {isViteDevMode} from '../../../utils/client.utils';
+import {isViteDevMode} from '../../../utils/vite.utils';
 
 declare global {
   interface Window {
