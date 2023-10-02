@@ -1,6 +1,6 @@
 {
   "name": "@verza/sdk",
-  "version": "2.0.51-dev.27",
+  "version": "2.0.51-dev.28",
   "description": "Verza Client & Server SDK",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -96,7 +96,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "vite": "^4.4.9",
-    "@vitejs/plugin-react": "^4.1.0"
+    "@vitejs/plugin-react": "^4.1.0",
+    "ts-node": "^10.9.1"
   },
   "peerDependenciesMeta": {
     "react": {

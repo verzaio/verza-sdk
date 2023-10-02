@@ -1,11 +1,20 @@
+import fs from 'fs';
 import path from 'path';
 import {PluginOption, createLogger} from 'vite';
 
-import {CLIENT_DIR, SERVER_DIR, WATCH_EXTENSIONS} from './constants';
+import {
+  CLIENT_DIR,
+  SERVER_DIR,
+  HOT_RELOAD_SCRIPT,
+  WATCH_EXTENSIONS,
+  DIST_DIR,
+  IMPORT_STYLES_SCRIPT,
+  IS_SERVER,
+} from './constants';
 import {generateProvidersConfig} from './providers.config';
-import {generateEntryObject} from './vite-misc.config';
+import {generateScriptsObject} from './scripts.config';
 
-export const webServerMiddlewarePlugin = (
+export const __dev__webServerMiddlewarePlugin = (
   baseDir: string,
   baseUrl: string,
 ): PluginOption => {
@@ -22,7 +31,7 @@ export const webServerMiddlewarePlugin = (
           return;
         }
 
-        const serverEntriesObject = generateEntryObject(SERVER_DIR, baseDir);
+        const serverEntriesObject = generateScriptsObject(SERVER_DIR, baseDir);
 
         const url = new URL(req.url!, baseUrl);
         const {pathname} = url;
@@ -103,7 +112,7 @@ export const webServerMiddlewarePlugin = (
   };
 };
 
-export const urlAliasesMiddlewarePlugin = (
+export const __dev__urlAliasesMiddlewarePlugin = (
   baseDir: string,
   baseUrl: string,
 ): PluginOption => {
@@ -131,7 +140,7 @@ export const urlAliasesMiddlewarePlugin = (
   };
 };
 
-export const scriptHotReloadPlugin = (): PluginOption => {
+export const __dev__scriptHotReloadPlugin = (): PluginOption => {
   const scriptNames = WATCH_EXTENSIONS.map(ext => `script.${ext}`).join('|');
   const scriptRegex = new RegExp(`/${scriptNames}$`);
 
@@ -146,7 +155,7 @@ export const scriptHotReloadPlugin = (): PluginOption => {
       }
 
       let modifiedCode = code;
-      let scriptCode = SCRIPT_HOT_RELOAD;
+      let scriptCode = HOT_RELOAD_SCRIPT;
 
       if (code.includes('initEngine(')) {
         modifiedCode = code.replace(/initEngine\(/g, '__init_engine(');
@@ -163,22 +172,46 @@ export const scriptHotReloadPlugin = (): PluginOption => {
   };
 };
 
+export const __dev__cssUrlPrefixPlugin = (baseUrl: string): PluginOption => {
+  return {
+    name: 'css-url-prefix',
+    transform(code: string, id: string) {
+      if (id.endsWith('.scss') || id.endsWith('.css')) {
+        const modifiedCode = code.replace(
+          /url\(['"]?(\.\/|\/)(.*?)['"]?\)/g,
+          `url("${baseUrl}$1")`,
+        );
+
+        return modifiedCode;
+      }
+
+      return code;
+    },
+  };
+};
+
 export const generateConfigFilesPlugin = (
   baseDir: string,
-  entriesObject: Record<string, string>,
-  serveConfig: Record<string, any>,
+  baseUrl: string,
   version: number,
 ): PluginOption => {
   return {
     name: 'generate-config-files',
-    writeBundle() {
-      generateProvidersConfig(baseDir, entriesObject, serveConfig, version);
+
+    enforce: 'post',
+
+    async writeBundle() {
+      generateProvidersConfig(baseDir, version);
+
+      if (!IS_SERVER) {
+        writeStylesFile(baseDir, baseUrl, version);
+      }
     },
   };
 };
 
 const createUrlAliases = (baseDir: string) => {
-  const entryObject = generateEntryObject(CLIENT_DIR, baseDir);
+  const entryObject = generateScriptsObject(CLIENT_DIR, baseDir);
 
   return Object.fromEntries(
     Object.entries(entryObject).map(([key, value]) => [
@@ -188,29 +221,14 @@ const createUrlAliases = (baseDir: string) => {
   );
 };
 
-const SCRIPT_HOT_RELOAD = `
-let __last_engine = null;
+const writeStylesFile = (baseDir: string, baseUrl: string, version: number) => {
+  const stylesFile = `${baseDir}/${DIST_DIR}/chunks/styles-${version}.js`;
+  const stylesUrl = `${baseUrl}/assets/style-${version}.css`;
 
-async function __init_engine(params) {
-  const result = await INIT_ENGINE(params);
+  if (!fs.existsSync(stylesFile)) return;
 
-  __last_engine = Array.isArray(result) ? result[1] : result;
-
-  return result;
+  fs.writeFileSync(
+    stylesFile,
+    IMPORT_STYLES_SCRIPT.replace('__STYLES_URL__', stylesUrl),
+  );
 };
-
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    __last_engine?.destroy();
-  });
-
-  import.meta.hot.accept(newModule => {
-    if (!__last_engine) {
-      console.warn('No engine found, cannot hot reload');
-      return;
-    }
-
-    newModule?.default(__last_engine?.id);
-  });
-}
-`;
