@@ -12,9 +12,7 @@ export const OUTPUT_DIR = 'dist';
 
 export const IS_SERVER = process.argv.some(arg => arg === 'server');
 
-//export const IS_VERCEL = !!process.env.VERCEL;
-
-export const IS_VERCEL = true;
+export const IS_VERCEL = !!process.env.VERCEL;
 
 export const IS_CLOUDFLARE_PAGES = !!process.env.CF_PAGES;
 
