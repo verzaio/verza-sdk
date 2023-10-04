@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 
-import {v4} from 'uuid';
-
 export {z} from 'zod';
 
 export {MathUtils} from 'three';
@@ -13,4 +11,4 @@ export {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 
 export {type GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-export {v4 as uuid};
+export {uuid} from 'engine/utils/misc.utils';

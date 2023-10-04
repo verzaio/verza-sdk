@@ -1,4 +1,3 @@
-import {v4} from 'uuid';
 import {z} from 'zod';
 
 import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
@@ -11,6 +10,7 @@ import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import AudioManager from 'engine/managers/audio/audio.manager';
 import InputManager from 'engine/managers/input.manager';
 import StorageManager from 'engine/managers/storage/storage.manager';
+import {uuid} from 'engine/utils/misc.utils';
 
 import AnimationsManager from './animations.manager';
 import ApiManager from './api/api.manager';
@@ -102,7 +102,7 @@ export class EngineManager {
 
   private _binded = false;
 
-  private _localId = v4();
+  private _localId = uuid();
 
   get id() {
     return this.messenger.id ?? this._localId;

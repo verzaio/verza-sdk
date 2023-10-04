@@ -1,14 +1,17 @@
 import fs from 'fs';
+import path from 'path';
 
 import {
   CLIENT_DIR,
-  DIST_DIR,
+  CLOUDFLARE_FUNCTION_SCRIPT,
   IS_CLOUDFLARE_PAGES,
-  IS_NETLIFY,
   IS_SERVER,
   IS_VERCEL,
+  OUTPUT_DIR,
+  SERVER_DIR,
+  VERCEL_FUNCTION_SCRIPT,
 } from './constants';
-import {generateScriptsObject} from './scripts.config';
+import {generateScriptsObject} from './utils.config';
 
 const CLOUDFLARE_ROUTES_CONFIG = {
   version: 1,
@@ -16,22 +19,48 @@ const CLOUDFLARE_ROUTES_CONFIG = {
   exclude: ['/_server/*'],
 };
 
-export const generateProvidersConfig = (baseDir: string, version: number) => {
+const VERCEL_ROUTES_CONFIG = {
+  rewrites: [
+    {
+      source: '/server/:path*',
+      destination: '/api/server/:path*',
+    },
+  ],
+};
+
+export const generateProvidersConfig = (
+  baseDir: string,
+  outputDir: string,
+  version: number,
+) => {
   const serveConfig = fs.existsSync(`${baseDir}/serve.json`)
     ? JSON.parse(fs.readFileSync(`${baseDir}/serve.json`, 'utf-8'))
     : {};
 
   const clientScripts = generateScriptsObject(CLIENT_DIR, baseDir);
 
-  if (IS_CLOUDFLARE_PAGES || IS_NETLIFY) {
-    generateCloudflareConfig(baseDir, clientScripts, serveConfig, version);
+  if (IS_CLOUDFLARE_PAGES) {
+    generateCloudflareConfig(
+      baseDir,
+      outputDir,
+      clientScripts,
+      serveConfig,
+      version,
+    );
   } else {
-    generateVercelConfig(baseDir, clientScripts, serveConfig, version);
+    generateVercelConfig(
+      baseDir,
+      outputDir,
+      clientScripts,
+      serveConfig,
+      version,
+    );
   }
 };
 
 const generateCloudflareConfig = (
   baseDir: string,
+  outputDir: string,
   clientScripts: Record<string, string>,
   serveConfig: Record<string, any>,
   version: number,
@@ -76,29 +105,51 @@ const generateCloudflareConfig = (
       );
     }
 
-    fs.writeFileSync(`${baseDir}/${DIST_DIR}/_headers`, headers);
-    fs.writeFileSync(`${baseDir}/${DIST_DIR}/_redirects`, redirects);
+    fs.writeFileSync(`${baseDir}/${OUTPUT_DIR}/_headers`, headers);
+    fs.writeFileSync(`${baseDir}/${OUTPUT_DIR}/_redirects`, redirects);
   }
 
   /////////////////////////
 
   if (IS_SERVER) {
     fs.writeFileSync(
-      `${baseDir}/functions/_routes.json`,
+      `${baseDir}/${OUTPUT_DIR}/_routes.json`,
       JSON.stringify(CLOUDFLARE_ROUTES_CONFIG, null, 2),
     );
 
-    // TODO: cloudflare serverless config
+    //
+
+    const serverScripts = generateScriptsObject(SERVER_DIR, baseDir);
+
+    Object.keys(serverScripts).map(async scriptKey => {
+      const targetPath = `${baseDir}/${outputDir}/_server/${scriptKey}.js`;
+      const scriptPath = `${baseDir}/${outputDir}/server/${scriptKey}.js`;
+
+      let relativePath = path.relative(path.dirname(scriptPath), targetPath);
+
+      if (relativePath[0] !== '.') {
+        relativePath = `./${relativePath}`;
+      }
+
+      const script = CLOUDFLARE_FUNCTION_SCRIPT.replace(
+        '__PATH__',
+        relativePath,
+      );
+
+      ensureDirExists(scriptPath);
+      fs.writeFileSync(scriptPath, script);
+    });
   }
 };
 
 const generateVercelConfig = (
   baseDir: string,
+  outputDir: string,
   clientScripts: Record<string, string>,
   serveConfig: Record<string, any>,
   version: number,
 ) => {
-  if (IS_SERVER) {
+  if (!IS_SERVER) {
     const vercelConfig: Record<string, any> = {};
 
     // redirects
@@ -139,16 +190,22 @@ const generateVercelConfig = (
 
     //
 
+    vercelConfig.rewrites = vercelConfig.rewrites
+      ? [...vercelConfig.rewrites, ...VERCEL_ROUTES_CONFIG.rewrites]
+      : VERCEL_ROUTES_CONFIG.rewrites;
+
+    //
+
     if (IS_VERCEL) {
       // vercel.json
       fs.writeFileSync(
-        `${baseDir}/${DIST_DIR}/vercel.json`,
+        `${baseDir}/${OUTPUT_DIR}/vercel.json`,
         JSON.stringify(vercelConfig, null, 2),
       );
     } else {
       // serve.json
       fs.writeFileSync(
-        `${baseDir}/${DIST_DIR}/serve.json`,
+        `${baseDir}/${OUTPUT_DIR}/serve.json`,
         JSON.stringify(vercelConfig, null, 2),
       );
     }
@@ -157,7 +214,23 @@ const generateVercelConfig = (
   /////////////////////////
 
   if (IS_SERVER) {
-    // TODO: vercel serverless config
+    const serverScripts = generateScriptsObject(SERVER_DIR, baseDir);
+
+    Object.keys(serverScripts).map(async scriptKey => {
+      const targetPath = `${baseDir}/${outputDir}/_server/${scriptKey}.js`;
+      const scriptPath = `${baseDir}/${outputDir}/server/${scriptKey}.js`;
+
+      let relativePath = path.relative(path.dirname(scriptPath), targetPath);
+
+      if (relativePath[0] !== '.') {
+        relativePath = `./${relativePath}`;
+      }
+
+      const script = VERCEL_FUNCTION_SCRIPT.replace('__PATH__', relativePath);
+
+      ensureDirExists(scriptPath);
+      fs.writeFileSync(scriptPath, script);
+    });
   }
 };
 
@@ -180,4 +253,9 @@ export const resolveBaseUrl = (devPort: number) => {
   }
 
   return baseUrl;
+};
+
+const ensureDirExists = (dir: string) => {
+  const dirPath = path.dirname(dir);
+  fs.mkdirSync(dirPath, {recursive: true});
 };

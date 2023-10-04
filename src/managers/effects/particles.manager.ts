@@ -1,9 +1,8 @@
 import {Vector3} from 'three';
 
-import {v4} from 'uuid';
-
 import {ParticlesOptions} from 'engine/definitions/types/effects.types';
 import {Vector3Array} from 'engine/definitions/types/world.types';
+import {uuid} from 'engine/utils/misc.utils';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';
@@ -26,7 +25,7 @@ class ParticlesManager {
   ) {
     this._engine = engine;
 
-    this.id = withId ?? v4();
+    this.id = withId ?? uuid();
 
     if (playerId) {
       this._messenger.emit('createPlayerParticles', [

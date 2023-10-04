@@ -32,6 +32,8 @@ class WebServerManager {
 
   webServerEndpoint: string = null!;
 
+  pendingRequests: Promise<unknown>[] = [];
+
   get encryptedPackets() {
     return this._engine.network.encryptedPackets;
   }
@@ -360,29 +362,29 @@ class WebServerManager {
     const path = `${this.endpoint}/network/action/run`;
 
     // emit to verza servers
-    const response = await fetch(path, {
-      method: 'POST',
+    const responsePromise = new Promise<Response>(resolve =>
+      resolve(
+        fetch(path, {
+          method: 'POST',
 
-      cache: 'no-cache',
+          body: JSON.stringify({
+            e: eventName,
+            d: args as object,
+            p: playerId,
+          } satisfies ScriptActionPacketSendDto),
 
-      keepalive: true,
+          headers: {
+            'Content-Type': 'application/json',
 
-      referrerPolicy: 'no-referrer',
+            Authorization: `Bearer ${this._accessToken}`,
+          },
+        }),
+      ),
+    );
 
-      credentials: 'omit',
+    this.pendingRequests.push(responsePromise);
 
-      body: JSON.stringify({
-        e: eventName,
-        d: args as object,
-        p: playerId,
-      } satisfies ScriptActionPacketSendDto),
-
-      headers: {
-        'Content-Type': 'application/json',
-
-        Authorization: `Bearer ${this._accessToken}`,
-      },
-    });
+    const response = await responsePromise;
 
     // if error, output it
     if (response.status < 200 || response.status > 299) {

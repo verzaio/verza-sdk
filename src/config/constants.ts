@@ -4,19 +4,19 @@ export const DEFAULT_PORT = 8085;
 
 export const WATCH_EXTENSIONS = ['ts', 'tsx', 'js', 'jsx'];
 
-export const DIST_DIR = 'dist';
-
 export const CLIENT_DIR = 'client';
 
 export const SERVER_DIR = 'server';
 
+export const OUTPUT_DIR = 'dist';
+
 export const IS_SERVER = process.argv.some(arg => arg === 'server');
 
-export const IS_VERCEL = !!process.env.VERCEL;
+//export const IS_VERCEL = !!process.env.VERCEL;
+
+export const IS_VERCEL = true;
 
 export const IS_CLOUDFLARE_PAGES = !!process.env.CF_PAGES;
-
-export const IS_NETLIFY = !!process.env.NETLIFY;
 
 export const EXTERNAL_MODULES = [
   /^@verza\/sdk$/,
@@ -57,4 +57,83 @@ const styles = document.createElement('link');
 styles.rel = 'stylesheet';
 styles.href = '__STYLES_URL__';
 document.head.appendChild(styles);
-`;
+`.trim();
+
+export const CLOUDFLARE_FUNCTION_SCRIPT = `
+import script from '__PATH__';
+
+export async function onRequestPost({waitUntil, request}) {
+  const engine = await script();
+
+  const body = await request.text();
+
+  const result = await engine.api.handleWebServer(body);
+
+  // wait for all pending requests to finish
+  waitUntil(
+    (async () => await Promise.all(engine.api.webServer.pendingRequests))()
+  );
+
+  return new Response(JSON.stringify(result), {
+    status: result?.error ? 500 : 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+}
+`.trim();
+
+export const VERCEL_FUNCTION_SCRIPT = `
+import script from '__PATH__';
+
+export default async function handler(request, response) {
+  const engine = await script();
+
+  const result = await engine.api.handleWebServer(request.body);
+
+  await Promise.all(engine.api.webServer.pendingRequests);
+
+  response.setHeader('Access-Control-Allow-Origin', '*');
+
+  return response.status(result?.error ? 500 : 200).json(result)
+}
+`.trim();
+
+/*
+
+// TODO: Test Vercel Edge Runtime
+
+export const VERCEL_FUNCTION_SCRIPT = `
+import script from '__PATH__';
+
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(request, context) {
+  const engine = await script();
+
+  const result = await engine.api.handleWebServer(request.body);
+
+  console.log('abc')
+  // wait for all pending requests to finish
+  context.waitUntil(
+    (async () => {
+      console.log('finishing it?)
+      await Promise.all(engine.api.webServer.pendingRequests)
+      console.log('finished?)
+    })()
+  );
+  console.log('abc2')
+
+  return new Response(JSON.stringify(result), {
+    status: result?.error ? 500 : 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+}
+`.trim();
+*/

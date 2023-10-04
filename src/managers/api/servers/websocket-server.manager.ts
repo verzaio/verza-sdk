@@ -46,14 +46,6 @@ class WebsocketServerManager {
     const response = await fetch(`${this.endpoint}/network/action/server`, {
       method: 'GET',
 
-      cache: 'no-cache',
-
-      keepalive: true,
-
-      referrerPolicy: 'no-referrer',
-
-      credentials: 'omit',
-
       headers: {
         Authorization: `Bearer ${this._accessToken}`,
       },

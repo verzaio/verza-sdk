@@ -2,13 +2,14 @@ import {UserConfig, defineConfig, mergeConfig} from 'vite';
 
 import {
   DEFAULT_PORT,
-  DIST_DIR,
   IS_CLOUDFLARE_PAGES,
   IS_DEV,
   IS_SERVER,
+  IS_VERCEL,
+  OUTPUT_DIR,
 } from './constants';
 import {resolveBaseUrl} from './providers.config';
-import {generateRollupOptions} from './scripts.config';
+import {generateRollupOptions} from './utils.config';
 import {
   __dev__cssUrlPrefixPlugin,
   __dev__scriptHotReloadPlugin,
@@ -41,11 +42,20 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
 
   process.env.VITE_BASE_URL = baseUrl;
 
-  const outputDir = IS_SERVER
-    ? IS_CLOUDFLARE_PAGES
-      ? `./functions`
-      : './api'
-    : DIST_DIR;
+  // default output dir
+  let outputDir: string = OUTPUT_DIR;
+
+  // select output dir
+  if (IS_SERVER) {
+    console.log('IS_CLOUDFLARE_PAGES', IS_CLOUDFLARE_PAGES);
+    if (IS_CLOUDFLARE_PAGES) {
+      outputDir = 'functions';
+    } else if (IS_VERCEL) {
+      outputDir = `${OUTPUT_DIR}/api`;
+    } else {
+      outputDir = 'api';
+    }
+  }
 
   return mergeConfig(
     {
@@ -54,7 +64,8 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
         IS_DEV && __dev__cssUrlPrefixPlugin(baseUrl),
         IS_DEV && __dev__urlAliasesMiddlewarePlugin(baseDir, baseUrl),
         IS_DEV && __dev__scriptHotReloadPlugin(),
-        !IS_DEV && generateConfigFilesPlugin(baseDir, baseUrl, VERSION),
+        !IS_DEV &&
+          generateConfigFilesPlugin(baseDir, baseUrl, outputDir, VERSION),
       ].filter(Boolean),
 
       build: {

@@ -1,7 +1,5 @@
 import {Euler} from 'three';
 
-import {v4} from 'uuid';
-
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ScriptMessengerMethods} from 'engine/definitions/types/messenger.types';
@@ -16,6 +14,7 @@ import {
 } from 'engine/definitions/types/objects/objects.types';
 import {QuaternionArray} from 'engine/definitions/types/world.types';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import {uuid} from 'engine/utils/misc.utils';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
@@ -155,7 +154,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   ) {
     // validate id
     if (!props.id) {
-      props.id = v4();
+      props.id = uuid();
     }
 
     // validate pos
@@ -383,7 +382,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     // clean props
     this._cleanObjectProps(objectProps);
 
-    const id = withId ?? v4();
+    const id = withId ?? uuid();
 
     objectProps.id = id;
 

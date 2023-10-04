@@ -7,12 +7,11 @@ import {
   SERVER_DIR,
   HOT_RELOAD_SCRIPT,
   WATCH_EXTENSIONS,
-  DIST_DIR,
   IMPORT_STYLES_SCRIPT,
   IS_SERVER,
 } from './constants';
 import {generateProvidersConfig} from './providers.config';
-import {generateScriptsObject} from './scripts.config';
+import {generateScriptsObject} from './utils.config';
 
 export const __dev__webServerMiddlewarePlugin = (
   baseDir: string,
@@ -193,18 +192,17 @@ export const __dev__cssUrlPrefixPlugin = (baseUrl: string): PluginOption => {
 export const generateConfigFilesPlugin = (
   baseDir: string,
   baseUrl: string,
+  outputDir: string,
   version: number,
 ): PluginOption => {
   return {
     name: 'generate-config-files',
-
     enforce: 'post',
-
     async writeBundle() {
-      generateProvidersConfig(baseDir, version);
+      generateProvidersConfig(baseDir, outputDir, version);
 
       if (!IS_SERVER) {
-        writeStylesFile(baseDir, baseUrl, version);
+        writeStylesFile(baseDir, baseUrl, outputDir, version);
       }
     },
   };
@@ -221,8 +219,13 @@ const createUrlAliases = (baseDir: string) => {
   );
 };
 
-const writeStylesFile = (baseDir: string, baseUrl: string, version: number) => {
-  const stylesFile = `${baseDir}/${DIST_DIR}/chunks/styles-${version}.js`;
+const writeStylesFile = (
+  baseDir: string,
+  baseUrl: string,
+  outputDir: string,
+  version: number,
+) => {
+  const stylesFile = `${baseDir}/${outputDir}/chunks/styles-${version}.js`;
   const stylesUrl = `${baseUrl}/assets/style-${version}.css`;
 
   if (!fs.existsSync(stylesFile)) return;
