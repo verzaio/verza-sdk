@@ -23,6 +23,10 @@ export const EXTERNAL_MODULES = [
   /^three\/examples\/.*$/,
 ];
 
+const miniMinify = (code: string) => {
+  return code.trim().split('\n').join('').split('  ').join('');
+};
+
 export const HOT_RELOAD_SCRIPT = `
 let __last_engine = null;
 
@@ -50,12 +54,20 @@ if (import.meta.hot) {
 }
 `;
 
-export const IMPORT_STYLES_SCRIPT = `
-const styles = document.createElement('link');
-styles.rel = 'stylesheet';
-styles.href = '__STYLES_URL__';
-document.head.appendChild(styles);
-`.trim();
+export const IMPORT_STYLES_SCRIPT = miniMinify(`
+;(() => {
+  const url = '__STYLES_URL__';
+
+  if (document.querySelector(\`link[href="\${url}"]\`)) return;
+
+  const styles = document.createElement('link');
+  styles.rel = 'stylesheet';
+  styles.href = url;
+  styles.id = styles.href;
+
+  document.head.appendChild(styles);
+})();
+`);
 
 export const CLOUDFLARE_FUNCTION_SCRIPT = `
 import script from '__PATH__';
@@ -68,9 +80,7 @@ export async function onRequestPost({waitUntil, request}) {
   const result = await engine.api.handleWebServer(body);
 
   // wait for all pending requests to finish
-  waitUntil(
-    (async () => await Promise.all(engine.api.webServer.pendingRequests))()
-  );
+  waitUntil(Promise.all(engine.api.webServer.pendingRequests));
 
   return new Response(JSON.stringify(result), {
     status: result?.error ? 500 : 200,
@@ -83,6 +93,33 @@ export async function onRequestPost({waitUntil, request}) {
 `.trim();
 
 export const VERCEL_FUNCTION_SCRIPT = `
+import script from '__PATH__';
+
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(request, context) {
+  const engine = await script();
+
+  const body = await request.text();
+
+  const result = await engine.api.handleWebServer(body);
+
+  // wait for all pending requests to finish
+  context.waitUntil(Promise.all(engine.api.webServer.pendingRequests));
+
+  return new Response(JSON.stringify(result), {
+    status: result?.error ? 500 : 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+}
+`.trim();
+
+/* export const VERCEL_FUNCTION_SCRIPT = `
 import script from '__PATH__';
 
 export default async function handler(request, response) {
@@ -96,42 +133,4 @@ export default async function handler(request, response) {
 
   return response.status(result?.error ? 500 : 200).json(result)
 }
-`.trim();
-
-/*
-
-// TODO: Test Vercel Edge Runtime
-
-export const VERCEL_FUNCTION_SCRIPT = `
-import script from '__PATH__';
-
-export const config = {
-  runtime: 'edge',
-};
-
-export default async function handler(request, context) {
-  const engine = await script();
-
-  const result = await engine.api.handleWebServer(request.body);
-
-  console.log('abc')
-  // wait for all pending requests to finish
-  context.waitUntil(
-    (async () => {
-      console.log('finishing it?)
-      await Promise.all(engine.api.webServer.pendingRequests)
-      console.log('finished?)
-    })()
-  );
-  console.log('abc2')
-
-  return new Response(JSON.stringify(result), {
-    status: result?.error ? 500 : 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-  });
-}
-`.trim();
-*/
+`.trim(); */

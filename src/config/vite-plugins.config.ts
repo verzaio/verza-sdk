@@ -1,4 +1,5 @@
 import fs from 'fs';
+import * as glob from 'glob';
 import path from 'path';
 import {PluginOption, createLogger} from 'vite';
 
@@ -85,7 +86,7 @@ export const __dev__webServerMiddlewarePlugin = (
             try {
               const response = await engine.api.handleWebServer(body);
 
-              if (response.error) {
+              if (response?.error) {
                 res.statusCode = 500;
                 res.end(JSON.stringify(response, null, 2));
                 return;
@@ -202,7 +203,7 @@ export const generateConfigFilesPlugin = (
       generateProvidersConfig(baseDir, outputDir, version);
 
       if (!IS_SERVER) {
-        writeStylesFile(baseDir, baseUrl, outputDir, version);
+        addStylesLoader(baseDir, baseUrl, outputDir, version);
       }
     },
   };
@@ -219,19 +220,31 @@ const createUrlAliases = (baseDir: string) => {
   );
 };
 
-const writeStylesFile = (
+const addStylesLoader = (
   baseDir: string,
   baseUrl: string,
   outputDir: string,
   version: number,
 ) => {
-  const stylesFile = `${baseDir}/${outputDir}/chunks/styles-${version}.js`;
-  const stylesUrl = `${baseUrl}/assets/style-${version}.css`;
+  const [stylePath] = glob.sync(`./assets/style-*.css`, {
+    cwd: outputDir,
+  });
 
-  if (!fs.existsSync(stylesFile)) return;
+  if (!stylePath) {
+    return;
+  }
 
-  fs.writeFileSync(
-    stylesFile,
-    IMPORT_STYLES_SCRIPT.replace('__STYLES_URL__', stylesUrl),
-  );
+  const stylesUrl = `${baseUrl}/${stylePath}`;
+
+  const scripts = generateScriptsObject(CLIENT_DIR, baseDir);
+
+  const stylesScript =
+    '\n' + IMPORT_STYLES_SCRIPT.replace('__STYLES_URL__', stylesUrl);
+
+  Object.keys(scripts).forEach(scriptPath => {
+    scriptPath = path.join(outputDir, scriptPath);
+    scriptPath += `-${version}.js`;
+
+    fs.appendFileSync(scriptPath, stylesScript, 'utf8');
+  });
 };

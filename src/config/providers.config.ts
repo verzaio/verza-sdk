@@ -122,10 +122,10 @@ const generateCloudflareConfig = (
     const serverScripts = generateScriptsObject(SERVER_DIR, baseDir);
 
     Object.keys(serverScripts).map(async scriptKey => {
-      const targetPath = `${baseDir}/${outputDir}/_server/${scriptKey}.js`;
-      const scriptPath = `${baseDir}/${outputDir}/server/${scriptKey}.js`;
+      const scriptFile = `${baseDir}/${outputDir}/_server/${scriptKey}.js`;
+      const handlerFile = `${baseDir}/${outputDir}/server/${scriptKey}.js`;
 
-      let relativePath = path.relative(path.dirname(scriptPath), targetPath);
+      let relativePath = path.relative(path.dirname(handlerFile), scriptFile);
 
       if (relativePath[0] !== '.') {
         relativePath = `./${relativePath}`;
@@ -136,8 +136,8 @@ const generateCloudflareConfig = (
         relativePath,
       );
 
-      ensureDirExists(scriptPath);
-      fs.writeFileSync(scriptPath, script);
+      ensureDirExists(handlerFile);
+      fs.writeFileSync(handlerFile, script);
     });
   }
 };
@@ -197,11 +197,48 @@ const generateVercelConfig = (
     //
 
     if (IS_VERCEL) {
-      // vercel.json
-      fs.writeFileSync(
-        `${baseDir}/${OUTPUT_DIR}/vercel.json`,
-        JSON.stringify(vercelConfig, null, 2),
-      );
+      const buildConfig: Record<string, any> = {
+        version: 3,
+        routes: [],
+      };
+
+      // Convert redirects
+      vercelConfig.redirects?.forEach((redirect: any) => {
+        buildConfig.routes.push({
+          src: redirect.source,
+          status: redirect.statusCode ?? 302,
+          headers: {
+            Location: redirect.destination,
+          },
+        });
+      });
+
+      // Convert headers
+      vercelConfig.headers?.forEach((header: any) => {
+        const newHeader = {
+          src: header.source,
+          headers: {} as Record<string, string>,
+        };
+        header.headers.forEach((h: any) => {
+          newHeader.headers[h.key] = h.value;
+        });
+        buildConfig.routes.push(newHeader);
+      });
+
+      // Convert rewrites
+      vercelConfig.rewrites?.forEach((rewrite: any) => {
+        buildConfig.routes.push({
+          src: rewrite.source,
+          dest: rewrite.destination,
+        });
+      });
+
+      // config.json
+      const configPath = `${baseDir}/.vercel/output/config.json`;
+
+      ensureDirExists(configPath);
+
+      fs.writeFileSync(configPath, JSON.stringify(buildConfig, null, 2));
     } else {
       // serve.json
       fs.writeFileSync(
@@ -215,21 +252,57 @@ const generateVercelConfig = (
 
   if (IS_SERVER) {
     const serverScripts = generateScriptsObject(SERVER_DIR, baseDir);
+    /* const serverScripts = Object.fromEntries(
+      Object.entries(generateScriptsObject(SERVER_DIR, baseDir)).map(
+        ([key, value]) => [`server/${key}.func`, value],
+      ),
+    ); */
 
     Object.keys(serverScripts).map(async scriptKey => {
-      const targetPath = `${baseDir}/${outputDir}/_server/${scriptKey}.js`;
-      const scriptPath = `${baseDir}/${outputDir}/server/${scriptKey}.js`;
+      let dirName = path.dirname(scriptKey);
+      const baseName = path.basename(scriptKey);
 
-      let relativePath = path.relative(path.dirname(scriptPath), targetPath);
+      if (dirName === '.') {
+        dirName = scriptKey;
+      }
+
+      const scriptFile = `${baseDir}/${outputDir}/server/${dirName}.func/${baseName}.js`;
+      const handlerFile = `${baseDir}/${outputDir}/server/${dirName}.func/handler.js`;
+
+      let relativePath = path.relative(path.dirname(handlerFile), scriptFile);
 
       if (relativePath[0] !== '.') {
         relativePath = `./${relativePath}`;
       }
 
+      ensureDirExists(handlerFile);
+
+      //
+
       const script = VERCEL_FUNCTION_SCRIPT.replace('__PATH__', relativePath);
 
-      ensureDirExists(scriptPath);
-      fs.writeFileSync(scriptPath, script);
+      fs.writeFileSync(handlerFile, script);
+
+      //
+
+      const handlerPath = path.dirname(handlerFile);
+
+      const vcConfig = {
+        runtime: 'edge',
+        entrypoint: 'handler.js',
+        envVarsInUse: Object.keys(process.env),
+      };
+
+      /* const vcConfig = {
+        runtime: 'nodejs18.x',
+        handler: 'handler.js',
+        environment: process.env,
+      }; */
+
+      fs.writeFileSync(
+        `${handlerPath}/.vc-config.json`,
+        JSON.stringify(vcConfig, null, 2),
+      );
     });
   }
 };

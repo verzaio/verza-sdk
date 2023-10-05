@@ -47,14 +47,15 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
 
   // select output dir
   if (IS_SERVER) {
-    console.log('IS_CLOUDFLARE_PAGES', IS_CLOUDFLARE_PAGES);
+    outputDir = 'api';
+
     if (IS_CLOUDFLARE_PAGES) {
       outputDir = 'functions';
     } else if (IS_VERCEL) {
-      outputDir = `${OUTPUT_DIR}/api`;
-    } else {
-      outputDir = 'api';
+      outputDir = '.vercel/output/functions';
     }
+  } else if (IS_VERCEL) {
+    outputDir = '.vercel/output/static';
   }
 
   return mergeConfig(

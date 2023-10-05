@@ -1,4 +1,5 @@
 import * as glob from 'glob';
+import path from 'path';
 import {RollupOptions} from 'rollup';
 
 import {
@@ -6,6 +7,7 @@ import {
   EXTERNAL_MODULES,
   IS_DEV,
   IS_SERVER,
+  IS_VERCEL,
   SERVER_DIR,
   WATCH_EXTENSIONS,
 } from './constants';
@@ -57,12 +59,7 @@ export const generateScriptsObject = (
 export const generateServerlessScripts = (baseDir: string) => {
   const scriptsObject = generateScriptsObject(SERVER_DIR, baseDir);
 
-  return Object.fromEntries(
-    Object.entries(scriptsObject).map(([key, value]) => [
-      `_server/${key}`,
-      value,
-    ]),
-  );
+  return scriptsObject;
 };
 
 export const generateRollupOptions = (
@@ -77,27 +74,51 @@ export const generateRollupOptions = (
     options.external = EXTERNAL_MODULES;
   }
 
-  if (IS_SERVER) {
-    options.output = {
-      format: 'esm',
-      entryFileNames: `[name].js`,
-      chunkFileNames: `_server/chunks/[name]-${version}.js`,
-      assetFileNames: `_server/assets/[name]-${version}.[ext]`,
-    };
-  } else {
-    options.output = {
-      format: 'esm',
-      entryFileNames: `[name].js`,
-      chunkFileNames: `chunks/[name]-${version}.js`,
-      assetFileNames: `assets/[name]-${version}.[ext]`,
-    };
-  }
-
-  const allScripts = {
+  let allScripts = {
     ...(IS_SERVER && generateServerlessScripts(baseDir)),
 
     ...(!IS_SERVER && generateClientVersionedScripts(baseDir, version)),
   };
+
+  if (IS_SERVER) {
+    if (IS_VERCEL) {
+      options.output = Object.keys(allScripts).map(key => {
+        let dirName = path.dirname(key);
+
+        if (dirName === '.') {
+          dirName = key;
+        }
+
+        return {
+          format: 'esm',
+          entryFileNames: `server/${dirName}.func/[name].js`,
+          chunkFileNames: `server/${dirName}.func/chunks/[name]-[hash].js`,
+          assetFileNames: `server/${dirName}.func/assets/[name]-[hash].[ext]`,
+        };
+      });
+    } else {
+      allScripts = Object.fromEntries(
+        Object.entries(allScripts).map(([key, value]) => [
+          `_server/${key}`,
+          value,
+        ]),
+      );
+
+      options.output = {
+        format: 'esm',
+        entryFileNames: `[name].js`,
+        chunkFileNames: `_server/chunks/[name]-[hash].js`,
+        assetFileNames: `_server/assets/[name]-[hash].[ext]`,
+      };
+    }
+  } else {
+    options.output = {
+      format: 'esm',
+      entryFileNames: `[name].js`,
+      chunkFileNames: `chunks/[name]-[hash].js`,
+      assetFileNames: `assets/[name]-[hash].[ext]`,
+    };
+  }
 
   if (Object.keys(allScripts).length) {
     options.input = allScripts;

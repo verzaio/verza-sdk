@@ -1,15 +1,26 @@
-import {MeshoptDecoder} from 'three/examples/jsm/libs/meshopt_decoder.module.js';
-import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader.js';
+import type {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import {DRACO_URL} from 'engine/definitions/local/constants/engine.constants';
 
 class UtilsManager {
-  gltfLoader = new GLTFLoader();
+  gltfLoader: GLTFLoader = new GLTFLoader();
 
-  private _dracoLoader: DRACOLoader;
+  private _dracoLoader: DRACOLoader = null!;
 
-  constructor() {
+  async setupGltfLoaders() {
+    if (this._dracoLoader) return;
+
+    const {MeshoptDecoder} = await import(
+      'three/examples/jsm/libs/meshopt_decoder.module.js'
+    );
+
+    const {DRACOLoader} = await import(
+      'three/examples/jsm/loaders/DRACOLoader.js'
+    );
+
+    if (this._dracoLoader) return;
+
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath(DRACO_URL);
     this.gltfLoader.setDRACOLoader(dracoLoader);
@@ -29,7 +40,7 @@ class UtilsManager {
   }
 
   destroy() {
-    this._dracoLoader.dispose();
+    this._dracoLoader?.dispose();
   }
 }
 

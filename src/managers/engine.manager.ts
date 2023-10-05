@@ -163,6 +163,10 @@ export class EngineManager {
     return this.api.isClient;
   }
 
+  get isBrowser() {
+    return typeof window !== 'undefined';
+  }
+
   get chunkSize() {
     return this.network.server?.world?.chunk_size ?? STREAMER_CHUNK_SIZE;
   }
@@ -188,7 +192,7 @@ export class EngineManager {
     this.utils = new UtilsManager();
 
     // only for client
-    if (this.isClient) {
+    if (this.isClient && this.isBrowser) {
       this.input = new InputManager(this);
       this.ui = new UIManager(this);
       this.audio = new AudioManager(this);
@@ -216,7 +220,7 @@ export class EngineManager {
         value.EntityManager;
     });
 
-    if (this.isClient) {
+    if (this.isClient && this.isBrowser) {
       this._watchFrames();
     }
   }
@@ -231,7 +235,7 @@ export class EngineManager {
 
   connectClient() {
     // validate env (only client)
-    if (this.isClient && typeof window === 'undefined') {
+    if (this.isClient && !this.isBrowser) {
       return;
     }
 

@@ -1,5 +1,3 @@
-/* @vite-ignore */
-
 import React, {
   PropsWithChildren,
   useEffect,
