@@ -40,7 +40,7 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
 
   const baseUrl = baseConfig.base ?? resolveBaseUrl(port);
 
-  process.env.VITE_BASE_URL = baseUrl;
+  process.env.VERZA_PUBLIC_BASE_URL = baseUrl;
 
   // default output dir
   let outputDir: string = OUTPUT_DIR;
@@ -87,6 +87,10 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
       },
 
       base: baseUrl,
+
+      envPrefix: 'VERZA_PUBLIC_',
+
+      appType: 'mpa',
     } satisfies UserConfig,
     baseConfig,
   );
