@@ -1,3 +1,11 @@
 #!/usr/bin/env node
 
-// WIP ™
+import {spawn} from 'child_process';
+
+// TODO ™
+
+const args = process.argv.slice(2);
+
+spawn('./node_modules/.bin/vite', args, {
+  stdio: 'inherit',
+});
