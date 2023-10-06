@@ -1,11 +1,14 @@
 {
   "name": "@verza/sdk",
-  "version": "2.0.51-dev.53",
+  "version": "2.0.51-dev.55",
   "description": "Verza Client & Server SDK",
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "verza": "bin/verza.js"
+  },
   "scripts": {
     "build": "npm run ts-check && rm -rf ./dist && rollup -c ./rollup.config.mjs && tsc-alias -p tsconfig.json",
     "lint": "eslint ./src/ --ext .ts,.tsx",
@@ -16,7 +19,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
-    "dist/*"
+    "dist/*",
+    "bin"
   ],
   "exports": {
     ".": {
@@ -96,7 +100,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "ts-node": "^10.9.1",
-    "vite": "^4.4.9"
+    "vite": "^4.4.9",
+    "dotenv": "^16.3.1"
   },
   "peerDependenciesMeta": {
     "react": {

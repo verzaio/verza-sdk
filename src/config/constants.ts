@@ -69,10 +69,14 @@ export const IMPORT_STYLES_SCRIPT = miniMinify(`
 })();
 `);
 
-export const CLOUDFLARE_FUNCTION_SCRIPT = `
-import script from '__PATH__';
+export const ENV_VARS_SCRIPT = miniMinify(`
+(typeof process !== 'undefined' && Object.assign(process.env, __ENV_VARS__));
+`);
 
+export const CLOUDFLARE_FUNCTION_SCRIPT = `
 export async function onRequestPost({waitUntil, request}) {
+  const {default: script} = await import('__PATH__');
+
   const engine = await script();
 
   const body = await request.text();
@@ -93,13 +97,13 @@ export async function onRequestPost({waitUntil, request}) {
 `.trim();
 
 export const VERCEL_FUNCTION_SCRIPT = `
-import script from '__PATH__';
-
 export const config = {
   runtime: 'edge',
 };
 
 export default async function handler(request, context) {
+  const {default: script} = await import('__PATH__');
+
   const engine = await script();
 
   const body = await request.text();

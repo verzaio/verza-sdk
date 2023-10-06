@@ -89,6 +89,7 @@ export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
       base: baseUrl,
 
       envPrefix: 'VERZA_PUBLIC_',
+      envDir: baseDir,
 
       appType: 'mpa',
     } satisfies UserConfig,

@@ -1,10 +1,11 @@
+import {config} from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
 import {
   CLIENT_DIR,
   CLOUDFLARE_FUNCTION_SCRIPT,
-  IS_CLOUDFLARE_PAGES,
+  ENV_VARS_SCRIPT,
   IS_SERVER,
   IS_VERCEL,
   OUTPUT_DIR,
@@ -39,8 +40,8 @@ export const generateProvidersConfig = (
 
   const clientScripts = generateScriptsObject(CLIENT_DIR, baseDir);
 
-  if (IS_CLOUDFLARE_PAGES) {
-    generateCloudflareConfig(
+  if (IS_VERCEL) {
+    generateVercelConfig(
       baseDir,
       outputDir,
       clientScripts,
@@ -48,7 +49,7 @@ export const generateProvidersConfig = (
       version,
     );
   } else {
-    generateVercelConfig(
+    generateCloudflareConfig(
       baseDir,
       outputDir,
       clientScripts,
@@ -121,6 +122,12 @@ const generateCloudflareConfig = (
 
     const serverScripts = generateScriptsObject(SERVER_DIR, baseDir);
 
+    const envVariables: Record<string, any> = {};
+
+    config({
+      processEnv: envVariables,
+    });
+
     Object.keys(serverScripts).map(async scriptKey => {
       const scriptFile = `${baseDir}/${outputDir}/_server/${scriptKey}.js`;
       const handlerFile = `${baseDir}/${outputDir}/server/${scriptKey}.js`;
@@ -138,6 +145,12 @@ const generateCloudflareConfig = (
 
       ensureDirExists(handlerFile);
       fs.writeFileSync(handlerFile, script);
+
+      //
+
+      addEnvVariables(handlerFile, envVariables);
+
+      //
     });
   }
 };
@@ -196,67 +209,60 @@ const generateVercelConfig = (
 
     //
 
-    if (IS_VERCEL) {
-      const buildConfig: Record<string, any> = {
-        version: 3,
-        routes: [],
+    const buildConfig: Record<string, any> = {
+      version: 3,
+      routes: [],
+    };
+
+    // Convert redirects
+    vercelConfig.redirects?.forEach((redirect: any) => {
+      buildConfig.routes.push({
+        src: redirect.source,
+        status: redirect.statusCode ?? 302,
+        headers: {
+          Location: redirect.destination,
+        },
+      });
+    });
+
+    // Convert headers
+    vercelConfig.headers?.forEach((header: any) => {
+      const newHeader = {
+        src: header.source,
+        headers: {} as Record<string, string>,
       };
-
-      // Convert redirects
-      vercelConfig.redirects?.forEach((redirect: any) => {
-        buildConfig.routes.push({
-          src: redirect.source,
-          status: redirect.statusCode ?? 302,
-          headers: {
-            Location: redirect.destination,
-          },
-        });
+      header.headers.forEach((h: any) => {
+        newHeader.headers[h.key] = h.value;
       });
+      buildConfig.routes.push(newHeader);
+    });
 
-      // Convert headers
-      vercelConfig.headers?.forEach((header: any) => {
-        const newHeader = {
-          src: header.source,
-          headers: {} as Record<string, string>,
-        };
-        header.headers.forEach((h: any) => {
-          newHeader.headers[h.key] = h.value;
-        });
-        buildConfig.routes.push(newHeader);
+    // Convert rewrites
+    vercelConfig.rewrites?.forEach((rewrite: any) => {
+      buildConfig.routes.push({
+        src: rewrite.source,
+        dest: rewrite.destination,
       });
+    });
 
-      // Convert rewrites
-      vercelConfig.rewrites?.forEach((rewrite: any) => {
-        buildConfig.routes.push({
-          src: rewrite.source,
-          dest: rewrite.destination,
-        });
-      });
+    // config.json
+    const configPath = `${baseDir}/.vercel/output/config.json`;
 
-      // config.json
-      const configPath = `${baseDir}/.vercel/output/config.json`;
+    ensureDirExists(configPath);
 
-      ensureDirExists(configPath);
-
-      fs.writeFileSync(configPath, JSON.stringify(buildConfig, null, 2));
-    } else {
-      // serve.json
-      fs.writeFileSync(
-        `${baseDir}/${OUTPUT_DIR}/serve.json`,
-        JSON.stringify(vercelConfig, null, 2),
-      );
-    }
+    fs.writeFileSync(configPath, JSON.stringify(buildConfig, null, 2));
   }
 
   /////////////////////////
 
   if (IS_SERVER) {
     const serverScripts = generateScriptsObject(SERVER_DIR, baseDir);
-    /* const serverScripts = Object.fromEntries(
-      Object.entries(generateScriptsObject(SERVER_DIR, baseDir)).map(
-        ([key, value]) => [`server/${key}.func`, value],
-      ),
-    ); */
+
+    const envVariables: Record<string, any> = {};
+
+    config({
+      processEnv: envVariables,
+    });
 
     Object.keys(serverScripts).map(async scriptKey => {
       let dirName = path.dirname(scriptKey);
@@ -294,15 +300,21 @@ const generateVercelConfig = (
       };
 
       /* const vcConfig = {
-        runtime: 'nodejs18.x',
-        handler: 'handler.js',
-        environment: process.env,
-      }; */
+          runtime: 'nodejs18.x',
+          handler: 'handler.js',
+          environment: process.env,
+        }; */
 
       fs.writeFileSync(
         `${handlerPath}/.vc-config.json`,
         JSON.stringify(vcConfig, null, 2),
       );
+
+      //
+
+      addEnvVariables(handlerFile, envVariables);
+
+      //
     });
   }
 };
@@ -331,4 +343,17 @@ export const resolveBaseUrl = (devPort: number) => {
 const ensureDirExists = (dir: string) => {
   const dirPath = path.dirname(dir);
   fs.mkdirSync(dirPath, {recursive: true});
+};
+
+const addEnvVariables = (path: string, vars: Record<string, any>) => {
+  if (!Object.keys(vars).length) return;
+
+  const oldData = fs.readFileSync(path, 'utf8');
+
+  const newData =
+    ENV_VARS_SCRIPT.replace('__ENV_VARS__', JSON.stringify(vars)) +
+    '\n\n' +
+    oldData;
+
+  fs.writeFileSync(path, newData, 'utf8');
 };

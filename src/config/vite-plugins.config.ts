@@ -1,3 +1,4 @@
+import {config} from 'dotenv';
 import fs from 'fs';
 import * as glob from 'glob';
 import path from 'path';
@@ -8,12 +9,11 @@ import {
   SERVER_DIR,
   HOT_RELOAD_SCRIPT,
   WATCH_EXTENSIONS,
-  IMPORT_STYLES_SCRIPT,
+  ENV_VARS_SCRIPT,
   IS_SERVER,
 } from './constants';
 import {generateProvidersConfig} from './providers.config';
 import {generateScriptsObject} from './utils.config';
-
 export const __dev__webServerMiddlewarePlugin = (
   baseDir: string,
   baseUrl: string,
@@ -21,6 +21,9 @@ export const __dev__webServerMiddlewarePlugin = (
   const logger = createLogger(undefined, {
     prefix: '[webserver]',
   });
+
+  // load .env files when running in dev mode
+  config();
 
   return {
     name: 'webserver-handler',
@@ -239,7 +242,7 @@ const addStylesLoader = (
   const scripts = generateScriptsObject(CLIENT_DIR, baseDir);
 
   const stylesScript =
-    '\n' + IMPORT_STYLES_SCRIPT.replace('__STYLES_URL__', stylesUrl);
+    '\n' + ENV_VARS_SCRIPT.replace('__STYLES_URL__', stylesUrl);
 
   Object.keys(scripts).forEach(scriptPath => {
     scriptPath = path.join(outputDir, scriptPath);
