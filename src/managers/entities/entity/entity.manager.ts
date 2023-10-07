@@ -15,6 +15,7 @@ import {
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import {calcChunkIndex} from 'engine/utils/chunks.utils';
+import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../../engine.manager';
 import {EventListenersMap} from '../../events.manager';
@@ -247,6 +248,14 @@ class EntityManager<
       entity.location.updateMatrixWorld();
 
       entity.attachedTo = this;
+    }
+
+    if (options.position) {
+      options.position = toVector3Array(options.position);
+    }
+
+    if (options.rotation) {
+      options.rotation = toQuaternionArray(options.rotation);
     }
 
     if (!report) return;

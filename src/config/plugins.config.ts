@@ -9,8 +9,8 @@ import {
   SERVER_DIR,
   HOT_RELOAD_SCRIPT,
   WATCH_EXTENSIONS,
-  ENV_VARS_SCRIPT,
   IS_SERVER,
+  IMPORT_STYLES_SCRIPT,
 } from './constants';
 import {generateProvidersConfig} from './providers.config';
 import {generateScriptsObject} from './utils.config';
@@ -242,7 +242,7 @@ const addStylesLoader = (
   const scripts = generateScriptsObject(CLIENT_DIR, baseDir);
 
   const stylesScript =
-    '\n' + ENV_VARS_SCRIPT.replace('__STYLES_URL__', stylesUrl);
+    '\n' + IMPORT_STYLES_SCRIPT.replace('__STYLES_URL__', stylesUrl);
 
   Object.keys(scripts).forEach(scriptPath => {
     scriptPath = path.join(outputDir, scriptPath);

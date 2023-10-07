@@ -5,7 +5,7 @@ import {UserConfig} from 'vite';
 import {defineBaseViteConfig} from './vite-base.config';
 import {defineReactViteConfig} from './vite-react.config';
 
-export const defineViteConfig = (config: Partial<UserConfig> = {}) => {
+export const defineConfig = (config: Partial<UserConfig> = {}) => {
   const packageJson = fs.readFileSync(
     path.resolve(process.cwd(), 'package.json'),
     'utf-8',
