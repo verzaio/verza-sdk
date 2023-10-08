@@ -1,8 +1,6 @@
+import {POINTER_EVENTS_RELATION} from 'engine/definitions/local/constants/input.constants';
 import {ObjectEventMap} from 'engine/definitions/local/types/events.types';
-import {
-  POINTER_EVENTS_RELATION,
-  InputPointerEvents,
-} from 'engine/definitions/local/types/input.types';
+import {InputPointerEvents} from 'engine/definitions/local/types/input.types';
 import {PointerEvent} from 'engine/definitions/types/input.types';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 import ObjectsManager from 'engine/managers/entities/objects/objects.manager';

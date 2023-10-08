@@ -9,7 +9,7 @@ export type TetrahedronProps = ComponentObjectProps<'tetrahedron'>;
 
 export const Tetrahedron = forwardRef<ObjectManager, TetrahedronProps>(
   (props, ref) => {
-    return <ObjectRender type="tetrahedron" props={props} objectRef={ref} />;
+    return <ObjectRender type="tetrahedron" {...props} objectRef={ref} />;
   },
 );
 

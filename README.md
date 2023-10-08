@@ -9,9 +9,15 @@ Check out the [documentation here](https://docs.verza.io/getting-started/verza-s
 ## Installation
 
 ```bash
+# npm
 npm install @verza/sdk
 
-#  or
+# pnpm
+pnpm add @verza/sdk
 
+# yarn
 yarn add @verza/sdk
+
+# bun
+bun add @verza/sdk
 ```

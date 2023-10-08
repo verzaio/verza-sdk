@@ -1,3 +1,5 @@
+import {ReactNode} from 'react';
+
 import {Euler, Quaternion, Vector3} from 'three';
 
 import {SoundOptions} from 'engine/definitions/types/audio.types';
@@ -22,6 +24,8 @@ export type ComponentObjectProps<T extends ObjectType = ObjectType> = Omit<
   ObjectEventMapList<T> & CreateObjectProps<T>,
   'type'
 > & {
+  children?: ReactNode;
+
   soundName?: string;
 
   soundOptions?: SoundOptions;
@@ -50,7 +54,7 @@ export type CreateObjectProps<T extends ObjectType = ObjectType> = {
 
   dimension?: number;
 
-  collision?: EntityCollisionType | null;
+  collision?: EntityCollisionType | boolean | null;
 
   collider?: EntityColliderType | null;
 

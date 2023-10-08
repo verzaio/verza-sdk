@@ -55,7 +55,7 @@ export type EntityDefinition<
 > = {
   EntitiesManager: {new (engine: EngineManager): M};
 
-  EntityRender: ComponentType<{id: T['id']}>;
+  EntityRender: ComponentType<{entity: T}>;
 
   EntityManager: {new (manager: T['entity'], engine: EngineManager): T};
 

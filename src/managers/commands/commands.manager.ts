@@ -231,7 +231,7 @@ class CommandsManager {
     }
   }
 
-  private _unregisterForPlayer(player: PlayerManager, command: Command) {
+  /* private _unregisterForPlayer(player: PlayerManager, command: Command) {
     if (this._engine.destroyed) return;
 
     // client
@@ -250,7 +250,7 @@ class CommandsManager {
         command.command,
       ]);
     }
-  }
+  } */
 
   register(command: Command<any>) {
     // try to bind

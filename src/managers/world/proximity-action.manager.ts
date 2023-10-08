@@ -1,9 +1,8 @@
-import {v4} from 'uuid';
-
 import {
   ProximityActionEvent,
   ProximityActionOptions,
 } from 'engine/definitions/types/world.types';
+import {uuid} from 'engine/utils/misc.utils';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../engine.manager';
@@ -29,7 +28,7 @@ class ProximityActionManager {
   ) {
     this._engine = engine;
 
-    this.id = withId ?? v4();
+    this.id = withId ?? uuid();
 
     if (options.position) {
       options.position = toVector3Array(options.position);

@@ -20,7 +20,7 @@ export const useCommand = <Params extends CommandParam[] = CommandParam[]>(
     return () => {
       engine.commands.unregister(cmd as unknown as Command);
     };
-  }, [cmd]);
+  }, [engine, cmd]);
 
   return cmd;
 };

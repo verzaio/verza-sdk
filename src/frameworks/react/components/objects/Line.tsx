@@ -8,7 +8,7 @@ import ObjectRender from './components/ObjectRender';
 export type LineProps = ComponentObjectProps<'line'>;
 
 export const Line = forwardRef<ObjectManager, LineProps>((props, ref) => {
-  return <ObjectRender type="line" props={props} objectRef={ref} />;
+  return <ObjectRender type="line" {...props} objectRef={ref} />;
 });
 
 Line.displayName = 'Line';

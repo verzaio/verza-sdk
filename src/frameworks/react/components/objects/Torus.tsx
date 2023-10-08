@@ -8,7 +8,7 @@ import ObjectRender from './components/ObjectRender';
 export type TorusProps = ComponentObjectProps<'torus'>;
 
 export const Torus = forwardRef<ObjectManager, TorusProps>((props, ref) => {
-  return <ObjectRender type="torus" props={props} objectRef={ref} />;
+  return <ObjectRender type="torus" {...props} objectRef={ref} />;
 });
 
 Torus.displayName = 'Torus';

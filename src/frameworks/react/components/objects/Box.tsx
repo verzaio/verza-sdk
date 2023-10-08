@@ -8,7 +8,7 @@ import ObjectRender from './components/ObjectRender';
 export type BoxProps = ComponentObjectProps<'box'>;
 
 export const Box = forwardRef<ObjectManager, BoxProps>((props, ref) => {
-  return <ObjectRender type="box" props={props} objectRef={ref} />;
+  return <ObjectRender type="box" {...props} objectRef={ref} />;
 });
 
 Box.displayName = 'Box';

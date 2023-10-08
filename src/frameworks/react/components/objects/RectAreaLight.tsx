@@ -9,7 +9,7 @@ export type RectAreaLightProps = ComponentObjectProps<'rectarealight'>;
 
 export const RectAreaLight = forwardRef<ObjectManager, RectAreaLightProps>(
   (props, ref) => {
-    return <ObjectRender type="rectarealight" props={props} objectRef={ref} />;
+    return <ObjectRender type="rectarealight" {...props} objectRef={ref} />;
   },
 );
 

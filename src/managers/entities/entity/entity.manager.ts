@@ -1,6 +1,7 @@
 import {Euler, Object3D, Quaternion, Vector3} from 'three';
 
 import {DEFAULT_ENTITY_DRAW_DISTANCE} from 'engine/definitions/constants/streamer.constants';
+import {EntityAttachOptions} from 'engine/definitions/types/attachments.types';
 import {ChunkIndex} from 'engine/definitions/types/chunks.types';
 import {
   EntityDrawDistanceType,
@@ -14,6 +15,7 @@ import {
   Vector3Array,
 } from 'engine/definitions/types/world.types';
 import {calcChunkIndex} from 'engine/utils/chunks.utils';
+import {toQuaternionArray, toVector3Array} from 'engine/utils/vectors.utils';
 
 import EngineManager from '../../engine.manager';
 import {EventListenersMap} from '../../events.manager';
@@ -21,7 +23,7 @@ import EntityEventsManager from './entity-events.manager';
 import EntityHandleManager from './entity-handle.manager';
 import EntityStreamManager from './entity-stream.manager';
 
-const TEMP_POS = new Vector3();
+type ExcludedEventMethods = 'onEnter' | 'onLeave';
 
 class EntityManager<
   T extends EntityItem = EntityItem,
@@ -39,14 +41,27 @@ class EntityManager<
 
   streamed = false;
 
-  events: EntityEventsManager<MergeEntityEvents<Events, EntityEventMap<this>>> =
-    null!;
+  events: EntityEventsManager<
+    MergeEntityEvents<Events, Omit<EntityEventMap<this>, ExcludedEventMethods>>
+  > = null!;
 
-  private _location = new Object3D();
+  attachedTo: EntityManager | null = null;
+
+  location = new Object3D();
+
+  private __POSITION = new Vector3();
+
+  private __QUATERNION = new Quaternion();
+
+  private __SCALE = new Vector3();
+
+  attachedEntities: Set<EntityManager> = new Set();
 
   streamer: EntityStreamManager = null!;
 
   chunkIndex: ChunkIndex = null!;
+
+  vars: Map<string, any> = new Map();
 
   /* accessors */
   get id(): T['id'] {
@@ -57,6 +72,14 @@ class EntityManager<
     return this.entity.type;
   }
 
+  get isObject() {
+    return this.type === 'object';
+  }
+
+  get isPlayer() {
+    return this.type === 'player';
+  }
+
   get data(): T['data'] {
     return this.entity.data;
   }
@@ -65,22 +88,58 @@ class EntityManager<
     this.entity.data = data;
   }
 
-  get worldPosition() {
-    this.location.getWorldPosition(TEMP_POS);
-
-    return TEMP_POS;
-  }
-
-  get location() {
-    return this._location;
-  }
-
   get position() {
-    return this._location.position;
+    return this.location.position;
+  }
+
+  get quaternion() {
+    return this.location.quaternion;
   }
 
   get rotation() {
-    return this._location.quaternion;
+    return this.location.rotation;
+  }
+
+  get worldPosition() {
+    if (!this.attachedTo) {
+      this.__POSITION.copy(this.location.position);
+    } else {
+      this.location.matrixWorld.decompose(
+        this.__POSITION,
+        this.__QUATERNION,
+        this.__SCALE,
+      );
+    }
+
+    return this.__POSITION;
+  }
+
+  get worldQuaternion() {
+    if (!this.attachedTo) {
+      this.__QUATERNION.copy(this.location.quaternion);
+    } else {
+      this.location.matrixWorld.decompose(
+        this.__POSITION,
+        this.__QUATERNION,
+        this.__SCALE,
+      );
+    }
+
+    return this.__QUATERNION;
+  }
+
+  get worldScale() {
+    if (!this.attachedTo) {
+      this.__SCALE.copy(this.location.scale);
+    } else {
+      this.location.matrixWorld.decompose(
+        this.__POSITION,
+        this.__QUATERNION,
+        this.__SCALE,
+      );
+    }
+
+    return this.__SCALE;
   }
 
   get dimension() {
@@ -159,6 +218,97 @@ class EntityManager<
         // Quaternion
         this.location.quaternion.copy(rotation);
       }
+    }
+  }
+
+  attach(entity: EntityManager, options: EntityAttachOptions = {}) {
+    this._attach(entity, options);
+  }
+
+  detach(entity: EntityManager) {
+    if (entity.attachedTo !== this) return;
+
+    entity._detach();
+  }
+
+  detachFromParent() {
+    this._detach();
+  }
+
+  /**
+   * @private
+   */
+  _attach(
+    entity: EntityManager,
+    options: EntityAttachOptions = {},
+    report = true,
+  ) {
+    if (entity.attachedTo !== this) {
+      this.location.add(entity.location);
+      entity.location.updateMatrixWorld();
+
+      entity.attachedTo = this;
+    }
+
+    if (options.position) {
+      options.position = toVector3Array(options.position);
+    }
+
+    if (options.rotation) {
+      options.rotation = toQuaternionArray(options.rotation);
+    }
+
+    if (!report) return;
+
+    if (this.isObject) {
+      if (entity.isObject) {
+        this.engine.messenger.emit('attachObjectToObject', [
+          entity.id as string,
+          this.id as string,
+          options,
+        ]);
+      } else {
+        this.engine.messenger.emit('attachPlayerToObject', [
+          entity.id as number,
+          this.id as string,
+          options,
+        ]);
+      }
+    } else {
+      if (entity.isObject) {
+        this.engine.messenger.emit('attachObjectToPlayer', [
+          entity.id as string,
+          this.id as number,
+          options,
+        ]);
+      } else {
+        this.engine.messenger.emit('attachPlayerToPlayer', [
+          entity.id as number,
+          this.id as number,
+          options,
+        ]);
+      }
+    }
+  }
+
+  /**
+   * @private
+   */
+  _detach(report = true) {
+    if (this.attachedTo) {
+      this.location.removeFromParent();
+      this.location.updateMatrixWorld();
+
+      this.attachedTo.attachedEntities.delete(this);
+      this.attachedTo = null;
+    }
+
+    if (!report) return;
+
+    if (this.isObject) {
+      this.engine.messenger.emit('detachObject', [this.id as string]);
+    } else {
+      this.engine.messenger.emit('detachPlayer', [this.id as number]);
     }
   }
 }

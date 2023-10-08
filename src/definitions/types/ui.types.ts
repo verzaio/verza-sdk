@@ -42,8 +42,8 @@ export type UISizePropValue =
   | 'none';
 
 export type UISizeProps<T extends string = UISizePropValue> = {
-  height: T;
-  width: T;
+  height?: T;
+  width?: T;
   left?: T;
   top?: T;
   right?: T;

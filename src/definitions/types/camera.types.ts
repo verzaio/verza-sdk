@@ -23,6 +23,6 @@ export type CameraTransition<T extends string = keyof typeof EASINGS> =
 
 export type CameraTransitionItem = CameraTransition & {
   startTime: number;
-  originPosition: PerspectiveCamera;
+  originLocation: PerspectiveCamera;
   easingFunction: (delta: number) => number;
 };

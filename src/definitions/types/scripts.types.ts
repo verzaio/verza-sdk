@@ -22,6 +22,7 @@ import {
   AnimationOptions,
 } from './animations.types';
 import {AssetOptions} from './assets.types';
+import {EntityAttachOptions} from './attachments.types';
 import {CameraModeType, CameraPosition, CameraTransition} from './camera.types';
 import {ChunkData, ChunkIndex} from './chunks.types';
 import {ClotheItem, PlayerClotheItem, SkinMaskItem} from './clothes.types';
@@ -87,6 +88,12 @@ export type ScriptEventMap = {
 
   onDisconnect: () => void;
 
+  onDestroy: () => void;
+
+  onFrame: (deltaTime: number) => void;
+
+  onFixedFrame: (deltaTime: number) => void;
+
   OR: (response: unknown) => void;
 
   /* engine */
@@ -114,8 +121,6 @@ export type ScriptEventMap = {
   unregisterCommand: (playerId: number, command: string) => void;
 
   /* ui */
-  onEscapeKey: () => void;
-
   onPointerEvent: (event: PointerEvent) => void;
 
   onPointerMove: (event: PointerEvent) => void;
@@ -182,7 +187,7 @@ export type ScriptEventMap = {
 
   onInputFocus: (status: boolean) => void;
 
-  setSize: (props: UISizeProps<string>) => void;
+  setProps: (props: UISizeProps<string>) => void;
 
   show: () => void;
 
@@ -253,9 +258,9 @@ export type ScriptEventMap = {
 
   onPlayerStreamOutRaw: (playerId: number) => void;
 
-  onPlayerEnterSensorRaw: (playerId: number, objectId: ObjectManager) => void;
+  onPlayerEnterSensorRaw: (playerId: number, objectId: string) => void;
 
-  onPlayerLeaveSensorRaw: (playerId: number, objectId: ObjectManager) => void;
+  onPlayerLeaveSensorRaw: (playerId: number, objectId: string) => void;
 
   setPlayerName: (playerId: number, name: string) => void;
 
@@ -394,6 +399,35 @@ export type ScriptEventMap = {
   uploadAsset: (file: FileTransfer, options: AssetOptions) => string;
 
   deleteAsset: (assetId: string) => void;
+
+  /* entities */
+  attachPlayerToObject: (
+    playerId: number,
+    objectId: string,
+    options: EntityAttachOptions,
+  ) => void;
+
+  attachObjectToPlayer: (
+    objectId: string,
+    playerId: number,
+    options: EntityAttachOptions,
+  ) => void;
+
+  attachObjectToObject: (
+    objectIdFrom: string,
+    objectIdTo: string,
+    options: EntityAttachOptions,
+  ) => void;
+
+  attachPlayerToPlayer: (
+    playerIdFrom: number,
+    playerIdTo: number,
+    options: EntityAttachOptions,
+  ) => void;
+
+  detachPlayer: (playerId: number) => void;
+
+  detachObject: (objectId: string) => void;
 
   /* objects */
   createObject: (objectId: string, props: Partial<ObjectTypes>) => void;

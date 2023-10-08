@@ -8,7 +8,7 @@ import ObjectRender from './components/ObjectRender';
 export type SphereProps = ComponentObjectProps<'sphere'>;
 
 export const Sphere = forwardRef<ObjectManager, SphereProps>((props, ref) => {
-  return <ObjectRender type="sphere" props={props} objectRef={ref} />;
+  return <ObjectRender type="sphere" {...props} objectRef={ref} />;
 });
 
 Sphere.displayName = 'Sphere';

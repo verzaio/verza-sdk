@@ -1,5 +1,4 @@
 import React, {
-  ReactNode,
   createContext,
   useCallback,
   useContext,
@@ -11,7 +10,7 @@ import React, {
 import {ObjectEventMapList} from 'engine/definitions/local/types/events.types';
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
-import {useEngine} from 'engine/framework-react';
+import {useEngine} from 'engine/frameworks/react/hooks/useEngine';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import {ObjectHelper} from './ObjectHelper';
@@ -43,18 +42,17 @@ const EXCLUDED_PROPS: Set<keyof ComponentObjectProps> = new Set([
   'helper',
 ]);
 
-type ObjectRenderProps<T extends ObjectType = ObjectType> = {
-  type: T;
-  props: ComponentObjectProps<T>;
-  objectRef: any;
-  children?: ReactNode;
-};
+type ObjectRenderProps<T extends ObjectType = ObjectType> =
+  ComponentObjectProps<T> & {
+    type: T;
+    objectRef: any;
+  };
 
 const ObjectRender = <T extends ObjectType = ObjectType>({
   children,
   type,
-  props,
   objectRef: ref,
+  ...props
 }: ObjectRenderProps<T>) => {
   const {objects} = useEngine();
 
@@ -72,21 +70,24 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
   const destroyObject = useCallback(() => {
     objects.destroy(objectRef.current);
     objectRef.current = null!;
-  }, []);
+  }, [objects]);
 
-  const setObject = useCallback((object: ObjectManager, ref?: any) => {
-    if (ref) {
-      ref.current = object;
-    }
+  const setObject = useCallback(
+    (object: ObjectManager, ref?: any) => {
+      if (ref) {
+        ref.current = object;
+      }
 
-    if (objectRef.current && object?.id !== objectRef.current.id) {
-      destroyObject();
-    }
+      if (objectRef.current && object?.id !== objectRef.current.id) {
+        destroyObject();
+      }
 
-    objectIdRef.current = object?.id;
-    objectRef.current = object;
-    setObjectState(object);
-  }, []);
+      objectIdRef.current = object?.id;
+      objectRef.current = object;
+      setObjectState(object);
+    },
+    [destroyObject],
+  );
 
   // destroy manager
   useEffect(() => {
@@ -96,7 +97,7 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
         setObject(null!);
       }
     };
-  }, []);
+  }, [setObject, destroyObject]);
 
   // handle creation
   useEffect(() => {
@@ -117,8 +118,8 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
     });
 
     EXCLUDED_PROPS.forEach(name => {
-      if (objectProps[name]) {
-        delete objectProps[name];
+      if ((objectProps as any)[name]) {
+        delete (objectProps as any)[name];
       }
     });
 
@@ -131,7 +132,7 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
     return () => {
       events.forEach((event, name) => object.events.off(name, event));
     };
-  }, [setObject, objects, props, type, ref]);
+  });
 
   if (!object || object?.destroyed) return null;
 

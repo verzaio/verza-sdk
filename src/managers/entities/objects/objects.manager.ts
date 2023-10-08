@@ -1,7 +1,5 @@
 import {Euler} from 'three';
 
-import {v4} from 'uuid';
-
 import {EntityType} from 'engine/definitions/enums/entities.enums';
 import {CreateObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ScriptMessengerMethods} from 'engine/definitions/types/messenger.types';
@@ -16,6 +14,7 @@ import {
 } from 'engine/definitions/types/objects/objects.types';
 import {QuaternionArray} from 'engine/definitions/types/world.types';
 import MessengerEmitterManager from 'engine/managers/messenger/messenger-emitter.manager';
+import {uuid} from 'engine/utils/misc.utils';
 
 import EngineManager from '../../engine.manager';
 import EntitiesManager from '../entities.manager';
@@ -91,15 +90,13 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
 
     // update children
-    if (object.objectType === 'group') {
-      (data as ObjectGroupType).o?.c?.forEach(data => {
-        const child = this.get(data.id!);
+    (data as ObjectGroupType).o?.c?.forEach(data => {
+      const child = this.get(data.id!);
 
-        if (child) {
-          this.update(child, data);
-        }
-      });
-    }
+      if (child) {
+        this.update(child, data);
+      }
+    });
 
     return object;
   }
@@ -116,7 +113,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
     // check for parent
     if (parent) {
-      object.attachToParent(parent);
+      object._attach(parent, {}, false);
     }
 
     return object;
@@ -157,7 +154,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   ) {
     // validate id
     if (!props.id) {
-      props.id = v4();
+      props.id = uuid();
     }
 
     // validate pos
@@ -229,7 +226,9 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
       ...(renderOrder !== undefined && {ro: renderOrder}),
 
-      ...(collision !== undefined && {c: collision}),
+      ...(typeof collision === 'boolean'
+        ? collision && {c: 'static'}
+        : collision !== undefined && {c: collision}),
 
       ...(collider !== undefined && {cc: collider}),
 
@@ -254,7 +253,7 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     const object = this._createRaw(props.id!, objectData);
 
     // chunk change
-    if (this.engine.isServer && !object.parent) {
+    if (this.engine.isServer && !object.parentObjectId) {
       this.engine.streamer.refreshEntity(object);
     }
 
@@ -281,11 +280,13 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     }
 
     // detach
-    entity.detachFromParent();
+    entity._detach(false);
 
-    // destroy children
-    entity.children.forEach(entity => {
-      this.destroy(entity, report);
+    // destroy attached entities
+    entity.attachedEntities.forEach(entity => {
+      if (entity.isObject) {
+        this.destroy(entity as ObjectManager, report);
+      }
     });
 
     // destroy
@@ -376,11 +377,12 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
     } = await this._messenger.emitAsync('getObject', [object.id]);
 
     // we leave the same parent as the original object
+    //delete objectProps.parent_id
 
     // clean props
     this._cleanObjectProps(objectProps);
 
-    const id = withId ?? v4();
+    const id = withId ?? uuid();
 
     objectProps.id = id;
 
@@ -390,18 +392,14 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
   }
 
   private _cleanObjectProps(objectProps: ObjectDataProps) {
-    if (objectProps.t === 'group') {
-      (objectProps as ObjectGroupType).o?.c?.forEach(e => {
-        // remove id & parent
-        delete e.id;
-        delete e.parent_id;
+    (objectProps as ObjectGroupType).o?.c?.forEach(e => {
+      // remove id & parent
+      delete e.id;
+      delete e.parent_id;
 
-        if (e.t === 'group') {
-          this._cleanObjectProps(e);
-          return;
-        }
-      });
-    }
+      this._cleanObjectProps(e);
+      return;
+    });
   }
 
   emitHandler(
@@ -453,8 +451,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   async sync(object: ObjectManager) {
     // find parent
-    if (object.parent) {
-      this.sync(object.parent);
+    if (object.parentObject) {
+      this.sync(object.parentObject);
       return;
     }
 
@@ -466,8 +464,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   async save(object: ObjectManager) {
     // find parent
-    if (object.parent) {
-      await object.parent.save();
+    if (object.parentObject) {
+      await object.parentObject.save();
       return;
     }
 
@@ -491,8 +489,8 @@ class ObjectsManager extends EntitiesManager<ObjectManager> {
 
   async delete(object: ObjectManager) {
     // find parent
-    if (object.parent) {
-      await object.parent.delete();
+    if (object.parentObject) {
+      await object.parentObject.delete();
       return;
     }
 

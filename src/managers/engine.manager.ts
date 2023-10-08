@@ -1,4 +1,3 @@
-import {v4} from 'uuid';
 import {z} from 'zod';
 
 import {ENTITIES_RENDERS} from 'engine/definitions/constants/entities.constants';
@@ -11,7 +10,7 @@ import {ScriptEventMap} from 'engine/definitions/types/scripts.types';
 import AudioManager from 'engine/managers/audio/audio.manager';
 import InputManager from 'engine/managers/input.manager';
 import StorageManager from 'engine/managers/storage/storage.manager';
-import {isValidEnv} from 'engine/utils/misc.utils';
+import {uuid} from 'engine/utils/misc.utils';
 
 import AnimationsManager from './animations.manager';
 import ApiManager from './api/api.manager';
@@ -38,6 +37,8 @@ import WorldManager from './world/world.manager';
 
 export class EngineManager {
   z = z;
+
+  domElement: HTMLElement = null!;
 
   network: NetworkManager;
 
@@ -73,7 +74,7 @@ export class EngineManager {
 
   methodsHandler: MethodsHandlerManager;
 
-  messenger = new MessengerManager<ScriptEventMap>('sender');
+  messenger: MessengerManager<ScriptEventMap>;
 
   eventsManager: Map<EventKey, EventsManager | EntityEventsManager> = new Map();
 
@@ -82,8 +83,6 @@ export class EngineManager {
   params: EngineParams = {};
 
   controller = createControllerManager({
-    connected: false,
-
     synced: false,
 
     playerId: null! as number,
@@ -103,7 +102,7 @@ export class EngineManager {
 
   private _binded = false;
 
-  private _localId = v4();
+  private _localId = uuid();
 
   get id() {
     return this.messenger.id ?? this._localId;
@@ -136,10 +135,6 @@ export class EngineManager {
     return this.controller.synced;
   }
 
-  get connected() {
-    return this.controller.connected;
-  }
-
   get localPlayerId() {
     return this.controller.playerId;
   }
@@ -168,12 +163,18 @@ export class EngineManager {
     return this.api.isClient;
   }
 
+  get isBrowser() {
+    return typeof window !== 'undefined';
+  }
+
   get chunkSize() {
     return this.network.server?.world?.chunk_size ?? STREAMER_CHUNK_SIZE;
   }
 
-  constructor(params?: EngineParams) {
-    this.params = params ?? {};
+  constructor(params: EngineParams = {}) {
+    this.params = params;
+
+    this.messenger = new MessengerManager<ScriptEventMap>('sender', params.id);
 
     // register all events
     this.messenger.events.registerEvents = true;
@@ -188,10 +189,10 @@ export class EngineManager {
 
     this.methodsHandler = new MethodsHandlerManager(this);
 
-    this.utils = new UtilsManager(this);
+    this.utils = new UtilsManager();
 
     // only for client
-    if (this.isClient) {
+    if (this.isClient && this.isBrowser) {
       this.input = new InputManager(this);
       this.ui = new UIManager(this);
       this.audio = new AudioManager(this);
@@ -218,6 +219,10 @@ export class EngineManager {
       this.entities[key as keyof typeof ENTITIES_RENDERS].Manager =
         value.EntityManager;
     });
+
+    if (this.isClient && this.isBrowser) {
+      this._watchFrames();
+    }
   }
 
   connectServer() {
@@ -230,9 +235,16 @@ export class EngineManager {
 
   connectClient() {
     // validate env (only client)
-    if (this.isClient && !isValidEnv()) {
+    if (this.isClient && !this.isBrowser) {
       return;
     }
+
+    if (typeof window === 'undefined') {
+      throw new Error('Client scripts cannot be run on the server');
+    }
+
+    // set dom element
+    this.domElement = document.getElementById(this.id)!;
 
     this._setup();
 
@@ -242,7 +254,7 @@ export class EngineManager {
     });
 
     // connect it
-    this.messenger.connect(window.top!);
+    this.messenger.connect(window);
   }
 
   private _setup() {
@@ -261,17 +273,13 @@ export class EngineManager {
     }
 
     // events
-    this.messenger.events.on('onConnect', () => {
-      this.controller.connected = true;
-    });
-
-    this.messenger.events.on('onDisconnect', () => {
-      this.controller.connected = false;
+    this.messenger.events.on('onSynced', () => {
+      this.controller.synced = true;
     });
 
     // events
-    this.messenger.events.on('onSynced', () => {
-      this.controller.synced = true;
+    this.messenger.events.on('onDisconnect', () => {
+      this.destroy();
     });
 
     // binds
@@ -293,7 +301,7 @@ export class EngineManager {
 
     this.destroyed = true;
 
-    this.controller.connected = false;
+    this.events.emit('onDestroy');
 
     this.controller.synced = false;
 
@@ -305,6 +313,7 @@ export class EngineManager {
     this.ui?.destroy();
     this.players.unload();
     this.objects.unload();
+    this.utils.destroy();
 
     // remove all events
     this.events.removeAllListeners();
@@ -329,6 +338,25 @@ export class EngineManager {
 
   areResourcesReady() {
     return this.messenger.emitAsync('areResourcesReady');
+  }
+
+  /* render */
+  private _watchFrames() {
+    let lastFrameTime = performance.now();
+
+    const check = () => {
+      requestAnimationFrame(delta => {
+        if (this.destroyed) return;
+
+        this.events.emit('onFrame', delta - lastFrameTime);
+
+        lastFrameTime = delta;
+
+        check();
+      });
+    };
+
+    check();
   }
 }
 
@@ -374,7 +402,7 @@ export class EngineEvents<
     }
   }
 
-  once<A extends keyof T>(eventName: A, listener: T[A]): T[A] {
+  once<A extends keyof T>(_: A, listener: T[A]): T[A] {
     console.debug('[EngineEvents] events.once is not available');
     return listener;
   }

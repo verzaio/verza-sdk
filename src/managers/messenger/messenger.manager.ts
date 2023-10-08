@@ -26,7 +26,7 @@ type MessengerManagerMap = {
 
 const TYPE_HANDSHAKE_CONNECTION = 'HANDSHAKE_CONNECTION';
 
-const ACTION_CONNECT = 'REQUEST';
+const ACTION_CONNECT = 'CONNECT';
 
 const ACTION_ACCEPT = 'ACCEPT';
 
@@ -94,7 +94,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
         type: TYPE_HANDSHAKE_CONNECTION,
         action: ACTION_CONNECT,
       },
-      '*',
+      window.origin,
       [this.channel.port2],
     );
   }
@@ -158,11 +158,11 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
     //console.log(`_onHandshake:${this.type}`, message.data);
 
     if (message.data?.id !== this.id) {
-      if (this.isSender) {
+      /* if (this.isSender) {
         console.debug(
           `[messenger:${this.type}] sender id mismatch "${this.id}" != "${message.data?.id}"`,
         );
-      }
+      } */
       return;
     }
 
@@ -206,7 +206,7 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
       return;
     }
 
-    console.debug(`[messenger:${this.type}] unhandled request`);
+    //console.debug(`[messenger:${this.type}] unhandled request`, message?.data);
   };
 
   private _onConnected() {
@@ -271,15 +271,25 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
           return;
         }
 
+        const errorObject =
+          typeof e === 'object' && e !== null && e instanceof Error
+            ? {
+                details: {
+                  name: e.name,
+                  message: e.message,
+                },
+              }
+            : {
+                details: e,
+              };
+
         // send error response
         (this.emit as any)(
           `OR:${requestId}`,
           [
             {
               error: `Error processing "${eventName}"`,
-              ...JSON.parse(
-                JSON.stringify(typeof e === 'object' ? e : {details: e}),
-              ),
+              ...JSON.parse(JSON.stringify(errorObject)),
             },
           ],
           undefined,
