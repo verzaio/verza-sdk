@@ -10,7 +10,7 @@ import React, {
 import {ObjectEventMapList} from 'engine/definitions/local/types/events.types';
 import {ComponentObjectProps} from 'engine/definitions/local/types/objects.types';
 import {ObjectType} from 'engine/definitions/types/objects/objects.types';
-import {useEngine} from 'engine/framework-react';
+import {useEngine} from 'engine/frameworks/react/hooks/useEngine';
 import ObjectManager from 'engine/managers/entities/objects/object/object.manager';
 
 import {ObjectHelper} from './ObjectHelper';
@@ -70,21 +70,24 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
   const destroyObject = useCallback(() => {
     objects.destroy(objectRef.current);
     objectRef.current = null!;
-  }, []);
+  }, [objects]);
 
-  const setObject = useCallback((object: ObjectManager, ref?: any) => {
-    if (ref) {
-      ref.current = object;
-    }
+  const setObject = useCallback(
+    (object: ObjectManager, ref?: any) => {
+      if (ref) {
+        ref.current = object;
+      }
 
-    if (objectRef.current && object?.id !== objectRef.current.id) {
-      destroyObject();
-    }
+      if (objectRef.current && object?.id !== objectRef.current.id) {
+        destroyObject();
+      }
 
-    objectIdRef.current = object?.id;
-    objectRef.current = object;
-    setObjectState(object);
-  }, []);
+      objectIdRef.current = object?.id;
+      objectRef.current = object;
+      setObjectState(object);
+    },
+    [destroyObject],
+  );
 
   // destroy manager
   useEffect(() => {
@@ -94,7 +97,7 @@ const ObjectRender = <T extends ObjectType = ObjectType>({
         setObject(null!);
       }
     };
-  }, []);
+  }, [setObject, destroyObject]);
 
   // handle creation
   useEffect(() => {

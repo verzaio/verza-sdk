@@ -5,7 +5,14 @@ import typescript from '@rollup/plugin-typescript';
 
 import pkg from './package.json' assert {type: 'json'};
 
-const external = [...Object.keys(pkg.dependencies ?? {}), 'react'];
+const external = [
+  ...Object.keys(pkg.dependencies ?? {}),
+  ...Object.keys(pkg.devDependencies ?? {}),
+  ...Object.keys(pkg.peerDependencies ?? {}),
+  'react',
+  'react-dom',
+  'react-dom/client',
+];
 
 const sharedPlugins = [typescript(), commonjs()];
 
@@ -22,81 +29,49 @@ const browserPlugins = [
 const builds = [
   // Core
   {
-    input: 'src/index.ts',
+    input: {
+      index: './src/index.ts',
+      utils: './src/utils.ts',
+    },
     plugins: browserPlugins,
     output: [
       {
         format: 'es',
-        file: 'dist/index.es.js',
+        dir: 'dist',
+        entryFileNames: '[name].es.js',
+        chunkFileNames: '[name]-[hash].shared.es.js',
       },
     ],
   },
   {
-    input: 'src/index.ts',
+    input: {
+      index: './src/index.ts',
+      utils: './src/utils.ts',
+      'framework-react': './src/framework-react.ts',
+      'framework-react-client': './src/framework-react-client.ts',
+    },
     plugins,
     external,
     output: [
       {
         format: 'esm',
-        file: 'dist/index.esm.js',
-      },
-      {
-        format: 'cjs',
-        file: 'dist/index.cjs.js',
+        dir: 'dist',
+        entryFileNames: '[name].esm.js',
+        chunkFileNames: '[name]-[hash].shared.esm.js',
       },
     ],
   },
 
-  // Utils
+  // Config
   {
-    input: 'src/utils.ts',
-    plugins: browserPlugins,
-    output: [
-      {
-        format: 'es',
-        file: 'dist/utils.es.js',
-      },
-    ],
-  },
-  {
-    input: 'src/utils.ts',
-    plugins,
+    input: './src/config.ts',
+    plugins: [...plugins],
     external,
     output: [
       {
         format: 'esm',
-        file: 'dist/utils.esm.js',
-      },
-      {
-        format: 'cjs',
-        file: 'dist/utils.cjs.js',
-      },
-    ],
-  },
-
-  // React
-  {
-    input: 'src/framework-react.ts',
-    plugins: browserPlugins,
-    output: [
-      {
-        format: 'es',
-        file: 'dist/framework-react.es.js',
-      },
-    ],
-  },
-  {
-    input: 'src/framework-react.ts',
-    plugins,
-    external,
-    output: [
-      {
-        format: 'esm',
-        file: 'dist/framework-react.esm.js',
-      },
-      {
-        format: 'cjs',
-        file: 'dist/framework-react.cjs.js',
+        dir: 'dist',
+        entryFileNames: '[name].esm.js',
       },
     ],
   },

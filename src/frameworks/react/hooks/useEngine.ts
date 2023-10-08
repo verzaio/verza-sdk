@@ -1,7 +1,1 @@
-import {useContext} from 'react';
-
-import {EngineContext} from '../components/EngineProvider';
-
-export const useEngine = () => {
-  return useContext(EngineContext);
-};
+export {useEngine} from 'engine/frameworks/react/components/EngineProvider';

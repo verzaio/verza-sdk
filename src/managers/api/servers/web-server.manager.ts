@@ -32,6 +32,8 @@ class WebServerManager {
 
   webServerEndpoint: string = null!;
 
+  pendingRequests: Promise<unknown>[] = [];
+
   get encryptedPackets() {
     return this._engine.network.encryptedPackets;
   }
@@ -87,11 +89,15 @@ class WebServerManager {
 
     // try to create player from auth packet
     if (!this._createPlayerFromAuthPacket(authPacket)) {
-      return null!;
+      return {
+        error: 'invalid auth packet',
+      };
     }
 
     if (commandPacket && !this._createCommandPacket(commandPacket)) {
-      return null!;
+      return {
+        error: 'invalid command packet',
+      };
     }
 
     return this._handlePacket(eventId, packetData) ?? null;
@@ -161,8 +167,7 @@ class WebServerManager {
     if (!Array.isArray(authPacket)) {
       console.debug(
         '[api] cannot decrypt packet, do we have the correct Access Token?',
-        this.endpoint,
-        packet,
+        `(${this.endpoint}) packet: ${packet}`,
       );
       return false;
     }
@@ -287,6 +292,10 @@ class WebServerManager {
       }
       default: {
         console.debug(`[webserver] unhandled packet: ${event}`);
+
+        return {
+          error: `unhandled packet: ${event}`,
+        };
       }
     }
 
@@ -353,29 +362,29 @@ class WebServerManager {
     const path = `${this.endpoint}/network/action/run`;
 
     // emit to verza servers
-    const response = await fetch(path, {
-      method: 'POST',
+    const responsePromise = new Promise<Response>(resolve =>
+      resolve(
+        fetch(path, {
+          method: 'POST',
 
-      cache: 'no-cache',
+          body: JSON.stringify({
+            e: eventName,
+            d: args as object,
+            p: playerId,
+          } satisfies ScriptActionPacketSendDto),
 
-      keepalive: true,
+          headers: {
+            'Content-Type': 'application/json',
 
-      referrerPolicy: 'no-referrer',
+            Authorization: `Bearer ${this._accessToken}`,
+          },
+        }),
+      ),
+    );
 
-      credentials: 'omit',
+    this.pendingRequests.push(responsePromise);
 
-      body: JSON.stringify({
-        e: eventName,
-        d: args as object,
-        p: playerId,
-      } satisfies ScriptActionPacketSendDto),
-
-      headers: {
-        'Content-Type': 'application/json',
-
-        Authorization: `Bearer ${this._accessToken}`,
-      },
-    });
+    const response = await responsePromise;
 
     // if error, output it
     if (response.status < 200 || response.status > 299) {

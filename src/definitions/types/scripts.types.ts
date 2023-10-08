@@ -88,6 +88,12 @@ export type ScriptEventMap = {
 
   onDisconnect: () => void;
 
+  onDestroy: () => void;
+
+  onFrame: (deltaTime: number) => void;
+
+  onFixedFrame: (deltaTime: number) => void;
+
   OR: (response: unknown) => void;
 
   /* engine */
@@ -115,8 +121,6 @@ export type ScriptEventMap = {
   unregisterCommand: (playerId: number, command: string) => void;
 
   /* ui */
-  onEscapeKey: () => void;
-
   onPointerEvent: (event: PointerEvent) => void;
 
   onPointerMove: (event: PointerEvent) => void;
@@ -183,7 +187,7 @@ export type ScriptEventMap = {
 
   onInputFocus: (status: boolean) => void;
 
-  setSize: (props: UISizeProps<string>) => void;
+  setProps: (props: UISizeProps<string>) => void;
 
   show: () => void;
 

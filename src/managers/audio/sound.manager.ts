@@ -1,9 +1,8 @@
 import {Vector3} from 'three';
 
-import {v4} from 'uuid';
-
 import {SoundLoop, SoundOptions} from 'engine/definitions/types/audio.types';
 import {Vector3Array} from 'engine/definitions/types/world.types';
+import {uuid} from 'engine/utils/misc.utils';
 import {toVector3Array} from 'engine/utils/vectors.utils';
 
 import {EngineManager} from '../engine.manager';
@@ -22,7 +21,7 @@ class SoundManager {
   constructor(engine: EngineManager, name: string, withId?: string) {
     this._engine = engine;
 
-    this.id = withId ?? v4();
+    this.id = withId ?? uuid();
 
     this.name = name;
   }

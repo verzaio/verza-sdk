@@ -1,4 +1,6 @@
 export type EngineParams = {
+  id?: string;
+
   name?: string;
 
   webServer?: string;

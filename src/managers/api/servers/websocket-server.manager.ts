@@ -46,14 +46,6 @@ class WebsocketServerManager {
     const response = await fetch(`${this.endpoint}/network/action/server`, {
       method: 'GET',
 
-      cache: 'no-cache',
-
-      keepalive: true,
-
-      referrerPolicy: 'no-referrer',
-
-      credentials: 'omit',
-
       headers: {
         Authorization: `Bearer ${this._accessToken}`,
       },
@@ -61,19 +53,10 @@ class WebsocketServerManager {
 
     // if error, output it
     if (response.status < 200 || response.status > 299) {
-      try {
-        console.error(
-          'Verza API Error',
-          JSON.stringify(await response.json(), null, 2),
-        );
-        return null!;
-      } catch (e) {
-        console.error('Verza API Error ', await response.text());
-        throw e;
-      }
+      throw await response.text();
     }
 
-    return (await response.json()).data as ServerDto;
+    return (await response.json()).data;
   }
 
   async _cleanup() {

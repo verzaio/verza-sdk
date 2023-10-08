@@ -1,4 +1,4 @@
-import {useEngine} from 'engine/framework-react';
+import {useEngine} from 'engine/frameworks/react/hooks/useEngine';
 
 import {useControllerProp} from './useControllerProp';
 
