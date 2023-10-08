@@ -503,7 +503,7 @@ class ObjectManager<OT extends ObjectType = ObjectType> extends EntityManager<
       if (child) {
         // attach if not attached
         if (!child.parentObject) {
-          child.attach(this);
+          this._attach(child, {}, false);
         }
 
         // update

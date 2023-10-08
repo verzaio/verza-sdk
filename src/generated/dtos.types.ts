@@ -142,18 +142,18 @@ export interface NotificationEventDto {
   event: 'status' | 'new_notification';
 }
 
-export interface AssetDto {
-  id: string;
-  asset_url: string;
-  /** @format date-time */
-  created_at: string;
-}
-
 export interface CreateAssetDto {
   /** @format binary */
   asset_file: File;
   optimize_geometry?: boolean;
   optimize_textures?: boolean;
+}
+
+export interface AssetDto {
+  id: string;
+  asset_url: string;
+  /** @format date-time */
+  created_at: string;
 }
 
 export interface CharacterShapekeyValueDto {
@@ -374,6 +374,8 @@ export interface ScriptActionPacketSendDto {
 export interface JoinPacketDto {
   /** server id */
   s: string;
+  /** token */
+  t: string;
   /** password */
   p?: string;
 }
