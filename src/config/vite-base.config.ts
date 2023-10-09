@@ -16,7 +16,7 @@ import {
   generateConfigFilesPlugin,
 } from './plugins.config';
 import {resolveBaseUrl} from './providers.config';
-import {generateRollupOptions} from './utils.config';
+import {checkPackageVersion, generateRollupOptions} from './utils.config';
 
 const VERSION = Math.floor(Math.random() * 8999999 + 1000000);
 
@@ -44,6 +44,8 @@ export const defineBaseViteConfig = (config: Partial<UserConfig> = {}) => {
 
   // default output dir
   let outputDir: string = OUTPUT_DIR;
+
+  checkPackageVersion();
 
   // select output dir
   if (IS_SERVER) {

@@ -1,3 +1,4 @@
+import fs from 'fs';
 import * as glob from 'glob';
 import path from 'path';
 import {RollupOptions} from 'rollup';
@@ -125,4 +126,37 @@ export const generateRollupOptions = (
   }
 
   return options;
+};
+
+export const checkPackageVersion = async () => {
+  try {
+    const REGISTRY_URL = 'https://registry.npmjs.org/@verza/sdk';
+
+    const {
+      'dist-tags': {latest},
+    } = await (await fetch(REGISTRY_URL)).json();
+
+    const packageJson = JSON.parse(
+      fs.readFileSync(`${process.cwd()}/package.json`, 'utf-8'),
+    );
+
+    let currentVersion = packageJson.dependencies['@verza/sdk'];
+    // replace ^,~,@,*
+    currentVersion = currentVersion.replace(/[\^~@*]/g, '');
+
+    if (latest === currentVersion) return;
+
+    console.log('\n');
+    console.log(
+      '\t\t\x1b[33m%s\x1b[0m',
+      `A new version of Verza SDK is available: \x1b[1m\x1b[37mv${latest}\x1b[0m`,
+    );
+    console.log(
+      '\t\t\x1b[37mUse\x1b[0m \x1b[36m%s\x1b[0m',
+      `npm install @verza/sdk@latest\x1b[0m to update.`,
+    );
+    console.log('\n');
+  } catch (e) {
+    console.log('\x1b[31m%s\x1b[0m', "Can't check for updates.", e);
+  }
 };
