@@ -1,3 +1,3 @@
-import {defineViteConfig} from '@verza/sdk/config';
+import {defineConfig} from '@verza/sdk/config';
 
-export default defineViteConfig();
+export default defineConfig();
