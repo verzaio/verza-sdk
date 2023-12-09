@@ -3,7 +3,7 @@
 import {spawn} from 'cross-spawn';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 
 const args = ['vite', ...process.argv.slice(2)];
 
