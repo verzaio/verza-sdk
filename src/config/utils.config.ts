@@ -32,29 +32,31 @@ export const generateClientVersionedScripts = (
 };
 
 export const generateScriptsObject = (
-  path: typeof CLIENT_DIR | typeof SERVER_DIR,
+  basePath: typeof CLIENT_DIR | typeof SERVER_DIR,
   baseDir: string,
 ) => {
   const entryFiles = glob.sync(
-    `./src/${path}/**/script.+(${WATCH_EXTENSIONS.join('|')})`,
+    `./src/${basePath}/**/script.+(${WATCH_EXTENSIONS.join('|')})`,
     {
       cwd: baseDir,
     },
   );
 
-  return entryFiles.reduce<Record<string, string>>((acc, filePath: string) => {
-    const offset = filePath.startsWith('./') ? 3 : 2;
-    let entryName = filePath.split('/').slice(offset, -1).join('/');
+  const scripts = entryFiles.reduce<Record<string, string>>((acc, filePath: string) => {
+     const offset = filePath.startsWith('.') ? 3 : 2;
+     let entryName = filePath.split(path.sep).slice(offset, -1).join(path.sep);
 
     if (!entryName) {
-      const parts = filePath.split('/').slice(offset).join('/').split('.');
+      const parts = filePath.split(path.sep).slice(offset).join(path.sep).split('.');
       parts.pop();
       entryName = parts.join('.');
     }
 
-    acc[entryName] = filePath.startsWith('./') ? filePath : `./${filePath}`;
+    acc[entryName] = filePath.startsWith('.') ? filePath : `./${filePath}`;
     return acc;
   }, {});
+
+  return scripts;
 };
 
 export const generateServerlessScripts = (baseDir: string) => {

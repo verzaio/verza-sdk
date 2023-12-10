@@ -3,6 +3,7 @@
 import {spawn} from 'cross-spawn';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 const args = ['vite', ...process.argv.slice(2)];
 
@@ -19,10 +20,9 @@ if (!args.includes('--config')) {
   args.push('--config');
 
   if (!configPath) {
-    // how to remove file:
     configPath = path.resolve(
-      new URL(import.meta.url).pathname,
-      '../..',
+      path.dirname(fileURLToPath(import.meta.url)),
+      '..',
       'files/verza.config.js',
     );
   }
