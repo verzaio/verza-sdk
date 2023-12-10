@@ -1,6 +1,6 @@
 {
   "name": "@verza/sdk",
-  "version": "2.0.59",
+  "version": "2.0.61",
   "description": "Verza Client & Server SDK",
   "type": "module",
   "main": "dist/index.cjs.js",

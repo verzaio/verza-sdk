@@ -174,7 +174,10 @@ export class EngineManager {
   constructor(params: EngineParams = {}) {
     this.params = params;
 
-    this.messenger = new MessengerManager<ScriptEventMap>('sender', params.id);
+    this.messenger = new MessengerManager<ScriptEventMap>(
+      'sender',
+      params.id ?? this._localId,
+    );
 
     // register all events
     this.messenger.events.registerEvents = true;

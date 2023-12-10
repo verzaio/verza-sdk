@@ -51,7 +51,9 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
   isSender = false;
 
-  constructor(type: MessengerType, id?: string) {
+  constructor(type: MessengerType, id: string) {
+    this.id = id;
+
     this.type = type;
 
     this.isReciever = type === 'receiver';
@@ -62,9 +64,6 @@ class MessengerManager<Events extends EventListenersMap = EventListenersMap> {
 
     // abort if window not present
     if (typeof window === 'undefined') return;
-
-    // set id
-    this.id = id ?? window.name;
 
     // bind handshake listener
     this._bindHandshakeListener();
