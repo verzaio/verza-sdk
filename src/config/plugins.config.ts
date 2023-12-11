@@ -29,7 +29,7 @@ export const __dev__webServerMiddlewarePlugin = (
     name: 'webserver-handler',
     configureServer({middlewares, ssrLoadModule}) {
       middlewares.use(async (req, res, next) => {
-        if (!req.url) {
+        if (!req.url || req.method !== 'POST') {
           next();
           return;
         }
